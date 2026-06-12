@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useSidebarStore } from '@/lib/store/sidebar-store'
 import { useChatStore } from '@/lib/store/chat-store'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { ChatContainer } from '@/components/chat/chat-container'
 import { ChatSidebar } from '@/components/chat/chat-sidebar'
 import { MobileOverlay } from '@/components/chat/mobile-overlay'
@@ -22,7 +22,7 @@ export default function ChatPage() {
   const router = useRouter()
   const { user, loading } = useAuthStore()
   const { isOpen, isMobile, open, setIsMobile } = useSidebarStore()
-  const { chats, selectChat, fetchChats } = useChatStore()
+  const { fetchChats } = useChatStore()
   const [checkingVerification, setCheckingVerification] = useState(true)
 
   // Responsive breakpoint detection
@@ -65,6 +65,7 @@ export default function ChatPage() {
 
       if (user) {
         // Check if email is verified
+        const supabase = createClient()
         const { data } = await supabase.auth.getUser()
         
         if (data.user && !data.user.email_confirmed_at) {

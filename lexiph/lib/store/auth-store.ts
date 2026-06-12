@@ -1,9 +1,9 @@
 'use client'
 
 import { create } from 'zustand'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { User } from '@/types'
-import type { Session } from '@supabase/supabase-js'
+import type { AuthError as SupabaseAuthError, Session } from '@supabase/supabase-js'
 
 interface AuthState {
   user: User | null
@@ -19,8 +19,8 @@ interface AuthState {
 }
 
 // Error mapping function to convert Supabase errors to user-friendly messages
-const mapSupabaseError = (error: any): string => {
-  const errorMessage = error?.message || ''
+const mapSupabaseError = (error: SupabaseAuthError | Error | unknown): string => {
+  const errorMessage = error instanceof Error ? error.message : ''
   
   // Handle specific Supabase error messages
   if (errorMessage.includes('Invalid login credentials')) {
@@ -54,6 +54,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null })
     
     try {
+      const supabase = createClient()
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -73,6 +74,9 @@ export const useAuthStore = create<AuthState>((set) => ({
         email: data.user.email!,
         full_name: data.user.user_metadata?.full_name,
         avatar_url: data.user.user_metadata?.avatar_url,
+        created_at: data.user.created_at,
+        email_confirmed_at: data.user.email_confirmed_at,
+        user_metadata: data.user.user_metadata,
       }
       
       set({ 
@@ -81,7 +85,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         loading: false, 
         error: null 
       })
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({ 
         error: mapSupabaseError(error), 
         loading: false 
@@ -93,6 +97,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null })
     
     try {
+      const supabase = createClient()
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -112,6 +117,9 @@ export const useAuthStore = create<AuthState>((set) => ({
         email: data.user!.email!,
         full_name: data.user!.user_metadata?.full_name,
         avatar_url: data.user!.user_metadata?.avatar_url,
+        created_at: data.user!.created_at,
+        email_confirmed_at: data.user!.email_confirmed_at,
+        user_metadata: data.user!.user_metadata,
       }
       
       set({ 
@@ -120,7 +128,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         loading: false, 
         error: null 
       })
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({ 
         error: mapSupabaseError(error), 
         loading: false 
@@ -132,6 +140,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null })
     
     try {
+      const supabase = createClient()
       const { error } = await supabase.auth.signOut()
       
       if (error) {
@@ -148,7 +157,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         loading: false, 
         error: null 
       })
-    } catch (error: any) {
+    } catch (error: unknown) {
       set({ 
         error: mapSupabaseError(error), 
         loading: false 
@@ -160,6 +169,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true, error: null })
     
     try {
+      const supabase = createClient()
       const { data, error } = await supabase.auth.getSession()
       
       if (error) {
@@ -179,6 +189,9 @@ export const useAuthStore = create<AuthState>((set) => ({
           email: data.session.user.email!,
           full_name: data.session.user.user_metadata?.full_name,
           avatar_url: data.session.user.user_metadata?.avatar_url,
+          created_at: data.session.user.created_at,
+          email_confirmed_at: data.session.user.email_confirmed_at,
+          user_metadata: data.session.user.user_metadata,
         }
         
         set({ 
@@ -195,7 +208,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           error: null 
         })
       }
-    } catch (error: any) {
+    } catch {
       set({ 
         user: null, 
         session: null, 

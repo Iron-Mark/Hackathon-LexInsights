@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { Loader2 } from 'lucide-react'
 
 export default function AuthCallbackPage() {
@@ -12,6 +12,7 @@ export default function AuthCallbackPage() {
     const handleCallback = async () => {
       try {
         // Get the session from the URL hash
+        const supabase = createClient()
         const { data, error } = await supabase.auth.getSession()
 
         if (error) {

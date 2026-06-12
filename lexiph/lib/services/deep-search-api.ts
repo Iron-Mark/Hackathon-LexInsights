@@ -5,7 +5,15 @@
  * Performs enhanced search with additional context and related documents
  */
 
-const DEEP_SEARCH_API_URL = process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000'
+const USE_PROXY = process.env.NEXT_PUBLIC_USE_RAG_PROXY === 'true'
+
+const DEEP_SEARCH_API_URL = USE_PROXY
+  ? '/api/rag-proxy'
+  : process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000'
+
+function buildDeepSearchUrl(endpoint: string) {
+  return USE_PROXY ? `${DEEP_SEARCH_API_URL}?endpoint=${endpoint}` : `${DEEP_SEARCH_API_URL}${endpoint}`
+}
 
 export interface DeepSearchRequest {
   query: string
@@ -61,7 +69,7 @@ export async function performDeepSearch(params: DeepSearchRequest): Promise<Deep
     console.log('🔍 Starting deep search with PDF extraction...')
     
     // Call RAG API with use_deep_search flag enabled
-    const response = await fetch(`${DEEP_SEARCH_API_URL}/api/research/rag-summary`, {
+    const response = await fetch(buildDeepSearchUrl('/api/research/rag-summary'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

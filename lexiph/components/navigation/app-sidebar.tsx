@@ -32,6 +32,7 @@ export function AppSidebar() {
   const [showFilesDialog, setShowFilesDialog] = useState(false)
   const [showProfileDialog, setShowProfileDialog] = useState(false)
   const [showResourcesDialog, setShowResourcesDialog] = useState(false)
+  const avatarUrl = user?.avatar_url || user?.user_metadata?.avatar_url
 
   const handleNewChat = async () => {
     const { createChat } = useChatStore.getState()
@@ -154,11 +155,12 @@ export function AppSidebar() {
             aria-label="Profile"
             title="Profile"
           >
-            {(user as any)?.user_metadata?.avatar_url ? (
-              <img
-                src={(user as any).user_metadata.avatar_url}
-                alt="Profile"
-                className="h-10 w-10 rounded-full object-cover"
+            {avatarUrl ? (
+              <span
+                aria-label="Profile"
+                className="h-10 w-10 rounded-full bg-cover bg-center"
+                role="img"
+                style={{ backgroundImage: `url(${avatarUrl})` }}
               />
             ) : (
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-iris-500 to-iris-700">

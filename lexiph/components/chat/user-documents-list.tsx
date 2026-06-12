@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FileText, Download, Trash2, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
@@ -22,13 +22,7 @@ export function UserDocumentsList() {
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (user) {
-      fetchDocuments()
-    }
-  }, [user])
-
-  const fetchDocuments = async () => {
+  const fetchDocuments = useCallback(async () => {
     if (!user) return
 
     try {
@@ -49,7 +43,13 @@ export function UserDocumentsList() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
+
+  useEffect(() => {
+    if (user) {
+      fetchDocuments()
+    }
+  }, [user, fetchDocuments])
 
   const handleDownload = async (doc: Document) => {
     try {

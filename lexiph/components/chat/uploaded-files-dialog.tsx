@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { FileText, X, Download, Eye, Trash2, Calendar, FileIcon, Loader2 } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { FileText, Download, Eye, Trash2, Calendar, FileIcon, Loader2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
@@ -22,20 +22,22 @@ interface UploadedFile {
   storage_path: string
 }
 
+interface DocumentRow {
+  id: string
+  file_name: string
+  file_size: number
+  file_type: string
+  storage_path: string
+  created_at: string
+}
+
 export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogProps) {
   const { user } = useAuthStore()
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  // Load uploaded files from Supabase
-  useEffect(() => {
-    if (open && user) {
-      fetchFiles()
-    }
-  }, [open, user])
-
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     if (!user) return
 
     setLoading(true)
@@ -49,7 +51,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
 
       if (error) throw error
 
-      const formattedFiles: UploadedFile[] = (data || []).map((doc: any) => ({
+      const formattedFiles: UploadedFile[] = ((data || []) as DocumentRow[]).map((doc) => ({
         id: doc.id,
         name: doc.file_name,
         size: doc.file_size,
@@ -65,7 +67,14 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
     } finally {
       setLoading(false)
     }
-  }
+  }, [user])
+
+  // Load uploaded files from Supabase
+  useEffect(() => {
+    if (open && user) {
+      fetchFiles()
+    }
+  }, [open, user, fetchFiles])
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes'

@@ -1,11 +1,11 @@
 'use client'
 
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Mail, CheckCircle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/store/auth-store'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 
 function VerifyEmailContent() {
   const router = useRouter()
@@ -17,19 +17,20 @@ function VerifyEmailContent() {
   const [resent, setResent] = useState(false)
   const [error, setError] = useState('')
 
+  const checkEmailVerification = useCallback(async () => {
+    const supabase = createClient()
+    const { data } = await supabase.auth.getUser()
+    if (data.user?.email_confirmed_at) {
+      router.push('/chat')
+    }
+  }, [router])
+
   useEffect(() => {
     // If user is already verified, redirect to chat
     if (user?.email) {
       checkEmailVerification()
     }
-  }, [user])
-
-  const checkEmailVerification = async () => {
-    const { data } = await supabase.auth.getUser()
-    if (data.user?.email_confirmed_at) {
-      router.push('/chat')
-    }
-  }
+  }, [user, checkEmailVerification])
 
   const handleResendEmail = async () => {
     if (!email) return
@@ -39,6 +40,7 @@ function VerifyEmailContent() {
     setResent(false)
 
     try {
+      const supabase = createClient()
       const { error } = await supabase.auth.resend({
         type: 'signup',
         email: email,
@@ -50,7 +52,7 @@ function VerifyEmailContent() {
         setResent(true)
         setTimeout(() => setResent(false), 5000)
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.')
     } finally {
       setResending(false)
@@ -70,7 +72,7 @@ function VerifyEmailContent() {
           <h1 className="text-2xl font-bold">Check your email</h1>
           
           <p className="text-muted-foreground">
-            We've sent a verification link to:
+            We&apos;ve sent a verification link to:
           </p>
           
           <p className="font-semibold text-lg">
@@ -82,7 +84,7 @@ function VerifyEmailContent() {
             <ol className="list-decimal list-inside space-y-1 text-blue-800">
               <li>Open the email from LexInSight</li>
               <li>Click the verification link</li>
-              <li>You'll be redirected to the chat page</li>
+              <li>You&apos;ll be redirected to the chat page</li>
             </ol>
           </div>
 
@@ -127,7 +129,7 @@ function VerifyEmailContent() {
         </div>
 
         <p className="text-xs text-center text-muted-foreground">
-          Didn't receive the email? Check your spam folder or click resend.
+          Didn&apos;t receive the email? Check your spam folder or click resend.
         </p>
       </div>
     </div>

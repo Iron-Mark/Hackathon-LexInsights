@@ -3,6 +3,13 @@ export interface User {
   email: string
   full_name?: string
   avatar_url?: string
+  created_at?: string
+  email_confirmed_at?: string | null
+  user_metadata?: {
+    full_name?: string
+    name?: string
+    avatar_url?: string
+  }
 }
 
 export interface Message {
@@ -34,6 +41,7 @@ export interface Message {
 export interface Chat {
   id: string
   title: string
+  mode?: 'general' | 'compliance'
   created_at: string
   updated_at: string
   user_id: string

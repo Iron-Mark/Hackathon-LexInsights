@@ -9,6 +9,7 @@
  */
 
 import { ragSummary, healthCheck } from '../lib/api/rag-service'
+import fs from 'node:fs'
 
 // ANSI color codes for terminal output
 const colors = {
@@ -131,7 +132,6 @@ async function testDataPrivacyQuery() {
     console.log('Documents Found:', response.documents_found)
     
     // Save full response to file for inspection
-    const fs = require('fs')
     const outputPath = './rag-test-output.md'
     fs.writeFileSync(outputPath, response.summary)
     log(`\n✓ Full summary saved to: ${outputPath}`, 'green')

@@ -2,10 +2,10 @@
 
 > **AI-Powered Philippine Legal Compliance Assistant**
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/KpG782/lexiph)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/KpG782/lexiph)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Iron-Mark/Hackathon-LexInsights)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/Iron-Mark/Hackathon-LexInsights)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Next.js](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 
 LexInSight is an intelligent, AI-powered chat application designed to help individuals, businesses, and organizations navigate the complex landscape of Philippine legal compliance. Through advanced document analysis and conversational AI, LexInSight makes legal compliance accessible, understandable, and actionable.
@@ -132,8 +132,8 @@ LexInSight is a comprehensive legal compliance platform that combines:
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| **Next.js** | 16.0.1 | React framework with App Router |
-| **React** | 19.0 | UI library |
+| **Next.js** | 16.2.9 | React framework with App Router |
+| **React** | 19.2.7 | UI library |
 | **TypeScript** | 5.0+ | Type-safe development |
 | **Tailwind CSS** | 3.4+ | Utility-first styling |
 | **Framer Motion** | 11.0+ | Smooth animations |
@@ -186,10 +186,10 @@ Before you begin, ensure you have:
 
 ```bash
 # Clone the repository
-git clone https://github.com/KpG782/lexiph.git
+git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
 
 # Navigate to project directory
-cd lexiph/lexiph
+cd Hackathon-LexInsights/lexiph
 
 # Install dependencies
 npm install
@@ -211,8 +211,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/KpG782/lexiph.git
-cd lexiph/lexiph
+git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
+cd Hackathon-LexInsights/lexiph
 ```
 
 ### Step 2: Install Dependencies
@@ -245,15 +245,21 @@ This will install all required packages including:
 
 #### 3.3 Configure Environment Variables
 
-Create `.env.local` in the project root:
+Create `.env.local` in the app root (`lexiph`). Start from the template:
+
+```bash
+cp .env.example .env.local
+```
 
 ```env
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 
-# Optional: Service Role Key (for admin operations)
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+# RAG API Configuration
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
 ### Step 4: Database Setup

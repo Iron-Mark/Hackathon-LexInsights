@@ -13,6 +13,7 @@ import {
   SAMPLE_DRAFT,
   type RAGResponse,
   type DraftCheckerResponse,
+  type WebSocketEvent,
 } from '@/lib/services/rag-api'
 import {
   Loader2,
@@ -27,6 +28,7 @@ import {
 } from 'lucide-react'
 
 type TabType = 'rag' | 'deep-search' | 'draft-checker'
+type TestWebSocketEvent = WebSocketEvent & { timestamp: string }
 
 export function RAGTestComponent() {
   const [activeTab, setActiveTab] = useState<TabType>('rag')
@@ -48,7 +50,7 @@ export function RAGTestComponent() {
 
   // WebSocket State
   const [wsConnected, setWsConnected] = useState(false)
-  const [wsEvents, setWsEvents] = useState<any[]>([])
+  const [wsEvents, setWsEvents] = useState<TestWebSocketEvent[]>([])
   const [ragWs, setRagWs] = useState<RAGWebSocket | null>(null)
 
   // ============================================================================
@@ -172,27 +174,6 @@ export function RAGTestComponent() {
   // ============================================================================
   // RENDER HELPERS
   // ============================================================================
-
-  const renderFindingBadge = (status: 'green' | 'amber' | 'red', count: number) => {
-    const colors = {
-      green: 'bg-green-100 text-green-800 border-green-200',
-      amber: 'bg-amber-100 text-amber-800 border-amber-200',
-      red: 'bg-red-100 text-red-800 border-red-200',
-    }
-
-    const icons = {
-      green: <CheckCircle className="h-3 w-3" />,
-      amber: <AlertTriangle className="h-3 w-3" />,
-      red: <XCircle className="h-3 w-3" />,
-    }
-
-    return (
-      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium border ${colors[status]}`}>
-        {icons[status]}
-        {count}
-      </span>
-    )
-  }
 
   // ============================================================================
   // RENDER

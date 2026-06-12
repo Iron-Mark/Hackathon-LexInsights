@@ -15,11 +15,11 @@ import { useChatStore } from '@/lib/store/chat-store'
 import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { useSidebarStore } from '@/lib/store/sidebar-store'
 import type { Message } from '@/types'
+import type { DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { AlertCircle, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { DragDropOverlay } from './drag-drop-overlay'
-import { UploadedFilesList } from './uploaded-files-list'
 import { showToast } from '@/components/ui/toast'
 import { EmptyState } from './empty-state'
 import { CenteredInput } from './centered-input'
@@ -250,13 +250,13 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     clearError 
   } = useRAGStore()
   const { activeChat, messages: chatMessages, fetchMessages, loadingMessages } = useChatStore()
-  const { addFiles, uploadedFiles, canAddMore } = useFileUploadStore()
+  const { addFiles, canAddMore } = useFileUploadStore()
   
   const [showCanvas, setShowCanvas] = useState(false)
   const [canvasContent, setCanvasContent] = useState('')
   const [canvasFileName, setCanvasFileName] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
-  const [deepSearchResult, setDeepSearchResult] = useState<any>(null)
+  const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(null)
   const [currentQuery, setCurrentQuery] = useState<string>('')
   const [isTransitioning, setIsTransitioning] = useState(false)
 
@@ -352,7 +352,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   // Listen for query submissions
   useEffect(() => {
     const handleQuerySubmit = (event: Event) => {
-      const customEvent = event as CustomEvent
+      const customEvent = event as CustomEvent<{ query: string }>
       const { query } = customEvent.detail
       setCurrentQuery(query)
     }
@@ -367,7 +367,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   // Listen for file upload and deep search events
   useEffect(() => {
     const handleFileUpload = async (event: Event) => {
-      const customEvent = event as CustomEvent
+      const customEvent = event as CustomEvent<{ file: File; query: string }>
       const { file, query } = customEvent.detail
       
       console.log('File uploaded:', file.name, 'Query:', query)
@@ -400,7 +400,11 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
     // DEEP SEARCH EVENT HANDLER - This is where deep search results are processed
     const handleDeepSearchComplete = (event: Event) => {
-      const customEvent = event as CustomEvent
+      const customEvent = event as CustomEvent<{
+        query: string
+        result: DeepSearchResponse
+        file?: File
+      }>
       const { query, result, file } = customEvent.detail
       
       console.log('Deep search completed:', query, result)

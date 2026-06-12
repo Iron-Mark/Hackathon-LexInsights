@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef } from 'react'
 import { Send, Paperclip, X, Loader2, Sparkles } from 'lucide-react'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
 import { useRAGStore } from '@/lib/store/rag-store'
@@ -10,18 +10,6 @@ import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { ChatModeToggle } from './chat-mode-toggle'
 import { performDeepSearch } from '@/lib/services/deep-search-api'
 import { UploadedFilesList } from './uploaded-files-list'
-
-// Debounce utility
-function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout | null = null
-  return (...args: Parameters<T>) => {
-    if (timeout) clearTimeout(timeout)
-    timeout = setTimeout(() => func(...args), wait)
-  }
-}
 
 export function ChatInput() {
   const [message, setMessage] = useState('')
@@ -33,14 +21,6 @@ export function ChatInput() {
   const { isMobile, close } = useSidebarStore()
   const { uploadedFiles, clearFiles } = useFileUploadStore()
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  // Debounced submit for better UX
-  const debouncedSubmit = useCallback(
-    debounce(async (query: string, userId?: string) => {
-      await submitQuery(query, userId)
-    }, 500),
-    []
-  )
 
   const handleSend = async () => {
     if ((!message.trim() && !uploadedFile && uploadedFiles.length === 0) || isSending || loading) return

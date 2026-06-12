@@ -12,7 +12,7 @@ interface DragDropOverlayProps {
 
 export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayProps) {
   const [isDragging, setIsDragging] = useState(false)
-  const [dragCounter, setDragCounter] = useState(0)
+  const [, setDragCounter] = useState(0)
   const { setMode } = useChatModeStore()
 
   useEffect(() => {

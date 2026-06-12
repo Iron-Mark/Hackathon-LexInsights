@@ -2,7 +2,6 @@
 
 import { Clock, Trash2 } from 'lucide-react'
 import { useComplianceStore } from '@/lib/store/compliance-store'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 export function VersionHistorySidebar() {

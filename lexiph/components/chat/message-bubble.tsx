@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type ComponentProps } from 'react'
 import { Message } from '@/types'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -10,6 +10,17 @@ import { showToast } from '@/components/ui/toast'
 
 interface MessageBubbleProps {
   message: Message
+}
+
+type MarkdownCodeProps = ComponentProps<'code'> & {
+  inline?: boolean
+  node?: unknown
+}
+
+function stripMarkdownNode<T extends { node?: unknown }>(props: T): Omit<T, 'node'> {
+  const { node, ...domProps } = props
+  void node
+  return domProps
 }
 
 export function MessageBubble({ message }: MessageBubbleProps) {
@@ -33,7 +44,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       setCopied(true)
       showToast('Copied to clipboard', 'success')
       setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
+    } catch {
       showToast('Failed to copy', 'error')
     }
   }
@@ -51,7 +62,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
       showToast('Downloaded as Markdown', 'success')
-    } catch (error) {
+    } catch {
       showToast('Failed to download', 'error')
     }
   }
@@ -89,7 +100,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
       showToast('Downloaded as Word document', 'success')
-    } catch (error) {
+    } catch {
       showToast('Failed to download', 'error')
     }
   }
@@ -114,63 +125,65 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             remarkPlugins={[remarkGfm]}
             components={{
               // Headings
-              h1: ({ node, ...props }) => (
-                <h1 className="text-2xl font-bold text-slate-900 mt-6 mb-4 pb-2 border-b-2 border-slate-200" {...props} />
+              h1: (props) => (
+                <h1 className="text-2xl font-bold text-slate-900 mt-6 mb-4 pb-2 border-b-2 border-slate-200" {...stripMarkdownNode(props)} />
               ),
-              h2: ({ node, ...props }) => (
-                <h2 className="text-xl font-bold text-slate-800 mt-5 mb-3" {...props} />
+              h2: (props) => (
+                <h2 className="text-xl font-bold text-slate-800 mt-5 mb-3" {...stripMarkdownNode(props)} />
               ),
-              h3: ({ node, ...props }) => (
-                <h3 className="text-lg font-semibold text-slate-700 mt-4 mb-2" {...props} />
+              h3: (props) => (
+                <h3 className="text-lg font-semibold text-slate-700 mt-4 mb-2" {...stripMarkdownNode(props)} />
               ),
               // Paragraphs
-              p: ({ node, ...props }) => (
-                <p className="text-base text-slate-700 leading-relaxed my-3" {...props} />
+              p: (props) => (
+                <p className="text-base text-slate-700 leading-relaxed my-3" {...stripMarkdownNode(props)} />
               ),
               // Lists
-              ul: ({ node, ...props }) => (
-                <ul className="list-disc list-inside space-y-2 my-3 text-slate-700" {...props} />
+              ul: (props) => (
+                <ul className="list-disc list-inside space-y-2 my-3 text-slate-700" {...stripMarkdownNode(props)} />
               ),
-              ol: ({ node, ...props }) => (
-                <ol className="list-decimal list-inside space-y-2 my-3 text-slate-700" {...props} />
+              ol: (props) => (
+                <ol className="list-decimal list-inside space-y-2 my-3 text-slate-700" {...stripMarkdownNode(props)} />
               ),
-              li: ({ node, ...props }) => (
-                <li className="text-slate-700 leading-relaxed" {...props} />
+              li: (props) => (
+                <li className="text-slate-700 leading-relaxed" {...stripMarkdownNode(props)} />
               ),
               // Strong/Bold
-              strong: ({ node, ...props }) => (
-                <strong className="font-bold text-slate-900" {...props} />
+              strong: (props) => (
+                <strong className="font-bold text-slate-900" {...stripMarkdownNode(props)} />
               ),
               // Code
-              code: ({ node, inline, ...props }: any) => 
-                inline ? (
-                  <code className="bg-slate-100 text-iris-700 px-1.5 py-0.5 rounded text-sm font-mono" {...props} />
+              code: (props: MarkdownCodeProps) => {
+                const { inline, ...codeProps } = stripMarkdownNode(props)
+                return inline ? (
+                  <code className="bg-slate-100 text-iris-700 px-1.5 py-0.5 rounded text-sm font-mono" {...codeProps} />
                 ) : (
-                  <code className="block bg-slate-900 text-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto my-3" {...props} />
-                ),
+                  <code className="block bg-slate-900 text-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto my-3" {...codeProps} />
+                )
+              },
               // Links
-              a: ({ node, ...props }) => (
-                <a className="text-iris-600 hover:text-iris-700 underline font-medium" {...props} />
+              a: (props) => (
+                <a className="text-iris-600 hover:text-iris-700 underline font-medium" {...stripMarkdownNode(props)} />
               ),
               // Blockquotes
-              blockquote: ({ node, ...props }) => (
-                <blockquote className="border-l-4 border-iris-500 pl-4 py-2 my-3 italic text-slate-600 bg-slate-50 rounded-r" {...props} />
+              blockquote: (props) => (
+                <blockquote className="border-l-4 border-iris-500 pl-4 py-2 my-3 italic text-slate-600 bg-slate-50 rounded-r" {...stripMarkdownNode(props)} />
               ),
               // Horizontal rule
-              hr: ({ node, ...props }) => (
-                <hr className="my-6 border-slate-300" {...props} />
+              hr: (props) => (
+                <hr className="my-6 border-slate-300" {...stripMarkdownNode(props)} />
               ),
               // Tables
-              table: ({ node, ...props }) => (
+              table: (props) => (
                 <div className="overflow-x-auto my-4">
-                  <table className="min-w-full border-collapse border border-slate-300" {...props} />
+                  <table className="min-w-full border-collapse border border-slate-300" {...stripMarkdownNode(props)} />
                 </div>
               ),
-              th: ({ node, ...props }) => (
-                <th className="border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900" {...props} />
+              th: (props) => (
+                <th className="border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900" {...stripMarkdownNode(props)} />
               ),
-              td: ({ node, ...props }) => (
-                <td className="border border-slate-300 px-4 py-2 text-slate-700" {...props} />
+              td: (props) => (
+                <td className="border border-slate-300 px-4 py-2 text-slate-700" {...stripMarkdownNode(props)} />
               ),
             }}
           >

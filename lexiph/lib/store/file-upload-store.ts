@@ -107,17 +107,17 @@ export const useFileUploadStore = create<FileUploadStore>((set, get) => ({
         }
 
         // Save document metadata to database
-        const { error: dbError } = await (supabase as any)
+        const { error: dbError } = await supabase
           .from('documents')
           .insert({
             user_id: userId,
             chat_id: chatId,
             file_name: uploadedFile.file.name,
             file_size: uploadedFile.file.size,
-            file_type: uploadedFile.file.type,
-            storage_path: filePath,
-            status: 'completed'
-          })
+          file_type: uploadedFile.file.type,
+          storage_path: filePath,
+          status: 'completed'
+          } as never)
 
         if (dbError) {
           console.error('Database error:', dbError)

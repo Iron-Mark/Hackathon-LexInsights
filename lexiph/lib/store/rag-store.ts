@@ -226,7 +226,7 @@ export const useRAGStore = create<RAGStore>()(
               }
             }
           },
-          (error) => {
+          () => {
             console.error('WebSocket error, attempting reconnect in 5 seconds...')
             set({ 
               error: 'WebSocket connection lost. Reconnecting...',

@@ -25,7 +25,6 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
     isEditMode, 
     toggleEditMode, 
     getCurrentVersion, 
-    updateCurrentVersion,
     addVersion 
   } = useComplianceStore()
   

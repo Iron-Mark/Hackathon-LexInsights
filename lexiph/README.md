@@ -66,8 +66,8 @@ LexInsights is a modern web application that helps users understand and comply w
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd lexiph
+git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
+cd Hackathon-LexInsights/lexiph
 
 # Install dependencies
 npm install
@@ -86,8 +86,9 @@ Visit `http://localhost:3000` to see the application.
 
 ```env
 # RAG API Configuration
-NEXT_PUBLIC_RAG_API_URL=http://localhost:8000
-NEXT_PUBLIC_RAG_WS_URL=ws://localhost:8000
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
 
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url

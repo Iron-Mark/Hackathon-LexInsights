@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useSidebarStore } from '@/lib/store/sidebar-store'
 import { useChatStore } from '@/lib/store/chat-store'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { ChatContainer } from '@/components/chat/chat-container'
 import { ChatSidebar } from '@/components/chat/chat-sidebar'
 import { MobileOverlay } from '@/components/chat/mobile-overlay'
@@ -32,7 +32,7 @@ export default function ChatDetailPage() {
   
   const { user, loading } = useAuthStore()
   const { isOpen, isMobile, open, close, setIsMobile } = useSidebarStore()
-  const { chats, activeChat, selectChat } = useChatStore()
+  const { fetchChats } = useChatStore()
   const [checkingVerification, setCheckingVerification] = useState(true)
 
   // Responsive breakpoint detection
@@ -75,6 +75,7 @@ export default function ChatDetailPage() {
 
       if (user) {
         // Check if email is verified
+        const supabase = createClient()
         const { data } = await supabase.auth.getUser()
         
         if (data.user && !data.user.email_confirmed_at) {
@@ -89,16 +90,29 @@ export default function ChatDetailPage() {
     checkAuth()
   }, [user, loading, router])
 
-  // Load chat from URL parameter
+  // Load chat from URL parameter, including direct page refreshes.
   useEffect(() => {
-    if (!checkingVerification && chatId) {
-      // Check if chat exists
-      const chat = chats.find(c => c.id === chatId)
-      
+    if (checkingVerification || !user || !chatId) return
+
+    let cancelled = false
+
+    const loadChat = async () => {
+      let latestStore = useChatStore.getState()
+      let chat = latestStore.chats.find(c => c.id === chatId)
+
+      if (!chat) {
+        await fetchChats()
+      }
+
+      if (cancelled) return
+
+      latestStore = useChatStore.getState()
+      chat = latestStore.chats.find(c => c.id === chatId)
+
       if (chat) {
         // Select the chat if it's not already active
-        if (activeChat?.id !== chatId) {
-          selectChat(chatId)
+        if (latestStore.activeChat?.id !== chatId) {
+          latestStore.selectChat(chatId)
         }
       } else {
         // Chat not found, redirect to main chat page
@@ -106,7 +120,13 @@ export default function ChatDetailPage() {
         router.push('/chat')
       }
     }
-  }, [checkingVerification, chatId, chats, activeChat, selectChat, router])
+
+    loadChat()
+
+    return () => {
+      cancelled = true
+    }
+  }, [checkingVerification, user, chatId, fetchChats, router])
 
   // Show loading state while checking session or verification
   if (loading || checkingVerification) {

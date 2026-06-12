@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { FileText, X, File } from 'lucide-react'
+import { X } from 'lucide-react'
 import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { showToast } from '@/components/ui/toast'
 

@@ -115,7 +115,7 @@ export function LoginForm() {
       </form>
 
       <div className="text-center text-sm sm:text-base">
-        Don't have an account?{' '}
+        Don&apos;t have an account?{' '}
         <Link
           href="/auth/signup"
           className="text-primary hover:underline font-medium min-h-[44px] inline-flex items-center"

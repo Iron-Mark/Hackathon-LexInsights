@@ -23,11 +23,11 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
 
   if (!user) return null
 
-  const userMetadata = (user as any)?.user_metadata || {}
+  const userMetadata = user.user_metadata || {}
   const email = user.email || 'No email'
-  const fullName = userMetadata.full_name || userMetadata.name || 'User'
-  const avatarUrl = userMetadata.avatar_url
-  const createdAt = (user as any).created_at ? new Date((user as any).created_at).toLocaleDateString() : 'Unknown'
+  const fullName = user.full_name || userMetadata.full_name || userMetadata.name || 'User'
+  const avatarUrl = user.avatar_url || userMetadata.avatar_url
+  const createdAt = user.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -43,10 +43,11 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
           {/* Avatar and Name */}
           <div className="flex flex-col items-center text-center">
             {avatarUrl ? (
-              <img
-                src={avatarUrl}
-                alt="Profile"
-                className="h-24 w-24 rounded-full object-cover border-4 border-iris-100"
+              <span
+                aria-label="Profile"
+                className="h-24 w-24 rounded-full bg-cover bg-center border-4 border-iris-100"
+                role="img"
+                style={{ backgroundImage: `url(${avatarUrl})` }}
               />
             ) : (
               <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-iris-500 to-iris-700 border-4 border-iris-100">
@@ -79,7 +80,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
               <div className="flex-1">
                 <p className="text-xs text-slate-500 mb-0.5">Account Status</p>
                 <p className="text-sm text-slate-900">
-                  {(user as any).email_confirmed_at ? (
+                  {user.email_confirmed_at ? (
                     <span className="inline-flex items-center gap-1 text-green-600">
                       <span className="h-2 w-2 rounded-full bg-green-600"></span>
                       Verified

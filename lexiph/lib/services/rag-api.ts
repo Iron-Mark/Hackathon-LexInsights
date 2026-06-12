@@ -351,14 +351,14 @@ export async function checkDraftCheckerHealth(): Promise<HealthResponse> {
 export class RAGWebSocket {
   private ws: WebSocket | null = null
   private onMessage: ((event: WebSocketEvent) => void) | null = null
-  private onError: ((error: any) => void) | null = null
+  private onError: ((error: unknown) => void) | null = null
   private wsUrl: string
 
   constructor() {
     this.wsUrl = process.env.NEXT_PUBLIC_RAG_WS_URL || 'ws://localhost:8000'
   }
 
-  connect(onMessage: (event: WebSocketEvent) => void, onError?: (error: any) => void) {
+  connect(onMessage: (event: WebSocketEvent) => void, onError?: (error: unknown) => void) {
     this.onMessage = onMessage
     this.onError = onError || null
 
@@ -371,7 +371,7 @@ export class RAGWebSocket {
 
       this.ws.onmessage = (event) => {
         try {
-          const data = JSON.parse(event.data)
+          const data = JSON.parse(event.data) as WebSocketEvent
           this.onMessage?.(data)
         } catch (error) {
           console.error('WebSocket message parse error:', error)

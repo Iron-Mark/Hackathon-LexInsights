@@ -23,9 +23,19 @@ supabase-insert-mock-data.sql
 ```
 
 ### 4. Update .env.local
+
+Create it from the app-root template first:
+
+```bash
+cp .env.example .env.local
+```
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
 ### 5. Test

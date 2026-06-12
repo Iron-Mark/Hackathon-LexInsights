@@ -3,6 +3,23 @@
 import { create } from 'zustand'
 import { Chat, Message } from '@/types'
 import { createClient } from '@/lib/supabase/client'
+import type { RAGResponse } from '@/lib/services/rag-api'
+
+interface ChatMessagePreview {
+  id: string
+  content: string
+  created_at: string
+}
+
+interface ChatRow {
+  id: string
+  title: string
+  mode?: Chat['mode']
+  created_at: string
+  updated_at: string
+  user_id: string
+  messages?: ChatMessagePreview[]
+}
 
 interface ChatStore {
   // State
@@ -20,7 +37,7 @@ interface ChatStore {
   deleteChat: (id: string) => Promise<void>
   updateChatTitle: (id: string, title: string) => Promise<void>
   addMessage: (chatId: string, message: Omit<Message, 'id' | 'created_at'>) => Promise<void>
-  addRAGMessage: (query: string, response: any) => void
+  addRAGMessage: (query: string, response: RAGResponse) => void
 }
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -66,8 +83,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       if (error) throw error
       
       // Transform data to include message_count and last_message_preview
-      const transformedChats: Chat[] = (chats || []).map((chat: any) => {
-        const messages = (chat.messages as any[]) || []
+      const transformedChats: Chat[] = ((chats || []) as ChatRow[]).map((chat) => {
+        const messages = chat.messages || []
         const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null
         
         return {
@@ -136,14 +153,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           title: title || 'New Chat',
           user_id: user.id,
           mode: 'general'
-        } as any)
+        } as never)
         .select()
         .single()
       
       if (error) throw error
       
       const chatWithCount: Chat = {
-        ...(newChat as any),
+        ...(newChat as Chat),
         message_count: 0
       }
       
@@ -203,9 +220,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     try {
       const supabase = createClient()
       
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('chats')
-        .update({ title })
+        .update({ title } as never)
         .eq('id', id)
       
       if (error) throw error
@@ -236,23 +253,23 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     try {
       const supabase = createClient()
       
-      const { data: newMessage, error } = await (supabase as any)
+      const { data: newMessage, error } = await supabase
         .from('messages')
         .insert({
           chat_id: chatId,
           role: message.role,
           content: message.content,
           metadata: message.metadata || {}
-        })
+        } as never)
         .select()
         .single()
       
       if (error) throw error
       
       // Update chat's updated_at timestamp
-      await (supabase as any)
+      await supabase
         .from('chats')
-        .update({ updated_at: new Date().toISOString() })
+        .update({ updated_at: new Date().toISOString() } as never)
         .eq('id', chatId)
       
       set(state => {
@@ -273,7 +290,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         return {
           messages: {
             ...state.messages,
-            [chatId]: [...chatMessages, newMessage]
+            [chatId]: [...chatMessages, newMessage as Message]
           },
           chats: updatedChats
         }
@@ -285,7 +302,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   // Add RAG message to chat history
-  addRAGMessage: (query: string, response: any) => {
+  addRAGMessage: (query: string, response: RAGResponse) => {
     const activeChat = get().activeChat
     
     if (!activeChat) {
@@ -304,7 +321,13 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       role: 'assistant',
       content: response.summary,
       metadata: {
-        ragResponse: response,
+        ragResponse: {
+          status: response.status,
+          query: response.query,
+          summary: response.summary,
+          search_queries_used: response.search_queries_used || [],
+          documents_found: response.documents_found || 0,
+        },
         searchQueries: response.search_queries_used,
         documentCount: response.documents_found,
       }
