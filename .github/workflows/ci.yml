@@ -60,6 +60,12 @@ jobs:
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
+      - name: Markdown link checker self-test
+        run: npm run check:docs:self-test
+
+      - name: Markdown link check
+        run: npm run check:docs
+
       - name: Readiness self-test
         run: npm run check:readiness:self-test
 

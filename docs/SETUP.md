@@ -2,7 +2,7 @@
 
 Complete installation and configuration guide for setting up LexInSight locally.
 
-## ��� Prerequisites
+## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
@@ -31,7 +31,7 @@ Before you begin, ensure you have the following installed:
   - Required for `/test-rag`, chat RAG, deep search, and compliance analysis
   - If the hosted endpoint is unavailable, run a compatible backend locally and update `.env.local`
 
-## ��� Quick Start
+## Quick Start
 
 ### 1. Clone the Repository
 
@@ -166,7 +166,7 @@ The application will be available at:
 - **Local**: http://localhost:3000
 - **Network**: http://192.168.x.x:3000 (your local IP)
 
-## ���️ Detailed Setup
+## Detailed Setup
 
 ### Database Schema
 
@@ -271,7 +271,7 @@ All tables have RLS enabled with the following policies:
 | `NEXT_PUBLIC_USE_RAG_PROXY` | Route browser RAG calls through `/api/rag-proxy` | `true` |
 | `NEXT_PUBLIC_ANALYTICS_ID` | Analytics tracking ID | - |
 
-## ��� Development Workflow
+## Development Workflow
 
 ### Running the Application
 
@@ -287,6 +287,10 @@ npm start
 
 # Run linter
 npm run lint -- --max-warnings=0
+
+# Check repo-local Markdown links
+npm run check:docs:self-test
+npm run check:docs
 
 # Full local quality gate
 npm run check:local
@@ -348,7 +352,7 @@ lexiph/
 └── docs/            # Documentation
 ```
 
-## ��� Testing
+## Testing
 
 ### Manual Testing Checklist
 
@@ -382,7 +386,7 @@ After setup, verify the following features:
 - [ ] Update profile name
 - [ ] Update avatar (if implemented)
 
-## ��� Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -460,7 +464,7 @@ npm install
 npm run build
 ```
 
-## ��� Database Migrations
+## Database Migrations
 
 If database schema changes are needed:
 
@@ -469,12 +473,12 @@ If database schema changes are needed:
 3. Run migration in Supabase Dashboard SQL Editor
 4. Document changes in this file
 
-## ��� Production Deployment
+## Production Deployment
 
 For production deployment instructions, see:
 - [DEPLOYMENT.md](./DEPLOYMENT.md)
 
-## ��� Next Steps
+## Next Steps
 
 After successful setup:
 
@@ -493,7 +497,7 @@ After successful setup:
    - Customize the color scheme
    - Add a new feature
 
-## ��� Getting Help
+## Getting Help
 
 If you encounter issues not covered here:
 
@@ -502,7 +506,7 @@ If you encounter issues not covered here:
 3. Ask questions in [GitHub Issues](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
 4. Join our [Discord](https://discord.gg/lexinsight) (if available)
 
-## ��� Additional Resources
+## Additional Resources
 
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Supabase Documentation](https://supabase.com/docs)

@@ -28,7 +28,18 @@ For the full sequential local gate, run:
 npm run check:local
 ```
 
-This is the pre-push maintainer path. The methods below remain useful when debugging one specific readiness, deployment, proxy, or browser layer.
+This is the pre-push maintainer path. It includes Markdown link parser self-tests and repo-local Markdown link validation. The methods below remain useful when debugging one specific docs, readiness, deployment, proxy, or browser layer.
+
+### Markdown Link Check
+
+Run this after editing repo-local Markdown links:
+
+```bash
+npm run check:docs:self-test
+npm run check:docs
+```
+
+The self-test covers parser edge cases such as titled links, angle-bracket paths with spaces, reference links, HTML `href`/`src` attributes, and fenced code blocks. The check scans Markdown files from the repository root, skips generated dependency/build folders, and fails on broken local inline, reference, or HTML attribute links.
 
 ### Method 0: Readiness Check
 

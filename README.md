@@ -114,7 +114,7 @@ LexInSight is a comprehensive legal compliance platform that combines:
 - **Download & Delete** - Full control over your files
 - **Metadata Tracking** - File size, type, upload date
 - **Search & Filter** - Find documents quickly
-- **Version History** - Track document changes (coming soon)
+- **Version History** - Track compliance report edits in the browser
 
 ### 🎨 Modern User Experience
 
@@ -371,7 +371,7 @@ npm start
    - Read compliance score
    - Check compliant sections
    - Review recommendations
-   - Download report (coming soon)
+   - Download the report as Markdown or DOCX
 
 ### Managing Documents
 
@@ -694,20 +694,16 @@ Response: { success: boolean }
 - **Database Indexes** - Fast query performance
 - **Connection Pooling** - Efficient database connections
 
-### Performance Metrics
+### Performance Checks
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| First Contentful Paint | < 1.5s | ~1.2s |
-| Time to Interactive | < 3.0s | ~2.5s |
-| Largest Contentful Paint | < 2.5s | ~2.0s |
-| Cumulative Layout Shift | < 0.1 | ~0.05 |
+Measure the live deployment before publishing performance claims. Useful targets are First Contentful Paint, Largest Contentful Paint, Cumulative Layout Shift, route response times, and RAG proxy timeout behavior.
 
-### Monitoring
+### Operational Visibility
 
-- **Vercel Analytics** - Real-time performance monitoring
-- **Supabase Logs** - Database query performance
-- **Error Tracking** - Sentry integration (coming soon)
+- **Vercel deployment logs** - Build and serverless route failures
+- **Supabase dashboard logs** - Auth, storage, and database failures
+- **Readiness endpoint** - Non-secret Supabase and RAG blocker status through `/api/readiness`
+- **Deployment preflight** - Live commit, route, and Vercel linkage checks through `npm run check:deployment`
 
 ---
 
@@ -724,6 +720,8 @@ npm run check:local
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm audit --omit=dev
+npm run check:docs:self-test
+npm run check:docs
 
 # Readiness helper safety checks
 npm run check:readiness:self-test
@@ -744,6 +742,12 @@ npm run check:readiness
 # Deployment preflight, after production deploy
 npm run check:deployment -- --base-url https://lexinsights.vercel.app
 
+# Deployment ownership diagnostics, when Vercel linkage is unclear
+npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
+
+# Scoped deployment diagnostics, when the project should be under the team scope
+npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+
 # Live deployment freshness and backend readiness, after production deploy
 npm run check:live -- --base-url https://lexinsights.vercel.app
 
@@ -762,10 +766,12 @@ tests/
 
 ### Testing Tools
 
-- **Jest** - Test runner
-- **React Testing Library** - Component testing
-- **Playwright** - E2E testing
-- **MSW** - API mocking
+- **ESLint** - Zero-warning lint gate
+- **TypeScript** - Static type checking
+- **npm audit** - Production dependency audit
+- **Markdown link checks** - Parser self-test and repo-local documentation link validation
+- **Scripted self-tests** - Readiness, deployment preflight, and RAG proxy helper regression checks
+- **Playwright** - Browser smoke checks
 
 ---
 
@@ -798,6 +804,14 @@ tests/
    ```bash
    npm run check:deployment -- --base-url https://lexinsights.vercel.app
    ```
+
+   If Vercel does not show a project linked to `Iron-Mark/Hackathon-LexInsights` or the `lexinsights.vercel.app` alias, rerun with CLI ownership diagnostics:
+   ```bash
+   npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
+   npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+   ```
+
+   A preflight that reports `/api/version` or `/api/readiness` as `404` means the live URL is not serving this codebase yet, even if the GitHub push succeeded.
 
 ### Manual Deployment
 

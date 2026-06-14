@@ -1,13 +1,8 @@
-# LexInsight - Philippine Legal Compliance Assistant
+# LexInSight - Philippine Legal Compliance Assistant
 
 > AI-powered legal compliance assistant for Philippine legislation and regulations
 
-LexInsight is a modern web application that helps users understand and comply with Philippine laws through AI-powered document analysis and intelligent Q&A.
-# LexInsights - Philippine Legal Compliance Assistant
-
-> AI-powered legal compliance assistant for Philippine legislation and regulations
-
-LexInsights is a modern web application that helps users understand and comply with Philippine laws through AI-powered document analysis and intelligent Q&A.
+LexInSight is a modern web application that helps users understand and comply with Philippine laws through AI-powered document analysis and intelligent Q&A.
 
 ---
 
@@ -280,7 +275,14 @@ Run the full sequential local gate before pushing or release checks:
 npm run check:local
 ```
 
-It runs zero-warning lint, TypeScript, production audit, readiness self-test, deployment preflight self-test, RAG proxy self-test, production build, and Playwright smoke.
+It runs zero-warning lint, TypeScript, production audit, Markdown link checker self-test, Markdown link checks, readiness self-test, deployment preflight self-test, RAG proxy self-test, production build, and Playwright smoke.
+
+Run the docs check directly after editing Markdown links:
+
+```bash
+npm run check:docs:self-test
+npm run check:docs
+```
 
 ### Readiness Check
 
@@ -420,9 +422,9 @@ npm start
 
 1. Set up Supabase project
 2. Configure authentication
-3. Deploy RAG API server
+3. Restore or deploy a compatible RAG API server
 4. Update environment variables
-5. Deploy to Vercel/Netlify
+5. Deploy through Vercel with `lexiph` as the root directory
 
 ---
 

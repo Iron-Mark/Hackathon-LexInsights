@@ -562,6 +562,8 @@ npm ci
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm audit --omit=dev
+npm run check:docs:self-test
+npm run check:docs
 npm run check:readiness:self-test
 npm run check:deployment:self-test
 npm run check:rag-proxy:self-test
