@@ -118,15 +118,16 @@ function cmdExeCandidate(scriptPath, args) {
 function windowsVercelCommandCandidates(args, options = {}) {
   const env = options.env || process.env
   const exists = options.exists || existsSync
+  const joinPath = options.joinPath || join
   const userProfile = env.USERPROFILE || null
   const cmdWrappers = [
     // Prefer the profile-aware local wrapper used by this workstation's shell.
-    userProfile ? join(userProfile, '.local', 'bin', 'vercel-current.cmd') : null,
-    userProfile ? join(userProfile, '.local', 'bin', 'vercel.cmd') : null,
-    env.APPDATA ? join(env.APPDATA, 'npm', 'vercel.cmd') : null,
+    userProfile ? joinPath(userProfile, '.local', 'bin', 'vercel-current.cmd') : null,
+    userProfile ? joinPath(userProfile, '.local', 'bin', 'vercel.cmd') : null,
+    env.APPDATA ? joinPath(env.APPDATA, 'npm', 'vercel.cmd') : null,
   ].filter(Boolean)
   const windowsVercelJsCandidates = [
-    env.APPDATA ? join(env.APPDATA, 'npm', 'node_modules', 'vercel', 'dist', 'vc.js') : null,
+    env.APPDATA ? joinPath(env.APPDATA, 'npm', 'node_modules', 'vercel', 'dist', 'vc.js') : null,
   ].filter(Boolean)
 
   return [

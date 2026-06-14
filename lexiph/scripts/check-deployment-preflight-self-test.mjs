@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
+import { win32 } from 'node:path'
 
 import {
   collectProjectAliases,
@@ -135,6 +136,7 @@ const windowsVercelCandidates = windowsVercelCommandCandidates(['inspect', 'http
       'C:\\Users\\Admin\\.local\\bin\\vercel-current.cmd',
       'C:\\Users\\Admin\\AppData\\Roaming\\npm\\vercel.cmd',
     ].includes(path),
+  joinPath: win32.join,
 })
 assert.deepEqual(windowsVercelCandidates[0], {
   command: 'cmd.exe',
