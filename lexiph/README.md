@@ -337,7 +337,7 @@ When used, external dependency checks are skipped as non-blocking and the remain
 After pushing and deploying, verify local app-root assumptions, Vercel linkage, live version metadata, readiness route presence, and the public RAG proxy route:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app
+npm run check:deployment -- --base-url https://lexiph.vercel.app
 ```
 
 Add `--with-vercel-cli` when you also want to check whether the current shell has an authenticated Vercel CLI session, can see a Vercel project linked to `Iron-Mark/Hackathon-LexInsights`, can see a project with the live URL alias, and can inspect the deployment. The command does not print raw env values or provider secrets.
@@ -345,31 +345,31 @@ Add `--with-vercel-cli` when you also want to check whether the current shell ha
 Use `--discover-vercel-scopes` with the CLI check to print safe team-scope slugs available to the current Vercel account:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
+npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes
 ```
 
 If the project may live under a Vercel team, pass that team scope explicitly:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
 ```
 
 When the repo or live URL is still not visible, the preflight prints a non-critical `vercel.recovery_hint` with the next scoped command or provider action.
 
-If the Vercel CLI checks cannot see this repo or `lexinsights.vercel.app`, switch to the owning Vercel team/account or import the repository into a new Vercel project with Root Directory set to `lexiph`.
+If the Vercel CLI checks cannot see this repo or `lexiph.vercel.app`, switch to the owning Vercel team/account or import the repository into a new Vercel project with Root Directory set to `lexiph`.
 
 ### Live Deployment Check
 
 After pushing and deploying, verify that production is serving the expected commit:
 
 ```bash
-npm run check:live -- --base-url https://lexinsights.vercel.app
+npm run check:live -- --base-url https://lexiph.vercel.app
 ```
 
 Use `--source-only` when you only need to prove that Vercel is serving this repository commit while Supabase/RAG are still externally blocked:
 
 ```bash
-npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
+npm run check:live -- --base-url https://lexiph.vercel.app --source-only
 ```
 
 Full mode checks key routes, `GET /api/version`, `GET /api/readiness`, and the RAG proxy health path. It exits nonzero when production is stale, when the exposed commit does not match local `HEAD`, or when backend readiness is still blocked.

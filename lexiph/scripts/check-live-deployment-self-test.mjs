@@ -17,7 +17,7 @@ function assertNoSensitiveMarkers(value) {
 }
 
 assert.deepEqual(parseArgs([]), {
-  baseUrl: 'https://lexinsights.vercel.app',
+  baseUrl: 'https://lexiph.vercel.app',
   expectedSha: null,
   json: false,
   sourceOnly: false,
@@ -33,8 +33,8 @@ assert.equal(parseArgs(['--json']).json, true)
 assert.equal(parseArgs(['--source-only']).sourceOnly, true)
 
 assert.equal(safeUrl('not-a-url'), null)
-assert.equal(safeUrl('https://lexinsights.vercel.app')?.hostname, 'lexinsights.vercel.app')
-assert.equal(appendPath(safeUrl('https://lexinsights.vercel.app/app/'), '/api/version'), 'https://lexinsights.vercel.app/api/version')
+assert.equal(safeUrl('https://lexiph.vercel.app')?.hostname, 'lexiph.vercel.app')
+assert.equal(appendPath(safeUrl('https://lexiph.vercel.app/app/'), '/api/version'), 'https://lexiph.vercel.app/api/version')
 
 assert.equal(compareSha('5363fa7699f88f2bcb974c55a4d42a6b1c7e941f', '5363fa7'), true)
 assert.equal(compareSha('5363fa7', '5363fa7699f88f2bcb974c55a4d42a6b1c7e941f'), true)
@@ -46,7 +46,7 @@ const details = publicCheckDetails({
   name: 'app.version',
   details: {
     responseStatus: 200,
-    finalUrl: 'https://lexinsights.vercel.app/api/version',
+    finalUrl: 'https://lexiph.vercel.app/api/version',
     expectedSha: '5363fa7',
     actualSha: '5363fa7699f88f2bcb974c55a4d42a6b1c7e941f',
     commitMatches: true,

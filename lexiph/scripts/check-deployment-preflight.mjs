@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const DEFAULT_BASE_URL = 'https://lexinsights.vercel.app'
+const DEFAULT_BASE_URL = 'https://lexiph.vercel.app'
 const DEFAULT_TIMEOUT_MS = 20000
 
 function parseArgs(argv) {

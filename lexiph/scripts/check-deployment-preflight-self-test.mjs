@@ -36,7 +36,7 @@ const repoInfo = {
   slug: 'Iron-Mark/Hackathon-LexInsights',
 }
 const matchingProject = {
-  name: 'lexinsights',
+  name: 'lexiph',
   framework: 'nextjs',
   rootDirectory: 'lexiph',
   env: [
@@ -53,12 +53,12 @@ const matchingProject = {
   },
   latestDeployments: [
     {
-      alias: ['lexinsights.vercel.app', 'lexinsights-git-main.vercel.app'],
+      alias: ['lexiph.vercel.app', 'lexiph-git-main.vercel.app'],
     },
   ],
   targets: {
     production: {
-      alias: ['lexinsights.vercel.app'],
+      alias: ['lexiph.vercel.app'],
     },
   },
 }
@@ -78,7 +78,7 @@ const unrelatedProject = {
     },
   ],
 }
-const baseUrl = safeUrl('https://lexinsights.vercel.app')
+const baseUrl = safeUrl('https://lexiph.vercel.app')
 
 assert.deepEqual(parseGitHubRepoUrl('https://github.com/Iron-Mark/Hackathon-LexInsights.git'), repoInfo)
 assert.deepEqual(parseGitHubRepoUrl('git@github.com:Iron-Mark/Hackathon-LexInsights.git'), repoInfo)
@@ -92,7 +92,7 @@ assert.equal(parseArgs(['--base-url', 'https://example.com', '--timeout-ms', '30
 assert.deepEqual(
   parseArgs(['--with-vercel-cli', '--discover-vercel-scopes', '--vercel-scope', 'marksiazon-dev']),
   {
-    baseUrl: 'https://lexinsights.vercel.app',
+    baseUrl: 'https://lexiph.vercel.app',
     discoverVercelScopes: true,
     json: false,
     timeoutMs: 20000,
@@ -126,7 +126,7 @@ assertNoSensitiveMarkers(safeScopes)
 assert.equal(JSON.stringify(safeScopes).includes('do-not-include'), false)
 assert.equal(JSON.stringify(safeScopes).includes('private@example.com'), false)
 
-const windowsVercelCandidates = windowsVercelCommandCandidates(['inspect', 'https://lexinsights.vercel.app'], {
+const windowsVercelCandidates = windowsVercelCommandCandidates(['inspect', 'https://lexiph.vercel.app'], {
   env: {
     APPDATA: 'C:\\Users\\Admin\\AppData\\Roaming',
     USERPROFILE: 'C:\\Users\\Admin',
@@ -144,7 +144,7 @@ assert.deepEqual(windowsVercelCandidates[0], {
     '/d',
     '/s',
     '/c',
-    '"C:\\Users\\Admin\\.local\\bin\\vercel-current.cmd" inspect https://lexinsights.vercel.app',
+    '"C:\\Users\\Admin\\.local\\bin\\vercel-current.cmd" inspect https://lexiph.vercel.app',
   ],
 })
 assert.deepEqual(windowsVercelCandidates[1], {
@@ -153,15 +153,15 @@ assert.deepEqual(windowsVercelCandidates[1], {
     '/d',
     '/s',
     '/c',
-    '"C:\\Users\\Admin\\AppData\\Roaming\\npm\\vercel.cmd" inspect https://lexinsights.vercel.app',
+    '"C:\\Users\\Admin\\AppData\\Roaming\\npm\\vercel.cmd" inspect https://lexiph.vercel.app',
   ],
 })
 
-assert.deepEqual(collectProjectAliases(matchingProject), ['lexinsights.vercel.app', 'lexinsights-git-main.vercel.app'])
+assert.deepEqual(collectProjectAliases(matchingProject), ['lexiph.vercel.app', 'lexiph-git-main.vercel.app'])
 
 const summary = safeProjectSummary(matchingProject)
 assert.deepEqual(summary, {
-  name: 'lexinsights',
+  name: 'lexiph',
   framework: 'nextjs',
   rootDirectory: 'lexiph',
   git: {
@@ -169,7 +169,7 @@ assert.deepEqual(summary, {
     repo: 'Hackathon-LexInsights',
     productionBranch: 'main',
   },
-  aliases: ['lexinsights.vercel.app', 'lexinsights-git-main.vercel.app'],
+  aliases: ['lexiph.vercel.app', 'lexiph-git-main.vercel.app'],
 })
 assertNoSensitiveMarkers(summary)
 
@@ -193,7 +193,7 @@ assert.equal(discoveredScopeHint.name, 'vercel.recovery_hint')
 assert.equal(discoveredScopeHint.status, 'warn')
 assert.equal(
   discoveredScopeHint.details.command,
-  'npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev'
+  'npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev'
 )
 assert.equal(publicDetails(discoveredScopeHint).command, discoveredScopeHint.details.command)
 assertNoSensitiveMarkers(discoveredScopeHint)

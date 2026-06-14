@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const DEFAULT_BASE_URL = 'https://lexinsights.vercel.app'
+const DEFAULT_BASE_URL = 'https://lexiph.vercel.app'
 const DEFAULT_TIMEOUT_MS = 20000
 const ROUTES_TO_CHECK = [
   '/',
