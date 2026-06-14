@@ -12,6 +12,8 @@ LexInSight is maintained from the fork repository at `Iron-Mark/Hackathon-LexIns
   - `npx tsc --noEmit`
   - `npm audit --omit=dev`
   - `npm run build`
+  - `npm run smoke:browser`
+  - `npm run check:readiness` after backend env is available
 
 ## Maintenance Priorities
 
@@ -25,6 +27,7 @@ LexInSight is maintained from the fork repository at `Iron-Mark/Hackathon-LexIns
 
 - Confirm `main` is clean.
 - Run all required local gates.
-- Verify key routes: `/`, `/auth/login`, `/chat`, `/test-rag`.
+- Verify key routes: `/`, `/auth/login`, `/chat`, `/documents`, `/test-rag`.
+- Confirm GitHub Actions CI is green after push.
 - Commit with a clear Conventional Commit message.
 - Push to `origin/main`.

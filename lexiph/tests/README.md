@@ -22,7 +22,40 @@ Use `http://localhost:8000` and `ws://localhost:8000` only when running a compat
 
 ## Testing Methods
 
-### Method 1: Browser-Based Test Page
+### Method 0: Readiness Check
+
+Run this before claiming a true backend E2E pass:
+
+```bash
+npm run check:readiness
+```
+
+When the app is running locally, include route checks:
+
+```bash
+npm run dev -- -p 3000
+npm run check:readiness -- --base-url http://localhost:3000
+```
+
+The command prints non-secret status for Supabase env/DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked.
+
+### Method 1: Browser Smoke
+
+Run focused Playwright checks for public pages, protected-route redirects, and the readiness endpoint response shape:
+
+```bash
+npm run smoke:browser
+```
+
+By default, Playwright starts the Next.js dev server on port `3000`. To test a running app or a deployed URL, pass `PLAYWRIGHT_BASE_URL`:
+
+```powershell
+$env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
+```
+
+Browser smoke proves route behavior and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
+
+### Method 2: Browser-Based Test Page
 
 1. Start your Next.js development server:
    ```bash
@@ -41,7 +74,7 @@ Use `http://localhost:8000` and `ws://localhost:8000` only when running a compat
    - Response metadata display
    - Full summary preview
 
-### Method 2: Node.js Test Script
+### Method 3: Node.js Test Script
 
 1. Install dependencies (if not already installed):
    ```bash
@@ -60,7 +93,7 @@ Use `http://localhost:8000` and `ws://localhost:8000` only when running a compat
    - Save full responses to files
    - Show success/failure summary
 
-### Method 3: Direct API Testing with cURL
+### Method 4: Direct API Testing with cURL
 
 Test the health endpoint:
 ```bash
@@ -75,7 +108,7 @@ curl -X POST https://devkada.resqlink.org/api/research/rag-summary \
   --max-time 300
 ```
 
-### Method 4: Using the Chat Interface
+### Method 5: Using the Chat Interface
 
 1. Start the development server
 2. Navigate to `/chat`

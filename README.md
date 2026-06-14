@@ -716,17 +716,18 @@ Response: { success: boolean }
 ### Run Tests
 
 ```bash
-# Unit tests
-npm test
+# App gates
+cd lexiph
+npm run lint -- --max-warnings=0
+npx tsc --noEmit
+npm audit --omit=dev
+npm run build
 
-# Integration tests
-npm run test:integration
+# Browser smoke
+npm run smoke:browser
 
-# E2E tests
-npm run test:e2e
-
-# Coverage report
-npm run test:coverage
+# Backend readiness, after Supabase and RAG env are reachable
+npm run check:readiness
 ```
 
 ### Test Structure

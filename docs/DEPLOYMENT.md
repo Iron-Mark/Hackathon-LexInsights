@@ -542,76 +542,28 @@ export const event = ({ action, category, label, value }) => {
 
 ### GitHub Actions
 
-Create `.github/workflows/deploy.yml`:
+The repository includes `.github/workflows/ci.yml` for code-quality gates on push and pull request events. It runs from the `lexiph` app root.
 
 ```yaml
-name: Deploy to Production
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: |
-          cd lexiph
-          npm ci
-
-      - name: Run linter
-        run: npm run lint
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build
-        run: npm run build
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID }}
-          vercel-project-id: ${{ secrets.PROJECT_ID }}
-          vercel-args: '--prod'
+npm ci
+npm run lint -- --max-warnings=0
+npx tsc --noEmit
+npm audit --omit=dev
+npm run build
+npm run smoke:browser
 ```
+
+Production deployment is still handled by Vercel/Git integration, not by a repo-owned deploy workflow. Keep `npm run check:readiness` as the live backend gate after Supabase and RAG environment values point to reachable services.
 
 ## 🚦 Health Checks
 
-Create health check endpoint:
+Use the runtime readiness endpoint:
 
-```typescript
-// app/api/health/route.ts
-export async function GET() {
-  const health = {
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV
-  }
-
-  return Response.json(health)
-}
+```bash
+curl https://lexinsights.vercel.app/api/readiness
 ```
+
+The endpoint returns `200` only when critical Supabase DNS/env, direct RAG health, and RAG proxy health checks pass. It returns `503` with component-level blocker details while an external backend is down.
 
 ## 📈 Performance Optimization
 

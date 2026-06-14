@@ -272,6 +272,38 @@ Comprehensive documentation is available in the `/docs` folder:
 
 ## 🧪 Testing
 
+### Readiness Check
+
+Run the non-secret backend readiness check before claiming a full E2E pass:
+
+```bash
+npm run check:readiness
+```
+
+When the local app is running, include route and proxy checks:
+
+```bash
+npm run check:readiness -- --base-url http://localhost:3000
+```
+
+The app also exposes `GET /api/readiness` for live or local runtime checks. It returns `200` only when critical Supabase DNS/env, direct RAG health, and RAG proxy health checks pass; otherwise it returns `503` with component-level blocker details.
+
+### Browser Smoke
+
+Run the Playwright smoke gate for public routes, protected-route redirects, and readiness JSON shape:
+
+```bash
+npm run smoke:browser
+```
+
+To test an already-running app or live deployment:
+
+```powershell
+$env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
+```
+
+Browser smoke proves route behavior and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
+
 ### Browser Testing
 
 Visit the test page:

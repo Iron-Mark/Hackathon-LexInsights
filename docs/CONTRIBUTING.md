@@ -67,10 +67,14 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 4. **Test Your Changes**
    ```bash
-   npm run lint
+   npm run lint -- --max-warnings=0
+   npx tsc --noEmit
+   npm audit --omit=dev
    npm run build
-   npm test
+   npm run smoke:browser
    ```
+
+   Run `npm run check:readiness` only when Supabase and RAG environment values point to reachable services. It is the backend E2E readiness gate, not a generic offline test.
 
 5. **Commit Your Changes**
    ```bash

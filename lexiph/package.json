@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:readiness": "node scripts/check-readiness.mjs",
+    "smoke:browser": "playwright test"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",
@@ -30,6 +32,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.24",
     "@types/react": "^19",

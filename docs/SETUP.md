@@ -286,7 +286,7 @@ npm run build
 npm start
 
 # Run linter
-npm run lint
+npm run lint -- --max-warnings=0
 ```
 
 ### Development Tools
@@ -306,7 +306,7 @@ Code linting is configured with Next.js rules:
 
 ```bash
 # Run linter
-npm run lint
+npm run lint -- --max-warnings=0
 
 # Fix auto-fixable issues
 npm run lint -- --fix
