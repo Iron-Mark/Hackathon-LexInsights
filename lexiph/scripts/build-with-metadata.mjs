@@ -5,6 +5,16 @@ const projectRoot = process.cwd()
 const nextBinary = join(projectRoot, 'node_modules', 'next', 'dist', 'bin', 'next')
 
 function detectCommitSha() {
+  try {
+    return execFileSync('git', ['rev-parse', 'HEAD'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 5_000,
+    }).trim()
+  } catch {
+    // fall through to environment fallbacks if git is unavailable in the build environment
+  }
+
   if (process.env.NEXT_PUBLIC_APP_COMMIT_SHA?.trim()) {
     return process.env.NEXT_PUBLIC_APP_COMMIT_SHA.trim()
   }
@@ -21,15 +31,7 @@ function detectCommitSha() {
     return process.env.COMMIT_SHA.trim()
   }
 
-  try {
-    return execFileSync('git', ['rev-parse', 'HEAD'], {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'pipe'],
-      timeout: 5_000,
-    }).trim()
-  } catch {
-    return null
-  }
+  return null
 }
 
 const buildSha = detectCommitSha()
