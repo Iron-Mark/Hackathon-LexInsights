@@ -74,3 +74,13 @@ export function getProxyFailure(error) {
     detail,
   }
 }
+
+export function summarizeProxyLogDetail(value) {
+  const normalized = String(value || '').replace(/\s+/g, ' ').trim()
+
+  if (!normalized) {
+    return 'empty upstream error body'
+  }
+
+  return normalized.length > 200 ? `${normalized.slice(0, 197)}...` : normalized
+}

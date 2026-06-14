@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 const protectedRoutes = ['/chat', '/documents']
+const isManagedLocalWebServer = !process.env.PLAYWRIGHT_BASE_URL
 
 test.describe('LexInSight smoke checks', () => {
   test('public entry routes render', async ({ page }) => {
@@ -24,7 +25,10 @@ test.describe('LexInSight smoke checks', () => {
   }
 
   test('readiness endpoint exposes backend blocker state without secrets', async ({ request }) => {
-    const response = await request.get('/api/readiness?timeoutMs=2000')
+    const target = isManagedLocalWebServer
+      ? '/api/readiness?timeoutMs=2000&externalChecks=skip'
+      : '/api/readiness?timeoutMs=2000'
+    const response = await request.get(target)
     const body = await response.json()
 
     expect([200, 503]).toContain(response.status())
@@ -49,6 +53,20 @@ test.describe('LexInSight smoke checks', () => {
       'rag.direct_health',
       'rag.proxy_health',
     ]))
+
+    if (isManagedLocalWebServer) {
+      expect(response.status()).toBe(503)
+
+      for (const name of ['supabase.dns', 'rag.dns', 'rag.direct_health', 'rag.proxy_health']) {
+        expect(body.checks.find((check: { name: string }) => check.name === name)).toEqual(
+          expect.objectContaining({
+            name,
+            status: 'skip',
+            critical: true,
+          })
+        )
+      }
+    }
 
     const anonKeyFormatCheck = body.checks.find(
       (check: { name: string }) => check.name === 'supabase.anon_key_format'
@@ -101,9 +119,26 @@ test.describe('LexInSight smoke checks', () => {
     expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
   })
 
-  test('RAG proxy returns structured blocker errors without secrets', async ({ request }) => {
-    const response = await request.get('/api/rag-proxy?endpoint=/api/research/health&timeoutMs=1000')
+  test('RAG proxy handles same-origin upstream responses without secrets', async ({ request }) => {
+    const endpoint = isManagedLocalWebServer ? '/api/version?expectedSha=proxy-smoke' : '/api/research/health'
+    const response = await request.get(`/api/rag-proxy?endpoint=${encodeURIComponent(endpoint)}&timeoutMs=1000`)
     const body = await response.json()
+
+    if (isManagedLocalWebServer) {
+      expect(response.status()).toBe(200)
+      expect(body).toEqual(
+        expect.objectContaining({
+          app: 'LexInSight',
+          expected: expect.objectContaining({
+            commitSha: 'proxy-smoke',
+            matches: expect.any(Boolean),
+          }),
+        })
+      )
+      expect(JSON.stringify(body)).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+      expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
+      return
+    }
 
     expect([200, 502, 504]).toContain(response.status())
 

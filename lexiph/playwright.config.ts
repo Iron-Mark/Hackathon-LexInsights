@@ -18,6 +18,10 @@ export default defineConfig({
     ? undefined
     : {
         command: 'npm run dev -- -H 127.0.0.1 -p 3100',
+        env: {
+          NEXT_PUBLIC_RAG_API_URL: baseURL,
+          NEXT_PUBLIC_USE_RAG_PROXY: 'true',
+        },
         url: baseURL,
         reuseExistingServer: false,
         timeout: 120_000,

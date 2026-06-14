@@ -1,7 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { 
   queryRAG, 
   checkRAGHealth, 
@@ -369,6 +369,7 @@ export const useRAGStore = create<RAGStore>()(
     }),
     {
       name: 'rag-storage',
+      storage: createJSONStorage(() => window.localStorage),
       partialize: (state) => ({
         queryHistory: state.queryHistory
       })

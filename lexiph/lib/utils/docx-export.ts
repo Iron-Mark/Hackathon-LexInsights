@@ -1,5 +1,3 @@
-import { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Packer } from 'docx'
-
 interface DocxExportOptions {
   content: string
   fileName: string
@@ -11,8 +9,9 @@ interface DocxExportOptions {
  * Handles basic markdown syntax: headers, bold, lists, etc.
  */
 export async function exportToDocx({ content, fileName, title }: DocxExportOptions): Promise<void> {
+  const { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Packer } = await import('docx')
   const lines = content.split('\n')
-  const paragraphs: Paragraph[] = []
+  const paragraphs: InstanceType<typeof Paragraph>[] = []
 
   // Add title if provided
   if (title) {
@@ -165,7 +164,7 @@ export async function exportToDocx({ content, fileName, title }: DocxExportOptio
     }
     // Regular paragraphs with inline formatting
     else {
-      const children: TextRun[] = []
+      const children: InstanceType<typeof TextRun>[] = []
       let currentText = ''
       let isBold = false
       

@@ -13,6 +13,7 @@ import {
   safeUrl,
   vercelRecoveryHintCheck,
   vercelProjectVisibilityChecks,
+  windowsVercelCommandCandidates,
 } from './check-deployment-preflight.mjs'
 
 function getCheck(checks, name) {
@@ -123,6 +124,36 @@ assert.deepEqual(safeScopes, [{ slug: 'marksiazon-dev', current: true }])
 assertNoSensitiveMarkers(safeScopes)
 assert.equal(JSON.stringify(safeScopes).includes('do-not-include'), false)
 assert.equal(JSON.stringify(safeScopes).includes('private@example.com'), false)
+
+const windowsVercelCandidates = windowsVercelCommandCandidates(['inspect', 'https://lexinsights.vercel.app'], {
+  env: {
+    APPDATA: 'C:\\Users\\Admin\\AppData\\Roaming',
+    USERPROFILE: 'C:\\Users\\Admin',
+  },
+  exists: (path) =>
+    [
+      'C:\\Users\\Admin\\.local\\bin\\vercel-current.cmd',
+      'C:\\Users\\Admin\\AppData\\Roaming\\npm\\vercel.cmd',
+    ].includes(path),
+})
+assert.deepEqual(windowsVercelCandidates[0], {
+  command: 'cmd.exe',
+  args: [
+    '/d',
+    '/s',
+    '/c',
+    '"C:\\Users\\Admin\\.local\\bin\\vercel-current.cmd" inspect https://lexinsights.vercel.app',
+  ],
+})
+assert.deepEqual(windowsVercelCandidates[1], {
+  command: 'cmd.exe',
+  args: [
+    '/d',
+    '/s',
+    '/c',
+    '"C:\\Users\\Admin\\AppData\\Roaming\\npm\\vercel.cmd" inspect https://lexinsights.vercel.app',
+  ],
+})
 
 assert.deepEqual(collectProjectAliases(matchingProject), ['lexinsights.vercel.app', 'lexinsights-git-main.vercel.app'])
 

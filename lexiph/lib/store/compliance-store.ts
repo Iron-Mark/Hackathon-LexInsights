@@ -1,7 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 export interface ComplianceVersion {
   id: string
@@ -100,6 +100,7 @@ export const useComplianceStore = create<ComplianceStore>()(
     }),
     {
       name: 'compliance-storage',
+      storage: createJSONStorage(() => window.localStorage),
     }
   )
 )

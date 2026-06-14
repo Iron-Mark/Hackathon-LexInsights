@@ -56,7 +56,7 @@ npm run dev -- -p 3000
 npm run check:readiness -- --base-url http://localhost:3000
 ```
 
-The command prints non-secret status for Supabase env/key checks, Supabase DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key. For fast route-shape probes, the HTTP endpoint also accepts `/api/readiness?timeoutMs=2000`; that timeout is forwarded to the RAG proxy health call so blocked upstream checks return quickly with structured `502` or `504` errors. RAG proxy `endpoint` values must stay on the configured RAG API origin.
+The command prints non-secret status for Supabase env/key checks, Supabase DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key. For fast backend probes, the HTTP endpoint also accepts `/api/readiness?timeoutMs=2000`; that timeout is forwarded to the RAG proxy health call so blocked upstream checks return quickly with structured `502` or `504` errors. For browser route-shape smoke only, `/api/readiness?externalChecks=skip` skips Supabase DNS and RAG health fetches but keeps those checks critical and skipped, so it never proves backend E2E readiness. RAG proxy `endpoint` values must stay on the configured RAG API origin.
 
 ### Method 1: Readiness Helper Self-Test
 
@@ -96,7 +96,7 @@ Run this after changing RAG proxy timeout, endpoint-origin, or error-classificat
 npm run check:rag-proxy:self-test
 ```
 
-The self-test is offline and deterministic. It covers timeout clamping, same-origin endpoint resolution, cross-origin endpoint rejection, upstream timeout classification, upstream fetch failure classification, and secret-safe helper output.
+The self-test is offline and deterministic. It covers timeout clamping, same-origin endpoint resolution, cross-origin endpoint rejection, upstream timeout classification, upstream fetch failure classification, bounded upstream error log summaries, and secret-safe helper output.
 
 ### Method 4: Deployment Preflight
 
@@ -152,7 +152,7 @@ By default, Playwright starts its own Next.js dev server on `127.0.0.1:3100` so 
 $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
 ```
 
-Browser smoke proves route behavior, version metadata, and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
+Browser smoke proves route behavior, version metadata, readiness response shape, and RAG proxy same-origin handling. In the default managed-local run, Playwright uses `/api/readiness?externalChecks=skip` and points `NEXT_PUBLIC_RAG_API_URL` at its own dev server so smoke does not depend on external Supabase or RAG availability. Full backend E2E still requires `npm run check:readiness` to pass against real Supabase and RAG services.
 
 ### Method 7: Browser-Based Test Page
 

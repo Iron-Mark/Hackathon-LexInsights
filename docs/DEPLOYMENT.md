@@ -623,7 +623,7 @@ curl https://lexinsights.vercel.app/api/readiness
 
 The endpoint returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass. It returns `503` with component-level blocker details while an external backend is down. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key.
 
-For a faster operator probe while an upstream backend is known to be unavailable, call `/api/readiness?timeoutMs=2000`. The readiness route forwards that timeout to the RAG proxy health call; proxy upstream timeouts return structured `504` errors, upstream connection failures return structured `502` errors, and proxy `endpoint` values must remain on the configured RAG API origin.
+For a faster operator probe while an upstream backend is known to be unavailable, call `/api/readiness?timeoutMs=2000`. The readiness route forwards that timeout to the RAG proxy health call; proxy upstream timeouts return structured `504` errors, upstream connection failures return structured `502` errors, and proxy `endpoint` values must remain on the configured RAG API origin. Browser route-shape smoke may call `/api/readiness?externalChecks=skip`; skipped external checks remain critical, so that mode is not a backend E2E pass.
 
 ## 📈 Performance Optimization
 

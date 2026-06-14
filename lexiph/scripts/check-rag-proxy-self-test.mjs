@@ -11,6 +11,7 @@ import {
   getProxyFailure,
   getProxyTimeoutMs,
   getProxyUpstream,
+  summarizeProxyLogDetail,
 } from '../lib/services/rag-proxy-helpers.mjs'
 
 function params(value) {
@@ -93,6 +94,17 @@ assert.deepEqual(getProxyFailure('unknown'), {
   type: 'proxy_error',
   detail: 'Failed to fetch from RAG API',
 })
+
+const summarizedHtml = summarizeProxyLogDetail(`<!DOCTYPE html>
+<html>${'x'.repeat(500)}</html>`)
+assert.equal(summarizedHtml.includes('\n'), false)
+assert.equal(summarizedHtml.length <= 200, true)
+const summarizedEndpoint = summarizeProxyLogDetail(`/api/research/health
+X-Injected: ${'x'.repeat(500)}`)
+assert.equal(summarizedEndpoint.includes('\n'), false)
+assert.equal(summarizedEndpoint.includes('X-Injected'), true)
+assert.equal(summarizedEndpoint.length <= 200, true)
+assert.equal(summarizeProxyLogDetail(''), 'empty upstream error body')
 
 assertNoSecretMarkers({
   defaultUpstream,

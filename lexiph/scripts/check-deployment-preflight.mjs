@@ -94,24 +94,61 @@ function readJsonFile(path) {
   }
 }
 
+function quoteCmdArg(value) {
+  const text = String(value)
+
+  if (!text) {
+    return '""'
+  }
+
+  if (/^[A-Za-z0-9_./:=@-]+$/.test(text)) {
+    return text
+  }
+
+  return `"${text.replaceAll('"', '""')}"`
+}
+
+function cmdExeCandidate(scriptPath, args) {
+  return {
+    command: 'cmd.exe',
+    args: ['/d', '/s', '/c', [quoteCmdArg(scriptPath), ...args.map(quoteCmdArg)].join(' ')],
+  }
+}
+
+function windowsVercelCommandCandidates(args, options = {}) {
+  const env = options.env || process.env
+  const exists = options.exists || existsSync
+  const userProfile = env.USERPROFILE || null
+  const cmdWrappers = [
+    // Prefer the profile-aware local wrapper used by this workstation's shell.
+    userProfile ? join(userProfile, '.local', 'bin', 'vercel-current.cmd') : null,
+    userProfile ? join(userProfile, '.local', 'bin', 'vercel.cmd') : null,
+    env.APPDATA ? join(env.APPDATA, 'npm', 'vercel.cmd') : null,
+  ].filter(Boolean)
+  const windowsVercelJsCandidates = [
+    env.APPDATA ? join(env.APPDATA, 'npm', 'node_modules', 'vercel', 'dist', 'vc.js') : null,
+  ].filter(Boolean)
+
+  return [
+    ...cmdWrappers.filter((candidate) => exists(candidate)).map((candidate) => cmdExeCandidate(candidate, args)),
+    { command: 'cmd.exe', args: ['/d', '/s', '/c', ['vercel', ...args.map(quoteCmdArg)].join(' ')] },
+    ...windowsVercelJsCandidates
+      .filter((candidate) => exists(candidate))
+      .map((candidate) => ({ command: process.execPath, args: [candidate, ...args] })),
+  ]
+}
+
 function runCommand(command, args, timeoutMs = 10000) {
-  const windowsVercelJsCandidates =
-    process.platform === 'win32' && command === 'vercel'
-      ? [
-          process.env.APPDATA ? join(process.env.APPDATA, 'npm', 'node_modules', 'vercel', 'dist', 'vc.js') : null,
-        ].filter(Boolean)
-      : []
   const candidates =
-    process.platform === 'win32'
-      ? [
-          { command: command, args },
-          { command: `${command}.cmd`, args },
-          { command: `${command}.exe`, args },
-          ...windowsVercelJsCandidates
-            .filter((candidate) => existsSync(candidate))
-            .map((candidate) => ({ command: process.execPath, args: [candidate, ...args] })),
-        ]
-      : [{ command, args }]
+    process.platform === 'win32' && command === 'vercel'
+      ? windowsVercelCommandCandidates(args)
+      : process.platform === 'win32'
+        ? [
+            { command: command, args },
+            { command: `${command}.cmd`, args },
+            { command: `${command}.exe`, args },
+          ]
+        : [{ command, args }]
   let lastError = null
 
   for (const candidate of candidates) {
@@ -876,6 +913,7 @@ export {
   safeUrl,
   vercelRecoveryHintCheck,
   vercelProjectVisibilityChecks,
+  windowsVercelCommandCandidates,
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

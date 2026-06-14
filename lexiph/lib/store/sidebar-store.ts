@@ -1,7 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 interface SidebarStore {
   // State
@@ -40,6 +40,7 @@ export const useSidebarStore = create<SidebarStore>()(
     }),
     {
       name: 'sidebar-storage', // localStorage key
+      storage: createJSONStorage(() => window.localStorage),
       partialize: (state) => ({ isOpen: state.isOpen }) // Only persist isOpen state
     }
   )

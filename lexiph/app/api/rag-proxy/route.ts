@@ -9,6 +9,7 @@ import {
   getProxyFailure,
   getProxyTimeoutMs,
   getProxyUpstream,
+  summarizeProxyLogDetail,
 } from '../../../lib/services/rag-proxy-helpers.mjs'
 
 const RAG_API_URL = process.env.NEXT_PUBLIC_RAG_API_URL || DEFAULT_RAG_API_URL
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    console.log(`[RAG Proxy] POST ${upstream.upstreamUrl}`)
+    console.log(`[RAG Proxy] POST ${summarizeProxyLogDetail(upstream.endpoint)}`)
 
     const response = await fetch(upstream.upstreamUrl, {
       method: 'POST',
@@ -64,7 +65,9 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await readUpstreamError(response)
-      console.error(`[RAG Proxy] Error ${response.status}:`, errorText)
+      console.error(
+        `[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}: ${summarizeProxyLogDetail(errorText)}`
+      )
       return noStoreJson(
         {
           detail: errorText || 'Backend request failed',
@@ -122,7 +125,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log(`[RAG Proxy] GET ${upstream.upstreamUrl}`)
+    console.log(`[RAG Proxy] GET ${summarizeProxyLogDetail(upstream.endpoint)}`)
 
     const response = await fetch(upstream.upstreamUrl, {
       method: 'GET',
@@ -134,7 +137,9 @@ export async function GET(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await readUpstreamError(response)
-      console.error(`[RAG Proxy] Error ${response.status}:`, errorText)
+      console.error(
+        `[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}: ${summarizeProxyLogDetail(errorText)}`
+      )
       return noStoreJson(
         {
           detail: errorText || 'Backend request failed',
