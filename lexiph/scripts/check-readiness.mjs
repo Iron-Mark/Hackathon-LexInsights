@@ -464,8 +464,8 @@ async function run() {
         },
       ]
     : [
-        checkDns('supabase.dns', supabaseParsedUrl?.host || null),
-        checkDns('rag.dns', ragParsedUrl?.host || null),
+        checkDns('supabase.dns', supabaseParsedUrl?.hostname || null),
+        checkDns('rag.dns', ragParsedUrl?.hostname || null),
         checkFetch('rag.direct_health', ragHealthTarget, args.timeoutMs),
       ]
   const immediateChecks = []
@@ -507,9 +507,9 @@ async function run() {
   }
 
   const checks = [
-    checkEnv('supabase.url', supabaseUrl, supabaseParsedUrl?.host),
+    checkEnv('supabase.url', supabaseUrl, supabaseParsedUrl?.hostname),
     checkEnv('supabase.anon_key', supabaseAnonKey),
-    checkSupabaseProjectRef(supabaseProjectRef, supabaseParsedUrl?.host),
+    checkSupabaseProjectRef(supabaseProjectRef, supabaseParsedUrl?.hostname),
     ...checkSupabaseAnonKey(supabaseAnonKey, supabaseProjectRef),
     checkEnv('rag.api_url', ragApiUrl, ragParsedUrl?.origin),
     checkEnv('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin),

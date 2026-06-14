@@ -10,5 +10,10 @@ export const RAG_API_BASE_URL = USE_RAG_PROXY
 export const RAG_WS_URL = process.env.NEXT_PUBLIC_RAG_WS_URL || DEFAULT_RAG_WS_URL
 
 export function buildRagUrl(endpoint: string) {
-  return USE_RAG_PROXY ? `${RAG_API_BASE_URL}?endpoint=${endpoint}` : `${RAG_API_BASE_URL}${endpoint}`
+  if (USE_RAG_PROXY) {
+    const query = new URLSearchParams({ endpoint })
+    return `${RAG_API_BASE_URL}?${query.toString()}`
+  }
+
+  return `${RAG_API_BASE_URL}${endpoint}`
 }

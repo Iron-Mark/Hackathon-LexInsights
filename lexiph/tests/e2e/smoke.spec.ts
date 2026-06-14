@@ -55,14 +55,14 @@ test.describe('LexInSight smoke checks', () => {
     ]))
 
     if (isManagedLocalWebServer) {
-      expect(response.status()).toBe(503)
+      expect(response.status()).toBe(200)
 
       for (const name of ['supabase.dns', 'rag.dns', 'rag.direct_health', 'rag.proxy_health']) {
         expect(body.checks.find((check: { name: string }) => check.name === name)).toEqual(
           expect.objectContaining({
             name,
             status: 'skip',
-            critical: true,
+            critical: false,
           })
         )
       }

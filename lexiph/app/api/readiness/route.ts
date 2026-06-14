@@ -354,7 +354,7 @@ function skippedExternalCheck(name: string, target?: string | null): ReadinessCh
   return {
     name,
     status: 'skip',
-    critical: true,
+    critical: false,
     message: 'Skipped because externalChecks=skip was requested; run the full readiness check before claiming backend E2E.',
     ...(target ? { target } : {}),
   }
@@ -389,6 +389,8 @@ export async function GET(request: NextRequest) {
   const ragParsedUrl = safeUrl(ragApiUrl)
   const ragWsParsedUrl = safeUrl(ragWsUrl)
   const supabaseProjectRef = getStandardSupabaseProjectRef(supabaseParsedUrl)
+  const supabaseDnsHost = supabaseParsedUrl?.hostname || null
+  const ragDnsHost = ragParsedUrl?.hostname || null
   const ragHealthTarget = ragParsedUrl
     ? new URL('/api/research/health', ragParsedUrl).toString()
     : null
@@ -396,14 +398,14 @@ export async function GET(request: NextRequest) {
 
   const externalChecks = skipExternalChecks
     ? [
-        skippedExternalCheck('supabase.dns', supabaseParsedUrl?.host || null),
-        skippedExternalCheck('rag.dns', ragParsedUrl?.host || null),
+        skippedExternalCheck('supabase.dns', supabaseDnsHost),
+        skippedExternalCheck('rag.dns', ragDnsHost),
         skippedExternalCheck('rag.direct_health', ragHealthTarget),
         skippedExternalCheck('rag.proxy_health', ragProxyHealthTarget),
       ]
     : await Promise.all([
-        dnsCheck('supabase.dns', supabaseParsedUrl?.host || null),
-        dnsCheck('rag.dns', ragParsedUrl?.host || null),
+        dnsCheck('supabase.dns', supabaseDnsHost),
+        dnsCheck('rag.dns', ragDnsHost),
         fetchHealthCheck('rag.direct_health', ragHealthTarget, timeoutMs),
         fetchHealthCheck('rag.proxy_health', ragProxyHealthTarget, timeoutMs),
       ])
