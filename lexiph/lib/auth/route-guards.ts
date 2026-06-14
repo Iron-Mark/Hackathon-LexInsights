@@ -12,6 +12,7 @@ export async function verifyProtectedRouteAccess(user: User): Promise<ProtectedR
   try {
     const supabase = createClient()
     const { data, error } = await supabase.auth.getUser()
+    const verifiedEmail = data.user?.email ?? user?.email
 
     if (error || !data.user) {
       if (error) {
@@ -27,7 +28,7 @@ export async function verifyProtectedRouteAccess(user: User): Promise<ProtectedR
     if (!data.user.email_confirmed_at) {
       return {
         allowed: false,
-        redirectTo: `/auth/verify-email?email=${encodeURIComponent(user.email)}`,
+        redirectTo: `/auth/verify-email?email=${encodeURIComponent(verifiedEmail)}`,
       }
     }
 
