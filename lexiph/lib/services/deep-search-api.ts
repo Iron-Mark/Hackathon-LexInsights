@@ -359,15 +359,24 @@ To measure plan effectiveness:
  * Check if deep search is available
  */
 export async function checkDeepSearchAvailability(): Promise<boolean> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 20000)
+
   try {
-    // TODO: Implement actual health check when API is ready
-    // const response = await fetch(`${DEEP_SEARCH_API_URL}/api/research/deep-search/health`)
-    // return response.ok
-    
-    // PLACEHOLDER: Always return true for now
-    return true
+    const response = await fetch(buildDeepSearchUrl('/api/research/health'), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal: controller.signal,
+      cache: 'no-cache',
+    })
+
+    return response.ok
   } catch (error) {
     console.error('Deep search availability check failed:', error)
     return false
+  } finally {
+    clearTimeout(timeoutId)
   }
 }

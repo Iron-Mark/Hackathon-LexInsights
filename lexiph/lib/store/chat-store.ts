@@ -37,7 +37,7 @@ interface ChatStore {
   deleteChat: (id: string) => Promise<void>
   updateChatTitle: (id: string, title: string) => Promise<void>
   addMessage: (chatId: string, message: Omit<Message, 'id' | 'created_at'>) => Promise<void>
-  addRAGMessage: (query: string, response: RAGResponse) => void
+  addRAGMessage: (query: string, response: RAGResponse) => Promise<void>
 }
 
 export const useChatStore = create<ChatStore>((set, get) => ({
@@ -302,7 +302,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   // Add RAG message to chat history
-  addRAGMessage: (query: string, response: RAGResponse) => {
+  addRAGMessage: async (query: string, response: RAGResponse) => {
     const activeChat = get().activeChat
     
     if (!activeChat) {
@@ -311,13 +311,13 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }
     
     // Add user message
-    get().addMessage(activeChat.id, {
+    await get().addMessage(activeChat.id, {
       role: 'user',
       content: query
     })
     
     // Add assistant message with RAG metadata
-    get().addMessage(activeChat.id, {
+    await get().addMessage(activeChat.id, {
       role: 'assistant',
       content: response.summary,
       metadata: {

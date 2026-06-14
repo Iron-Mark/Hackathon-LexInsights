@@ -65,6 +65,15 @@ function setCachedResponse(query: string, response: RAGResponse): void {
   }
 }
 
+function dispatchRAGResponse(query: string, response: RAGResponse): void {
+  if (typeof window === 'undefined') return
+
+  const event = new CustomEvent('rag-response', {
+    detail: { query, response },
+  })
+  window.dispatchEvent(event)
+}
+
 export interface RAGQueryHistory {
   id: string
   query: string
@@ -126,6 +135,8 @@ export const useRAGStore = create<RAGStore>()(
             loading: false,
             error: null
           })
+          get().addToHistory(query, cachedResponse, 'http', userId)
+          dispatchRAGResponse(query, cachedResponse)
           return
         }
 
@@ -146,12 +157,7 @@ export const useRAGStore = create<RAGStore>()(
           
           // Add to chat history (will be implemented when chat store is available)
           // This allows RAG responses to persist in chat messages
-          if (typeof window !== 'undefined') {
-            const event = new CustomEvent('rag-response', { 
-              detail: { query, response } 
-            })
-            window.dispatchEvent(event)
-          }
+          dispatchRAGResponse(query, response)
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
           
@@ -218,12 +224,7 @@ export const useRAGStore = create<RAGStore>()(
               get().addToHistory(get().currentQuery || '', response, 'websocket')
               
               // Dispatch event for chat history
-              if (typeof window !== 'undefined') {
-                const customEvent = new CustomEvent('rag-response', { 
-                  detail: { query: get().currentQuery, response } 
-                })
-                window.dispatchEvent(customEvent)
-              }
+              dispatchRAGResponse(get().currentQuery || '', response)
             }
           },
           () => {

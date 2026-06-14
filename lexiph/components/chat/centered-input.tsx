@@ -7,6 +7,7 @@ import { useChatModeStore } from '@/lib/store/chat-mode-store'
 import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useChatStore } from '@/lib/store/chat-store'
+import { showToast } from '@/components/ui/toast'
 
 interface CenteredInputProps {
   onSend: (message: string) => void
@@ -63,6 +64,7 @@ export function CenteredInput({
       }
     } catch (error) {
       console.error('Error sending message:', error)
+      showToast(error instanceof Error ? error.message : 'Failed to send message', 'error')
     } finally {
       setIsSending(false)
     }

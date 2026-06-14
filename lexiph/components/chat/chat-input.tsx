@@ -7,9 +7,11 @@ import { useRAGStore } from '@/lib/store/rag-store'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useSidebarStore } from '@/lib/store/sidebar-store'
 import { useFileUploadStore } from '@/lib/store/file-upload-store'
+import { useChatStore } from '@/lib/store/chat-store'
 import { ChatModeToggle } from './chat-mode-toggle'
 import { performDeepSearch } from '@/lib/services/deep-search-api'
 import { UploadedFilesList } from './uploaded-files-list'
+import { showToast } from '@/components/ui/toast'
 
 export function ChatInput() {
   const [message, setMessage] = useState('')
@@ -19,7 +21,8 @@ export function ChatInput() {
   const { submitQuery, loading } = useRAGStore()
   const { user } = useAuthStore()
   const { isMobile, close } = useSidebarStore()
-  const { uploadedFiles, clearFiles } = useFileUploadStore()
+  const { uploadedFiles, clearFiles, uploadToSupabase, uploading } = useFileUploadStore()
+  const { activeChat, createChat } = useChatStore()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleSend = async () => {
@@ -51,6 +54,16 @@ export function ChatInput() {
         // Compliance mode - process uploaded files from drag-drop store
         if (uploadedFiles.length > 0) {
           console.log('Processing uploaded files:', uploadedFiles.length)
+          let chatId = activeChat?.id
+
+          if (!chatId) {
+            const newChat = await createChat(message.trim() || 'Compliance Analysis')
+            chatId = newChat.id
+          }
+
+          if (user) {
+            await uploadToSupabase(user.id, chatId)
+          }
           
           // Process each uploaded file
           uploadedFiles.forEach(uploadedFile => {
@@ -89,6 +102,7 @@ export function ChatInput() {
       }
     } catch (error) {
       console.error('Error sending message:', error)
+      showToast(error instanceof Error ? error.message : 'Failed to send message', 'error')
     } finally {
       setIsSending(false)
     }
@@ -262,7 +276,7 @@ export function ChatInput() {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            disabled={isSending || loading}
+            disabled={isSending || loading || uploading}
             rows={1}
             aria-label={placeholder}
             aria-describedby="message-hint"
@@ -280,7 +294,7 @@ export function ChatInput() {
           {mode === 'general' && (
             <button
               onClick={handleDeepSearch}
-              disabled={!message.trim() || isDeepSearching || isSending || loading}
+              disabled={!message.trim() || isDeepSearching || isSending || loading || uploading}
               className="relative rounded-lg bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 p-2 text-white shadow-lg shadow-purple-500/50 transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/60 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:scale-100 min-h-[40px] min-w-[40px] flex items-center justify-center group"
               aria-label={isDeepSearching ? 'Performing deep search...' : 'Perform deep search'}
               type="button"
@@ -301,17 +315,17 @@ export function ChatInput() {
           {/* Send Button */}
           <button
             onClick={handleSend}
-            disabled={(!message.trim() && !uploadedFile) || isSending || loading}
+            disabled={(!message.trim() && !uploadedFile && uploadedFiles.length === 0) || isSending || loading || uploading}
             className="rounded-lg bg-primary p-2 text-primary-foreground transition-all duration-200 hover:bg-iris-700 hover:shadow-md hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none min-h-[40px] min-w-[40px] flex items-center justify-center"
-            aria-label={isSending || loading ? 'Sending message...' : 'Send message'}
+            aria-label={isSending || loading || uploading ? 'Sending message...' : 'Send message'}
             type="submit"
           >
-            {isSending || loading ? (
+            {isSending || loading || uploading ? (
               <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
             ) : (
               <Send className="h-5 w-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
             )}
-            <span className="sr-only">{isSending || loading ? 'Sending...' : 'Send'}</span>
+            <span className="sr-only">{isSending || loading || uploading ? 'Sending...' : 'Send'}</span>
           </button>
         </div>
       </div>

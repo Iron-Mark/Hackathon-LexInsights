@@ -75,6 +75,7 @@ export const useFileUploadStore = create<FileUploadStore>((set, get) => ({
 
     try {
       const supabase = createClient()
+      let failedUploads = 0
 
       for (const uploadedFile of files) {
         // Update status to uploading
@@ -98,6 +99,7 @@ export const useFileUploadStore = create<FileUploadStore>((set, get) => ({
 
         if (uploadError) {
           console.error('Upload error:', uploadError)
+          failedUploads += 1
           set(state => ({
             uploadedFiles: state.uploadedFiles.map(f =>
               f.id === uploadedFile.id ? { ...f, status: 'error' as const } : f
@@ -114,13 +116,14 @@ export const useFileUploadStore = create<FileUploadStore>((set, get) => ({
             chat_id: chatId,
             file_name: uploadedFile.file.name,
             file_size: uploadedFile.file.size,
-          file_type: uploadedFile.file.type,
-          storage_path: filePath,
-          status: 'completed'
+            file_type: uploadedFile.file.type,
+            storage_path: filePath,
+            status: 'completed'
           } as never)
 
         if (dbError) {
           console.error('Database error:', dbError)
+          failedUploads += 1
           set(state => ({
             uploadedFiles: state.uploadedFiles.map(f =>
               f.id === uploadedFile.id ? { ...f, status: 'error' as const } : f
@@ -138,8 +141,13 @@ export const useFileUploadStore = create<FileUploadStore>((set, get) => ({
           )
         }))
       }
+
+      if (failedUploads > 0) {
+        throw new Error(`Failed to upload ${failedUploads} document${failedUploads === 1 ? '' : 's'} to Supabase.`)
+      }
     } catch (error) {
       console.error('Upload failed:', error)
+      throw error
     } finally {
       set({ uploading: false })
     }

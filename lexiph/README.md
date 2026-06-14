@@ -111,10 +111,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 1. Switch to **Compliance Mode**
 2. Click **Upload** button (📎)
-3. Select your document (PDF, DOCX, MD, TXT)
+3. Select your document (MD or TXT for direct browser-side Draft Checker analysis; PDF and Word files require backend-side extraction)
 4. Add optional query or leave blank
 5. Click **Send** to analyze
 6. View results in the compliance canvas
+
+When the RAG/Draft Checker backend is unreachable, LexInSight shows an unavailable status instead of generating a mock compliance report.
 
 ### Deep Search (General Mode Only)
 
