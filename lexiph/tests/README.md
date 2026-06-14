@@ -37,25 +37,61 @@ npm run dev -- -p 3000
 npm run check:readiness -- --base-url http://localhost:3000
 ```
 
-The command prints non-secret status for Supabase env/DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked.
+The command prints non-secret status for Supabase env/key checks, Supabase DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key. For fast route-shape probes, the HTTP endpoint also accepts `/api/readiness?timeoutMs=2000`.
 
-### Method 1: Browser Smoke
+### Method 1: Readiness Helper Self-Test
 
-Run focused Playwright checks for public pages, protected-route redirects, and the readiness endpoint response shape:
+Run this after changing readiness parsing or Supabase key checks:
+
+```bash
+npm run check:readiness:self-test
+```
+
+The self-test is offline and deterministic. It covers matching anon JWTs, mismatched project refs, legacy service-role JWTs, `sb_secret_` keys, publishable keys, unknown keys, and raw-key redaction.
+
+### Method 2: Deployment Preflight
+
+After a production deployment, run the preflight first to verify app-root assumptions, local Vercel linkage status, `/api/version`, `/api/readiness`, and RAG proxy route presence:
+
+```bash
+npm run check:deployment -- --base-url https://lexinsights.vercel.app
+```
+
+Use `--with-vercel-cli` when you also need to confirm the current shell has an authenticated Vercel CLI session. The command does not print raw env values or provider secrets.
+
+### Method 3: Live Deployment Check
+
+After a production deployment, verify that the public URL serves the expected commit and exposes the backend readiness routes:
+
+```bash
+npm run check:live -- --base-url https://lexinsights.vercel.app
+```
+
+Use `--source-only` to check only route availability and commit freshness while Supabase/RAG are still down:
+
+```bash
+npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
+```
+
+Full mode compares `GET /api/version` against local `HEAD`, then checks `/api/readiness` and the RAG proxy health path. A `404` for `/api/version` or `/api/readiness` means the live project is stale or not serving this codebase.
+
+### Method 4: Browser Smoke
+
+Run focused Playwright checks for public pages, protected-route redirects, version metadata, and the readiness endpoint response shape:
 
 ```bash
 npm run smoke:browser
 ```
 
-By default, Playwright starts the Next.js dev server on port `3000`. To test a running app or a deployed URL, pass `PLAYWRIGHT_BASE_URL`:
+By default, Playwright starts its own Next.js dev server on `127.0.0.1:3100` so it does not reuse an unrelated app already listening on port `3000`. To test a running app or a deployed URL, pass `PLAYWRIGHT_BASE_URL`:
 
 ```powershell
 $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
 ```
 
-Browser smoke proves route behavior and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
+Browser smoke proves route behavior, version metadata, and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
 
-### Method 2: Browser-Based Test Page
+### Method 5: Browser-Based Test Page
 
 1. Start your Next.js development server:
    ```bash
@@ -74,7 +110,7 @@ Browser smoke proves route behavior and readiness reporting. Full backend E2E st
    - Response metadata display
    - Full summary preview
 
-### Method 3: Node.js Test Script
+### Method 5: Node.js Test Script
 
 1. Install dependencies (if not already installed):
    ```bash
@@ -93,7 +129,7 @@ Browser smoke proves route behavior and readiness reporting. Full backend E2E st
    - Save full responses to files
    - Show success/failure summary
 
-### Method 4: Direct API Testing with cURL
+### Method 6: Direct API Testing with cURL
 
 Test the health endpoint:
 ```bash
@@ -108,7 +144,7 @@ curl -X POST https://devkada.resqlink.org/api/research/rag-summary \
   --max-time 300
 ```
 
-### Method 5: Using the Chat Interface
+### Method 7: Using the Chat Interface
 
 1. Start the development server
 2. Navigate to `/chat`

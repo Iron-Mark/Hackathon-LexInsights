@@ -60,6 +60,9 @@ jobs:
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
+      - name: Readiness self-test
+        run: npm run check:readiness:self-test
+
       - name: Build
         run: npm run build
 

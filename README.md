@@ -726,8 +726,20 @@ npm run build
 # Browser smoke
 npm run smoke:browser
 
+# Readiness helper safety checks
+npm run check:readiness:self-test
+
 # Backend readiness, after Supabase and RAG env are reachable
 npm run check:readiness
+
+# Deployment preflight, after production deploy
+npm run check:deployment -- --base-url https://lexinsights.vercel.app
+
+# Live deployment freshness and backend readiness, after production deploy
+npm run check:live -- --base-url https://lexinsights.vercel.app
+
+# Deployment freshness only, useful while external backends are still blocked
+npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
 ```
 
 ### Test Structure
@@ -758,8 +770,11 @@ tests/
    npm i -g vercel
    
    # Deploy
+   cd lexiph
    vercel
    ```
+
+   In the Vercel dashboard, set **Root Directory** to `lexiph`. A deployment that does not expose `/api/version` is stale or not serving this codebase.
 
 2. **Configure Environment Variables**
    - Add `NEXT_PUBLIC_SUPABASE_URL`
@@ -768,6 +783,11 @@ tests/
 3. **Deploy**
    ```bash
    vercel --prod
+   ```
+
+   After deployment, run:
+   ```bash
+   npm run check:deployment -- --base-url https://lexinsights.vercel.app
    ```
 
 ### Manual Deployment

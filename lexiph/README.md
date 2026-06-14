@@ -280,29 +280,61 @@ Run the non-secret backend readiness check before claiming a full E2E pass:
 npm run check:readiness
 ```
 
+Run the deterministic readiness helper self-test after changing readiness parsing or Supabase key checks:
+
+```bash
+npm run check:readiness:self-test
+```
+
 When the local app is running, include route and proxy checks:
 
 ```bash
 npm run check:readiness -- --base-url http://localhost:3000
 ```
 
-The app also exposes `GET /api/readiness` for live or local runtime checks. It returns `200` only when critical Supabase DNS/env, direct RAG health, and RAG proxy health checks pass; otherwise it returns `503` with component-level blocker details.
+The app also exposes `GET /api/readiness` for live or local runtime checks. It returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass; otherwise it returns `503` with component-level blocker details. Supabase key checks validate the public key format, anon role claim, and legacy JWT issuer project ref without printing the raw key. Add `?timeoutMs=2000` for a faster probe when an upstream backend is known to be down.
+
+### Deployment Preflight
+
+After pushing and deploying, verify local app-root assumptions, Vercel linkage, live version metadata, readiness route presence, and the public RAG proxy route:
+
+```bash
+npm run check:deployment -- --base-url https://lexinsights.vercel.app
+```
+
+Add `--with-vercel-cli` when you also want to check whether the current shell has an authenticated Vercel CLI session. The command does not print raw env values or provider secrets.
+
+### Live Deployment Check
+
+After pushing and deploying, verify that production is serving the expected commit:
+
+```bash
+npm run check:live -- --base-url https://lexinsights.vercel.app
+```
+
+Use `--source-only` when you only need to prove that Vercel is serving this repository commit while Supabase/RAG are still externally blocked:
+
+```bash
+npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
+```
+
+Full mode checks key routes, `GET /api/version`, `GET /api/readiness`, and the RAG proxy health path. It exits nonzero when production is stale, when the exposed commit does not match local `HEAD`, or when backend readiness is still blocked.
 
 ### Browser Smoke
 
-Run the Playwright smoke gate for public routes, protected-route redirects, and readiness JSON shape:
+Run the Playwright smoke gate for public routes, protected-route redirects, version metadata, and readiness JSON shape:
 
 ```bash
 npm run smoke:browser
 ```
 
-To test an already-running app or live deployment:
+By default, Playwright starts its own Next.js dev server on `127.0.0.1:3100` so it does not reuse an unrelated app already listening on port `3000`. To test an already-running app or live deployment:
 
 ```powershell
 $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
 ```
 
-Browser smoke proves route behavior and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
+Browser smoke proves route behavior, version metadata, and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
 
 ### Browser Testing
 

@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "check:readiness": "node scripts/check-readiness.mjs",
+    "check:readiness:self-test": "node scripts/check-readiness-self-test.mjs",
+    "check:live": "node scripts/check-live-deployment.mjs",
+    "check:deployment": "node scripts/check-deployment-preflight.mjs",
     "smoke:browser": "playwright test"
   },
   "dependencies": {

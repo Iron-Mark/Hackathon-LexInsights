@@ -72,9 +72,10 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
    npm audit --omit=dev
    npm run build
    npm run smoke:browser
+   npm run check:readiness:self-test
    ```
 
-   Run `npm run check:readiness` only when Supabase and RAG environment values point to reachable services. It is the backend E2E readiness gate, not a generic offline test.
+   Run `npm run check:readiness` only when Supabase and RAG environment values point to reachable services. It is the backend E2E readiness gate, not a generic offline test. After production deploys, run `npm run check:deployment -- --base-url https://lexinsights.vercel.app`, then `npm run check:live -- --base-url https://lexinsights.vercel.app` to confirm the public app serves the expected commit before checking live backend behavior.
 
 5. **Commit Your Changes**
    ```bash

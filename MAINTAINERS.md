@@ -13,7 +13,12 @@ LexInSight is maintained from the fork repository at `Iron-Mark/Hackathon-LexIns
   - `npm audit --omit=dev`
   - `npm run build`
   - `npm run smoke:browser`
+  - `npm run check:readiness:self-test`
   - `npm run check:readiness` after backend env is available
+- Required live gate after production deploy:
+  - `npm run check:deployment -- --base-url https://lexinsights.vercel.app`
+  - `npm run check:live -- --base-url https://lexinsights.vercel.app --source-only`
+  - `npm run check:live -- --base-url https://lexinsights.vercel.app`
 
 ## Maintenance Priorities
 
@@ -29,5 +34,7 @@ LexInSight is maintained from the fork repository at `Iron-Mark/Hackathon-LexIns
 - Run all required local gates.
 - Verify key routes: `/`, `/auth/login`, `/chat`, `/documents`, `/test-rag`.
 - Confirm GitHub Actions CI is green after push.
+- Run the deployment preflight and resolve stale Vercel linkage before live QA.
+- Confirm the live deployment exposes the expected commit through `/api/version`.
 - Commit with a clear Conventional Commit message.
 - Push to `origin/main`.

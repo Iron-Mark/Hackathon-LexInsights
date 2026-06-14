@@ -46,6 +46,8 @@ git push origin main
 4. Select the `lexiph` folder
 5. Click **"Deploy"**
 
+The project must use `lexiph` as the Vercel root directory. If production serves the homepage but returns `404` for `/api/version` or `/api/readiness`, it is stale or connected to a different project/codebase.
+
 #### Option B: Using Vercel CLI
 
 ```bash
@@ -98,6 +100,9 @@ Vercel auto-detects Next.js, but verify:
 ```bash
 # Deploy to production
 vercel --prod
+
+# Verify deployment linkage and freshness
+npm run check:deployment -- --base-url https://lexinsights.vercel.app
 ```
 
 Or push to main branch (auto-deploys).
@@ -551,19 +556,45 @@ npx tsc --noEmit
 npm audit --omit=dev
 npm run build
 npm run smoke:browser
+npm run check:readiness:self-test
 ```
 
 Production deployment is still handled by Vercel/Git integration, not by a repo-owned deploy workflow. Keep `npm run check:readiness` as the live backend gate after Supabase and RAG environment values point to reachable services.
 
-## 🚦 Health Checks
-
-Use the runtime readiness endpoint:
+Before full live QA, run the deployment preflight. It checks the app root, local Vercel link presence, `/api/version`, `/api/readiness`, and the public RAG proxy route without printing env values or provider secrets:
 
 ```bash
+npm run check:deployment -- --base-url https://lexinsights.vercel.app
+```
+
+Add `--with-vercel-cli` when you also want a local Vercel CLI availability/authentication check from the current shell.
+
+After production deploys, verify deployment freshness before claiming live E2E:
+
+```bash
+npm run check:live -- --base-url https://lexinsights.vercel.app
+```
+
+Use `--source-only` when validating deployment freshness before external Supabase/RAG services are healthy:
+
+```bash
+npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
+```
+
+Full mode checks the public routes, `GET /api/version`, `GET /api/readiness`, and the RAG proxy health path. `/api/version` returns non-secret build metadata, including the Vercel/Git commit SHA when the project is connected through Vercel Git integration. A commit mismatch means the live app is not serving the current repository state.
+
+## 🚦 Health Checks
+
+Use the runtime version and readiness endpoints:
+
+```bash
+curl https://lexinsights.vercel.app/api/version
 curl https://lexinsights.vercel.app/api/readiness
 ```
 
-The endpoint returns `200` only when critical Supabase DNS/env, direct RAG health, and RAG proxy health checks pass. It returns `503` with component-level blocker details while an external backend is down.
+The endpoint returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass. It returns `503` with component-level blocker details while an external backend is down. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key.
+
+For a faster operator probe while an upstream backend is known to be unavailable, call `/api/readiness?timeoutMs=2000`.
 
 ## 📈 Performance Optimization
 

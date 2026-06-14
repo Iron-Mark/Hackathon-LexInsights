@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url'
 const DEFAULT_RAG_API_URL = 'https://devkada.resqlink.org'
 const DEFAULT_RAG_WS_URL = 'wss://devkada.resqlink.org'
 const DEFAULT_TIMEOUT_MS = 15000
+const SUPABASE_PROJECT_HOST_SUFFIX = '.supabase.co'
 const ROUTES_TO_CHECK = [
   '/',
   '/auth/login',
@@ -108,7 +109,7 @@ function elapsedSince(startedAt) {
   return Date.now() - startedAt
 }
 
-function safeUrl(value) {
+export function safeUrl(value) {
   if (!value) {
     return null
   }
@@ -118,6 +119,206 @@ function safeUrl(value) {
   } catch {
     return null
   }
+}
+
+function base64UrlDecodeJson(segment) {
+  try {
+    const normalized = segment.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), '=')
+    const decoded = Buffer.from(padded, 'base64').toString('utf8')
+    const parsed = JSON.parse(decoded)
+
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null
+  } catch {
+    return null
+  }
+}
+
+export function getStandardSupabaseProjectRef(url) {
+  if (!url) {
+    return null
+  }
+
+  const host = url.hostname.toLowerCase()
+
+  if (!host.endsWith(SUPABASE_PROJECT_HOST_SUFFIX)) {
+    return null
+  }
+
+  const projectRef = host.slice(0, -SUPABASE_PROJECT_HOST_SUFFIX.length)
+  return projectRef || null
+}
+
+function getIssuerProjectRef(issuer) {
+  if (typeof issuer !== 'string') {
+    return null
+  }
+
+  const issuerUrl = safeUrl(issuer)
+
+  if (!issuerUrl || issuerUrl.pathname !== '/auth/v1') {
+    return null
+  }
+
+  return getStandardSupabaseProjectRef(issuerUrl)
+}
+
+export function inspectSupabaseKey(value) {
+  if (!value) {
+    return {
+      kind: 'missing',
+    }
+  }
+
+  if (value.startsWith('sb_secret_')) {
+    return {
+      kind: 'secret',
+    }
+  }
+
+  if (value.startsWith('sb_publishable_')) {
+    return {
+      kind: 'publishable',
+    }
+  }
+
+  const parts = value.split('.')
+
+  if (parts.length !== 3) {
+    return {
+      kind: 'unknown',
+    }
+  }
+
+  const header = base64UrlDecodeJson(parts[0])
+  const payload = base64UrlDecodeJson(parts[1])
+
+  if (!header || !payload) {
+    return {
+      kind: 'unknown',
+    }
+  }
+
+  return {
+    kind: 'jwt',
+    alg: typeof header.alg === 'string' ? header.alg : null,
+    role: typeof payload.role === 'string' ? payload.role : null,
+    issuerProjectRef:
+      getIssuerProjectRef(payload.iss) || (typeof payload.ref === 'string' ? payload.ref : null),
+  }
+}
+
+export function checkSupabaseProjectRef(projectRef, host) {
+  return {
+    name: 'supabase.project_ref',
+    status: projectRef ? 'pass' : 'warn',
+    critical: false,
+    message: projectRef
+      ? 'Project ref parsed from standard Supabase URL'
+      : 'Project ref comparison skipped because URL is not the standard <ref>.supabase.co shape',
+    target: host,
+    details: {
+      projectRef,
+    },
+  }
+}
+
+export function checkSupabaseAnonKey(value, expectedProjectRef) {
+  const inspection = inspectSupabaseKey(value)
+
+  if (inspection.kind === 'missing') {
+    return []
+  }
+
+  if (inspection.kind === 'secret') {
+    return [
+      {
+        name: 'supabase.anon_key_format',
+        status: 'fail',
+        critical: true,
+        message: 'A secret Supabase key must not be exposed through NEXT_PUBLIC_SUPABASE_ANON_KEY',
+      },
+    ]
+  }
+
+  if (inspection.kind === 'publishable') {
+    return [
+      {
+        name: 'supabase.anon_key_format',
+        status: 'pass',
+        critical: true,
+        message: 'Supabase publishable key format detected',
+        details: {
+          kind: inspection.kind,
+        },
+      },
+      {
+        name: 'supabase.anon_key_project_ref',
+        status: 'skip',
+        critical: false,
+        message: 'Publishable keys do not expose a legacy JWT issuer project ref',
+        details: {
+          expectedProjectRef,
+        },
+      },
+    ]
+  }
+
+  if (inspection.kind === 'unknown') {
+    return [
+      {
+        name: 'supabase.anon_key_format',
+        status: 'fail',
+        critical: true,
+        message: 'Supabase anon key is not a recognizable legacy JWT or publishable key',
+      },
+    ]
+  }
+
+  const projectRefMatches =
+    expectedProjectRef && inspection.issuerProjectRef
+      ? expectedProjectRef === inspection.issuerProjectRef
+      : null
+
+  return [
+    {
+      name: 'supabase.anon_key_format',
+      status: 'pass',
+      critical: true,
+      message: 'Legacy Supabase JWT anon key format detected',
+      details: {
+        kind: inspection.kind,
+        alg: inspection.alg,
+      },
+    },
+    {
+      name: 'supabase.anon_key_role',
+      status: inspection.role === 'anon' ? 'pass' : 'fail',
+      critical: true,
+      message:
+        inspection.role === 'anon'
+          ? 'Anon key role claim is correct'
+          : 'Supabase anon key role claim is not anon',
+      details: {
+        role: inspection.role,
+      },
+    },
+    {
+      name: 'supabase.anon_key_project_ref',
+      status: projectRefMatches === null ? 'warn' : projectRefMatches ? 'pass' : 'fail',
+      critical: projectRefMatches !== null,
+      message:
+        projectRefMatches === null
+          ? 'Project ref comparison skipped because issuer or URL project ref is unavailable'
+          : projectRefMatches
+            ? 'Anon key issuer matches the configured Supabase project ref'
+            : 'Anon key issuer does not match the configured Supabase project ref',
+      details: {
+        expectedProjectRef,
+        issuerProjectRef: inspection.issuerProjectRef,
+      },
+    },
+  ]
 }
 
 function checkEnv(name, value, target) {
@@ -223,6 +424,7 @@ async function run() {
   const supabaseParsedUrl = safeUrl(supabaseUrl)
   const ragParsedUrl = safeUrl(ragApiUrl)
   const ragWsParsedUrl = safeUrl(ragWsUrl)
+  const supabaseProjectRef = getStandardSupabaseProjectRef(supabaseParsedUrl)
   const ragHealthTarget = ragParsedUrl
     ? new URL('/api/research/health', ragParsedUrl).toString()
     : null
@@ -266,6 +468,8 @@ async function run() {
   const checks = [
     checkEnv('supabase.url', supabaseUrl, supabaseParsedUrl?.host),
     checkEnv('supabase.anon_key', supabaseAnonKey),
+    checkSupabaseProjectRef(supabaseProjectRef, supabaseParsedUrl?.host),
+    ...checkSupabaseAnonKey(supabaseAnonKey, supabaseProjectRef),
     checkEnv('rag.api_url', ragApiUrl, ragParsedUrl?.origin),
     checkEnv('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin),
     {
@@ -310,7 +514,9 @@ async function run() {
   }
 }
 
-run().catch((error) => {
-  console.error(error instanceof Error ? error.message : error)
-  process.exitCode = 1
-})
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  run().catch((error) => {
+    console.error(error instanceof Error ? error.message : error)
+    process.exitCode = 1
+  })
+}

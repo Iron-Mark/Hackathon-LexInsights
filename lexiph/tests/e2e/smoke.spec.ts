@@ -24,7 +24,7 @@ test.describe('LexInSight smoke checks', () => {
   }
 
   test('readiness endpoint exposes backend blocker state without secrets', async ({ request }) => {
-    const response = await request.get('/api/readiness')
+    const response = await request.get('/api/readiness?timeoutMs=2000')
     const body = await response.json()
 
     expect([200, 503]).toContain(response.status())
@@ -42,7 +42,11 @@ test.describe('LexInSight smoke checks', () => {
     expect(checkNames).toEqual(expect.arrayContaining([
       'supabase.url',
       'supabase.anon_key',
+      'supabase.project_ref',
+      'supabase.anon_key_format',
+      'supabase.anon_key_project_ref',
       'supabase.dns',
+      'readiness.timeout_ms',
       'rag.direct_health',
       'rag.proxy_health',
     ]))
@@ -56,5 +60,31 @@ test.describe('LexInSight smoke checks', () => {
     )
     expect(anonKeyCheck).not.toHaveProperty('target')
     expect(anonKeyCheck).not.toHaveProperty('details')
+  })
+
+  test('version endpoint exposes deployment metadata without backend secrets', async ({ request }) => {
+    const response = await request.get('/api/version?expectedSha=local-test')
+    const body = await response.json()
+
+    expect(response.status()).toBe(200)
+    expect(body).toEqual(
+      expect.objectContaining({
+        app: 'LexInSight',
+        packageVersion: expect.any(String),
+        checkedAt: expect.any(String),
+        source: expect.objectContaining({
+          provider: expect.any(String),
+          environment: expect.any(String),
+        }),
+        deployment: expect.any(Object),
+        expected: expect.objectContaining({
+          commitSha: 'local-test',
+          matches: expect.any(Boolean),
+        }),
+      })
+    )
+
+    expect(JSON.stringify(body)).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
   })
 })
