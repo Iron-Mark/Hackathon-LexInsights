@@ -58,6 +58,14 @@ npm run check:readiness -- --base-url http://localhost:3000
 
 The command prints non-secret status for Supabase env/key checks, Supabase DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key. For fast backend probes, the HTTP endpoint also accepts `/api/readiness?timeoutMs=2000`; that timeout is forwarded to the RAG proxy health call so blocked upstream checks return quickly with structured `502` or `504` errors. For browser route-shape smoke only, `/api/readiness?externalChecks=skip` skips Supabase DNS and RAG health fetches but keeps those checks critical and skipped, so it never proves backend E2E readiness. RAG proxy `endpoint` values must stay on the configured RAG API origin.
 
+For offline/local-tuning workflows, you can also skip external dependency probes in the script runner:
+
+```bash
+npm run check:readiness -- --skip-external-checks
+```
+
+That mode keeps local env/key checks intact while marking DNS and upstream health probes as non-blocking.
+
 ### Method 1: Readiness Helper Self-Test
 
 Run this after changing readiness parsing or Supabase key checks:

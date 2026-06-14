@@ -25,6 +25,7 @@ function parseArgs(argv) {
     baseUrl: null,
     json: false,
     timeoutMs: DEFAULT_TIMEOUT_MS,
+    skipExternalChecks: false,
   }
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -56,6 +57,14 @@ function parseArgs(argv) {
     if (arg.startsWith('--timeout-ms=')) {
       const value = Number(arg.slice('--timeout-ms='.length))
       args.timeoutMs = Number.isFinite(value) && value > 0 ? value : DEFAULT_TIMEOUT_MS
+    }
+
+    if (arg === '--skip-external-checks') {
+      args.skipExternalChecks = true
+    }
+
+    if (arg === '--include-external-checks') {
+      args.skipExternalChecks = false
     }
   }
 
@@ -429,11 +438,32 @@ async function run() {
     ? new URL('/api/research/health', ragParsedUrl).toString()
     : null
 
-  const asyncChecks = [
-    checkDns('supabase.dns', supabaseParsedUrl?.host || null),
-    checkDns('rag.dns', ragParsedUrl?.host || null),
-    checkFetch('rag.direct_health', ragHealthTarget, args.timeoutMs),
-  ]
+  const asyncChecks = args.skipExternalChecks
+    ? [
+        {
+          name: 'supabase.dns',
+          status: 'skip',
+          critical: false,
+          message: 'External checks skipped by CLI flag',
+        },
+        {
+          name: 'rag.dns',
+          status: 'skip',
+          critical: false,
+          message: 'External checks skipped by CLI flag',
+        },
+        {
+          name: 'rag.direct_health',
+          status: 'skip',
+          critical: false,
+          message: 'External checks skipped by CLI flag',
+        },
+      ]
+    : [
+        checkDns('supabase.dns', supabaseParsedUrl?.host || null),
+        checkDns('rag.dns', ragParsedUrl?.host || null),
+        checkFetch('rag.direct_health', ragHealthTarget, args.timeoutMs),
+      ]
   const immediateChecks = []
 
   if (args.baseUrl) {

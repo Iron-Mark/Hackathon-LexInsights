@@ -324,6 +324,14 @@ npm run check:readiness -- --base-url http://localhost:3000
 
 The app also exposes `GET /api/readiness` for live or local runtime checks. It returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass; otherwise it returns `503` with component-level blocker details. Supabase key checks validate the public key format, anon role claim, and legacy JWT issuer project ref without printing the raw key. Add `?timeoutMs=2000` for a faster probe when an upstream backend is known to be down; the same timeout is forwarded to the RAG proxy health call, which returns structured `502` or `504` blocker errors when the upstream backend cannot be reached. Browser route-shape smoke may use `?externalChecks=skip`; skipped external checks stay critical, so that mode cannot prove backend E2E readiness. RAG proxy `endpoint` values must remain on the configured RAG API origin.
 
+For local checks that need to avoid external DNS/health lookups (for example while the DNS/host is temporarily unavailable), run:
+
+```bash
+npm run check:readiness -- --skip-external-checks
+```
+
+When used, external dependency checks are skipped as non-blocking and the remaining checks still validate local env/key safety.
+
 ### Deployment Preflight
 
 After pushing and deploying, verify local app-root assumptions, Vercel linkage, live version metadata, readiness route presence, and the public RAG proxy route:
