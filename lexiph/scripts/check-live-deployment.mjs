@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import { execFileSync } from 'node:child_process'
+import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const DEFAULT_BASE_URL = 'https://lexinsights.vercel.app'
 const DEFAULT_TIMEOUT_MS = 20000
@@ -331,7 +333,17 @@ async function run() {
   }
 }
 
-run().catch((error) => {
-  console.error(error instanceof Error ? error.message : error)
-  process.exitCode = 1
-})
+export {
+  appendPath,
+  compareSha,
+  parseArgs,
+  publicCheckDetails,
+  safeUrl,
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  run().catch((error) => {
+    console.error(error instanceof Error ? error.message : error)
+    process.exitCode = 1
+  })
+}

@@ -4,6 +4,7 @@ import { create } from 'zustand'
 import { createClient } from '@/lib/supabase/client'
 import { User } from '@/types'
 import type { AuthError as SupabaseAuthError, Session } from '@supabase/supabase-js'
+import { clearPrivateClientState } from './private-client-state'
 
 interface AuthState {
   user: User | null
@@ -47,10 +48,28 @@ const mapSupabaseError = (error: SupabaseAuthError | Error | unknown): string =>
   return 'An error occurred. Please try again.'
 }
 
+const INCOMPLETE_AUTH_RESPONSE_MESSAGE = 'Authentication response was incomplete. Please try again.'
+
+function toUser(value: Session['user'] | null | undefined): User | null {
+  if (!value?.id || !value.email) {
+    return null
+  }
+
+  return {
+    id: value.id,
+    email: value.email,
+    full_name: value.user_metadata?.full_name,
+    avatar_url: value.user_metadata?.avatar_url,
+    created_at: value.created_at,
+    email_confirmed_at: value.email_confirmed_at,
+    user_metadata: value.user_metadata,
+  }
+}
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   session: null,
-  loading: false,
+  loading: true,
   error: null,
 
   signIn: async (email: string, password: string) => {
@@ -71,15 +90,16 @@ export const useAuthStore = create<AuthState>((set) => ({
         return
       }
       
-      // Map Supabase user to our User type
-      const user: User = {
-        id: data.user.id,
-        email: data.user.email!,
-        full_name: data.user.user_metadata?.full_name,
-        avatar_url: data.user.user_metadata?.avatar_url,
-        created_at: data.user.created_at,
-        email_confirmed_at: data.user.email_confirmed_at,
-        user_metadata: data.user.user_metadata,
+      const user = toUser(data.user)
+
+      if (!user || !data.session) {
+        set({
+          user: null,
+          session: null,
+          error: INCOMPLETE_AUTH_RESPONSE_MESSAGE,
+          loading: false,
+        })
+        return
       }
       
       set({ 
@@ -114,15 +134,16 @@ export const useAuthStore = create<AuthState>((set) => ({
         return
       }
       
-      // Map Supabase user to our User type
-      const user: User = {
-        id: data.user!.id,
-        email: data.user!.email!,
-        full_name: data.user!.user_metadata?.full_name,
-        avatar_url: data.user!.user_metadata?.avatar_url,
-        created_at: data.user!.created_at,
-        email_confirmed_at: data.user!.email_confirmed_at,
-        user_metadata: data.user!.user_metadata,
+      const user = toUser(data.user)
+
+      if (!user) {
+        set({
+          user: null,
+          session: null,
+          error: INCOMPLETE_AUTH_RESPONSE_MESSAGE,
+          loading: false,
+        })
+        return
       }
       
       set({ 
@@ -153,7 +174,9 @@ export const useAuthStore = create<AuthState>((set) => ({
         })
         return
       }
-      
+
+      clearPrivateClientState()
+
       set({ 
         user: null, 
         session: null, 
@@ -186,15 +209,16 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       
       if (data.session) {
-        // Map Supabase user to our User type
-        const user: User = {
-          id: data.session.user.id,
-          email: data.session.user.email!,
-          full_name: data.session.user.user_metadata?.full_name,
-          avatar_url: data.session.user.user_metadata?.avatar_url,
-          created_at: data.session.user.created_at,
-          email_confirmed_at: data.session.user.email_confirmed_at,
-          user_metadata: data.session.user.user_metadata,
+        const user = toUser(data.session.user)
+
+        if (!user) {
+          set({
+            user: null,
+            session: null,
+            loading: false,
+            error: null,
+          })
+          return
         }
         
         set({ 

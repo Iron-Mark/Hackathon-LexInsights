@@ -275,7 +275,7 @@ Run the full sequential local gate before pushing or release checks:
 npm run check:local
 ```
 
-It runs zero-warning lint, TypeScript, production audit, Markdown link checker self-test, Markdown link checks, readiness self-test, deployment preflight self-test, RAG proxy self-test, production build, and Playwright smoke.
+It runs zero-warning lint, TypeScript, production audit, Markdown link checker self-test, Markdown link checks, readiness self-test, deployment preflight self-test, live deployment self-test, RAG proxy self-test, production build, and Playwright smoke.
 
 Run the docs check directly after editing Markdown links:
 
@@ -302,6 +302,12 @@ Run the deterministic deployment preflight self-test after changing Vercel proje
 
 ```bash
 npm run check:deployment:self-test
+```
+
+Run the deterministic live deployment helper self-test after changing live route, source-only, commit comparison, or public output behavior:
+
+```bash
+npm run check:live:self-test
 ```
 
 Run the deterministic RAG proxy self-test after changing proxy timeout, endpoint, or error-classification behavior:

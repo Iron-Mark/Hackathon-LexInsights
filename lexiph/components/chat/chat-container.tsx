@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChatHeader } from '@/components/layout/chat-header'
 import { ChatMessages } from './chat-messages'
@@ -164,7 +164,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     submitQuery, 
     clearError 
   } = useRAGStore()
-  const { activeChat, messages: chatMessages, fetchMessages, loadingMessages, createChat, addRAGMessage } = useChatStore()
+  const { activeChat, messages: chatMessages, fetchMessages, loadingMessages, createChat, addRAGMessage, addRAGMessageToChat } = useChatStore()
   const { addFiles, canAddMore } = useFileUploadStore()
   
   const [showCanvas, setShowCanvas] = useState(false)
@@ -174,6 +174,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(null)
   const [currentQuery, setCurrentQuery] = useState<string>('')
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const pendingRAGTargetRef = useRef<{ query: string; chatId: string } | null>(null)
 
   const ensureActiveChat = async (fallbackTitle: string) => {
     const currentChat = useChatStore.getState().activeChat
@@ -223,7 +224,8 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   // Handle prompt selection from empty state
   const handlePromptSelect = async (prompt: string) => {
     try {
-      await ensureActiveChat(prompt)
+      const chatId = await ensureActiveChat(prompt)
+      pendingRAGTargetRef.current = { query: prompt, chatId }
     } catch (error) {
       console.error('Failed to prepare chat for prompt:', error)
       showToast(error instanceof Error ? error.message : 'Failed to start chat', 'error')
@@ -232,7 +234,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
     // Dispatch event to notify container
     const event = new CustomEvent('query-submitted', {
-      detail: { query: prompt }
+      detail: { query: prompt, chatId: pendingRAGTargetRef.current?.chatId }
     })
     window.dispatchEvent(event)
     
@@ -248,7 +250,8 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     }
 
     try {
-      await ensureActiveChat(query)
+      const chatId = await ensureActiveChat(query)
+      pendingRAGTargetRef.current = { query, chatId }
     } catch (error) {
       console.error('Failed to prepare chat for centered input:', error)
       showToast(error instanceof Error ? error.message : 'Failed to start chat', 'error')
@@ -264,7 +267,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     
     // Dispatch event to notify container
     const event = new CustomEvent('query-submitted', {
-      detail: { query }
+      detail: { query, chatId: pendingRAGTargetRef.current?.chatId }
     })
     window.dispatchEvent(event)
     
@@ -300,9 +303,13 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   // Listen for query submissions
   useEffect(() => {
     const handleQuerySubmit = (event: Event) => {
-      const customEvent = event as CustomEvent<{ query: string }>
-      const { query } = customEvent.detail
+      const customEvent = event as CustomEvent<{ query: string; chatId?: string }>
+      const { query, chatId } = customEvent.detail
       setCurrentQuery(query)
+
+      if (chatId) {
+        pendingRAGTargetRef.current = { query, chatId }
+      }
     }
 
     window.addEventListener('query-submitted', handleQuerySubmit)
@@ -317,6 +324,14 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     const handleRAGResponse = (event: Event) => {
       const customEvent = event as CustomEvent<{ query: string; response: RAGResponse }>
       const { query, response } = customEvent.detail
+      const pendingTarget = pendingRAGTargetRef.current
+
+      if (pendingTarget?.query === query) {
+        pendingRAGTargetRef.current = null
+        void addRAGMessageToChat(pendingTarget.chatId, query, response)
+        return
+      }
+
       void addRAGMessage(query, response)
     }
 
@@ -325,15 +340,13 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     return () => {
       window.removeEventListener('rag-response', handleRAGResponse)
     }
-  }, [addRAGMessage])
+  }, [addRAGMessage, addRAGMessageToChat])
 
   // Listen for file upload and deep search events
   useEffect(() => {
     const handleFileUpload = async (event: Event) => {
       const customEvent = event as CustomEvent<{ file: File; query: string }>
       const { file, query } = customEvent.detail
-      
-      console.log('File uploaded:', file.name, 'Query:', query)
       
       // Show loading state
       setIsProcessing(true)
@@ -404,8 +417,6 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       }>
       const { query, result, file } = customEvent.detail
       
-      console.log('Deep search completed:', query, result)
-      
       // Store deep search result for display
       setDeepSearchResult(result)
       
@@ -423,7 +434,6 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       } else {
         // GENERAL MODE: Deep search results are handled by the RAG store
         // Messages are automatically added through the submitQuery flow
-        console.log('Deep search completed in general mode:', result)
       }
     }
 

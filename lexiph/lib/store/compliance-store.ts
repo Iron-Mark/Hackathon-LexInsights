@@ -23,6 +23,7 @@ interface ComplianceStore {
   setEditMode: (isEdit: boolean) => void
   getCurrentVersion: () => ComplianceVersion | null
   deleteVersion: (versionId: string) => void
+  clearPrivateState: () => void
 }
 
 export const useComplianceStore = create<ComplianceStore>()(
@@ -86,6 +87,14 @@ export const useComplianceStore = create<ComplianceStore>()(
             versions: newVersions,
             currentVersionId: newCurrentId,
           }
+        })
+      },
+
+      clearPrivateState: () => {
+        set({
+          versions: [],
+          currentVersionId: null,
+          isEditMode: false,
         })
       },
     }),

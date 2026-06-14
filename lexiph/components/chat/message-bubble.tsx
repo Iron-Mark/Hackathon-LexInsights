@@ -23,6 +23,25 @@ function stripMarkdownNode<T extends { node?: unknown }>(props: T): Omit<T, 'nod
   return domProps
 }
 
+function escapeHtmlText(value: string) {
+  return value.replace(/[&<>"']/g, (character) => {
+    switch (character) {
+      case '&':
+        return '&amp;'
+      case '<':
+        return '&lt;'
+      case '>':
+        return '&gt;'
+      case '"':
+        return '&quot;'
+      case "'":
+        return '&#39;'
+      default:
+        return character
+    }
+  })
+}
+
 export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const [copied, setCopied] = useState(false)
@@ -70,6 +89,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   // Download as Word (using HTML format that Word can open)
   const handleDownloadWord = () => {
     try {
+      const escapedContent = escapeHtmlText(message.content)
       // Convert markdown to basic HTML for Word
       const htmlContent = `
 <!DOCTYPE html>
@@ -86,7 +106,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   </style>
 </head>
 <body>
-  <pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">${message.content}</pre>
+  <pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">${escapedContent}</pre>
 </body>
 </html>
       `

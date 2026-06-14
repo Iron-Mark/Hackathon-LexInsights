@@ -13,7 +13,6 @@ export default function TestRAGPage() {
   const [response, setResponse] = useState<RAGResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [healthStatus, setHealthStatus] = useState<'unknown' | 'healthy' | 'unhealthy'>('unknown')
-  const [startTime, setStartTime] = useState<number | null>(null)
   const [duration, setDuration] = useState<number | null>(null)
 
   const handleHealthCheck = async () => {
@@ -38,13 +37,13 @@ export default function TestRAGPage() {
     setLoading(true)
     setError(null)
     setResponse(null)
-    setStartTime(Date.now())
+    const startedAt = Date.now()
     setDuration(null)
 
     try {
       const result = await queryRAG({ query: query.trim(), user_id: 'test-user' })
       setResponse(result)
-      setDuration(Date.now() - (startTime || Date.now()))
+      setDuration(Date.now() - startedAt)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {

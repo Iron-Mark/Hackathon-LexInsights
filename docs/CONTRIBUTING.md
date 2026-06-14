@@ -70,7 +70,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
    npm run check:local
    ```
 
-   `npm run check:local` runs the sequential local gate: zero-warning lint, TypeScript, production audit, Markdown link checker self-test, Markdown link check, readiness self-test, deployment preflight self-test, RAG proxy self-test, production build, and Playwright smoke.
+   `npm run check:local` runs the sequential local gate: zero-warning lint, TypeScript, production audit, Markdown link checker self-test, Markdown link check, readiness self-test, deployment preflight self-test, live deployment self-test, RAG proxy self-test, production build, and Playwright smoke.
 
    Run `npm run check:readiness` only when Supabase and RAG environment values point to reachable services. It is the backend E2E readiness gate, not a generic offline test. After production deploys, run `npm run check:deployment -- --base-url https://lexinsights.vercel.app`, then `npm run check:live -- --base-url https://lexinsights.vercel.app` to confirm the public app serves the expected commit before checking live backend behavior. If Vercel linkage is unclear, rerun the preflight with `--with-vercel-cli --discover-vercel-scopes`, and add `--vercel-scope marksiazon-dev` when checking the team scope.
 

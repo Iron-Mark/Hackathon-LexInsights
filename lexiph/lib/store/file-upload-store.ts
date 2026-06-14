@@ -58,7 +58,7 @@ export const useFileUploadStore = create<FileUploadStore>((set, get) => ({
   },
 
   clearFiles: () => {
-    set({ uploadedFiles: [] })
+    set({ uploadedFiles: [], uploading: false })
   },
 
   canAddMore: () => {

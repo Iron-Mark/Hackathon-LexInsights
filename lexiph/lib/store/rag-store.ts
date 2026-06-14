@@ -103,8 +103,25 @@ interface RAGStore {
   checkHealth: () => Promise<HealthResponse>
   addToHistory: (query: string, response: RAGResponse, mode: 'http' | 'websocket', userId?: string) => void
   clearHistory: () => void
+  clearPrivateState: () => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
+}
+
+export function clearRAGLocalCache(): void {
+  if (typeof window === 'undefined') return
+
+  try {
+    for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+      const key = localStorage.key(index)
+
+      if (key?.startsWith(CACHE_PREFIX)) {
+        localStorage.removeItem(key)
+      }
+    }
+  } catch (error) {
+    console.error('RAG cache clear error:', error)
+  }
 }
 
 export const useRAGStore = create<RAGStore>()(
@@ -318,6 +335,26 @@ export const useRAGStore = create<RAGStore>()(
       // Clear history
       clearHistory: () => {
         set({ queryHistory: [] })
+      },
+
+      clearPrivateState: () => {
+        const ws = get().ragWebSocket
+
+        if (ws) {
+          ws.disconnect()
+        }
+
+        clearRAGLocalCache()
+        set({
+          currentQuery: null,
+          currentResponse: null,
+          loading: false,
+          error: null,
+          wsConnected: false,
+          wsEvents: [],
+          queryHistory: [],
+          ragWebSocket: null,
+        })
       },
 
       // Set loading

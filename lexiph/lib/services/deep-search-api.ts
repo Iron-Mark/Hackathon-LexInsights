@@ -60,8 +60,6 @@ export async function performDeepSearch(params: DeepSearchRequest): Promise<Deep
   const timeoutId = setTimeout(() => controller.abort(), 180000) // 3 minutes timeout
 
   try {
-    console.log('🔍 Starting deep search with PDF extraction...')
-    
     // Call RAG API with use_deep_search flag enabled
     const response = await fetch(buildDeepSearchUrl('/api/research/rag-summary'), {
       method: 'POST',
@@ -84,7 +82,6 @@ export async function performDeepSearch(params: DeepSearchRequest): Promise<Deep
     }
 
     const data = await response.json()
-    console.log('✓ Deep search completed:', data.deep_search_used ? 'with PDF extraction' : 'database only')
 
     // Transform RAG API response to DeepSearchResponse format
     const deepSearchResponse: DeepSearchResponse = {

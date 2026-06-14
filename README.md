@@ -729,6 +729,9 @@ npm run check:readiness:self-test
 # Deployment preflight helper safety checks
 npm run check:deployment:self-test
 
+# Live deployment helper safety checks
+npm run check:live:self-test
+
 # RAG proxy helper safety checks
 npm run check:rag-proxy:self-test
 

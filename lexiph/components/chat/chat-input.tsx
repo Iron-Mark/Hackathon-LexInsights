@@ -13,6 +13,8 @@ import { performDeepSearch } from '@/lib/services/deep-search-api'
 import { UploadedFilesList } from './uploaded-files-list'
 import { showToast } from '@/components/ui/toast'
 
+const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024
+
 export function ChatInput() {
   const [message, setMessage] = useState('')
   const [isSending, setIsSending] = useState(false)
@@ -49,12 +51,11 @@ export function ChatInput() {
       if (mode === 'general') {
         // General mode - use RAG API for Philippine law questions
         if (message.trim()) {
-          console.log('Calling RAG API with message:', message)
-          await ensureActiveChat(message.trim())
+          const chatId = await ensureActiveChat(message.trim())
           
           // Dispatch event to notify container
           const event = new CustomEvent('query-submitted', {
-            detail: { query: message.trim() }
+            detail: { query: message.trim(), chatId }
           })
           window.dispatchEvent(event)
           
@@ -63,7 +64,6 @@ export function ChatInput() {
       } else {
         // Compliance mode - process uploaded files from drag-drop store
         if (uploadedFiles.length > 0) {
-          console.log('Processing uploaded files:', uploadedFiles.length)
           const chatId = await ensureActiveChat(message.trim() || 'Compliance Analysis')
 
           if (user) {
@@ -85,7 +85,11 @@ export function ChatInput() {
           clearFiles()
         } else if (message.trim()) {
           // Text-only query - use RAG API
-          await ensureActiveChat(message.trim())
+          const chatId = await ensureActiveChat(message.trim())
+          const event = new CustomEvent('query-submitted', {
+            detail: { query: message.trim(), chatId }
+          })
+          window.dispatchEvent(event)
           await submitQuery(message.trim(), user?.id)
         }
       }
@@ -126,7 +130,14 @@ export function ChatInput() {
         'application/msword'
       ]
       
-      if (validTypes.includes(file.type) || file.name.endsWith('.md')) {
+      if (file.size > MAX_UPLOAD_SIZE_BYTES) {
+        showToast('Maximum file size is 5MB', 'error')
+        e.target.value = ''
+        return
+      }
+
+      const lowerFileName = file.name.toLowerCase()
+      if (validTypes.includes(file.type) || lowerFileName.endsWith('.md') || lowerFileName.endsWith('.txt')) {
         addFiles([file])
         showToast(`${file.name} added. Click send to analyze.`, 'success')
         // Announce to screen readers

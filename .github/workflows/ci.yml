@@ -72,6 +72,9 @@ jobs:
       - name: Deployment preflight self-test
         run: npm run check:deployment:self-test
 
+      - name: Live deployment self-test
+        run: npm run check:live:self-test
+
       - name: RAG proxy self-test
         run: npm run check:rag-proxy:self-test
 

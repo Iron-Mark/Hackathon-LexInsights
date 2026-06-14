@@ -12,10 +12,11 @@
     "check:readiness": "node scripts/check-readiness.mjs",
     "check:readiness:self-test": "node scripts/check-readiness-self-test.mjs",
     "check:live": "node scripts/check-live-deployment.mjs",
+    "check:live:self-test": "node scripts/check-live-deployment-self-test.mjs",
     "check:deployment": "node scripts/check-deployment-preflight.mjs",
     "check:deployment:self-test": "node scripts/check-deployment-preflight-self-test.mjs",
     "check:rag-proxy:self-test": "node scripts/check-rag-proxy-self-test.mjs",
-    "check:local": "npm run lint -- --max-warnings=0 && npx tsc --noEmit && npm audit --omit=dev && npm run check:docs:self-test && npm run check:docs && npm run check:readiness:self-test && npm run check:deployment:self-test && npm run check:rag-proxy:self-test && npm run build && npm run smoke:browser",
+    "check:local": "npm run lint -- --max-warnings=0 && npx tsc --noEmit && npm audit --omit=dev && npm run check:docs:self-test && npm run check:docs && npm run check:readiness:self-test && npm run check:deployment:self-test && npm run check:live:self-test && npm run check:rag-proxy:self-test && npm run build && npm run smoke:browser",
     "smoke:browser": "playwright test"
   },
   "dependencies": {

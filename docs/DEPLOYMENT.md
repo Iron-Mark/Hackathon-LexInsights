@@ -566,6 +566,7 @@ npm run check:docs:self-test
 npm run check:docs
 npm run check:readiness:self-test
 npm run check:deployment:self-test
+npm run check:live:self-test
 npm run check:rag-proxy:self-test
 npm run build
 npm run smoke:browser

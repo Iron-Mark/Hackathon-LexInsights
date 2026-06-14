@@ -37,6 +37,7 @@ interface ChatStore {
   deleteChat: (id: string) => Promise<void>
   updateChatTitle: (id: string, title: string) => Promise<void>
   addMessage: (chatId: string, message: Omit<Message, 'id' | 'created_at'>) => Promise<void>
+  addRAGMessageToChat: (chatId: string, query: string, response: RAGResponse) => Promise<void>
   addRAGMessage: (query: string, response: RAGResponse) => Promise<void>
 }
 
@@ -301,23 +302,15 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }
   },
 
-  // Add RAG message to chat history
-  addRAGMessage: async (query: string, response: RAGResponse) => {
-    const activeChat = get().activeChat
-    
-    if (!activeChat) {
-      console.warn('No active chat to add RAG message to')
-      return
-    }
-    
+  addRAGMessageToChat: async (chatId: string, query: string, response: RAGResponse) => {
     // Add user message
-    await get().addMessage(activeChat.id, {
+    await get().addMessage(chatId, {
       role: 'user',
       content: query
     })
     
     // Add assistant message with RAG metadata
-    await get().addMessage(activeChat.id, {
+    await get().addMessage(chatId, {
       role: 'assistant',
       content: response.summary,
       metadata: {
@@ -332,5 +325,17 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         documentCount: response.documents_found,
       }
     })
+  },
+
+  // Add RAG message to the active chat when no originating chat id is available.
+  addRAGMessage: async (query: string, response: RAGResponse) => {
+    const activeChat = get().activeChat
+
+    if (!activeChat) {
+      console.warn('No active chat to add RAG message to')
+      return
+    }
+
+    await get().addRAGMessageToChat(activeChat.id, query, response)
   }
 }))

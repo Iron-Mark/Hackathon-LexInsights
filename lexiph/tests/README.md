@@ -78,7 +78,17 @@ npm run check:deployment:self-test
 
 The self-test is offline and deterministic. It covers GitHub origin parsing, commit SHA comparison, Vercel alias/project matching, safe Vercel project summaries, and secret-safe public output projection.
 
-### Method 3: RAG Proxy Helper Self-Test
+### Method 3: Live Deployment Helper Self-Test
+
+Run this after changing live route, source-only, commit comparison, or public output behavior:
+
+```bash
+npm run check:live:self-test
+```
+
+The self-test is offline and deterministic. It covers argument parsing, URL handling, commit SHA comparison, route path joining, and secret-safe public output projection.
+
+### Method 4: RAG Proxy Helper Self-Test
 
 Run this after changing RAG proxy timeout, endpoint-origin, or error-classification behavior:
 
