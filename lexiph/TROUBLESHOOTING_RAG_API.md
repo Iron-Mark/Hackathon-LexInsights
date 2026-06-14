@@ -98,17 +98,18 @@ Then update `rag-api.ts` to use the proxy:
 const USE_PROXY = true // Set to false when CORS is fixed on backend
 const RAG_API_BASE_URL = USE_PROXY 
   ? '/api/rag-proxy' 
-  : (process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000')
+  : (process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org')
 ```
 
 #### Option 3: Use Local Backend for Development
 
-If you have the RAG backend running locally:
+If you have a compatible RAG backend running locally:
 
 1. Update `.env.local`:
 ```bash
 NEXT_PUBLIC_RAG_API_URL=http://localhost:8000
 NEXT_PUBLIC_RAG_WS_URL=ws://localhost:8000
+NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
 2. Restart your Next.js dev server:
@@ -186,20 +187,22 @@ Either CORS is blocking the request, or the backend is not running.
 
 ## Environment Configuration Checklist
 
-### Development (Local Backend)
-
-```bash
-# .env.local
-NEXT_PUBLIC_RAG_API_URL=http://localhost:8000
-NEXT_PUBLIC_RAG_WS_URL=ws://localhost:8000
-```
-
-### Development (Remote Backend)
+### Development (Hosted Backend)
 
 ```bash
 # .env.local
 NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
 NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
+```
+
+### Development (Optional Local Backend)
+
+```bash
+# .env.local
+NEXT_PUBLIC_RAG_API_URL=http://localhost:8000
+NEXT_PUBLIC_RAG_WS_URL=ws://localhost:8000
+NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
 ### Production

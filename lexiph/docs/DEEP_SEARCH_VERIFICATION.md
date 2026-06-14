@@ -1,13 +1,13 @@
 # Deep Search Implementation Verification
 
 **Date:** November 8, 2025  
-**Status:** ✅ VERIFIED - Real API Integration Complete
+**Status:** Frontend integration verified by code review; live E2E depends on RAG backend availability
 
 ---
 
 ## 🎯 Executive Summary
 
-The Deep Search feature is **correctly implemented** and uses the **real RAG API with PDF extraction** as specified in the integration guide. The implementation matches all requirements and follows the documented architecture.
+The Deep Search feature is wired to the real RAG API path with `use_deep_search: true`. The frontend implementation matches the intended architecture, but a complete E2E pass also requires the configured RAG backend to answer health and query requests.
 
 ---
 
@@ -254,7 +254,7 @@ ChatContainer displays results
 
 **Test 2: API Direct Call**
 ```bash
-curl -X POST "http://localhost:8000/api/research/rag-summary" \
+curl -X POST "https://devkada.resqlink.org/api/research/rag-summary" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "What are the penalties for violating RA 9003?",
@@ -293,7 +293,9 @@ curl -X POST "http://localhost:8000/api/research/rag-summary" \
 ## ⚠️ Important Notes
 
 ### 1. Backend Dependency
-- **MUST** have RAG backend running at `localhost:8000`
+- **MUST** have a reachable RAG backend configured through `NEXT_PUBLIC_RAG_API_URL`
+- Default hosted backend: `https://devkada.resqlink.org`
+- Optional local backend: `http://localhost:8000` only when self-hosting and `.env.local` is changed
 - **MUST** have ChromaDB initialized with both collections:
   - `compliance_documents` (existing)
   - `deep_search_documents` (new)
@@ -359,20 +361,17 @@ try {
 
 ## 🎯 Verification Conclusion
 
-### ✅ ALL CHECKS PASSED
+### Current Verification Status
 
-1. ✅ **API Integration:** Correctly calls real RAG API with `use_deep_search: true`
-2. ✅ **UI Implementation:** Deep Search button functional in General Mode
-3. ✅ **Processing Pipeline:** 7-stage pipeline with PDF extraction
-4. ✅ **Response Handling:** Properly transforms and displays results
-5. ✅ **Error Handling:** Timeout and error handling implemented
-6. ✅ **Caching:** Smart caching for PDFs and chunks
-7. ✅ **Performance:** Expected 60-120 second processing time
-8. ✅ **Documentation:** Complete integration guide available
+1. **API Integration:** Frontend calls real RAG API with `use_deep_search: true`
+2. **UI Implementation:** Deep Search button is implemented in General Mode
+3. **Response Handling:** Frontend transforms and displays the RAG response
+4. **Error Handling:** Timeout and error handling are implemented
+5. **Backend E2E:** Requires a successful RAG health check and sample query against the configured backend
 
-### 🚀 Ready for Production
+### Release Readiness
 
-The Deep Search feature is **fully implemented** and **production-ready**. It uses the real RAG API with PDF extraction, full-text search, and enhanced summarization as specified in the integration guide.
+Deep Search is frontend-ready but not production-verified until the configured backend passes health and sample query checks. If `https://devkada.resqlink.org/api/research/health` times out, `/test-rag`, chat RAG, deep search, and compliance analysis remain externally blocked.
 
 ---
 

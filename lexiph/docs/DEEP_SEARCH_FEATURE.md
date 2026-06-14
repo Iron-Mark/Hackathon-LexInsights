@@ -4,6 +4,10 @@
 
 The **Deep Search** feature provides enhanced analysis with comprehensive cross-referencing across the entire Philippine legislative database. It goes beyond the standard compliance analysis to identify related documents, additional insights, and cross-references.
 
+## Current Runtime Status
+
+The frontend is wired to the RAG API through `/api/research/rag-summary` with `use_deep_search: true`. Full E2E verification requires a reachable backend. The default hosted backend is `https://devkada.resqlink.org`; use `http://localhost:8000` only when running a compatible self-hosted backend and after updating `.env.local`.
+
 ## Features
 
 ### 🔍 Enhanced Analysis
@@ -35,7 +39,7 @@ The **Deep Search** feature provides enhanced analysis with comprehensive cross-
 After generating a compliance report:
 1. Look for the **"Deep Search"** button in the header (with sparkle icon ✨)
 2. Click the button to initiate deep search
-3. Wait 3-5 seconds for processing
+3. Wait for processing. Deep search can take several minutes when the backend performs PDF extraction.
 
 ### 2. **View Results**
 
@@ -59,22 +63,20 @@ Click "Hide Deep Search Results" to collapse the section while keeping the origi
 
 ## API Integration
 
-### Current Status: **Placeholder**
+### Current Status
 
-The Deep Search feature currently uses **mock data** for demonstration. The actual API integration is ready to be connected.
+Deep Search calls the real RAG endpoint through `/api/research/rag-summary` with `use_deep_search: true`. A mock helper still exists in `lib/services/deep-search-api.ts` for isolated development, but the chat UI uses the real API path.
 
-### API Endpoint (When Available)
+### API Endpoint
 
 ```typescript
-POST /api/research/deep-search
+POST /api/research/rag-summary
 
 Request:
 {
   "query": "Perform comprehensive analysis",
-  "context": "document content here",
-  "document_name": "filename.pdf",
   "user_id": "user-id",
-  "max_results": 50
+  "use_deep_search": true
 }
 
 Response:
@@ -90,42 +92,9 @@ Response:
 }
 ```
 
-### Connecting Real API
+### Development Fallback
 
-To connect the real API, update `lib/services/deep-search-api.ts`:
-
-1. **Uncomment the actual API call:**
-```typescript
-const response = await fetch(`${DEEP_SEARCH_API_URL}/api/research/deep-search`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(params),
-  signal: controller.signal,
-})
-```
-
-2. **Comment out the mock data:**
-```typescript
-// PLACEHOLDER: Return mock data
-// const mockResponse: DeepSearchResponse = { ... }
-```
-
-3. **Uncomment the response parsing:**
-```typescript
-if (!response.ok) {
-  const errorData: DeepSearchError = await response.json()
-  throw new Error(`API Error ${response.status}: ${errorData.detail}`)
-}
-return await response.json()
-```
-
----
-
-## Mock Data Structure
-
-The placeholder returns realistic mock data:
+`performDeepSearchMock()` remains available for isolated UI experiments when the backend is unavailable. It must not be used as proof of live RAG E2E.
 
 ### Related Documents (3 items)
 ```typescript
@@ -192,9 +161,9 @@ The results section includes:
 | Stage | Duration | Description |
 |-------|----------|-------------|
 | Request | <1s | Send request to API |
-| Processing | 3-5s | Deep search analysis |
+| Processing | Up to 3-5 minutes | Deep search analysis, including PDF extraction when enabled |
 | Rendering | <1s | Display results |
-| **Total** | **4-6s** | End-to-end |
+| **Total** | **Backend-dependent** | End-to-end only passes when RAG health and query requests succeed |
 
 ### Optimization
 
@@ -338,12 +307,14 @@ describe('Deep Search', () => {
 
 ```env
 # Deep Search API URL (same as RAG API)
-NEXT_PUBLIC_RAG_API_URL=http://localhost:8000
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
-### Customization
+### Mock Customization
 
-Adjust mock data in `lib/services/deep-search-api.ts`:
+For isolated UI work only, adjust mock data in `lib/services/deep-search-api.ts`:
 
 ```typescript
 const mockResponse: DeepSearchResponse = {
@@ -365,7 +336,7 @@ const mockResponse: DeepSearchResponse = {
 
 ### Results Not Displaying
 - Check network tab for API calls
-- Verify mock data is being returned
+- Verify the configured RAG backend health check passes
 - Check component state in React DevTools
 
 ### Slow Performance

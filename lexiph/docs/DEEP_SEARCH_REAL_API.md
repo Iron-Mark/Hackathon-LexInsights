@@ -4,6 +4,8 @@
 
 The Deep Search feature now uses the **real RAG API with PDF extraction** as specified in `DEEP_SEARCH_INTEGRATION.md`.
 
+**Frontend runtime note:** LexInSight defaults to `https://devkada.resqlink.org` with `NEXT_PUBLIC_USE_RAG_PROXY=true`. Any `http://localhost:8000` examples in this document assume you are running a compatible self-hosted backend locally.
+
 ---
 
 ## 🔧 Implementation Details

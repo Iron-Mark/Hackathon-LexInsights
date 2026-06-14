@@ -13,7 +13,7 @@
 - Added environment variable `NEXT_PUBLIC_USE_RAG_PROXY` to toggle proxy usage
 
 ### Issue 2: Incorrect Default API URL
-**Problem**: Code had wrong fallback URL (`localhost:3000` instead of `localhost:8000`)
+**Problem**: Code had a wrong fallback URL in the RAG client
 
 **Solution**: Fixed default fallback in `rag-api.ts`
 
@@ -69,7 +69,7 @@ Summary of all changes made
 const USE_PROXY = process.env.NEXT_PUBLIC_USE_RAG_PROXY === 'true'
 const RAG_API_BASE_URL = USE_PROXY
   ? '/api/rag-proxy'
-  : process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000'
+  : process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'
 ```
 
 ### 2. `.env.local`
@@ -134,13 +134,15 @@ NEXT_PUBLIC_USE_RAG_PROXY=true
 
 ## 🧪 Testing Status
 
-### What Works Now ✅
-- Health checks via proxy
-- Standard RAG queries via proxy
-- Deep Search queries via proxy
-- Draft Checker via proxy
+### What Is Routed Now
+- Health checks through the proxy path
+- Standard RAG queries through the proxy path
+- Deep Search queries through the proxy path
+- Draft Checker through the proxy path
 - Error handling and timeouts
 - Debug logging
+
+These routes still require the configured backend to respond. A timing-out backend will still fail through the proxy.
 
 ### What Needs Backend Fix ⚠️
 - WebSocket connections (cannot use proxy)
@@ -255,12 +257,12 @@ To remove need for proxy, backend needs:
 
 **Problem**: CORS blocking API requests
 **Solution**: Next.js API proxy + environment toggle
-**Status**: ✅ Working with proxy enabled
-**Next**: Backend team to add CORS headers for direct access
+**Status**: Proxy path implemented; full E2E still requires the backend health check to respond.
+**Next**: Restore or replace the backend, then add CORS headers for direct access if the proxy will be disabled.
 
-All three RAG API features are now functional through the proxy:
-- ✅ Standard RAG (20-30s)
-- ✅ Deep Search (60-120s)
-- ✅ Draft Checker (60-120s)
+All three RAG API features are routed through the proxy when the backend is reachable:
+- Standard RAG (20-30s)
+- Deep Search (60-120s)
+- Draft Checker (60-120s)
 
 WebSocket streaming requires backend CORS fix (cannot use proxy).

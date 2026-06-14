@@ -1,4 +1,16 @@
-# 🎉 RAG API Integration Complete!
+# RAG API Frontend Integration Complete
+
+## Current Runtime Status
+
+The frontend integration is implemented, but full RAG E2E requires a reachable backend. Use the hosted endpoint by default:
+
+```env
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
+```
+
+The older raw IP endpoint is deprecated for this frontend. If `https://devkada.resqlink.org/api/research/health` times out, `/test-rag`, chat RAG, deep search, and compliance analysis remain blocked until the backend is restored or a compatible local backend is configured.
 
 ## ✅ What's Been Implemented
 
@@ -89,8 +101,9 @@ http://localhost:3000/chat
 
 Verify `.env.local` has:
 ```env
-NEXT_PUBLIC_RAG_API_URL=http://66.181.46.44:7767
-NEXT_PUBLIC_RAG_WS_URL=ws://66.181.46.44:7767
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
 ## 📁 Files Created/Modified
@@ -138,13 +151,13 @@ LexInSight/
 
 1. **Health Check**
    ```bash
-   curl http://66.181.46.44:7767/api/research/health
+   curl https://devkada.resqlink.org/api/research/health
    ```
    Expected: `{"status":"ok","service":"simple_rag"}`
 
 2. **Simple Query**
    ```bash
-   curl -X POST http://66.181.46.44:7767/api/research/simple-rag \
+   curl -X POST https://devkada.resqlink.org/api/research/rag-summary \
      -H "Content-Type: application/json" \
      -d '{"query":"What is RA 9003?"}'
    ```
@@ -160,12 +173,12 @@ LexInSight/
 
 ```javascript
 // Test health check
-fetch('http://66.181.46.44:7767/api/research/health')
+fetch('https://devkada.resqlink.org/api/research/health')
   .then(r => r.json())
   .then(console.log)
 
 // Test RAG query
-fetch('http://66.181.46.44:7767/api/research/simple-rag', {
+fetch('https://devkada.resqlink.org/api/research/rag-summary', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ query: 'What is RA 9003?' })
@@ -209,7 +222,7 @@ fetch('http://66.181.46.44:7767/api/research/simple-rag', {
 ## 🔧 Troubleshooting
 
 ### API Not Responding
-1. Check health: `curl http://66.181.46.44:7767/api/research/health`
+1. Check health: `curl https://devkada.resqlink.org/api/research/health`
 2. Verify environment variables
 3. Check network connectivity
 4. Review browser console
@@ -255,22 +268,23 @@ Object.keys(localStorage)
 3. Add bookmarking feature
 4. Optimize for production deployment
 
-## ✨ Success Criteria
+## Success Criteria
 
-All core requirements met:
-- ✅ Natural language querying works
-- ✅ Real-time progress updates via WebSocket
-- ✅ Health monitoring functional
-- ✅ Error handling with retry logic
-- ✅ TypeScript API service layer complete
-- ✅ Sample queries available
-- ✅ Structured summary display
-- ✅ Performance within targets
-- ✅ Query history preserved
-- ✅ Test utilities available
+Implementation criteria met:
+- Natural language querying is routed to the RAG service layer
+- Real-time progress updates are implemented for WebSocket-capable backends
+- Health monitoring is implemented
+- Error handling with retry logic is implemented
+- TypeScript API service layer is complete
+- Sample queries are available
+- Structured summary display is implemented
+- Query history is preserved locally
+- Test utilities are available
+
+Runtime criteria still require live backend verification.
 
 ---
 
-**Integration Status**: ✅ COMPLETE
+**Integration Status**: Frontend complete; backend-dependent E2E pending reachable RAG health
 **Test Page**: http://localhost:3000/test-rag
 **Last Updated**: ${new Date().toLocaleDateString()}

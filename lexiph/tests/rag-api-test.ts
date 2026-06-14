@@ -2,7 +2,7 @@
  * RAG API Test Suite
  * 
  * Tests the Philippine Legislative Research RAG API
- * Base URL: http://localhost:8000
+ * Default base URL: https://devkada.resqlink.org
  * 
  * Run with: npx ts-node tests/rag-api-test.ts
  * Or: node --loader ts-node/esm tests/rag-api-test.ts
@@ -164,7 +164,7 @@ async function testErrorHandling() {
 async function runAllTests() {
   logSection('RAG API Test Suite - LexInsight')
   
-  log('API Base URL: http://localhost:8000', 'blue')
+  log(`API Base URL: ${process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'}`, 'blue')
   log('Endpoint: POST /api/research/rag-summary', 'blue')
   log('Timeout: 300 seconds (5 minutes)\n', 'blue')
   

@@ -17,7 +17,7 @@ Look for the **sparkle button** (✨) in the header:
 [History] [Edit] [✨ Deep Search] [Save] [Download]
 ```
 
-### Step 3: Wait 3-5 Seconds
+### Step 3: Wait For Processing
 The button will show a loading spinner while processing.
 
 ### Step 4: Review Results
@@ -56,9 +56,9 @@ NDRRMC Memorandum Circular No. 4           [88%]
 
 ## Current Status
 
-⚠️ **Placeholder Mode**
-- Currently returns **mock data** for demonstration
-- Real API integration ready to connect
+**Real API Path**
+- Calls `/api/research/rag-summary` with `use_deep_search: true`
+- Requires the configured RAG backend to pass health checks
 - See `DEEP_SEARCH_FEATURE.md` for API details
 
 ---
@@ -108,7 +108,7 @@ NDRRMC Memorandum Circular No. 4           [88%]
 
 ## Performance
 
-- **Processing Time:** 3-5 seconds
+- **Processing Time:** Backend-dependent; can take several minutes when PDF extraction runs
 - **Documents Analyzed:** 150+
 - **Results:** 3-10 related documents
 - **Insights:** 4-8 recommendations
@@ -125,7 +125,7 @@ NDRRMC Memorandum Circular No. 4           [88%]
 - Verify network connection
 
 **Slow response?**
-- Normal processing takes 3-5 seconds
+- Deep search can take several minutes
 - Check API server status
 
 ---

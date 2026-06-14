@@ -1,5 +1,9 @@
 # RAG API Testing Guide
 
+## Current Endpoint
+
+Use `https://devkada.resqlink.org` by default. The older raw IP endpoint is deprecated for this frontend. If the hosted health check times out, these RAG tests cannot pass until the backend is restored or a compatible local backend is configured in `.env.local`.
+
 ## Quick Start
 
 ### 1. Access Test Interface
@@ -13,7 +17,7 @@ This provides a visual interface to test the RAG API.
 #### Step 1: Health Check
 1. Click "Check Status" button
 2. Verify API shows: ✅ API is ok - Service: simple_rag
-3. If offline: Check API server is running at http://66.181.46.44:7767
+3. If offline: Check `https://devkada.resqlink.org/api/research/health`
 
 #### Step 2: Quick Test Queries
 1. Click any pre-defined test query button:
@@ -43,7 +47,7 @@ This provides a visual interface to test the RAG API.
 #### Test 1: Basic Query
 
 ```bash
-curl -X POST "http://66.181.46.44:7767/api/research/simple-rag" \
+curl -X POST "https://devkada.resqlink.org/api/research/rag-summary" \
   -H "Content-Type: application/json" \
   -d '{
     "query": "What is RA 9003?",
@@ -65,7 +69,7 @@ curl -X POST "http://66.181.46.44:7767/api/research/simple-rag" \
 #### Test 2: Health Check
 
 ```bash
-curl "http://66.181.46.44:7767/api/research/health"
+curl "https://devkada.resqlink.org/api/research/health"
 ```
 
 **Expected Response:**
@@ -79,7 +83,7 @@ curl "http://66.181.46.44:7767/api/research/health"
 #### Test 3: Invalid Query (Too Short)
 
 ```bash
-curl -X POST "http://66.181.46.44:7767/api/research/simple-rag" \
+curl -X POST "https://devkada.resqlink.org/api/research/rag-summary" \
   -H "Content-Type: application/json" \
   -d '{"query": "RA"}'
 ```
@@ -95,7 +99,7 @@ curl -X POST "http://66.181.46.44:7767/api/research/simple-rag" \
 
 1. **Create New Request**
    - Method: POST
-   - URL: `http://66.181.46.44:7767/api/research/simple-rag`
+   - URL: `https://devkada.resqlink.org/api/research/rag-summary`
 
 2. **Headers**
    ```
@@ -202,7 +206,7 @@ curl -X POST "http://66.181.46.44:7767/api/research/simple-rag" \
 ```bash
 # Test 10 requests
 for i in {1..10}; do
-  time curl -X POST "http://66.181.46.44:7767/api/research/simple-rag" \
+  time curl -X POST "https://devkada.resqlink.org/api/research/rag-summary" \
     -H "Content-Type: application/json" \
     -d '{"query": "What is RA 9003?"}'
 done
@@ -218,7 +222,7 @@ done
 ```bash
 # Test 5 concurrent requests
 for i in {1..5}; do
-  curl -X POST "http://66.181.46.44:7767/api/research/simple-rag" \
+  curl -X POST "https://devkada.resqlink.org/api/research/rag-summary" \
     -H "Content-Type: application/json" \
     -d "{\"query\": \"Test query $i\"}" &
 done
@@ -237,16 +241,16 @@ wait
 **Check:**
 1. Is API server running?
    ```bash
-   curl http://66.181.46.44:7767/api/research/health
+   curl https://devkada.resqlink.org/api/research/health
    ```
 
 2. Network connectivity?
    ```bash
-   ping 66.181.46.44
+   Resolve-DnsName devkada.resqlink.org
    ```
 
 3. Firewall blocking?
-   - Check if port 7767 is accessible
+   - Check if HTTPS port 443 is accessible
 
 **Solution:**
 - Contact API administrator
@@ -286,7 +290,9 @@ wait
 - Contact API administrator
 - Use server-side API calls (Next.js API routes)
 
-## Sample Test Results
+## Historical Sample Test Results
+
+These examples show the expected response shape. They are not proof that the current hosted backend is healthy.
 
 ### Test 1: RA 9003 Query
 
@@ -368,7 +374,7 @@ wait
 ## Resources
 
 - **Test Interface**: http://localhost:3000/test-rag
-- **API Base URL**: http://66.181.46.44:7767
+- **API Base URL**: https://devkada.resqlink.org
 - **API Docs**: See `API_INSTRUCTIONS.md`
 - **Service File**: `lib/api/rag-service.ts`
 

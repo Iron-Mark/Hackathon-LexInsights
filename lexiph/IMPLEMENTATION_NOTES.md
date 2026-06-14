@@ -164,7 +164,7 @@
 
 ## 📝 Notes
 
-- All features are production-ready
+- Features are implementation-ready, but production readiness still requires current lint/type/build gates plus live Supabase and RAG E2E verification.
 - Code follows Next.js 14+ best practices
 - Uses React 19 features appropriately
 - Framer Motion animations are optimized

@@ -60,7 +60,7 @@ LexInsights is a modern web application that helps users understand and comply w
 
 - Node.js 18+ and npm
 - Supabase account (for authentication)
-- RAG API server running (for AI features)
+- Reachable RAG API server for full AI features. The default hosted backend is `https://devkada.resqlink.org`; use a local compatible backend only if you update `.env.local`.
 
 ### Installation
 
@@ -104,8 +104,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 1. Open the chat interface
 2. Stay in **General Mode** (default)
 3. Type your question: "What is RA 9003?"
-4. Click **Send** for standard response (50-90s)
-5. Or click **Deep Search** for enhanced analysis (4-7s)
+4. Click **Send** for a standard RAG response
+5. Or click **Deep Search** for enhanced analysis with PDF extraction
 
 ### Compliance Mode - Analyze Documents
 
@@ -120,7 +120,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 1. Type your question in General Mode
 2. Click the **sparkles button** (✨)
-3. Wait 4-7 seconds for processing
+3. Wait for processing. Standard queries are usually shorter; deep search can take several minutes depending on backend load and PDF extraction.
 4. View enhanced results with:
    - Related documents
    - Cross-references
@@ -238,18 +238,19 @@ POST /api/research/rag-summary
 }
 ```
 
-**Processing Time:** 50-90 seconds
+**Processing Time:** Usually 20-90 seconds, depending on backend load
 **Timeout:** 300 seconds (5 minutes)
 
 ### Deep Search API
 
 **Endpoint**
 ```
-POST /api/research/deep-search
+POST /api/research/rag-summary
 ```
 
-**Processing Time:** 3-5 seconds
-**Documents Analyzed:** 150+
+**Request flag:** `use_deep_search: true`
+**Processing Time:** Up to 3-5 minutes when PDF extraction is required
+**Backend Required:** Full E2E only passes when the configured RAG backend health check responds successfully
 
 ---
 
@@ -286,14 +287,16 @@ Features:
 
 ```bash
 # Health check
-curl http://localhost:8000/api/research/health
+curl https://devkada.resqlink.org/api/research/health
 
 # Test query
-curl -X POST http://localhost:8000/api/research/rag-summary \
+curl -X POST https://devkada.resqlink.org/api/research/rag-summary \
   -H "Content-Type: application/json" \
   -d '{"query": "What is RA 9003?", "user_id": "test"}' \
   --max-time 300
 ```
+
+If the hosted health check times out, `/test-rag`, chat RAG, deep search, and compliance analysis cannot be fully verified until the backend is reachable or `.env.local` points to a working compatible backend.
 
 ---
 

@@ -10,6 +10,8 @@ This RAG API answers Philippine legislative questions using a **3-stage sequenti
 
 **Recommended timeout: 120-300 seconds (full pipeline execution)**
 
+**Frontend runtime note:** LexInSight defaults to `https://devkada.resqlink.org` with `NEXT_PUBLIC_USE_RAG_PROXY=true`. Any `http://localhost:8000` examples in this API spec assume you are running a compatible self-hosted backend locally.
+
 ---
 
 ## Main Endpoint

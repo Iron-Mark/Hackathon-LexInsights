@@ -4,6 +4,18 @@
 
 The Philippine Legislation Research API (RAG API) is now integrated into LexInSight, providing intelligent legislation search and summarization capabilities in compliance mode.
 
+## Current Endpoint
+
+Use the hosted HTTPS endpoint by default:
+
+```env
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
+```
+
+The older raw IP endpoint is deprecated for this frontend. Full E2E testing requires the hosted health check to respond successfully.
+
 ## Quick Start
 
 ### 1. Test the Integration
@@ -74,7 +86,7 @@ await submitQuery('What is RA 9003?') // Instant response
 ### Health Check
 
 ```bash
-GET http://66.181.46.44:7767/api/research/health
+GET https://devkada.resqlink.org/api/research/health
 ```
 
 **Response:**
@@ -88,7 +100,7 @@ GET http://66.181.46.44:7767/api/research/health
 ### Simple RAG Query
 
 ```bash
-POST http://66.181.46.44:7767/api/research/simple-rag
+POST https://devkada.resqlink.org/api/research/rag-summary
 Content-Type: application/json
 
 {
@@ -111,7 +123,7 @@ Content-Type: application/json
 ### WebSocket Streaming
 
 ```javascript
-const ws = new WebSocket('ws://66.181.46.44:7767/api/research/ws/simple-rag')
+const ws = new WebSocket('wss://devkada.resqlink.org/api/research/ws/rag-summary')
 
 ws.onopen = () => {
   ws.send(JSON.stringify({ 
@@ -201,8 +213,9 @@ Required environment variables in `.env.local`:
 
 ```env
 # RAG API Configuration
-NEXT_PUBLIC_RAG_API_URL=http://66.181.46.44:7767
-NEXT_PUBLIC_RAG_WS_URL=ws://66.181.46.44:7767
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
 ## Error Handling
@@ -252,7 +265,7 @@ The integration includes comprehensive error handling:
 
 1. Check health endpoint:
    ```bash
-   curl http://66.181.46.44:7767/api/research/health
+   curl https://devkada.resqlink.org/api/research/health
    ```
 
 2. Verify environment variables are set
@@ -330,7 +343,7 @@ For issues or questions:
 ## Resources
 
 - **Test Page**: `http://localhost:3000/test-rag`
-- **API Base URL**: `http://66.181.46.44:7767`
+- **API Base URL**: `https://devkada.resqlink.org`
 - **Spec Document**: `.kiro/specs/rag-api-integration/`
 - **Design Document**: `.kiro/specs/rag-api-integration/design.md`
 

@@ -1,5 +1,9 @@
 # Backend Integration Complete
 
+## Current Verification Status
+
+This document records the intended Supabase-backed implementation. It is not proof that the current environment is E2E healthy. Full verification still requires a reachable Supabase project and successful auth/storage/database checks with the values in `.env.local`.
+
 ## ✅ All Features Now Connected to Supabase
 
 ### 1. **Chat Management** (Fully Integrated)
@@ -367,7 +371,7 @@ supabase-insert-data-mark.sql
 - ✅ Complete backend functionality
 - ✅ Production-ready architecture
 
-## 🎉 All Backend Features Complete!
+## Backend Feature Scope
 
 Every feature from the left sidebar to the right side is now connected to Supabase:
 - Chat list → Supabase
@@ -376,4 +380,4 @@ Every feature from the left sidebar to the right side is now connected to Supaba
 - User data → Supabase Auth
 - Documents → Supabase Database
 
-**The app is now fully functional with a complete backend!**
+**Runtime note:** the app is backend-wired, but functionality depends on the configured Supabase project being reachable and correctly migrated.

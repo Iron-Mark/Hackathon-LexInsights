@@ -8,6 +8,8 @@ The **Legislation Draft Checker** is a powerful endpoint that analyzes markdown-
 - ⚠️ **Amber**: Minor issues, warnings
 - 🚫 **Red**: Critical issues, conflicts
 
+**Frontend runtime note:** LexInSight defaults to `https://devkada.resqlink.org` with `NEXT_PUBLIC_USE_RAG_PROXY=true`. Any `http://localhost:8000` examples in this API spec assume you are running a compatible self-hosted backend locally.
+
 ## Endpoint
 
 ```

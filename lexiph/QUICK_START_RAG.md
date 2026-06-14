@@ -2,10 +2,20 @@
 
 ## ✅ What Was Fixed
 
-1. **CORS Issue**: Created Next.js API proxy to bypass CORS restrictions
+1. **CORS Path**: Created Next.js API proxy so browser requests can go through the app server
 2. **WebSocket URL**: Corrected WebSocket endpoint configuration
 3. **Environment Variables**: Added proxy toggle configuration
 4. **Error Handling**: Improved error messages and debugging
+
+## Current Backend Requirement
+
+The frontend is proxy-ready, but full RAG E2E still requires the configured backend to answer health and query requests. The default hosted backend is:
+
+```bash
+https://devkada.resqlink.org
+```
+
+If `curl https://devkada.resqlink.org/api/research/health` times out, `/test-rag`, chat RAG, deep search, and draft checking cannot be fully verified until that service is restored or `.env.local` points to a working compatible backend.
 
 ## 🚀 Quick Setup (5 minutes)
 
@@ -74,12 +84,12 @@ npm run dev
 Browser → https://devkada.resqlink.org ❌ CORS blocked
 ```
 
-### With Proxy (Working)
+### With Proxy (CORS-Safe Request Path)
 ```
-Browser → Next.js Server → https://devkada.resqlink.org ✅ Works!
+Browser → Next.js Server → https://devkada.resqlink.org
 ```
 
-The proxy runs on your Next.js server, so it's not subject to browser CORS restrictions.
+The proxy runs on your Next.js server, so it avoids browser CORS restrictions. It does not make an offline or timing-out backend healthy.
 
 ## 🐛 Troubleshooting
 
@@ -220,7 +230,7 @@ curl -X POST "https://devkada.resqlink.org/api/legislation/draft-checker" \
 - **Troubleshooting**: See `TROUBLESHOOTING_RAG_API.md`
 - **Implementation Summary**: See `RAG_INTEGRATION_SUMMARY.md`
 
-## ✨ Features Implemented
+## ✨ Frontend Features Implemented
 
 ✅ Standard RAG search (20-30s)
 ✅ Deep Search with PDF extraction (60-120s)
@@ -232,10 +242,11 @@ curl -X POST "https://devkada.resqlink.org/api/legislation/draft-checker" \
 ✅ Debug logging
 ✅ Sample data for testing
 
-## 🎉 You're Ready!
+## Ready To Test When The Backend Is Reachable
 
 1. Restart your dev server
 2. Navigate to `http://localhost:3000/test-rag`
-3. Start testing!
+3. Run the health check first
+4. Start query and draft-checker testing only after health passes
 
 If you encounter any issues, check `TROUBLESHOOTING_RAG_API.md` for detailed solutions.

@@ -6,11 +6,13 @@ This directory contains tests for the Philippine Legislative Research RAG API in
 
 ## API Details
 
-- **Base URL**: `http://localhost:8000`
+- **Default Base URL**: `https://devkada.resqlink.org`
 - **Main Endpoint**: `POST /api/research/rag-summary`
-- **WebSocket**: `ws://localhost:8000/api/research/ws/rag-summary`
+- **WebSocket**: `wss://devkada.resqlink.org/api/research/ws/rag-summary`
 - **Timeout**: 300 seconds (5 minutes)
 - **Expected Response Time**: 50-90 seconds
+
+Use `http://localhost:8000` and `ws://localhost:8000` only when running a compatible self-hosted backend and after updating `.env.local`.
 
 ## Pipeline Stages
 
@@ -62,12 +64,12 @@ This directory contains tests for the Philippine Legislative Research RAG API in
 
 Test the health endpoint:
 ```bash
-curl http://localhost:8000/api/research/health
+curl https://devkada.resqlink.org/api/research/health
 ```
 
 Test a query:
 ```bash
-curl -X POST http://localhost:8000/api/research/rag-summary \
+curl -X POST https://devkada.resqlink.org/api/research/rag-summary \
   -H "Content-Type: application/json" \
   -d '{"query": "What is RA 9003?", "user_id": "test"}' \
   --max-time 300
@@ -137,12 +139,13 @@ Use these queries to test different aspects of the API:
 
 1. Check if the RAG API server is running:
    ```bash
-   curl http://localhost:8000/api/research/health
+   curl https://devkada.resqlink.org/api/research/health
    ```
 
 2. Verify the API URL in your `.env.local` file:
    ```
-   NEXT_PUBLIC_RAG_API_URL=http://localhost:8000
+   NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+   NEXT_PUBLIC_USE_RAG_PROXY=true
    ```
 
 3. Check the API server logs for errors
@@ -176,8 +179,9 @@ Create a `.env.local` file in the project root:
 
 ```env
 # RAG API Configuration
-NEXT_PUBLIC_RAG_API_URL=http://localhost:8000
-NEXT_PUBLIC_RAG_WS_URL=ws://localhost:8000
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
 
 # Supabase (if using authentication)
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url

@@ -26,9 +26,10 @@ Before you begin, ensure you have the following installed:
   - Free tier available
   - Required for database and authentication
 
-- **RAG API Access** (Optional for full functionality)
-  - Contact maintainers for API keys
-  - Required for document analysis features
+- **Reachable RAG API** (Optional for full functionality)
+  - The default hosted endpoint is `https://devkada.resqlink.org`
+  - Required for `/test-rag`, chat RAG, deep search, and compliance analysis
+  - If the hosted endpoint is unavailable, run a compatible backend locally and update `.env.local`
 
 ## ��� Quick Start
 
@@ -77,8 +78,9 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_APP_NAME=LexInSight
 
 # RAG API Configuration (OPTIONAL)
-NEXT_PUBLIC_RAG_API_URL=your_rag_api_url
-NEXT_PUBLIC_RAG_API_KEY=your_rag_api_key
+NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
+NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
+NEXT_PUBLIC_USE_RAG_PROXY=true
 
 # Analytics (OPTIONAL)
 NEXT_PUBLIC_ANALYTICS_ID=your_analytics_id
@@ -264,8 +266,9 @@ All tables have RLS enabled with the following policies:
 |----------|-------------|---------|
 | `NEXT_PUBLIC_APP_URL` | Application URL | `http://localhost:3000` |
 | `NEXT_PUBLIC_APP_NAME` | Application name | `LexInSight` |
-| `NEXT_PUBLIC_RAG_API_URL` | RAG API endpoint | - |
-| `NEXT_PUBLIC_RAG_API_KEY` | RAG API authentication key | - |
+| `NEXT_PUBLIC_RAG_API_URL` | RAG API endpoint | `https://devkada.resqlink.org` |
+| `NEXT_PUBLIC_RAG_WS_URL` | RAG WebSocket endpoint | `wss://devkada.resqlink.org` |
+| `NEXT_PUBLIC_USE_RAG_PROXY` | Route browser RAG calls through `/api/rag-proxy` | `true` |
 | `NEXT_PUBLIC_ANALYTICS_ID` | Analytics tracking ID | - |
 
 ## ��� Development Workflow

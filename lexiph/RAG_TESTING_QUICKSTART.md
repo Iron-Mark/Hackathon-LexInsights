@@ -2,13 +2,15 @@
 
 ## Prerequisites
 
-1. **RAG API Server Running**
-   - The API should be running at `http://localhost:8000`
-   - Check with: `curl http://localhost:8000/api/research/health`
+1. **Reachable RAG API Server**
+   - The default backend is `https://devkada.resqlink.org`
+   - Check with: `curl https://devkada.resqlink.org/api/research/health`
+   - For self-hosted development, run a compatible backend locally and set `NEXT_PUBLIC_RAG_API_URL=http://localhost:8000`
 
 2. **Environment Variables**
    - Copy `.env.example` to `.env.local`
-   - Update the RAG API URL if different from localhost:8000
+   - Keep `NEXT_PUBLIC_USE_RAG_PROXY=true` unless the backend allows browser CORS directly
+   - Update the RAG API URL only when using a different reachable backend
 
 ## Quick Test (Browser)
 
@@ -33,14 +35,16 @@
 
 ```bash
 # Health check
-curl http://localhost:8000/api/research/health
+curl https://devkada.resqlink.org/api/research/health
 
 # Test query
-curl -X POST http://localhost:8000/api/research/rag-summary \
+curl -X POST https://devkada.resqlink.org/api/research/rag-summary \
   -H "Content-Type: application/json" \
   -d '{"query": "What is RA 9003?", "user_id": "test"}' \
   --max-time 300
 ```
+
+If the hosted health check times out, use a known-good local backend and update `.env.local` before running the browser flow.
 
 ## Test in Chat Interface
 

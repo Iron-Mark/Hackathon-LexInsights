@@ -10,6 +10,8 @@ The RAG backend now supports **Deep Search Mode**, which enhances legislative re
 4. **Combined Results**: Merges and reranks results from both shallow and deep search
 5. **Enhanced Summary**: Generates comprehensive summary with full-text context and citations
 
+**Frontend runtime note:** LexInSight defaults to `https://devkada.resqlink.org` with `NEXT_PUBLIC_USE_RAG_PROXY=true`. Any `http://localhost:8000` examples in this integration guide assume you are running a compatible self-hosted backend locally.
+
 ## Architecture
 
 ### Data Collections
