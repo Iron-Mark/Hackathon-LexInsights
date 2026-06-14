@@ -43,7 +43,7 @@ git push origin main
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
 2. Click **"Add New Project"**
 3. Import your GitHub repository
-4. Select `lexiph/lexiph` folder
+4. Select the `lexiph` folder
 5. Click **"Deploy"**
 
 #### Option B: Using Vercel CLI
@@ -296,8 +296,8 @@ sudo apt install -y nginx
 
 ```bash
 # Clone repository
-git clone https://github.com/KpG782/lexiph.git
-cd lexiph/lexiph
+git clone https://github.com/Iron-Mark/lexinsights.git
+cd lexinsights/lexiph
 
 # Install dependencies
 npm ci

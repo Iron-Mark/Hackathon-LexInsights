@@ -16,8 +16,8 @@ Before starting, make sure you have:
 
 ```bash
 # Clone repository
-git clone https://github.com/KpG782/lexiph.git
-cd lexiph/lexiph
+git clone https://github.com/Iron-Mark/lexinsights.git
+cd lexinsights/lexiph
 
 # Install dependencies
 npm install
@@ -155,8 +155,8 @@ See [Troubleshooting Guide](./TROUBLESHOOTING.md)
 ## 🆘 Need Help?
 
 - 📖 [Documentation](./SETUP.md)
-- 🐛 [Report Bug](https://github.com/KpG782/lexiph/issues)
-- 💬 [Discussions](https://github.com/KpG782/lexiph/discussions)
+- 🐛 [Report Bug](https://github.com/Iron-Mark/lexinsights/issues)
+- 💬 [Discussions](https://github.com/Iron-Mark/lexinsights/discussions)
 - 📧 [Email Support](mailto:support@lexinsight.ph) (coming soon)
 
 ---

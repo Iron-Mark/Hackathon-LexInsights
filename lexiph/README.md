@@ -66,8 +66,8 @@ LexInsights is a modern web application that helps users understand and comply w
 
 ```bash
 # Clone the repository
-git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
-cd Hackathon-LexInsights/lexiph
+git clone https://github.com/Iron-Mark/lexinsights.git
+cd lexinsights/lexiph
 
 # Install dependencies
 npm install
