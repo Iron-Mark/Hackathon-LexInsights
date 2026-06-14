@@ -9,6 +9,34 @@ import { buildRagUrl } from './rag-config'
 
 const buildDeepSearchUrl = buildRagUrl
 
+async function readTextSafely(response: Response): Promise<string> {
+  try {
+    return await response.text()
+  } catch {
+    return ''
+  }
+}
+
+async function extractErrorDetail(response: Response): Promise<string> {
+  const text = (await readTextSafely(response)).trim()
+
+  if (!text) {
+    return 'No response body'
+  }
+
+  try {
+    const parsed = JSON.parse(text) as { detail?: string }
+
+    if (typeof parsed?.detail === 'string' && parsed.detail.trim().length > 0) {
+      return parsed.detail.trim()
+    }
+  } catch {
+    return text.slice(0, 250)
+  }
+
+  return `Unexpected response: ${text.slice(0, 250)}`
+}
+
 export interface DeepSearchRequest {
   query: string
   context?: string
@@ -77,8 +105,8 @@ export async function performDeepSearch(params: DeepSearchRequest): Promise<Deep
     clearTimeout(timeoutId)
 
     if (!response.ok) {
-      const errorData: DeepSearchError = await response.json()
-      throw new Error(`Deep Search API Error ${response.status}: ${errorData.detail}`)
+      const detail = await extractErrorDetail(response)
+      throw new Error(`Deep Search API Error ${response.status}: ${detail}`)
     }
 
     const data = await response.json()
