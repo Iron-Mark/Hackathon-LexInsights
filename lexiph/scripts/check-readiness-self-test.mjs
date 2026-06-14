@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 
 import {
   checkSupabaseAnonKey,
   checkSupabaseProjectRef,
+  parseEnvFile,
   getStandardSupabaseProjectRef,
   inspectSupabaseKey,
   safeUrl,
@@ -96,5 +100,24 @@ const unknownChecks = checkSupabaseAnonKey('not-a-valid-key', projectRef)
 assert.equal(getCheck(unknownChecks, 'supabase.anon_key_format').status, 'fail')
 assert.equal(getCheck(unknownChecks, 'supabase.anon_key_format').critical, true)
 assertNoRawKeyLeak(unknownChecks, 'not-a-valid-key')
+
+const tempDir = mkdtempSync(join(tmpdir(), 'lexinsight-readiness-env-'))
+const envFile = join(tempDir, 'env.test')
+writeFileSync(envFile, [
+  'REAL=present',
+  'EMPTY=',
+  'QUOTED_EMPTY=""',
+  'SPACED=   ',
+  '# comment',
+  '',
+].join('\n'))
+
+const parsedEnv = parseEnvFile(envFile)
+assert.equal(parsedEnv.REAL, 'present')
+assert.equal(parsedEnv.EMPTY, undefined)
+assert.equal(parsedEnv.QUOTED_EMPTY, undefined)
+assert.equal(parsedEnv.SPACED, undefined)
+
+rmSync(tempDir, { recursive: true, force: true })
 
 console.log('Readiness self-test passed.')

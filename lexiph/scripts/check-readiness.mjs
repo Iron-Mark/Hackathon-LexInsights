@@ -71,7 +71,7 @@ function parseArgs(argv) {
   return args
 }
 
-function parseEnvFile(path) {
+export function parseEnvFile(path) {
   if (!existsSync(path)) {
     return {}
   }
@@ -99,6 +99,10 @@ function parseEnvFile(path) {
         (value.startsWith("'") && value.endsWith("'"))
       ) {
         value = value.slice(1, -1)
+      }
+
+      if (value.length === 0) {
+        return env
       }
 
       env[key] = value
