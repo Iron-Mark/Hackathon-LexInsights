@@ -16,8 +16,8 @@ Before starting, make sure you have:
 
 ```bash
 # Clone repository
-git clone https://github.com/Iron-Mark/lexinsights.git
-cd lexinsights/lexiph
+git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
+cd Hackathon-LexInsights/lexiph
 
 # Install dependencies
 npm install
@@ -90,7 +90,7 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 - [Full Setup Guide](./SETUP.md) - Detailed instructions
 - [Architecture](./ARCHITECTURE.md) - How it works
 - [API Reference](./API.md) - API documentation
-- [Contributing](../CONTRIBUTING.md) - How to contribute
+- [Contributing](./CONTRIBUTING.md) - How to contribute
 
 ## 🔧 Common Issues
 
@@ -155,8 +155,8 @@ See [Troubleshooting Guide](./TROUBLESHOOTING.md)
 ## 🆘 Need Help?
 
 - 📖 [Documentation](./SETUP.md)
-- 🐛 [Report Bug](https://github.com/Iron-Mark/lexinsights/issues)
-- 💬 [Questions and feature requests](https://github.com/Iron-Mark/lexinsights/issues)
+- 🐛 [Report Bug](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
+- 💬 [Questions and feature requests](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
 - 📧 [Email Support](mailto:support@lexinsight.ph) (coming soon)
 
 ---

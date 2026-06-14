@@ -636,7 +636,7 @@ SELECT * FROM pg_stat_database;
 
 If you're still stuck:
 
-1. **Search existing issues**: [GitHub Issues](https://github.com/Iron-Mark/lexinsights/issues)
+1. **Search existing issues**: [GitHub Issues](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
 
 2. **Create new issue** with:
 
@@ -647,7 +647,7 @@ If you're still stuck:
    - Error messages
    - Screenshots
 
-3. **Ask questions**: [GitHub Issues](https://github.com/Iron-Mark/lexinsights/issues)
+3. **Ask questions**: [GitHub Issues](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
 
 4. **Check documentation**:
    - [Setup Guide](./SETUP.md)

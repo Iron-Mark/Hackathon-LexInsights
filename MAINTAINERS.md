@@ -1,6 +1,6 @@
 # Maintainers
 
-LexInSight is maintained from the standalone repository at `Iron-Mark/lexinsights`.
+LexInSight is maintained from the fork repository at `Iron-Mark/Hackathon-LexInsights`.
 
 ## Source Of Truth
 
@@ -19,7 +19,7 @@ LexInSight is maintained from the standalone repository at `Iron-Mark/lexinsight
 2. Keep Supabase and RAG environment setup documented in `lexiph/.env.example`.
 3. Preserve zero-warning lint as the baseline.
 4. Replace mock compliance analysis with real backend-backed document analysis.
-5. Keep README clone/deploy instructions aligned with the standalone repo.
+5. Keep README clone/deploy instructions aligned with the maintained fork.
 
 ## Release Checklist
 

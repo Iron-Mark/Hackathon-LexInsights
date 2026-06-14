@@ -36,10 +36,10 @@ Before you begin, ensure you have the following installed:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/lexinsight.git
+git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
 
 # Navigate to the project directory
-cd lexinsight/lexiph
+cd Hackathon-LexInsights/lexiph
 ```
 
 ### 2. Install Dependencies
@@ -486,8 +486,8 @@ After successful setup:
 If you encounter issues not covered here:
 
 1. Check [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
-2. Search [GitHub Issues](https://github.com/yourusername/lexinsight/issues)
-3. Ask in [Discussions](https://github.com/yourusername/lexinsight/discussions)
+2. Search [GitHub Issues](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
+3. Ask questions in [GitHub Issues](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
 4. Join our [Discord](https://discord.gg/lexinsight) (if available)
 
 ## ��� Additional Resources

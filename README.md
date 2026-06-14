@@ -2,9 +2,9 @@
 
 > **AI-Powered Philippine Legal Compliance Assistant**
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Iron-Mark/lexinsights)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/Iron-Mark/lexinsights)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/Iron-Mark/Hackathon-LexInsights)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue)](https://github.com/Iron-Mark/Hackathon-LexInsights)
+[![License](https://img.shields.io/badge/license-MIT-green)](#-license)
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 
@@ -186,10 +186,10 @@ Before you begin, ensure you have:
 
 ```bash
 # Clone the repository
-git clone https://github.com/Iron-Mark/lexinsights.git
+git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
 
 # Navigate to project directory
-cd lexinsights/lexiph
+cd Hackathon-LexInsights/lexiph
 
 # Install dependencies
 npm install
@@ -211,8 +211,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/Iron-Mark/lexinsights.git
-cd lexinsights/lexiph
+git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
+cd Hackathon-LexInsights/lexiph
 ```
 
 ### Step 2: Install Dependencies
@@ -799,8 +799,8 @@ We welcome contributions! Here's how:
 1. **Fork the repository**
 2. **Clone your fork**
    ```bash
-   git clone https://github.com/your-username/lexinsights.git
-   cd lexinsights/lexiph
+   git clone https://github.com/your-username/Hackathon-LexInsights.git
+   cd Hackathon-LexInsights/lexiph
    ```
 3. **Create a branch**
    ```bash
@@ -901,7 +901,7 @@ A: Yes, you can delete individual documents or your entire account.
 ### Get Help
 
 - **Documentation**: Check our [guides](./lexiph/TESTING_GUIDE.md)
-- **Issues**: [GitHub Issues](https://github.com/Iron-Mark/lexinsights/issues)
+- **Issues**: [GitHub Issues](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
 - **Email**: support@lexinsight.ph (coming soon)
 - **Discord**: Join our community (coming soon)
 
@@ -918,7 +918,7 @@ A: Yes, you can delete individual documents or your entire account.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ---
 
@@ -1033,10 +1033,10 @@ Special thanks to the maintainers and contributors of:
 
 ## 📊 Project Stats
 
-![GitHub stars](https://img.shields.io/github/stars/Iron-Mark/lexinsights?style=social)
-![GitHub forks](https://img.shields.io/github/forks/Iron-Mark/lexinsights?style=social)
-![GitHub issues](https://img.shields.io/github/issues/Iron-Mark/lexinsights)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/Iron-Mark/lexinsights)
+![GitHub stars](https://img.shields.io/github/stars/Iron-Mark/Hackathon-LexInsights?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Iron-Mark/Hackathon-LexInsights?style=social)
+![GitHub issues](https://img.shields.io/github/issues/Iron-Mark/Hackathon-LexInsights)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/Iron-Mark/Hackathon-LexInsights)
 
 ---
 
@@ -1054,7 +1054,7 @@ Special thanks to the maintainers and contributors of:
 
 ---
 
-[Website](https://lexinsights.vercel.app) • [Documentation](./lexiph/TESTING_GUIDE.md) • [Report Bug](https://github.com/Iron-Mark/lexinsights/issues) • [Request Feature](https://github.com/Iron-Mark/lexinsights/issues)
+[Website](https://lexinsights.vercel.app) • [Documentation](./lexiph/TESTING_GUIDE.md) • [Report Bug](https://github.com/Iron-Mark/Hackathon-LexInsights/issues) • [Request Feature](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
 
 **© 2025 LexInSight. All rights reserved.**
 

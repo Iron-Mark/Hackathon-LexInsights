@@ -296,8 +296,8 @@ sudo apt install -y nginx
 
 ```bash
 # Clone repository
-git clone https://github.com/Iron-Mark/lexinsights.git
-cd lexinsights/lexiph
+git clone https://github.com/Iron-Mark/Hackathon-LexInsights.git
+cd Hackathon-LexInsights/lexiph
 
 # Install dependencies
 npm ci

@@ -6,7 +6,7 @@ Thank you for your interest in contributing to LexInSight! This document provide
 
 ### Reporting Bugs
 
-Before creating bug reports, please check the [issue tracker](https://github.com/Iron-Mark/lexinsights/issues) to avoid duplicates.
+Before creating bug reports, please check the [issue tracker](https://github.com/Iron-Mark/Hackathon-LexInsights/issues) to avoid duplicates.
 
 **When reporting bugs, include:**
 - Clear, descriptive title
@@ -48,8 +48,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 1. **Fork the Repository**
    ```bash
-   git clone https://github.com/YOUR-USERNAME/lexinsights.git
-   cd lexinsights/lexiph
+   git clone https://github.com/YOUR-USERNAME/Hackathon-LexInsights.git
+   cd Hackathon-LexInsights/lexiph
    ```
 
 2. **Create a Branch**
