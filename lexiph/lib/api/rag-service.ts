@@ -11,6 +11,34 @@
 
 const RAG_API_BASE_URL = process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'
 
+async function readTextSafely(response: Response): Promise<string> {
+  try {
+    return await response.text()
+  } catch {
+    return ''
+  }
+}
+
+async function extractErrorDetail(response: Response): Promise<string> {
+  const text = (await readTextSafely(response)).trim()
+
+  if (!text) {
+    return 'No response body'
+  }
+
+  try {
+    const parsed = JSON.parse(text) as { detail?: string }
+
+    if (typeof parsed?.detail === 'string' && parsed.detail.trim().length > 0) {
+      return parsed.detail.trim()
+    }
+  } catch {
+    return text.slice(0, 250)
+  }
+
+  return `Unexpected response: ${text.slice(0, 250)}`
+}
+
 export interface RAGRequest {
   query: string
   user_id?: string
@@ -27,10 +55,6 @@ export interface RAGResponse {
     search_executor: string
     summarizer: string
   }
-}
-
-export interface RAGError {
-  detail: string
 }
 
 /**
@@ -59,8 +83,8 @@ export async function ragSummary(query: string, userId?: string): Promise<RAGRes
     clearTimeout(timeoutId)
 
     if (!response.ok) {
-      const error: RAGError = await response.json()
-      throw new Error(error.detail || `HTTP ${response.status}`)
+      const detail = await extractErrorDetail(response)
+      throw new Error(detail ? `HTTP ${response.status}: ${detail}` : `HTTP ${response.status}`)
     }
 
     const data: RAGResponse = await response.json()
@@ -88,7 +112,8 @@ export async function healthCheck(): Promise<{ status: string; service: string }
     const response = await fetch(`${RAG_API_BASE_URL}/api/research/health`)
     
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`)
+      const detail = await extractErrorDetail(response)
+      throw new Error(`HTTP ${response.status}: ${detail}`)
     }
 
     return await response.json()

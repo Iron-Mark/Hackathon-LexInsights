@@ -12,6 +12,34 @@ import {
 
 const HEALTH_CHECK_TIMEOUT_MS = 20000
 
+async function readTextSafely(response: Response): Promise<string> {
+  try {
+    return await response.text()
+  } catch {
+    return ''
+  }
+}
+
+async function extractErrorDetail(response: Response): Promise<string> {
+  const text = (await readTextSafely(response)).trim()
+
+  if (!text) {
+    return 'No response body'
+  }
+
+  try {
+    const parsed = JSON.parse(text) as { detail?: string }
+
+    if (typeof parsed?.detail === 'string' && parsed.detail.trim().length > 0) {
+      return parsed.detail.trim()
+    }
+  } catch {
+    return text.slice(0, 250)
+  }
+
+  return `Unexpected response: ${text.slice(0, 250)}`
+}
+
 // Debug: Log the API URL being used (only in development)
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   console.log('RAG API Configuration:')
@@ -94,11 +122,6 @@ export interface DraftCheckerResponse {
   error?: string
 }
 
-// Error Response
-export interface RAGError {
-  detail: string
-}
-
 // Health Response
 export interface HealthResponse {
   status: string
@@ -148,8 +171,8 @@ export async function queryRAG(params: RAGQuery): Promise<RAGResponse> {
     clearTimeout(timeoutId)
 
     if (!response.ok) {
-      const errorData: RAGError = await response.json()
-      throw new Error(`API Error ${response.status}: ${errorData.detail}`)
+      const detail = await extractErrorDetail(response)
+      throw new Error(`API Error ${response.status}: ${detail}`)
     }
 
     const data: RAGResponse = await response.json()
@@ -207,8 +230,8 @@ export async function checkDraft(params: DraftCheckerRequest): Promise<DraftChec
     clearTimeout(timeoutId)
 
     if (!response.ok) {
-      const errorData: RAGError = await response.json()
-      throw new Error(`API Error ${response.status}: ${errorData.detail}`)
+      const detail = await extractErrorDetail(response)
+      throw new Error(`API Error ${response.status}: ${detail}`)
     }
 
     const data: DraftCheckerResponse = await response.json()
@@ -261,7 +284,8 @@ export async function checkRAGHealth(): Promise<HealthResponse> {
     clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`Health check failed with status ${response.status}: ${response.statusText}`)
+      const detail = await extractErrorDetail(response)
+      throw new Error(`Health check failed with status ${response.status}: ${detail}`)
     }
 
     return await response.json()
@@ -311,7 +335,8 @@ export async function checkDraftCheckerHealth(): Promise<HealthResponse> {
     clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`Health check failed with status ${response.status}: ${response.statusText}`)
+      const detail = await extractErrorDetail(response)
+      throw new Error(`Health check failed with status ${response.status}: ${detail}`)
     }
 
     return await response.json()
