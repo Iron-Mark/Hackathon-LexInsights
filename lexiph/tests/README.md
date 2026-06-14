@@ -87,6 +87,20 @@ npm run check:deployment -- --base-url https://lexinsights.vercel.app
 
 Use `--with-vercel-cli` when you also need to confirm the current shell has an authenticated Vercel CLI session. The command does not print raw env values or provider secrets.
 
+Use `--discover-vercel-scopes` with the CLI check to print safe team-scope slugs available to the current Vercel account:
+
+```bash
+npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
+```
+
+Use `--vercel-scope <team>` with `--with-vercel-cli` when the deployment may live under a team account:
+
+```bash
+npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+```
+
+When the repo or live URL is still not visible, the preflight prints a non-critical `vercel.recovery_hint` with the next scoped command or provider action.
+
 ### Method 5: Live Deployment Check
 
 After a production deployment, verify that the public URL serves the expected commit and exposes the backend readiness routes:

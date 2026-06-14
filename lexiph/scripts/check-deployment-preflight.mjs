@@ -11,9 +11,11 @@ const DEFAULT_TIMEOUT_MS = 20000
 function parseArgs(argv) {
   const args = {
     baseUrl: DEFAULT_BASE_URL,
+    discoverVercelScopes: false,
     json: false,
     timeoutMs: DEFAULT_TIMEOUT_MS,
     withVercelCli: false,
+    vercelScope: null,
   }
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -26,6 +28,22 @@ function parseArgs(argv) {
 
     if (arg === '--with-vercel-cli') {
       args.withVercelCli = true
+      continue
+    }
+
+    if (arg === '--discover-vercel-scopes') {
+      args.discoverVercelScopes = true
+      continue
+    }
+
+    if (arg === '--vercel-scope') {
+      args.vercelScope = argv[index + 1] || null
+      index += 1
+      continue
+    }
+
+    if (arg.startsWith('--vercel-scope=')) {
+      args.vercelScope = arg.slice('--vercel-scope='.length) || null
       continue
     }
 
@@ -309,8 +327,68 @@ function collectProjectAliases(project) {
   return [...aliases]
 }
 
-function listVisibleVercelProjects() {
-  const result = runCommand('vercel', ['api', '/v9/projects', '--raw'], 20000)
+function vercelScopeArgs(scope) {
+  return scope ? ['--scope', scope] : []
+}
+
+function safeTeamScopes(teams) {
+  return teams
+    .filter((team) => typeof team?.slug === 'string' && team.slug)
+    .map((team) => ({
+      slug: team.slug,
+      current: Boolean(team.current),
+    }))
+}
+
+function listVercelTeamScopes() {
+  const result = runCommand('vercel', ['teams', 'ls', '--format', 'json'], 20000)
+
+  if (!result.ok) {
+    return {
+      name: 'vercel.team_scopes',
+      status: 'warn',
+      critical: false,
+      message: 'Could not discover available Vercel team scopes.',
+      details: {
+        accessible: false,
+        scopes: [],
+      },
+    }
+  }
+
+  try {
+    const body = JSON.parse(result.output)
+    const scopes = safeTeamScopes(Array.isArray(body.teams) ? body.teams : [])
+
+    return {
+      name: 'vercel.team_scopes',
+      status: 'pass',
+      critical: false,
+      message:
+        scopes.length > 0
+          ? `Available Vercel team scope(s): ${scopes.map((scope) => scope.slug).join(', ')}`
+          : 'No Vercel team scopes are visible to the current account.',
+      details: {
+        accessible: true,
+        scopes,
+      },
+    }
+  } catch {
+    return {
+      name: 'vercel.team_scopes',
+      status: 'warn',
+      critical: false,
+      message: 'Vercel team list output was not valid JSON.',
+      details: {
+        accessible: false,
+        scopes: [],
+      },
+    }
+  }
+}
+
+function listVisibleVercelProjects(scope) {
+  const result = runCommand('vercel', ['api', '/v9/projects', '--raw', ...vercelScopeArgs(scope)], 20000)
 
   if (!result.ok) {
     return {
@@ -318,9 +396,12 @@ function listVisibleVercelProjects() {
         name: 'vercel.project_api',
         status: 'warn',
         critical: false,
-        message: 'Could not read visible Vercel projects from the current account.',
+        message: scope
+          ? `Could not read visible Vercel projects from scope ${scope}.`
+          : 'Could not read visible Vercel projects from the current account.',
         details: {
           accessible: false,
+          scope,
         },
       },
       projects: [],
@@ -336,10 +417,13 @@ function listVisibleVercelProjects() {
         name: 'vercel.project_api',
         status: 'pass',
         critical: false,
-        message: `Read ${projects.length} visible Vercel project(s) from the current account.`,
+        message: scope
+          ? `Read ${projects.length} visible Vercel project(s) from scope ${scope}.`
+          : `Read ${projects.length} visible Vercel project(s) from the current account.`,
         details: {
           accessible: true,
           visibleProjectCount: projects.length,
+          scope,
         },
       },
       projects,
@@ -353,6 +437,7 @@ function listVisibleVercelProjects() {
         message: 'Vercel project API output was not valid JSON.',
         details: {
           accessible: false,
+          scope,
         },
       },
       projects: [],
@@ -423,9 +508,47 @@ function vercelProjectVisibilityChecks(projects, baseUrl, repoInfo) {
   return checks
 }
 
-function vercelInspectCheck(baseUrl) {
+function vercelRecoveryHintCheck(baseUrl, repoInfo, scope, discoveredScopes, visibilityChecks) {
+  const repoCheck = visibilityChecks.find((check) => check.name === 'vercel.repo_project')
+  const liveUrlCheck = visibilityChecks.find((check) => check.name === 'vercel.live_url_project')
+  const repoVisible = repoCheck?.status === 'pass'
+  const liveUrlVisible = liveUrlCheck?.status === 'pass'
+
+  if (repoVisible && liveUrlVisible) {
+    return null
+  }
+
+  const host = baseUrl.hostname
+  const baseUrlText = baseUrl.toString().replace(/\/$/, '')
+  const availableScopes = discoveredScopes.map((teamScope) => teamScope.slug)
+  const suggestedScope = scope || availableScopes[0] || null
+  const scopedCommand = suggestedScope
+    ? `npm run check:deployment -- --base-url ${baseUrlText} --with-vercel-cli --discover-vercel-scopes --vercel-scope ${suggestedScope}`
+    : null
+  const repoText = repoInfo?.slug || 'this repository'
+
+  return {
+    name: 'vercel.recovery_hint',
+    status: 'warn',
+    critical: false,
+    message: scope
+      ? `Scope ${scope} does not expose a Vercel project linked to ${repoText} or alias ${host}. Import/link the repo in that scope or switch to the owning account.`
+      : scopedCommand
+        ? `Rerun the preflight with a discovered Vercel scope, then import/link ${repoText} if the scoped check is still missing.`
+        : `No Vercel scope exposes a project linked to ${repoText} or alias ${host}; switch to the owning account or import/link the repo.`,
+    details: {
+      availableScopes,
+      command: scopedCommand,
+      scope,
+      repo: repoInfo?.slug || null,
+      host,
+    },
+  }
+}
+
+function vercelInspectCheck(baseUrl, scope) {
   const target = baseUrl.toString().replace(/\/$/, '')
-  const result = runCommand('vercel', ['inspect', target], 20000)
+  const result = runCommand('vercel', ['inspect', target, ...vercelScopeArgs(scope)], 20000)
 
   return {
     name: 'vercel.live_inspect',
@@ -437,6 +560,7 @@ function vercelInspectCheck(baseUrl) {
     details: {
       inspectable: result.ok,
       host: baseUrl.hostname,
+      scope,
     },
   }
 }
@@ -566,7 +690,7 @@ async function ragProxyRouteCheck(baseUrl, timeoutMs) {
   return check
 }
 
-function vercelCliChecks(baseUrl, repoInfo) {
+function vercelCliChecks(baseUrl, repoInfo, scope, discoverScopes) {
   const version = runCommand('vercel', ['--version'], 10000)
   const checks = [
     {
@@ -589,20 +713,42 @@ function vercelCliChecks(baseUrl, repoInfo) {
     name: 'vercel.cli_whoami',
     status: whoami.ok ? 'pass' : 'warn',
     critical: false,
-    message: whoami.ok ? `Authenticated as ${whoami.output}` : 'Vercel CLI is not authenticated or cannot read the current account.',
+    message: whoami.ok
+      ? scope
+        ? `Authenticated as ${whoami.output}; checking scope ${scope}`
+        : `Authenticated as ${whoami.output}`
+      : 'Vercel CLI is not authenticated or cannot read the current account.',
     details: {
       authenticated: whoami.ok,
+      scope,
     },
   })
 
-  const { check, projects } = listVisibleVercelProjects()
-  checks.push(check)
+  let discoveredScopes = []
 
-  if (check.status === 'pass') {
-    checks.push(...vercelProjectVisibilityChecks(projects, baseUrl, repoInfo))
+  if (discoverScopes) {
+    const teamScopeCheck = listVercelTeamScopes()
+    discoveredScopes = teamScopeCheck.details?.scopes || []
+    checks.push(teamScopeCheck)
   }
 
-  checks.push(vercelInspectCheck(baseUrl))
+  const { check, projects } = listVisibleVercelProjects(scope)
+  checks.push(check)
+
+  let visibilityChecks = []
+
+  if (check.status === 'pass') {
+    visibilityChecks = vercelProjectVisibilityChecks(projects, baseUrl, repoInfo)
+    checks.push(...visibilityChecks)
+  }
+
+  const recoveryHint = vercelRecoveryHintCheck(baseUrl, repoInfo, scope, discoveredScopes, visibilityChecks)
+
+  if (recoveryHint) {
+    checks.push(recoveryHint)
+  }
+
+  checks.push(vercelInspectCheck(baseUrl, scope))
 
   return checks
 }
@@ -618,6 +764,7 @@ function publicDetails(check) {
     expectedSha: details.expectedSha,
     actualSha: details.actualSha,
     commitMatches: details.commitMatches,
+    command: details.command,
     body:
       body && typeof body === 'object'
         ? {
@@ -650,7 +797,9 @@ async function run() {
     gitHeadCheck(expectedSha),
     gitRemoteCheck(repoInfo),
     vercelLinkCheck(cwd),
-    ...(args.withVercelCli ? vercelCliChecks(baseUrl, repoInfo) : []),
+    ...(args.withVercelCli
+      ? vercelCliChecks(baseUrl, repoInfo, args.vercelScope, args.discoverVercelScopes)
+      : []),
   ]
   const liveChecks = await Promise.all([
     versionCheck(baseUrl, args.timeoutMs, expectedSha),
@@ -664,7 +813,9 @@ async function run() {
     checkedAt: new Date().toISOString(),
     baseUrl: baseUrl.toString(),
     expectedSha,
+    discoverVercelScopes: args.discoverVercelScopes,
     withVercelCli: args.withVercelCli,
+    vercelScope: args.vercelScope,
     checks,
   }
 
@@ -674,6 +825,9 @@ async function run() {
     console.log(`LexInSight deployment preflight: ${ready ? 'ready' : 'blocked'}`)
     console.log(`Base URL: ${result.baseUrl}`)
     console.log(`Expected commit: ${expectedSha || 'not available'}`)
+    if (args.withVercelCli && args.vercelScope) {
+      console.log(`Vercel scope: ${args.vercelScope}`)
+    }
     console.log(`Checked at: ${result.checkedAt}`)
 
     for (const check of checks) {
@@ -698,6 +852,10 @@ async function run() {
       if (details.body?.summary) {
         console.log(`  summary=${details.body.summary}`)
       }
+
+      if (details.command) {
+        console.log(`  command=${details.command}`)
+      }
     }
   }
 
@@ -709,11 +867,14 @@ async function run() {
 export {
   collectProjectAliases,
   compareSha,
+  listVercelTeamScopes,
   parseArgs,
   parseGitHubRepoUrl,
   publicDetails,
+  safeTeamScopes,
   safeProjectSummary,
   safeUrl,
+  vercelRecoveryHintCheck,
   vercelProjectVisibilityChecks,
 }
 

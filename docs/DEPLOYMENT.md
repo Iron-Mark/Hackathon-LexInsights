@@ -579,6 +579,20 @@ npm run check:deployment -- --base-url https://lexinsights.vercel.app
 
 Add `--with-vercel-cli` when you also want a local Vercel CLI check from the current shell. This verifies CLI availability, authenticated user, visible projects, whether any visible project is linked to `Iron-Mark/Hackathon-LexInsights`, whether any visible project owns the configured live URL alias, and whether `vercel inspect` can read that deployment.
 
+Use `--discover-vercel-scopes` with the CLI check to print safe team-scope slugs available to the current Vercel account:
+
+```bash
+npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
+```
+
+If the project may live under a team, pass the team scope explicitly:
+
+```bash
+npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+```
+
+When the repo or live URL is still not visible, the preflight prints a non-critical `vercel.recovery_hint` with the next scoped command or provider action.
+
 If the CLI check reports no visible project for this repository or live URL, switch to the Vercel team/account that owns the deployment or import this repository into a new Vercel project. Set the project Root Directory to `lexiph`, configure the required env vars, deploy `main`, then rerun the preflight. A GitHub push alone will not update `https://lexinsights.vercel.app` if that domain is attached to an inaccessible or unrelated Vercel project.
 
 After production deploys, verify deployment freshness before claiming live E2E:

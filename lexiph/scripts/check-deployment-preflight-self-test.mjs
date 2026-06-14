@@ -8,8 +8,10 @@ import {
   parseArgs,
   parseGitHubRepoUrl,
   publicDetails,
+  safeTeamScopes,
   safeProjectSummary,
   safeUrl,
+  vercelRecoveryHintCheck,
   vercelProjectVisibilityChecks,
 } from './check-deployment-preflight.mjs'
 
@@ -85,8 +87,42 @@ assert.equal(compareSha('b136738', 'b13673820a4677fe838e6b9052eb97bc5dbf9175'), 
 assert.equal(compareSha('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbb'), false)
 
 assert.equal(parseArgs(['--base-url', 'https://example.com', '--timeout-ms', '3000', '--with-vercel-cli']).baseUrl, 'https://example.com')
+assert.deepEqual(
+  parseArgs(['--with-vercel-cli', '--discover-vercel-scopes', '--vercel-scope', 'marksiazon-dev']),
+  {
+    baseUrl: 'https://lexinsights.vercel.app',
+    discoverVercelScopes: true,
+    json: false,
+    timeoutMs: 20000,
+    withVercelCli: true,
+    vercelScope: 'marksiazon-dev',
+  }
+)
+assert.equal(parseArgs(['--vercel-scope=marksiazon-dev']).vercelScope, 'marksiazon-dev')
+assert.equal(parseArgs(['--discover-vercel-scopes']).discoverVercelScopes, true)
 assert.equal(parseArgs(['--timeout-ms=-1']).timeoutMs, 20000)
 assert.equal(safeUrl('not a url'), null)
+
+const safeScopes = safeTeamScopes([
+  {
+    id: 'team_secret_id',
+    slug: 'marksiazon-dev',
+    name: 'marksiazon-dev',
+    current: true,
+    inviteCode: 'do-not-include',
+    billing: {
+      email: 'private@example.com',
+    },
+  },
+  {
+    id: 'personal_user_id',
+    slug: '',
+  },
+])
+assert.deepEqual(safeScopes, [{ slug: 'marksiazon-dev', current: true }])
+assertNoSensitiveMarkers(safeScopes)
+assert.equal(JSON.stringify(safeScopes).includes('do-not-include'), false)
+assert.equal(JSON.stringify(safeScopes).includes('private@example.com'), false)
 
 assert.deepEqual(collectProjectAliases(matchingProject), ['lexinsights.vercel.app', 'lexinsights-git-main.vercel.app'])
 
@@ -112,6 +148,33 @@ assertNoSensitiveMarkers(matchingChecks)
 const missingChecks = vercelProjectVisibilityChecks([unrelatedProject], baseUrl, repoInfo)
 assert.equal(getCheck(missingChecks, 'vercel.repo_project').status, 'warn')
 assert.equal(getCheck(missingChecks, 'vercel.live_url_project').status, 'warn')
+
+const discoveredScopeHint = vercelRecoveryHintCheck(
+  baseUrl,
+  repoInfo,
+  null,
+  [{ slug: 'marksiazon-dev', current: true }],
+  missingChecks
+)
+assert.equal(discoveredScopeHint.name, 'vercel.recovery_hint')
+assert.equal(discoveredScopeHint.status, 'warn')
+assert.equal(
+  discoveredScopeHint.details.command,
+  'npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev'
+)
+assert.equal(publicDetails(discoveredScopeHint).command, discoveredScopeHint.details.command)
+assertNoSensitiveMarkers(discoveredScopeHint)
+
+const explicitScopeHint = vercelRecoveryHintCheck(
+  baseUrl,
+  repoInfo,
+  'marksiazon-dev',
+  [{ slug: 'marksiazon-dev', current: true }],
+  missingChecks
+)
+assert.equal(explicitScopeHint.details.command, discoveredScopeHint.details.command)
+assert.equal(explicitScopeHint.message.includes('Scope marksiazon-dev does not expose'), true)
+assertNoSensitiveMarkers(explicitScopeHint)
 
 const publicBody = publicDetails({
   name: 'live.version',
