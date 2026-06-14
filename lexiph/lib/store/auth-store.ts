@@ -21,6 +21,7 @@ interface AuthState {
 // Error mapping function to convert Supabase errors to user-friendly messages
 const mapSupabaseError = (error: SupabaseAuthError | Error | unknown): string => {
   const errorMessage = error instanceof Error ? error.message : ''
+  const normalizedMessage = errorMessage.toLowerCase()
   
   // Handle specific Supabase error messages
   if (errorMessage.includes('Invalid login credentials')) {
@@ -36,7 +37,9 @@ const mapSupabaseError = (error: SupabaseAuthError | Error | unknown): string =>
   }
   
   // Handle network errors
-  if (errorMessage.includes('fetch failed') || errorMessage.includes('network')) {
+  if (normalizedMessage.includes('failed to fetch') ||
+      normalizedMessage.includes('fetch failed') ||
+      normalizedMessage.includes('network')) {
     return 'Connection failed. Please try again.'
   }
   

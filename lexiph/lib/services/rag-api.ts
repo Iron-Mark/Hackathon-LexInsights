@@ -2,20 +2,23 @@
 
 // RAG API Service for Philippine Legislation Research
 
-// Use proxy to bypass CORS issues (set to false when backend CORS is configured)
-const USE_PROXY = process.env.NEXT_PUBLIC_USE_RAG_PROXY === 'true'
+import {
+  buildRagUrl,
+  DEFAULT_RAG_API_URL,
+  RAG_API_BASE_URL,
+  RAG_WS_URL,
+  USE_RAG_PROXY,
+} from './rag-config'
 
-const RAG_API_BASE_URL = USE_PROXY
-  ? '/api/rag-proxy'
-  : process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000'
+const HEALTH_CHECK_TIMEOUT_MS = 20000
 
 // Debug: Log the API URL being used (only in development)
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   console.log('RAG API Configuration:')
-  console.log('- Use Proxy:', USE_PROXY)
+  console.log('- Use Proxy:', USE_RAG_PROXY)
   console.log('- Base URL:', RAG_API_BASE_URL)
-  console.log('- WS URL:', process.env.NEXT_PUBLIC_RAG_WS_URL || 'ws://localhost:8000')
-  console.log('- Backend URL:', process.env.NEXT_PUBLIC_RAG_API_URL)
+  console.log('- WS URL:', RAG_WS_URL)
+  console.log('- Backend URL:', process.env.NEXT_PUBLIC_RAG_API_URL || DEFAULT_RAG_API_URL)
 }
 
 // ============================================================================
@@ -129,9 +132,7 @@ export async function queryRAG(params: RAGQuery): Promise<RAGResponse> {
   const timeoutId = setTimeout(() => controller.abort(), 300000) // 5 minutes for deep search
 
   try {
-    const url = USE_PROXY
-      ? `${RAG_API_BASE_URL}?endpoint=/api/research/rag-summary`
-      : `${RAG_API_BASE_URL}/api/research/rag-summary`
+    const url = buildRagUrl('/api/research/rag-summary')
 
     const response = await fetch(url, {
       method: 'POST',
@@ -190,9 +191,7 @@ export async function checkDraft(params: DraftCheckerRequest): Promise<DraftChec
   const timeoutId = setTimeout(() => controller.abort(), 120000) // 2 minutes
 
   try {
-    const url = USE_PROXY
-      ? `${RAG_API_BASE_URL}?endpoint=/api/legislation/draft-checker`
-      : `${RAG_API_BASE_URL}/api/legislation/draft-checker`
+    const url = buildRagUrl('/api/legislation/draft-checker')
 
     const response = await fetch(url, {
       method: 'POST',
@@ -244,12 +243,10 @@ export async function checkDraft(params: DraftCheckerRequest): Promise<DraftChec
  */
 export async function checkRAGHealth(): Promise<HealthResponse> {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout for health check
+  const timeoutId = setTimeout(() => controller.abort(), HEALTH_CHECK_TIMEOUT_MS)
 
   try {
-    const url = USE_PROXY
-      ? `${RAG_API_BASE_URL}?endpoint=/api/research/health`
-      : `${RAG_API_BASE_URL}/api/research/health`
+    const url = buildRagUrl('/api/research/health')
 
     const response = await fetch(url, {
       method: 'GET',
@@ -274,7 +271,7 @@ export async function checkRAGHealth(): Promise<HealthResponse> {
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
         throw new Error(
-          'Health check timed out after 10 seconds. The RAG API server may be unreachable.'
+          'Health check timed out after 20 seconds. The RAG API server may be unreachable.'
         )
       }
 
@@ -296,12 +293,10 @@ export async function checkRAGHealth(): Promise<HealthResponse> {
  */
 export async function checkDraftCheckerHealth(): Promise<HealthResponse> {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 10000)
+  const timeoutId = setTimeout(() => controller.abort(), HEALTH_CHECK_TIMEOUT_MS)
 
   try {
-    const url = USE_PROXY
-      ? `${RAG_API_BASE_URL}?endpoint=/api/legislation/draft-checker/health`
-      : `${RAG_API_BASE_URL}/api/legislation/draft-checker/health`
+    const url = buildRagUrl('/api/legislation/draft-checker/health')
 
     const response = await fetch(url, {
       method: 'GET',
@@ -325,7 +320,7 @@ export async function checkDraftCheckerHealth(): Promise<HealthResponse> {
 
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        throw new Error('Health check timed out after 10 seconds.')
+        throw new Error('Health check timed out after 20 seconds.')
       }
 
       if (error.message.includes('Failed to fetch')) {
@@ -355,7 +350,7 @@ export class RAGWebSocket {
   private wsUrl: string
 
   constructor() {
-    this.wsUrl = process.env.NEXT_PUBLIC_RAG_WS_URL || 'ws://localhost:8000'
+    this.wsUrl = RAG_WS_URL
   }
 
   connect(onMessage: (event: WebSocketEvent) => void, onError?: (error: unknown) => void) {

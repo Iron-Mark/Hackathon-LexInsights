@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const RAG_API_URL = process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'
+const HEALTH_CHECK_TIMEOUT_MS = 20000
 
 /**
  * POST proxy for RAG API endpoints
@@ -62,7 +63,7 @@ export async function GET(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
       },
-      signal: AbortSignal.timeout(10000), // 10 seconds for health checks
+      signal: AbortSignal.timeout(HEALTH_CHECK_TIMEOUT_MS),
     })
 
     if (!response.ok) {

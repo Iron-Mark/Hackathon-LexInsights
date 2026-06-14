@@ -156,7 +156,7 @@ See [Troubleshooting Guide](./TROUBLESHOOTING.md)
 
 - 📖 [Documentation](./SETUP.md)
 - 🐛 [Report Bug](https://github.com/Iron-Mark/lexinsights/issues)
-- 💬 [Discussions](https://github.com/Iron-Mark/lexinsights/discussions)
+- 💬 [Questions and feature requests](https://github.com/Iron-Mark/lexinsights/issues)
 - 📧 [Email Support](mailto:support@lexinsight.ph) (coming soon)
 
 ---

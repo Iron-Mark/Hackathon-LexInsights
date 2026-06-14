@@ -647,7 +647,7 @@ If you're still stuck:
    - Error messages
    - Screenshots
 
-3. **Join discussions**: [GitHub Discussions](https://github.com/Iron-Mark/lexinsights/discussions)
+3. **Ask questions**: [GitHub Issues](https://github.com/Iron-Mark/lexinsights/issues)
 
 4. **Check documentation**:
    - [Setup Guide](./SETUP.md)

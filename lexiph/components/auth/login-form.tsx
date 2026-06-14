@@ -74,6 +74,7 @@ export function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
+            autoComplete="email"
             required
             aria-invalid={!!error}
           />
@@ -90,6 +91,7 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
+            autoComplete="current-password"
             required
             aria-invalid={!!error}
           />

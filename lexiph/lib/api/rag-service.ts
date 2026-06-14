@@ -1,15 +1,15 @@
 /**
  * RAG API Service for Philippine Legislative Research
- * Base URL: http://localhost:8000
+ * Base URL: https://devkada.resqlink.org
  * 
  * API Documentation:
  * - Main Endpoint: POST /api/research/rag-summary
- * - WebSocket: ws://localhost:8000/api/research/ws/rag-summary
+ * - WebSocket: wss://devkada.resqlink.org/api/research/ws/rag-summary
  * - Timeout: 300 seconds (5 minutes) for full pipeline
  * - Pipeline: Query Generation → Database Search → AI Summarization
  */
 
-const RAG_API_BASE_URL = process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000'
+const RAG_API_BASE_URL = process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'
 
 export interface RAGRequest {
   query: string

@@ -900,7 +900,7 @@ A: Yes, you can delete individual documents or your entire account.
 
 ### Get Help
 
-- **Documentation**: Check our [guides](./TESTING_GUIDE.md)
+- **Documentation**: Check our [guides](./lexiph/TESTING_GUIDE.md)
 - **Issues**: [GitHub Issues](https://github.com/Iron-Mark/lexinsights/issues)
 - **Email**: support@lexinsight.ph (coming soon)
 - **Discord**: Join our community (coming soon)
@@ -1054,7 +1054,7 @@ Special thanks to the maintainers and contributors of:
 
 ---
 
-[Website](https://lexinsights.vercel.app) • [Documentation](./TESTING_GUIDE.md) • [Report Bug](https://github.com/Iron-Mark/lexinsights/issues) • [Request Feature](https://github.com/Iron-Mark/lexinsights/issues)
+[Website](https://lexinsights.vercel.app) • [Documentation](./lexiph/TESTING_GUIDE.md) • [Report Bug](https://github.com/Iron-Mark/lexinsights/issues) • [Request Feature](https://github.com/Iron-Mark/lexinsights/issues)
 
 **© 2025 LexInSight. All rights reserved.**
 

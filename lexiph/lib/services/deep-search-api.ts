@@ -5,15 +5,9 @@
  * Performs enhanced search with additional context and related documents
  */
 
-const USE_PROXY = process.env.NEXT_PUBLIC_USE_RAG_PROXY === 'true'
+import { buildRagUrl } from './rag-config'
 
-const DEEP_SEARCH_API_URL = USE_PROXY
-  ? '/api/rag-proxy'
-  : process.env.NEXT_PUBLIC_RAG_API_URL || 'http://localhost:8000'
-
-function buildDeepSearchUrl(endpoint: string) {
-  return USE_PROXY ? `${DEEP_SEARCH_API_URL}?endpoint=${endpoint}` : `${DEEP_SEARCH_API_URL}${endpoint}`
-}
+const buildDeepSearchUrl = buildRagUrl
 
 export interface DeepSearchRequest {
   query: string

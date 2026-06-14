@@ -77,6 +77,7 @@ export function SignupForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
+            autoComplete="email"
             required
             aria-invalid={!!error}
           />
@@ -93,6 +94,7 @@ export function SignupForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={loading}
+            autoComplete="new-password"
             required
             aria-invalid={!!passwordError || !!error}
           />
@@ -109,6 +111,7 @@ export function SignupForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             disabled={loading}
+            autoComplete="new-password"
             required
             aria-invalid={!!passwordError || !!error}
           />
