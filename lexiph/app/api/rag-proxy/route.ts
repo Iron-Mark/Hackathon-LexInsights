@@ -28,6 +28,20 @@ async function readUpstreamError(response: Response) {
   return text.slice(0, 1000)
 }
 
+function readUpstreamSuccess(responseText: string) {
+  const text = responseText.trim()
+
+  if (!text) {
+    return { detail: 'Empty upstream body' }
+  }
+
+  try {
+    return JSON.parse(text) as unknown
+  } catch {
+    return { detail: `Non-JSON upstream response: ${text.slice(0, 250)}` }
+  }
+}
+
 /**
  * POST proxy for RAG API endpoints
  * Bypasses CORS by making server-side requests
@@ -83,7 +97,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const data = await response.json()
+    const responseText = await response.text()
+    const data = readUpstreamSuccess(responseText)
+
+    if (Object.prototype.hasOwnProperty.call(data, 'detail')) {
+      return noStoreJson(
+        {
+          ...(typeof data === 'object' && data !== null ? data : {}),
+          error: {
+            type: 'upstream_payload_parse_error',
+            endpoint: upstream.endpoint,
+            upstreamOrigin: upstream.upstreamOrigin,
+            timeoutMs,
+          },
+        },
+        response.status
+      )
+    }
+
     return noStoreJson(data, 200)
   } catch (error) {
     const failure = getProxyFailure(error)
@@ -155,7 +186,24 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const data = await response.json()
+    const responseText = await response.text()
+    const data = readUpstreamSuccess(responseText)
+
+    if (Object.prototype.hasOwnProperty.call(data, 'detail')) {
+      return noStoreJson(
+        {
+          ...(typeof data === 'object' && data !== null ? data : {}),
+          error: {
+            type: 'upstream_payload_parse_error',
+            endpoint: upstream.endpoint,
+            upstreamOrigin: upstream.upstreamOrigin,
+            timeoutMs,
+          },
+        },
+        response.status
+      )
+    }
+
     return noStoreJson(data, 200)
   } catch (error) {
     const failure = getProxyFailure(error)
