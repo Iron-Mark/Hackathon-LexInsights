@@ -370,6 +370,7 @@ Use `--source-only` or `--skip-backend` when you only need to prove that Vercel 
 
 ```bash
 npm run check:live -- --base-url https://lexiph.vercel.app --source-only
+npm run check:live -- --base-url https://lexiph.vercel.app --skip-backend
 ```
 
 Full mode checks key routes, `GET /api/version`, `GET /api/readiness`, and the RAG proxy health path. It exits nonzero when production is stale, when the exposed commit does not match local `HEAD`, or when backend readiness is still blocked.
