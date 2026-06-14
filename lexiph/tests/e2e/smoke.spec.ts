@@ -100,4 +100,48 @@ test.describe('LexInSight smoke checks', () => {
     expect(JSON.stringify(body)).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
     expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
   })
+
+  test('RAG proxy returns structured blocker errors without secrets', async ({ request }) => {
+    const response = await request.get('/api/rag-proxy?endpoint=/api/research/health&timeoutMs=1000')
+    const body = await response.json()
+
+    expect([200, 502, 504]).toContain(response.status())
+
+    if (!response.ok()) {
+      expect(body).toEqual(
+        expect.objectContaining({
+          detail: expect.any(String),
+          error: expect.objectContaining({
+            type: expect.stringMatching(/^upstream_/),
+            endpoint: '/api/research/health',
+            upstreamOrigin: expect.any(String),
+            timeoutMs: expect.any(Number),
+          }),
+        })
+      )
+      expect(body.error.timeoutMs).toBeGreaterThanOrEqual(500)
+      expect(body.error.timeoutMs).toBeLessThanOrEqual(60000)
+    }
+
+    expect(JSON.stringify(body)).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
+  })
+
+  test('RAG proxy rejects cross-origin endpoint overrides', async ({ request }) => {
+    const response = await request.get('/api/rag-proxy?endpoint=https://example.com/api/research/health')
+    const body = await response.json()
+
+    expect(response.status()).toBe(400)
+    expect(body).toEqual(
+      expect.objectContaining({
+        detail: 'Endpoint must stay on the configured RAG API origin',
+        error: expect.objectContaining({
+          type: 'invalid_endpoint',
+          endpoint: 'https://example.com/api/research/health',
+        }),
+      })
+    )
+    expect(JSON.stringify(body)).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
+  })
 })

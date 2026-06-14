@@ -287,6 +287,9 @@ npm start
 
 # Run linter
 npm run lint -- --max-warnings=0
+
+# Full local quality gate
+npm run check:local
 ```
 
 ### Development Tools
@@ -298,6 +301,12 @@ TypeScript is configured with strict mode. Check types with:
 ```bash
 # Type checking
 npx tsc --noEmit
+```
+
+Run the complete sequential local gate before pushing:
+
+```bash
+npm run check:local
 ```
 
 #### ESLint

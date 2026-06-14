@@ -549,14 +549,24 @@ export const event = ({ action, category, label, value }) => {
 
 The repository includes `.github/workflows/ci.yml` for code-quality gates on push and pull request events. It runs from the `lexiph` app root.
 
+Use the same sequence locally before a release checkpoint:
+
+```bash
+npm run check:local
+```
+
+CI keeps the sequence expanded so each failed layer is visible in GitHub Actions logs:
+
 ```yaml
 npm ci
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm audit --omit=dev
+npm run check:readiness:self-test
+npm run check:deployment:self-test
+npm run check:rag-proxy:self-test
 npm run build
 npm run smoke:browser
-npm run check:readiness:self-test
 ```
 
 Production deployment is still handled by Vercel/Git integration, not by a repo-owned deploy workflow. Keep `npm run check:readiness` as the live backend gate after Supabase and RAG environment values point to reachable services.
@@ -567,7 +577,9 @@ Before full live QA, run the deployment preflight. It checks the app root, local
 npm run check:deployment -- --base-url https://lexinsights.vercel.app
 ```
 
-Add `--with-vercel-cli` when you also want a local Vercel CLI availability/authentication check from the current shell.
+Add `--with-vercel-cli` when you also want a local Vercel CLI check from the current shell. This verifies CLI availability, authenticated user, visible projects, whether any visible project is linked to `Iron-Mark/Hackathon-LexInsights`, whether any visible project owns the configured live URL alias, and whether `vercel inspect` can read that deployment.
+
+If the CLI check reports no visible project for this repository or live URL, switch to the Vercel team/account that owns the deployment or import this repository into a new Vercel project. Set the project Root Directory to `lexiph`, configure the required env vars, deploy `main`, then rerun the preflight. A GitHub push alone will not update `https://lexinsights.vercel.app` if that domain is attached to an inaccessible or unrelated Vercel project.
 
 After production deploys, verify deployment freshness before claiming live E2E:
 
@@ -594,7 +606,7 @@ curl https://lexinsights.vercel.app/api/readiness
 
 The endpoint returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass. It returns `503` with component-level blocker details while an external backend is down. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key.
 
-For a faster operator probe while an upstream backend is known to be unavailable, call `/api/readiness?timeoutMs=2000`.
+For a faster operator probe while an upstream backend is known to be unavailable, call `/api/readiness?timeoutMs=2000`. The readiness route forwards that timeout to the RAG proxy health call; proxy upstream timeouts return structured `504` errors, upstream connection failures return structured `502` errors, and proxy `endpoint` values must remain on the configured RAG API origin.
 
 ## 📈 Performance Optimization
 

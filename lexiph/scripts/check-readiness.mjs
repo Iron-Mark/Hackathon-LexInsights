@@ -455,10 +455,17 @@ async function run() {
       }
 
       asyncChecks.push(
-        checkFetch('app.readiness', new URL('/api/readiness', baseUrl).toString(), args.timeoutMs),
+        checkFetch(
+          'app.readiness',
+          new URL(`/api/readiness?timeoutMs=${args.timeoutMs}`, baseUrl).toString(),
+          args.timeoutMs
+        ),
         checkFetch(
           'app.rag_proxy_health',
-          new URL('/api/rag-proxy?endpoint=/api/research/health', baseUrl).toString(),
+          new URL(
+            `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${args.timeoutMs}`,
+            baseUrl
+          ).toString(),
           args.timeoutMs
         )
       )

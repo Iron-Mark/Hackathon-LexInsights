@@ -716,18 +716,27 @@ Response: { success: boolean }
 ### Run Tests
 
 ```bash
-# App gates
+# Full sequential local gate
 cd lexiph
+npm run check:local
+
+# Individual gates run by check:local
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm audit --omit=dev
-npm run build
-
-# Browser smoke
-npm run smoke:browser
 
 # Readiness helper safety checks
 npm run check:readiness:self-test
+
+# Deployment preflight helper safety checks
+npm run check:deployment:self-test
+
+# RAG proxy helper safety checks
+npm run check:rag-proxy:self-test
+
+# Build and browser smoke
+npm run build
+npm run smoke:browser
 
 # Backend readiness, after Supabase and RAG env are reachable
 npm run check:readiness

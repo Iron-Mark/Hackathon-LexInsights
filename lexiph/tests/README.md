@@ -22,6 +22,14 @@ Use `http://localhost:8000` and `ws://localhost:8000` only when running a compat
 
 ## Testing Methods
 
+For the full sequential local gate, run:
+
+```bash
+npm run check:local
+```
+
+This is the pre-push maintainer path. The methods below remain useful when debugging one specific readiness, deployment, proxy, or browser layer.
+
 ### Method 0: Readiness Check
 
 Run this before claiming a true backend E2E pass:
@@ -37,7 +45,7 @@ npm run dev -- -p 3000
 npm run check:readiness -- --base-url http://localhost:3000
 ```
 
-The command prints non-secret status for Supabase env/key checks, Supabase DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key. For fast route-shape probes, the HTTP endpoint also accepts `/api/readiness?timeoutMs=2000`.
+The command prints non-secret status for Supabase env/key checks, Supabase DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key. For fast route-shape probes, the HTTP endpoint also accepts `/api/readiness?timeoutMs=2000`; that timeout is forwarded to the RAG proxy health call so blocked upstream checks return quickly with structured `502` or `504` errors. RAG proxy `endpoint` values must stay on the configured RAG API origin.
 
 ### Method 1: Readiness Helper Self-Test
 
@@ -49,7 +57,27 @@ npm run check:readiness:self-test
 
 The self-test is offline and deterministic. It covers matching anon JWTs, mismatched project refs, legacy service-role JWTs, `sb_secret_` keys, publishable keys, unknown keys, and raw-key redaction.
 
-### Method 2: Deployment Preflight
+### Method 2: Deployment Preflight Helper Self-Test
+
+Run this after changing deployment preflight parsing, Vercel project visibility checks, or output redaction:
+
+```bash
+npm run check:deployment:self-test
+```
+
+The self-test is offline and deterministic. It covers GitHub origin parsing, commit SHA comparison, Vercel alias/project matching, safe Vercel project summaries, and secret-safe public output projection.
+
+### Method 3: RAG Proxy Helper Self-Test
+
+Run this after changing RAG proxy timeout, endpoint-origin, or error-classification behavior:
+
+```bash
+npm run check:rag-proxy:self-test
+```
+
+The self-test is offline and deterministic. It covers timeout clamping, same-origin endpoint resolution, cross-origin endpoint rejection, upstream timeout classification, upstream fetch failure classification, and secret-safe helper output.
+
+### Method 4: Deployment Preflight
 
 After a production deployment, run the preflight first to verify app-root assumptions, local Vercel linkage status, `/api/version`, `/api/readiness`, and RAG proxy route presence:
 
@@ -59,7 +87,7 @@ npm run check:deployment -- --base-url https://lexinsights.vercel.app
 
 Use `--with-vercel-cli` when you also need to confirm the current shell has an authenticated Vercel CLI session. The command does not print raw env values or provider secrets.
 
-### Method 3: Live Deployment Check
+### Method 5: Live Deployment Check
 
 After a production deployment, verify that the public URL serves the expected commit and exposes the backend readiness routes:
 
@@ -75,7 +103,7 @@ npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
 
 Full mode compares `GET /api/version` against local `HEAD`, then checks `/api/readiness` and the RAG proxy health path. A `404` for `/api/version` or `/api/readiness` means the live project is stale or not serving this codebase.
 
-### Method 4: Browser Smoke
+### Method 6: Browser Smoke
 
 Run focused Playwright checks for public pages, protected-route redirects, version metadata, and the readiness endpoint response shape:
 
@@ -91,7 +119,7 @@ $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-
 
 Browser smoke proves route behavior, version metadata, and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
 
-### Method 5: Browser-Based Test Page
+### Method 7: Browser-Based Test Page
 
 1. Start your Next.js development server:
    ```bash
@@ -110,7 +138,9 @@ Browser smoke proves route behavior, version metadata, and readiness reporting. 
    - Response metadata display
    - Full summary preview
 
-### Method 5: Node.js Test Script
+### Method 8: Legacy Node.js Test Script
+
+Prefer `npm run check:readiness` for maintained backend readiness checks. This legacy script is still useful for ad hoc RAG query experiments, but it uses a transient TypeScript runner rather than a committed package script.
 
 1. Install dependencies (if not already installed):
    ```bash
@@ -129,7 +159,7 @@ Browser smoke proves route behavior, version metadata, and readiness reporting. 
    - Save full responses to files
    - Show success/failure summary
 
-### Method 6: Direct API Testing with cURL
+### Method 9: Direct API Testing with cURL
 
 Test the health endpoint:
 ```bash
@@ -144,7 +174,7 @@ curl -X POST https://devkada.resqlink.org/api/research/rag-summary \
   --max-time 300
 ```
 
-### Method 7: Using the Chat Interface
+### Method 10: Using the Chat Interface
 
 1. Start the development server
 2. Navigate to `/chat`

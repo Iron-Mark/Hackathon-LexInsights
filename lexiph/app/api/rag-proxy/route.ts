@@ -1,50 +1,102 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const RAG_API_URL = process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'
-const HEALTH_CHECK_TIMEOUT_MS = 20000
+import {
+  DEFAULT_GET_TIMEOUT_MS,
+  DEFAULT_POST_TIMEOUT_MS,
+  DEFAULT_RAG_API_URL,
+  MAX_GET_TIMEOUT_MS,
+  MAX_POST_TIMEOUT_MS,
+  getProxyFailure,
+  getProxyTimeoutMs,
+  getProxyUpstream,
+} from '../../../lib/services/rag-proxy-helpers.mjs'
+
+const RAG_API_URL = process.env.NEXT_PUBLIC_RAG_API_URL || DEFAULT_RAG_API_URL
+
+function noStoreJson(body: unknown, status: number) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store',
+    },
+  })
+}
+
+async function readUpstreamError(response: Response) {
+  const text = await response.text()
+  return text.slice(0, 1000)
+}
 
 /**
  * POST proxy for RAG API endpoints
  * Bypasses CORS by making server-side requests
  */
 export async function POST(request: NextRequest) {
+  const upstream = getProxyUpstream(request.nextUrl.searchParams, '/api/research/rag-summary', RAG_API_URL)
+  const timeoutMs = getProxyTimeoutMs(request.nextUrl.searchParams, DEFAULT_POST_TIMEOUT_MS, MAX_POST_TIMEOUT_MS)
+
+  if (!upstream.upstreamUrl) {
+    return noStoreJson(
+      {
+        detail: upstream.error,
+        error: {
+          type: 'invalid_endpoint',
+          endpoint: upstream.endpoint,
+        },
+      },
+      400
+    )
+  }
+
   try {
     const body = await request.json()
-    const endpoint = request.nextUrl.searchParams.get('endpoint') || '/api/research/rag-summary'
 
-    console.log(`[RAG Proxy] POST ${RAG_API_URL}${endpoint}`)
+    console.log(`[RAG Proxy] POST ${upstream.upstreamUrl}`)
 
-    const response = await fetch(`${RAG_API_URL}${endpoint}`, {
+    const response = await fetch(upstream.upstreamUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
-      // Longer timeout for deep search
-      signal: AbortSignal.timeout(300000), // 5 minutes
+      signal: AbortSignal.timeout(timeoutMs),
     })
 
     if (!response.ok) {
-      const errorText = await response.text()
+      const errorText = await readUpstreamError(response)
       console.error(`[RAG Proxy] Error ${response.status}:`, errorText)
-      return NextResponse.json(
-        { detail: errorText || 'Backend request failed' },
-        { status: response.status }
+      return noStoreJson(
+        {
+          detail: errorText || 'Backend request failed',
+          error: {
+            type: 'upstream_http_error',
+            status: response.status,
+            endpoint: upstream.endpoint,
+            upstreamOrigin: upstream.upstreamOrigin,
+            timeoutMs,
+          },
+        },
+        response.status
       )
     }
 
     const data = await response.json()
-    return NextResponse.json(data)
+    return noStoreJson(data, 200)
   } catch (error) {
-    console.error('[RAG Proxy] Error:', error)
-    return NextResponse.json(
+    const failure = getProxyFailure(error)
+    console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
+
+    return noStoreJson(
       {
-        detail:
-          error instanceof Error
-            ? error.message
-            : 'Failed to fetch from RAG API',
+        detail: failure.detail,
+        error: {
+          type: failure.type,
+          endpoint: upstream.endpoint,
+          upstreamOrigin: upstream.upstreamOrigin,
+          timeoutMs,
+        },
       },
-      { status: 500 }
+      failure.status
     )
   }
 }
@@ -53,40 +105,68 @@ export async function POST(request: NextRequest) {
  * GET proxy for health checks and other GET endpoints
  */
 export async function GET(request: NextRequest) {
+  const upstream = getProxyUpstream(request.nextUrl.searchParams, '/api/research/health', RAG_API_URL)
+  const timeoutMs = getProxyTimeoutMs(request.nextUrl.searchParams, DEFAULT_GET_TIMEOUT_MS, MAX_GET_TIMEOUT_MS)
+
+  if (!upstream.upstreamUrl) {
+    return noStoreJson(
+      {
+        detail: upstream.error,
+        error: {
+          type: 'invalid_endpoint',
+          endpoint: upstream.endpoint,
+        },
+      },
+      400
+    )
+  }
+
   try {
-    const endpoint = request.nextUrl.searchParams.get('endpoint') || '/api/research/health'
+    console.log(`[RAG Proxy] GET ${upstream.upstreamUrl}`)
 
-    console.log(`[RAG Proxy] GET ${RAG_API_URL}${endpoint}`)
-
-    const response = await fetch(`${RAG_API_URL}${endpoint}`, {
+    const response = await fetch(upstream.upstreamUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      signal: AbortSignal.timeout(HEALTH_CHECK_TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     })
 
     if (!response.ok) {
-      const errorText = await response.text()
+      const errorText = await readUpstreamError(response)
       console.error(`[RAG Proxy] Error ${response.status}:`, errorText)
-      return NextResponse.json(
-        { detail: errorText || 'Backend request failed' },
-        { status: response.status }
+      return noStoreJson(
+        {
+          detail: errorText || 'Backend request failed',
+          error: {
+            type: 'upstream_http_error',
+            status: response.status,
+            endpoint: upstream.endpoint,
+            upstreamOrigin: upstream.upstreamOrigin,
+            timeoutMs,
+          },
+        },
+        response.status
       )
     }
 
     const data = await response.json()
-    return NextResponse.json(data)
+    return noStoreJson(data, 200)
   } catch (error) {
-    console.error('[RAG Proxy] Error:', error)
-    return NextResponse.json(
+    const failure = getProxyFailure(error)
+    console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
+
+    return noStoreJson(
       {
-        detail:
-          error instanceof Error
-            ? error.message
-            : 'Failed to fetch from RAG API',
+        detail: failure.detail,
+        error: {
+          type: failure.type,
+          endpoint: upstream.endpoint,
+          upstreamOrigin: upstream.upstreamOrigin,
+          timeoutMs,
+        },
       },
-      { status: 500 }
+      failure.status
     )
   }
 }

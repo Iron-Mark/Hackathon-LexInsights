@@ -272,6 +272,16 @@ Comprehensive documentation is available in the `/docs` folder:
 
 ## 🧪 Testing
 
+### Full Local Gate
+
+Run the full sequential local gate before pushing or release checks:
+
+```bash
+npm run check:local
+```
+
+It runs zero-warning lint, TypeScript, production audit, readiness self-test, deployment preflight self-test, RAG proxy self-test, production build, and Playwright smoke.
+
 ### Readiness Check
 
 Run the non-secret backend readiness check before claiming a full E2E pass:
@@ -286,13 +296,25 @@ Run the deterministic readiness helper self-test after changing readiness parsin
 npm run check:readiness:self-test
 ```
 
+Run the deterministic deployment preflight self-test after changing Vercel project visibility checks or deployment output redaction:
+
+```bash
+npm run check:deployment:self-test
+```
+
+Run the deterministic RAG proxy self-test after changing proxy timeout, endpoint, or error-classification behavior:
+
+```bash
+npm run check:rag-proxy:self-test
+```
+
 When the local app is running, include route and proxy checks:
 
 ```bash
 npm run check:readiness -- --base-url http://localhost:3000
 ```
 
-The app also exposes `GET /api/readiness` for live or local runtime checks. It returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass; otherwise it returns `503` with component-level blocker details. Supabase key checks validate the public key format, anon role claim, and legacy JWT issuer project ref without printing the raw key. Add `?timeoutMs=2000` for a faster probe when an upstream backend is known to be down.
+The app also exposes `GET /api/readiness` for live or local runtime checks. It returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass; otherwise it returns `503` with component-level blocker details. Supabase key checks validate the public key format, anon role claim, and legacy JWT issuer project ref without printing the raw key. Add `?timeoutMs=2000` for a faster probe when an upstream backend is known to be down; the same timeout is forwarded to the RAG proxy health call, which returns structured `502` or `504` blocker errors when the upstream backend cannot be reached. RAG proxy `endpoint` values must remain on the configured RAG API origin.
 
 ### Deployment Preflight
 
@@ -302,7 +324,9 @@ After pushing and deploying, verify local app-root assumptions, Vercel linkage, 
 npm run check:deployment -- --base-url https://lexinsights.vercel.app
 ```
 
-Add `--with-vercel-cli` when you also want to check whether the current shell has an authenticated Vercel CLI session. The command does not print raw env values or provider secrets.
+Add `--with-vercel-cli` when you also want to check whether the current shell has an authenticated Vercel CLI session, can see a Vercel project linked to `Iron-Mark/Hackathon-LexInsights`, can see a project with the live URL alias, and can inspect the deployment. The command does not print raw env values or provider secrets.
+
+If the Vercel CLI checks cannot see this repo or `lexinsights.vercel.app`, switch to the owning Vercel team/account or import the repository into a new Vercel project with Root Directory set to `lexiph`.
 
 ### Live Deployment Check
 

@@ -260,10 +260,16 @@ async function run() {
   const backendChecks = args.sourceOnly
     ? []
     : [
-        fetchCheck('app.readiness', appendPath(baseUrl, '/api/readiness'), args.timeoutMs, [200], true),
+        fetchCheck(
+          'app.readiness',
+          appendPath(baseUrl, `/api/readiness?timeoutMs=${args.timeoutMs}`),
+          args.timeoutMs,
+          [200],
+          true
+        ),
         fetchCheck(
           'app.rag_proxy_health',
-          appendPath(baseUrl, '/api/rag-proxy?endpoint=/api/research/health'),
+          appendPath(baseUrl, `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${args.timeoutMs}`),
           args.timeoutMs,
           [200],
           true

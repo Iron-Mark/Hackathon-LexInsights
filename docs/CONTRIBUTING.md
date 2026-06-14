@@ -67,13 +67,10 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 4. **Test Your Changes**
    ```bash
-   npm run lint -- --max-warnings=0
-   npx tsc --noEmit
-   npm audit --omit=dev
-   npm run build
-   npm run smoke:browser
-   npm run check:readiness:self-test
+   npm run check:local
    ```
+
+   `npm run check:local` runs the sequential local gate: zero-warning lint, TypeScript, production audit, readiness self-test, deployment preflight self-test, RAG proxy self-test, production build, and Playwright smoke.
 
    Run `npm run check:readiness` only when Supabase and RAG environment values point to reachable services. It is the backend E2E readiness gate, not a generic offline test. After production deploys, run `npm run check:deployment -- --base-url https://lexinsights.vercel.app`, then `npm run check:live -- --base-url https://lexinsights.vercel.app` to confirm the public app serves the expected commit before checking live backend behavior.
 

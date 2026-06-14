@@ -377,7 +377,7 @@ export async function GET(request: NextRequest) {
   const ragHealthTarget = ragParsedUrl
     ? new URL('/api/research/health', ragParsedUrl).toString()
     : null
-  const ragProxyHealthTarget = `${origin}/api/rag-proxy?endpoint=/api/research/health`
+  const ragProxyHealthTarget = `${origin}/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${timeoutMs}`
 
   const externalChecks = await Promise.all([
     dnsCheck('supabase.dns', supabaseParsedUrl?.host || null),

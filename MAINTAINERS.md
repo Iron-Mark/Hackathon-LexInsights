@@ -7,16 +7,21 @@ LexInSight is maintained from the fork repository at `Iron-Mark/Hackathon-LexIns
 - App root: `lexiph`
 - Default branch: `main`
 - Package manager: `npm`
-- Required local gates:
+- Required local gate:
+  - `npm run check:local`
+- Expanded local gates, when debugging one layer at a time:
   - `npm run lint -- --max-warnings=0`
   - `npx tsc --noEmit`
   - `npm audit --omit=dev`
+  - `npm run check:readiness:self-test`
+  - `npm run check:deployment:self-test`
+  - `npm run check:rag-proxy:self-test`
   - `npm run build`
   - `npm run smoke:browser`
-  - `npm run check:readiness:self-test`
   - `npm run check:readiness` after backend env is available
 - Required live gate after production deploy:
   - `npm run check:deployment -- --base-url https://lexinsights.vercel.app`
+  - `npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli` when diagnosing Vercel ownership/linkage
   - `npm run check:live -- --base-url https://lexinsights.vercel.app --source-only`
   - `npm run check:live -- --base-url https://lexinsights.vercel.app`
 
@@ -31,7 +36,7 @@ LexInSight is maintained from the fork repository at `Iron-Mark/Hackathon-LexIns
 ## Release Checklist
 
 - Confirm `main` is clean.
-- Run all required local gates.
+- Run `npm run check:local`.
 - Verify key routes: `/`, `/auth/login`, `/chat`, `/documents`, `/test-rag`.
 - Confirm GitHub Actions CI is green after push.
 - Run the deployment preflight and resolve stale Vercel linkage before live QA.

@@ -63,6 +63,12 @@ jobs:
       - name: Readiness self-test
         run: npm run check:readiness:self-test
 
+      - name: Deployment preflight self-test
+        run: npm run check:deployment:self-test
+
+      - name: RAG proxy self-test
+        run: npm run check:rag-proxy:self-test
+
       - name: Build
         run: npm run build
 

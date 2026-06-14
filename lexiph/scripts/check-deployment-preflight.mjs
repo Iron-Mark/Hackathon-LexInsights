@@ -2,7 +2,8 @@
 
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { resolve, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const DEFAULT_BASE_URL = 'https://lexinsights.vercel.app'
 const DEFAULT_TIMEOUT_MS = 20000
@@ -76,13 +77,28 @@ function readJsonFile(path) {
 }
 
 function runCommand(command, args, timeoutMs = 10000) {
+  const windowsVercelJsCandidates =
+    process.platform === 'win32' && command === 'vercel'
+      ? [
+          process.env.APPDATA ? join(process.env.APPDATA, 'npm', 'node_modules', 'vercel', 'dist', 'vc.js') : null,
+        ].filter(Boolean)
+      : []
   const candidates =
-    process.platform === 'win32' ? [command, `${command}.cmd`, `${command}.exe`] : [command]
+    process.platform === 'win32'
+      ? [
+          { command: command, args },
+          { command: `${command}.cmd`, args },
+          { command: `${command}.exe`, args },
+          ...windowsVercelJsCandidates
+            .filter((candidate) => existsSync(candidate))
+            .map((candidate) => ({ command: process.execPath, args: [candidate, ...args] })),
+        ]
+      : [{ command, args }]
   let lastError = null
 
-  for (const commandName of candidates) {
+  for (const candidate of candidates) {
     try {
-      const output = execFileSync(commandName, args, {
+      const output = execFileSync(candidate.command, candidate.args, {
         encoding: 'utf8',
         stdio: ['ignore', 'pipe', 'pipe'],
         timeout: timeoutMs,
@@ -109,6 +125,33 @@ function runCommand(command, args, timeoutMs = 10000) {
 function getGitHead() {
   const result = runCommand('git', ['rev-parse', 'HEAD'], 5000)
   return result.ok ? result.output : null
+}
+
+function getGitHubRepoInfo() {
+  const result = runCommand('git', ['config', '--get', 'remote.origin.url'], 5000)
+
+  if (!result.ok) {
+    return null
+  }
+
+  return parseGitHubRepoUrl(result.output)
+}
+
+function parseGitHubRepoUrl(value) {
+  const url = value.trim()
+  const httpsMatch = url.match(/^https:\/\/github\.com\/([^/]+)\/(.+?)(?:\.git)?$/i)
+  const sshMatch = url.match(/^git@github\.com:([^/]+)\/(.+?)(?:\.git)?$/i)
+  const match = httpsMatch || sshMatch
+
+  if (!match) {
+    return null
+  }
+
+  return {
+    owner: match[1],
+    repo: match[2],
+    slug: `${match[1]}/${match[2]}`,
+  }
 }
 
 function compareSha(actualSha, expectedSha) {
@@ -192,6 +235,20 @@ function gitHeadCheck(expectedSha) {
   }
 }
 
+function gitRemoteCheck(repoInfo) {
+  return {
+    name: 'git.remote_origin',
+    status: repoInfo ? 'pass' : 'warn',
+    critical: false,
+    message: repoInfo
+      ? `Origin repo is ${repoInfo.slug}`
+      : 'Could not parse origin as a GitHub repository.',
+    details: {
+      repo: repoInfo?.slug || null,
+    },
+  }
+}
+
 function vercelLinkCheck(cwd) {
   const projectPath = join(cwd, '.vercel', 'project.json')
 
@@ -230,6 +287,156 @@ function vercelLinkCheck(cwd) {
       linked: true,
       orgIdPresent: Boolean(projectJson.orgId),
       projectIdPresent: Boolean(projectJson.projectId),
+    },
+  }
+}
+
+function collectProjectAliases(project) {
+  const aliases = new Set()
+
+  for (const target of Object.values(project.targets || {})) {
+    for (const alias of target?.alias || []) {
+      aliases.add(alias)
+    }
+  }
+
+  for (const deployment of project.latestDeployments || []) {
+    for (const alias of deployment.alias || []) {
+      aliases.add(alias)
+    }
+  }
+
+  return [...aliases]
+}
+
+function listVisibleVercelProjects() {
+  const result = runCommand('vercel', ['api', '/v9/projects', '--raw'], 20000)
+
+  if (!result.ok) {
+    return {
+      check: {
+        name: 'vercel.project_api',
+        status: 'warn',
+        critical: false,
+        message: 'Could not read visible Vercel projects from the current account.',
+        details: {
+          accessible: false,
+        },
+      },
+      projects: [],
+    }
+  }
+
+  try {
+    const body = JSON.parse(result.output)
+    const projects = Array.isArray(body.projects) ? body.projects : []
+
+    return {
+      check: {
+        name: 'vercel.project_api',
+        status: 'pass',
+        critical: false,
+        message: `Read ${projects.length} visible Vercel project(s) from the current account.`,
+        details: {
+          accessible: true,
+          visibleProjectCount: projects.length,
+        },
+      },
+      projects,
+    }
+  } catch {
+    return {
+      check: {
+        name: 'vercel.project_api',
+        status: 'warn',
+        critical: false,
+        message: 'Vercel project API output was not valid JSON.',
+        details: {
+          accessible: false,
+        },
+      },
+      projects: [],
+    }
+  }
+}
+
+function safeProjectSummary(project) {
+  return {
+    name: project.name,
+    framework: project.framework,
+    rootDirectory: project.rootDirectory,
+    git:
+      project.link?.type === 'github'
+        ? {
+            org: project.link.org,
+            repo: project.link.repo,
+            productionBranch: project.link.productionBranch,
+          }
+        : null,
+    aliases: collectProjectAliases(project).slice(0, 8),
+  }
+}
+
+function vercelProjectVisibilityChecks(projects, baseUrl, repoInfo) {
+  const liveHost = baseUrl.hostname
+  const repoMatches = repoInfo
+    ? projects.filter(
+        (project) =>
+          project.link?.type === 'github' &&
+          project.link?.org?.toLowerCase() === repoInfo.owner.toLowerCase() &&
+          project.link?.repo?.toLowerCase() === repoInfo.repo.toLowerCase()
+      )
+    : []
+  const liveHostMatches = projects.filter((project) => collectProjectAliases(project).includes(liveHost))
+  const checks = []
+
+  if (repoInfo) {
+    checks.push({
+      name: 'vercel.repo_project',
+      status: repoMatches.length > 0 ? 'pass' : 'warn',
+      critical: false,
+      message:
+        repoMatches.length > 0
+          ? `Current Vercel account can see a project linked to ${repoInfo.slug}.`
+          : `No visible Vercel project is linked to ${repoInfo.slug} in the current account/scope.`,
+      details: {
+        repo: repoInfo.slug,
+        matches: repoMatches.map(safeProjectSummary),
+      },
+    })
+  }
+
+  checks.push({
+    name: 'vercel.live_url_project',
+    status: liveHostMatches.length > 0 ? 'pass' : 'warn',
+    critical: false,
+    message:
+      liveHostMatches.length > 0
+        ? `Current Vercel account can see a project with alias ${liveHost}.`
+        : `No visible Vercel project has alias ${liveHost} in the current account/scope.`,
+    details: {
+      host: liveHost,
+      matches: liveHostMatches.map(safeProjectSummary),
+    },
+  })
+
+  return checks
+}
+
+function vercelInspectCheck(baseUrl) {
+  const target = baseUrl.toString().replace(/\/$/, '')
+  const result = runCommand('vercel', ['inspect', target], 20000)
+
+  return {
+    name: 'vercel.live_inspect',
+    status: result.ok ? 'pass' : 'warn',
+    critical: false,
+    message: result.ok
+      ? `Current Vercel account can inspect ${baseUrl.hostname}.`
+      : `Current Vercel account cannot inspect ${baseUrl.hostname}.`,
+    details: {
+      inspectable: result.ok,
+      host: baseUrl.hostname,
     },
   }
 }
@@ -313,7 +520,7 @@ async function versionCheck(baseUrl, timeoutMs, expectedSha) {
 async function readinessRouteCheck(baseUrl, timeoutMs) {
   const check = await fetchJsonCheck(
     'live.readiness_route',
-    appendPath(baseUrl, '/api/readiness?timeoutMs=2000'),
+    appendPath(baseUrl, `/api/readiness?timeoutMs=${timeoutMs}`),
     timeoutMs,
     [200, 503]
   )
@@ -332,7 +539,7 @@ async function readinessRouteCheck(baseUrl, timeoutMs) {
 async function ragProxyRouteCheck(baseUrl, timeoutMs) {
   const check = await fetchJsonCheck(
     'live.rag_proxy_route',
-    appendPath(baseUrl, '/api/rag-proxy?endpoint=/api/research/health'),
+    appendPath(baseUrl, `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${timeoutMs}`),
     timeoutMs,
     [200]
   )
@@ -348,11 +555,18 @@ async function ragProxyRouteCheck(baseUrl, timeoutMs) {
     return check
   }
 
+  if (!check.details?.responseStatus && check.message.toLowerCase().includes('timeout')) {
+    check.status = 'warn'
+    check.critical = false
+    check.message = 'Route did not respond before timeout; RAG backend or stale proxy behavior may be blocking.'
+    return check
+  }
+
   check.message = `${check.message}; live app does not expose the RAG proxy route.`
   return check
 }
 
-function vercelCliChecks() {
+function vercelCliChecks(baseUrl, repoInfo) {
   const version = runCommand('vercel', ['--version'], 10000)
   const checks = [
     {
@@ -380,6 +594,15 @@ function vercelCliChecks() {
       authenticated: whoami.ok,
     },
   })
+
+  const { check, projects } = listVisibleVercelProjects()
+  checks.push(check)
+
+  if (check.status === 'pass') {
+    checks.push(...vercelProjectVisibilityChecks(projects, baseUrl, repoInfo))
+  }
+
+  checks.push(vercelInspectCheck(baseUrl))
 
   return checks
 }
@@ -421,11 +644,13 @@ async function run() {
 
   const cwd = process.cwd()
   const expectedSha = getGitHead()
+  const repoInfo = getGitHubRepoInfo()
   const localChecks = [
     localAppRootCheck(cwd),
     gitHeadCheck(expectedSha),
+    gitRemoteCheck(repoInfo),
     vercelLinkCheck(cwd),
-    ...(args.withVercelCli ? vercelCliChecks() : []),
+    ...(args.withVercelCli ? vercelCliChecks(baseUrl, repoInfo) : []),
   ]
   const liveChecks = await Promise.all([
     versionCheck(baseUrl, args.timeoutMs, expectedSha),
@@ -481,7 +706,20 @@ async function run() {
   }
 }
 
-run().catch((error) => {
-  console.error(error instanceof Error ? error.message : error)
-  process.exitCode = 1
-})
+export {
+  collectProjectAliases,
+  compareSha,
+  parseArgs,
+  parseGitHubRepoUrl,
+  publicDetails,
+  safeProjectSummary,
+  safeUrl,
+  vercelProjectVisibilityChecks,
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  run().catch((error) => {
+    console.error(error instanceof Error ? error.message : error)
+    process.exitCode = 1
+  })
+}
