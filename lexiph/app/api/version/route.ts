@@ -7,8 +7,8 @@ export const dynamic = 'force-dynamic'
 const COMMIT_ENV_KEYS = [
   'VERCEL_GIT_COMMIT_SHA',
   'GITHUB_SHA',
-  'COMMIT_SHA',
   'NEXT_PUBLIC_APP_COMMIT_SHA',
+  'COMMIT_SHA',
 ]
 
 function firstEnvValue(keys: string[]) {

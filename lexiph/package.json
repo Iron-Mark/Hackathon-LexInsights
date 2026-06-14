@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/build-with-metadata.mjs",
     "start": "next start",
     "lint": "eslint",
     "check:docs": "node scripts/check-markdown-links.mjs",
