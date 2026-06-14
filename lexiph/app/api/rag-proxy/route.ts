@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
             timeoutMs,
           },
         },
-        response.status
+        502
       )
     }
 
@@ -216,7 +216,7 @@ export async function GET(request: NextRequest) {
             timeoutMs,
           },
         },
-        response.status
+        502
       )
     }
 
