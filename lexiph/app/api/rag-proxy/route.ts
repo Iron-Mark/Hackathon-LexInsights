@@ -28,17 +28,33 @@ async function readUpstreamError(response: Response) {
   return text.slice(0, 1000)
 }
 
-function readUpstreamSuccess(responseText: string) {
+type UpstreamParseResult =
+  | {
+      ok: true
+      data: unknown
+    }
+  | {
+      ok: false
+      detail: string
+    }
+
+function readUpstreamSuccess(responseText: string): UpstreamParseResult {
   const text = responseText.trim()
 
   if (!text) {
-    return { detail: 'Empty upstream body' }
+    return { ok: false, detail: 'Empty upstream body' }
   }
 
   try {
-    return JSON.parse(text) as unknown
+    return {
+      ok: true,
+      data: JSON.parse(text),
+    }
   } catch {
-    return { detail: `Non-JSON upstream response: ${text.slice(0, 250)}` }
+    return {
+      ok: false,
+      detail: `Non-JSON upstream response: ${text.slice(0, 250)}`,
+    }
   }
 }
 
@@ -98,12 +114,12 @@ export async function POST(request: NextRequest) {
     }
 
     const responseText = await response.text()
-    const data = readUpstreamSuccess(responseText)
+    const parsed = readUpstreamSuccess(responseText)
 
-    if (Object.prototype.hasOwnProperty.call(data, 'detail')) {
+    if (!parsed.ok) {
       return noStoreJson(
         {
-          ...(typeof data === 'object' && data !== null ? data : {}),
+          detail: parsed.detail,
           error: {
             type: 'upstream_payload_parse_error',
             endpoint: upstream.endpoint,
@@ -115,7 +131,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return noStoreJson(data, 200)
+    return noStoreJson(parsed.data, 200)
   } catch (error) {
     const failure = getProxyFailure(error)
     console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
@@ -187,12 +203,12 @@ export async function GET(request: NextRequest) {
     }
 
     const responseText = await response.text()
-    const data = readUpstreamSuccess(responseText)
+    const parsed = readUpstreamSuccess(responseText)
 
-    if (Object.prototype.hasOwnProperty.call(data, 'detail')) {
+    if (!parsed.ok) {
       return noStoreJson(
         {
-          ...(typeof data === 'object' && data !== null ? data : {}),
+          detail: parsed.detail,
           error: {
             type: 'upstream_payload_parse_error',
             endpoint: upstream.endpoint,
@@ -204,7 +220,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return noStoreJson(data, 200)
+    return noStoreJson(parsed.data, 200)
   } catch (error) {
     const failure = getProxyFailure(error)
     console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
