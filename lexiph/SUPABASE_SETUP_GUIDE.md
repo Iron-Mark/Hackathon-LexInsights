@@ -37,10 +37,13 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 This will create:
 - ✅ All database tables (profiles, chats, messages, documents, etc.)
 - ✅ Row Level Security (RLS) policies
+- ✅ Explicit authenticated Data API grants for Supabase projects that do not auto-expose new public tables
 - ✅ Indexes for performance
 - ✅ Triggers for auto-updates
 - ✅ Utility functions
 - ✅ Realtime subscriptions
+
+The setup scripts are intended to be rerunnable. Existing policies and triggers are replaced, indexes use `IF NOT EXISTS`, and realtime table registration ignores duplicate entries.
 
 **Expected Result:** You should see "Success. No rows returned" message.
 
@@ -79,6 +82,7 @@ You should see these tables:
      application/msword
      application/vnd.openxmlformats-officedocument.wordprocessingml.document
      text/plain
+     text/markdown
      ```
 4. Click **Create bucket**
 
@@ -234,7 +238,7 @@ Safely deletes a chat and all related data (messages, documents, reports).
 **Solution:** Make sure you ran the entire `supabase-setup.sql` script.
 
 ### Issue: "permission denied for table"
-**Solution:** Check that RLS policies were created. Re-run the SQL script.
+**Solution:** Check that RLS policies and explicit Data API grants were created. Re-run the latest `supabase-setup.sql` script.
 
 ### Issue: "new row violates row-level security policy"
 **Solution:** Make sure you're authenticated and the user_id matches auth.uid().

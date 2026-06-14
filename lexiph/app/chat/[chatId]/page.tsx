@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useSidebarStore } from '@/lib/store/sidebar-store'
 import { useChatStore } from '@/lib/store/chat-store'
-import { createClient } from '@/lib/supabase/client'
+import { verifyProtectedRouteAccess } from '@/lib/auth/route-guards'
 import { ChatContainer } from '@/components/chat/chat-container'
 import { ChatSidebar } from '@/components/chat/chat-sidebar'
 import { MobileOverlay } from '@/components/chat/mobile-overlay'
@@ -15,15 +15,7 @@ import { Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Message } from '@/types'
 
-// Mock messages for MVP demonstration
-const mockMessages: Message[] = [
-  {
-    id: '1',
-    role: 'assistant',
-    content: 'Hello! I\'m LexInsight, your Philippine legal compliance assistant. How can I help you today?',
-    created_at: new Date().toISOString(),
-  },
-]
+const initialMessages: Message[] = []
 
 export default function ChatDetailPage() {
   const router = useRouter()
@@ -34,6 +26,7 @@ export default function ChatDetailPage() {
   const { isOpen, isMobile, open, close, setIsMobile } = useSidebarStore()
   const { fetchChats } = useChatStore()
   const [checkingVerification, setCheckingVerification] = useState(true)
+  const [redirecting, setRedirecting] = useState(false)
 
   // Responsive breakpoint detection
   useEffect(() => {
@@ -67,27 +60,38 @@ export default function ChatDetailPage() {
 
   // Check authentication and email verification
   useEffect(() => {
+    let cancelled = false
+
     const checkAuth = async () => {
       if (!loading && !user) {
+        setRedirecting(true)
         router.push('/auth/login')
         return
       }
 
       if (user) {
-        // Check if email is verified
-        const supabase = createClient()
-        const { data } = await supabase.auth.getUser()
-        
-        if (data.user && !data.user.email_confirmed_at) {
-          // Email not verified, redirect to verification page
-          router.push(`/auth/verify-email?email=${encodeURIComponent(user.email)}`)
-        } else {
-          setCheckingVerification(false)
+        const access = await verifyProtectedRouteAccess(user)
+
+        if (cancelled) {
+          return
         }
+
+        if (!access.allowed) {
+          setRedirecting(true)
+          router.push(access.redirectTo || '/auth/login')
+          return
+        }
+
+        setRedirecting(false)
+        setCheckingVerification(false)
       }
     }
 
     checkAuth()
+
+    return () => {
+      cancelled = true
+    }
   }, [user, loading, router])
 
   // Load chat from URL parameter, including direct page refreshes.
@@ -129,7 +133,7 @@ export default function ChatDetailPage() {
   }, [checkingVerification, user, chatId, fetchChats, router])
 
   // Show loading state while checking session or verification
-  if (loading || checkingVerification) {
+  if (loading || checkingVerification || redirecting) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="text-slate-600">Loading...</div>
@@ -177,7 +181,7 @@ export default function ChatDetailPage() {
           </div>
         )}
         
-        <ChatContainer messages={mockMessages} />
+        <ChatContainer messages={initialMessages} />
       </main>
     </div>
   )

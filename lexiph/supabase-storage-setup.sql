@@ -16,12 +16,14 @@
 --    - application/msword
 --    - application/vnd.openxmlformats-officedocument.wordprocessingml.document
 --    - text/plain
+--    - text/markdown
 
 -- =====================================================
 -- STEP 2: Run these Storage Policies
 -- =====================================================
 
 -- Policy: Users can upload their own documents
+DROP POLICY IF EXISTS "Users can upload own documents" ON storage.objects;
 CREATE POLICY "Users can upload own documents"
 ON storage.objects FOR INSERT
 WITH CHECK (
@@ -30,6 +32,7 @@ WITH CHECK (
 );
 
 -- Policy: Users can view their own documents
+DROP POLICY IF EXISTS "Users can view own documents" ON storage.objects;
 CREATE POLICY "Users can view own documents"
 ON storage.objects FOR SELECT
 USING (
@@ -38,6 +41,7 @@ USING (
 );
 
 -- Policy: Users can update their own documents
+DROP POLICY IF EXISTS "Users can update own documents" ON storage.objects;
 CREATE POLICY "Users can update own documents"
 ON storage.objects FOR UPDATE
 USING (
@@ -46,6 +50,7 @@ USING (
 );
 
 -- Policy: Users can delete their own documents
+DROP POLICY IF EXISTS "Users can delete own documents" ON storage.objects;
 CREATE POLICY "Users can delete own documents"
 ON storage.objects FOR DELETE
 USING (

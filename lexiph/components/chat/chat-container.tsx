@@ -164,7 +164,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     submitQuery, 
     clearError 
   } = useRAGStore()
-  const { activeChat, messages: chatMessages, fetchMessages, loadingMessages, addRAGMessage } = useChatStore()
+  const { activeChat, messages: chatMessages, fetchMessages, loadingMessages, createChat, addRAGMessage } = useChatStore()
   const { addFiles, canAddMore } = useFileUploadStore()
   
   const [showCanvas, setShowCanvas] = useState(false)
@@ -174,6 +174,17 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(null)
   const [currentQuery, setCurrentQuery] = useState<string>('')
   const [isTransitioning, setIsTransitioning] = useState(false)
+
+  const ensureActiveChat = async (fallbackTitle: string) => {
+    const currentChat = useChatStore.getState().activeChat
+
+    if (currentChat?.id) {
+      return currentChat.id
+    }
+
+    const newChat = await createChat(fallbackTitle)
+    return newChat.id
+  }
 
   // Handle file drop - only add to list, don't process yet
   const handleFileDrop = (files: File[]) => {
@@ -210,7 +221,15 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   }, [activeChat, chatMessages, fetchMessages])
 
   // Handle prompt selection from empty state
-  const handlePromptSelect = (prompt: string) => {
+  const handlePromptSelect = async (prompt: string) => {
+    try {
+      await ensureActiveChat(prompt)
+    } catch (error) {
+      console.error('Failed to prepare chat for prompt:', error)
+      showToast(error instanceof Error ? error.message : 'Failed to start chat', 'error')
+      return
+    }
+
     // Dispatch event to notify container
     const event = new CustomEvent('query-submitted', {
       detail: { query: prompt }
@@ -221,7 +240,21 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   }
 
   // Handle centered input send
-  const handleCenteredSend = (message: string) => {
+  const handleCenteredSend = async (message: string) => {
+    const query = message.trim()
+
+    if (!query) {
+      return
+    }
+
+    try {
+      await ensureActiveChat(query)
+    } catch (error) {
+      console.error('Failed to prepare chat for centered input:', error)
+      showToast(error instanceof Error ? error.message : 'Failed to start chat', 'error')
+      return
+    }
+
     // Start transition animation
     setIsTransitioning(true)
     
@@ -231,11 +264,11 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     
     // Dispatch event to notify container
     const event = new CustomEvent('query-submitted', {
-      detail: { query: message }
+      detail: { query }
     })
     window.dispatchEvent(event)
     
-    submitQuery(message, user?.id)
+    submitQuery(query, user?.id)
     
     // Reset transition after animation
     setTimeout(() => setIsTransitioning(false), 300)

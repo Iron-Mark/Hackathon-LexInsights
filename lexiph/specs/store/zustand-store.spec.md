@@ -19,22 +19,29 @@
 }
 ```
 
-### ChatStore (Future Phase)
+### ChatStore
 ```typescript
 {
-  messages: Message[],
+  chats: Chat[],
+  activeChat: Chat | null,
+  messages: Record<string, Message[]>,
   loading: boolean,
+  loadingMessages: boolean,
   
   // Actions
-  addMessage: (message: Message) => void,
-  clearMessages: () => void,
-  sendMessage: (content: string) => Promise<void>
+  fetchChats: () => Promise<void>,
+  fetchMessages: (chatId: string) => Promise<void>,
+  createChat: (title?: string) => Promise<Chat>,
+  selectChat: (id: string) => void,
+  deleteChat: (id: string) => Promise<void>,
+  updateChatTitle: (id: string, title: string) => Promise<void>,
+  addMessage: (chatId: string, message: Omit<Message, 'id' | 'created_at'>) => Promise<void>
 }
 ```
 
 ## Persistence
 - AuthStore: No persistence (Supabase handles it)
-- ChatStore: LocalStorage for message history (future)
+- ChatStore: Supabase `chats` and `messages` tables
 
 ## State Updates
 - Optimistic updates for UX

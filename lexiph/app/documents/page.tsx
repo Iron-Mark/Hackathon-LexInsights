@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store/auth-store'
+import { verifyProtectedRouteAccess } from '@/lib/auth/route-guards'
 import { AppSidebar } from '@/components/navigation/app-sidebar'
 import { UserDocumentsList } from '@/components/chat/user-documents-list'
 import { FileText } from 'lucide-react'
@@ -10,14 +11,47 @@ import { FileText } from 'lucide-react'
 export default function DocumentsPage() {
   const router = useRouter()
   const { user, loading } = useAuthStore()
+  const [checkingVerification, setCheckingVerification] = useState(true)
+  const [redirecting, setRedirecting] = useState(false)
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/auth/login')
+    let cancelled = false
+
+    const checkAccess = async () => {
+      if (loading) {
+        return
+      }
+
+      if (!user) {
+        setRedirecting(true)
+        router.push('/auth/login')
+        return
+      }
+
+      const access = await verifyProtectedRouteAccess(user)
+
+      if (cancelled) {
+        return
+      }
+
+      if (!access.allowed) {
+        setRedirecting(true)
+        router.push(access.redirectTo || '/auth/login')
+        return
+      }
+
+      setRedirecting(false)
+      setCheckingVerification(false)
+    }
+
+    checkAccess()
+
+    return () => {
+      cancelled = true
     }
   }, [user, loading, router])
 
-  if (loading) {
+  if (loading || checkingVerification || redirecting) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="text-slate-600">Loading...</div>

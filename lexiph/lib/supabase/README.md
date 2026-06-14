@@ -2,28 +2,32 @@
 
 ## Database Schema Setup
 
-To set up the database schema and security policies:
+Use the root setup scripts as the source of truth:
 
-1. Go to your Supabase project dashboard at https://supabase.com
-2. Navigate to the SQL Editor (left sidebar)
-3. Create a new query
-4. Copy and paste the contents of `schema.sql` into the editor
-5. Click "Run" to execute the SQL commands
+1. Run `supabase-setup.sql` in the Supabase SQL Editor.
+2. Create the private `documents` storage bucket.
+3. Run `supabase-storage-setup.sql` after the bucket exists.
 
-This will:
-- Create the `profiles` table with columns: id, email, full_name, avatar_url, created_at, updated_at
-- Enable Row Level Security (RLS) on the profiles table
-- Create RLS policies that allow users to view and update only their own profile
-- Create a database trigger that automatically creates a profile record when a new user signs up
+The setup creates the runtime tables used by the app:
+
+- `profiles`
+- `chats`
+- `messages`
+- `documents`
+- `compliance_reports`
+- `search_history`
+
+It also enables RLS, creates ownership policies, and grants the `authenticated` role Data API access to these tables. The explicit grants matter for newer Supabase projects where public tables may not be exposed through the Data API automatically.
 
 ## Verification
 
 After running the SQL, verify the setup:
 
-1. Go to "Table Editor" in the Supabase dashboard
-2. You should see the `profiles` table
-3. Go to "Authentication" → "Policies" to see the RLS policies
-4. The trigger will automatically create profile records for new signups
+1. Confirm the six runtime tables exist in the Supabase table editor.
+2. Confirm RLS is enabled on all six runtime tables.
+3. Confirm the `documents` storage bucket exists and is private.
+4. Confirm storage policies allow users to access only their own user-id folder.
+5. Sign up in the app, create a chat, send a message, and upload a small `.txt` or `.md` document.
 
 ## Client Configuration
 

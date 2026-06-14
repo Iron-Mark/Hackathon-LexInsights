@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Send, Paperclip, X, Loader2, Sparkles } from 'lucide-react'
+import { Send, Paperclip, Loader2, Sparkles } from 'lucide-react'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
 import { useRAGStore } from '@/lib/store/rag-store'
 import { useAuthStore } from '@/lib/store/auth-store'
@@ -17,16 +17,25 @@ export function ChatInput() {
   const [message, setMessage] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [isDeepSearching, setIsDeepSearching] = useState(false)
-  const { mode, uploadedFile, setUploadedFile } = useChatModeStore()
+  const { mode } = useChatModeStore()
   const { submitQuery, loading } = useRAGStore()
   const { user } = useAuthStore()
   const { isMobile, close } = useSidebarStore()
-  const { uploadedFiles, clearFiles, uploadToSupabase, uploading } = useFileUploadStore()
-  const { activeChat, createChat } = useChatStore()
+  const { uploadedFiles, addFiles, clearFiles, canAddMore, uploadToSupabase, uploading } = useFileUploadStore()
+  const { activeChat, createChat, addMessage } = useChatStore()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const ensureActiveChat = async (fallbackTitle: string) => {
+    if (activeChat?.id) {
+      return activeChat.id
+    }
+
+    const newChat = await createChat(fallbackTitle)
+    return newChat.id
+  }
+
   const handleSend = async () => {
-    if ((!message.trim() && !uploadedFile && uploadedFiles.length === 0) || isSending || loading) return
+    if ((!message.trim() && uploadedFiles.length === 0) || isSending || loading || uploading) return
 
     // Close sidebar on mobile when sending message
     if (isMobile) {
@@ -41,6 +50,7 @@ export function ChatInput() {
         // General mode - use RAG API for Philippine law questions
         if (message.trim()) {
           console.log('Calling RAG API with message:', message)
+          await ensureActiveChat(message.trim())
           
           // Dispatch event to notify container
           const event = new CustomEvent('query-submitted', {
@@ -54,12 +64,7 @@ export function ChatInput() {
         // Compliance mode - process uploaded files from drag-drop store
         if (uploadedFiles.length > 0) {
           console.log('Processing uploaded files:', uploadedFiles.length)
-          let chatId = activeChat?.id
-
-          if (!chatId) {
-            const newChat = await createChat(message.trim() || 'Compliance Analysis')
-            chatId = newChat.id
-          }
+          const chatId = await ensureActiveChat(message.trim() || 'Compliance Analysis')
 
           if (user) {
             await uploadToSupabase(user.id, chatId)
@@ -78,28 +83,15 @@ export function ChatInput() {
           
           // Clear uploaded files after processing
           clearFiles()
-        } else if (uploadedFile) {
-          // Legacy single file upload
-          console.log('Processing compliance file:', uploadedFile.name)
-          const event = new CustomEvent('file-uploaded', { 
-            detail: { 
-              file: uploadedFile,
-              query: message.trim() || 'Analyze this document for compliance'
-            } 
-          })
-          window.dispatchEvent(event)
         } else if (message.trim()) {
           // Text-only query - use RAG API
+          await ensureActiveChat(message.trim())
           await submitQuery(message.trim(), user?.id)
         }
       }
       
       // Clear textarea after send
       setMessage('')
-      // Only clear file in compliance mode
-      if (mode === 'compliance') {
-        setUploadedFile(null)
-      }
     } catch (error) {
       console.error('Error sending message:', error)
       showToast(error instanceof Error ? error.message : 'Failed to send message', 'error')
@@ -119,6 +111,12 @@ export function ChatInput() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      if (!canAddMore()) {
+        showToast('Maximum 3 documents allowed', 'error')
+        e.target.value = ''
+        return
+      }
+
       // Validate file type
       const validTypes = [
         'application/pdf',
@@ -129,7 +127,8 @@ export function ChatInput() {
       ]
       
       if (validTypes.includes(file.type) || file.name.endsWith('.md')) {
-        setUploadedFile(file)
+        addFiles([file])
+        showToast(`${file.name} added. Click send to analyze.`, 'success')
         // Announce to screen readers
         const announcement = `File ${file.name} uploaded successfully`
         const liveRegion = document.createElement('div')
@@ -140,21 +139,16 @@ export function ChatInput() {
         document.body.appendChild(liveRegion)
         setTimeout(() => document.body.removeChild(liveRegion), 1000)
       } else {
-        alert('Please upload a valid file: PDF, MD, TXT, or Word document')
+        showToast('Please upload a valid file: PDF, MD, TXT, or Word document', 'error')
       }
-    }
-  }
 
-  const handleRemoveFile = () => {
-    setUploadedFile(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
+      e.target.value = ''
     }
   }
 
   const handleDeepSearch = async () => {
-    if (!message.trim() && !uploadedFile) {
-      alert('Please enter a query or upload a document first')
+    if (!message.trim()) {
+      showToast('Please enter a query first', 'error')
       return
     }
 
@@ -162,14 +156,27 @@ export function ChatInput() {
 
     try {
       const query = message.trim() || 'Perform comprehensive analysis'
-      const context = uploadedFile ? `Analyzing file: ${uploadedFile.name}` : undefined
+      const chatId = await ensureActiveChat(query)
 
       const result = await performDeepSearch({
         query,
-        context,
-        document_name: uploadedFile?.name,
         user_id: user?.id || 'chat-user',
         max_results: 50
+      })
+
+      await addMessage(chatId, {
+        role: 'user',
+        content: query,
+      })
+
+      await addMessage(chatId, {
+        role: 'assistant',
+        content: result.enhanced_summary,
+        metadata: {
+          deepSearch: true,
+          documentsSearched: result.documents_searched,
+          relatedDocuments: result.related_documents,
+        },
       })
 
       // Dispatch event with deep search results
@@ -177,7 +184,6 @@ export function ChatInput() {
         detail: {
           query,
           result,
-          file: uploadedFile
         }
       })
       window.dispatchEvent(event)
@@ -194,7 +200,7 @@ export function ChatInput() {
 
     } catch (error) {
       console.error('Deep search failed:', error)
-      alert('Deep search failed. Please try again.')
+      showToast(error instanceof Error ? error.message : 'Deep search failed. Please try again.', 'error')
     } finally {
       setIsDeepSearching(false)
     }
@@ -220,27 +226,6 @@ export function ChatInput() {
         <div className="flex justify-center">
           <ChatModeToggle />
         </div>
-
-        {/* File Upload Preview (Compliance Mode) */}
-        {mode === 'compliance' && uploadedFile && (
-          <div 
-            className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"
-            role="status"
-            aria-label={`Uploaded file: ${uploadedFile.name}`}
-          >
-            <Paperclip className="h-4 w-4 text-slate-500" aria-hidden="true" />
-            <span className="flex-1 truncate text-sm text-slate-700">
-              {uploadedFile.name}
-            </span>
-            <button
-              onClick={handleRemoveFile}
-              className="rounded p-1.5 text-slate-500 hover:bg-slate-200 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 transition-colors"
-              aria-label={`Remove file ${uploadedFile.name}`}
-            >
-              <X className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
-        )}
 
         {/* Input Area */}
         <div className="flex items-end gap-2 rounded-lg border-2 border-slate-200 bg-white p-2 focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 transition-all">
@@ -315,7 +300,7 @@ export function ChatInput() {
           {/* Send Button */}
           <button
             onClick={handleSend}
-            disabled={(!message.trim() && !uploadedFile && uploadedFiles.length === 0) || isSending || loading || uploading}
+            disabled={(!message.trim() && uploadedFiles.length === 0) || isSending || loading || uploading}
             className="rounded-lg bg-primary p-2 text-primary-foreground transition-all duration-200 hover:bg-iris-700 hover:shadow-md hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none min-h-[40px] min-w-[40px] flex items-center justify-center"
             aria-label={isSending || loading || uploading ? 'Sending message...' : 'Send message'}
             type="submit"

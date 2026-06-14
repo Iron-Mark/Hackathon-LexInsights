@@ -32,25 +32,49 @@ export function CenteredInput({
   const { activeChat, createChat } = useChatStore()
 
   const handleSend = async () => {
-    if ((!message.trim() && uploadedFiles.length === 0) || disabled || isSending) return
+    const query = message.trim()
+
+    if ((!query && uploadedFiles.length === 0) || disabled || isSending || uploading) return
+    if (!query && mode !== 'compliance') {
+      showToast('Please enter a query first', 'error')
+      return
+    }
     
     setIsSending(true)
     
     try {
+      const hasComplianceFiles = mode === 'compliance' && uploadedFiles.length > 0
+
       // Create chat if none exists
       let chatId = activeChat?.id
       if (!chatId) {
-        const newChat = await createChat(message.trim() || 'New Conversation')
+        const newChat = await createChat(query || 'Compliance Analysis')
         chatId = newChat.id
       }
 
       // Upload files to Supabase if in compliance mode
-      if (mode === 'compliance' && uploadedFiles.length > 0 && user) {
+      if (hasComplianceFiles) {
+        if (!user) {
+          throw new Error('Sign in before uploading compliance documents.')
+        }
+
         await uploadToSupabase(user.id, chatId)
+
+        uploadedFiles.forEach((uploadedFile) => {
+          const event = new CustomEvent('file-uploaded', {
+            detail: {
+              file: uploadedFile.file,
+              query: query || `Analyze ${uploadedFile.file.name} for compliance`,
+            },
+          })
+          window.dispatchEvent(event)
+        })
       }
 
-      // Send message
-      onSend(message.trim())
+      if (query && !hasComplianceFiles) {
+        onSend(query)
+      }
+
       setMessage('')
       
       // Clear files after sending

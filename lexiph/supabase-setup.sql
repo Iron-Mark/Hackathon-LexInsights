@@ -24,16 +24,19 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 -- Profiles policies
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 CREATE POLICY "Users can view own profile"
   ON public.profiles
   FOR SELECT
   USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile"
   ON public.profiles
   FOR UPDATE
   USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
 CREATE POLICY "Users can insert own profile"
   ON public.profiles
   FOR INSERT
@@ -60,21 +63,25 @@ CREATE TABLE IF NOT EXISTS public.chats (
 ALTER TABLE public.chats ENABLE ROW LEVEL SECURITY;
 
 -- Chats policies
+DROP POLICY IF EXISTS "Users can view own chats" ON public.chats;
 CREATE POLICY "Users can view own chats"
   ON public.chats
   FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create own chats" ON public.chats;
 CREATE POLICY "Users can create own chats"
   ON public.chats
   FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own chats" ON public.chats;
 CREATE POLICY "Users can update own chats"
   ON public.chats
   FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own chats" ON public.chats;
 CREATE POLICY "Users can delete own chats"
   ON public.chats
   FOR DELETE
@@ -103,6 +110,7 @@ CREATE TABLE IF NOT EXISTS public.messages (
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 
 -- Messages policies (users can only access messages from their own chats)
+DROP POLICY IF EXISTS "Users can view messages from own chats" ON public.messages;
 CREATE POLICY "Users can view messages from own chats"
   ON public.messages
   FOR SELECT
@@ -114,6 +122,7 @@ CREATE POLICY "Users can view messages from own chats"
     )
   );
 
+DROP POLICY IF EXISTS "Users can create messages in own chats" ON public.messages;
 CREATE POLICY "Users can create messages in own chats"
   ON public.messages
   FOR INSERT
@@ -125,6 +134,7 @@ CREATE POLICY "Users can create messages in own chats"
     )
   );
 
+DROP POLICY IF EXISTS "Users can update messages in own chats" ON public.messages;
 CREATE POLICY "Users can update messages in own chats"
   ON public.messages
   FOR UPDATE
@@ -136,6 +146,7 @@ CREATE POLICY "Users can update messages in own chats"
     )
   );
 
+DROP POLICY IF EXISTS "Users can delete messages from own chats" ON public.messages;
 CREATE POLICY "Users can delete messages from own chats"
   ON public.messages
   FOR DELETE
@@ -175,21 +186,25 @@ CREATE TABLE IF NOT EXISTS public.documents (
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
 -- Documents policies
+DROP POLICY IF EXISTS "Users can view own documents" ON public.documents;
 CREATE POLICY "Users can view own documents"
   ON public.documents
   FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create own documents" ON public.documents;
 CREATE POLICY "Users can create own documents"
   ON public.documents
   FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own documents" ON public.documents;
 CREATE POLICY "Users can update own documents"
   ON public.documents
   FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own documents" ON public.documents;
 CREATE POLICY "Users can delete own documents"
   ON public.documents
   FOR DELETE
@@ -223,21 +238,25 @@ CREATE TABLE IF NOT EXISTS public.compliance_reports (
 ALTER TABLE public.compliance_reports ENABLE ROW LEVEL SECURITY;
 
 -- Compliance reports policies
+DROP POLICY IF EXISTS "Users can view own compliance reports" ON public.compliance_reports;
 CREATE POLICY "Users can view own compliance reports"
   ON public.compliance_reports
   FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create own compliance reports" ON public.compliance_reports;
 CREATE POLICY "Users can create own compliance reports"
   ON public.compliance_reports
   FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own compliance reports" ON public.compliance_reports;
 CREATE POLICY "Users can update own compliance reports"
   ON public.compliance_reports
   FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own compliance reports" ON public.compliance_reports;
 CREATE POLICY "Users can delete own compliance reports"
   ON public.compliance_reports
   FOR DELETE
@@ -268,16 +287,19 @@ CREATE TABLE IF NOT EXISTS public.search_history (
 ALTER TABLE public.search_history ENABLE ROW LEVEL SECURITY;
 
 -- Search history policies
+DROP POLICY IF EXISTS "Users can view own search history" ON public.search_history;
 CREATE POLICY "Users can view own search history"
   ON public.search_history
   FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create own search history" ON public.search_history;
 CREATE POLICY "Users can create own search history"
   ON public.search_history
   FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own search history" ON public.search_history;
 CREATE POLICY "Users can delete own search history"
   ON public.search_history
   FOR DELETE
@@ -288,7 +310,34 @@ CREATE INDEX IF NOT EXISTS search_history_user_id_idx ON public.search_history(u
 CREATE INDEX IF NOT EXISTS search_history_created_at_idx ON public.search_history(created_at DESC);
 
 -- =====================================================
--- 7. FUNCTIONS
+-- 7. DATA API GRANTS
+-- Supabase no longer guarantees new public tables are automatically exposed
+-- through the Data API. Keep RLS enabled, then explicitly grant only the
+-- authenticated role access to the app-owned tables used by supabase-js.
+-- =====================================================
+
+GRANT USAGE ON SCHEMA public TO authenticated;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE
+  public.profiles,
+  public.chats,
+  public.messages,
+  public.documents,
+  public.compliance_reports,
+  public.search_history
+TO authenticated;
+
+REVOKE ALL ON TABLE
+  public.profiles,
+  public.chats,
+  public.messages,
+  public.documents,
+  public.compliance_reports,
+  public.search_history
+FROM anon;
+
+-- =====================================================
+-- 8. FUNCTIONS
 -- Utility functions for the application
 -- =====================================================
 
@@ -305,7 +354,7 @@ BEGIN
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Trigger to create profile on user signup
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -348,6 +397,10 @@ CREATE TRIGGER set_updated_at_compliance_reports
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_updated_at();
 
+-- Trigger helper functions are not client-callable RPC endpoints.
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon, authenticated, public;
+REVOKE EXECUTE ON FUNCTION public.handle_updated_at() FROM anon, authenticated, public;
+
 -- Function to get user's recent chats with message count
 CREATE OR REPLACE FUNCTION public.get_user_chats_with_counts(user_uuid UUID)
 RETURNS TABLE (
@@ -371,11 +424,12 @@ BEGIN
     MAX(m.created_at) as last_message_at
   FROM public.chats c
   LEFT JOIN public.messages m ON c.id = m.chat_id
-  WHERE c.user_id = user_uuid
+  WHERE c.user_id = auth.uid()
+  AND c.user_id = user_uuid
   GROUP BY c.id, c.title, c.mode, c.created_at, c.updated_at
   ORDER BY COALESCE(MAX(m.created_at), c.created_at) DESC;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY INVOKER;
 
 -- Function to delete chat and all related data
 CREATE OR REPLACE FUNCTION public.delete_chat_cascade(chat_uuid UUID, user_uuid UUID)
@@ -383,10 +437,14 @@ RETURNS BOOLEAN AS $$
 DECLARE
   chat_exists BOOLEAN;
 BEGIN
+  IF user_uuid IS DISTINCT FROM auth.uid() THEN
+    RETURN FALSE;
+  END IF;
+
   -- Check if chat exists and belongs to user
   SELECT EXISTS(
     SELECT 1 FROM public.chats
-    WHERE id = chat_uuid AND user_id = user_uuid
+    WHERE id = chat_uuid AND user_id = auth.uid()
   ) INTO chat_exists;
   
   IF NOT chat_exists THEN
@@ -394,14 +452,21 @@ BEGIN
   END IF;
   
   -- Delete chat (cascade will handle messages, documents, reports)
-  DELETE FROM public.chats WHERE id = chat_uuid AND user_id = user_uuid;
+  DELETE FROM public.chats WHERE id = chat_uuid AND user_id = auth.uid();
   
   RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY INVOKER;
+
+REVOKE EXECUTE ON FUNCTION public.get_user_chats_with_counts(UUID) FROM public;
+REVOKE EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, UUID) FROM public;
+GRANT EXECUTE ON FUNCTION public.get_user_chats_with_counts(UUID) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, UUID) TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.get_user_chats_with_counts(UUID) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, UUID) FROM anon;
 
 -- =====================================================
--- 8. STORAGE BUCKETS
+-- 9. STORAGE BUCKETS
 -- Note: These need to be created in Supabase Storage UI or via API
 -- =====================================================
 
@@ -409,7 +474,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Bucket name: 'documents'
 -- Public: false
 -- File size limit: 5MB
--- Allowed MIME types: application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document
+-- Allowed MIME types: application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, text/markdown
 
 -- Storage policies (run after creating bucket)
 -- These allow users to upload, view, and delete their own documents
@@ -439,21 +504,36 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- );
 
 -- =====================================================
--- 9. REALTIME SUBSCRIPTIONS
+-- 10. REALTIME SUBSCRIPTIONS
 -- Enable realtime for tables that need live updates
 -- =====================================================
 
 -- Enable realtime for chats
-ALTER PUBLICATION supabase_realtime ADD TABLE public.chats;
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.chats;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Enable realtime for messages
-ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Enable realtime for documents
-ALTER PUBLICATION supabase_realtime ADD TABLE public.documents;
+DO $$
+BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.documents;
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- =====================================================
--- 10. SAMPLE DATA (OPTIONAL - FOR TESTING)
+-- 11. SAMPLE DATA (OPTIONAL - FOR TESTING)
 -- Uncomment to insert sample data
 -- =====================================================
 
