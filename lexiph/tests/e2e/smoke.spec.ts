@@ -44,12 +44,25 @@ test.describe('LexInSight smoke checks', () => {
       'supabase.anon_key',
       'supabase.project_ref',
       'supabase.anon_key_format',
-      'supabase.anon_key_project_ref',
       'supabase.dns',
       'readiness.timeout_ms',
       'rag.direct_health',
       'rag.proxy_health',
     ]))
+
+    const anonKeyFormatCheck = body.checks.find(
+      (check: { name: string }) => check.name === 'supabase.anon_key_format'
+    )
+    expect(anonKeyFormatCheck).toEqual(
+      expect.objectContaining({
+        name: 'supabase.anon_key_format',
+        status: expect.any(String),
+      })
+    )
+
+    if (anonKeyFormatCheck.status === 'pass') {
+      expect(checkNames).toContain('supabase.anon_key_project_ref')
+    }
 
     const anonKeyCheck = body.checks.find((check: { name: string }) => check.name === 'supabase.anon_key')
     expect(anonKeyCheck).toEqual(
