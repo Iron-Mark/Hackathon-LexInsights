@@ -31,6 +31,7 @@ assert.equal(parseArgs(['--timeout-ms', '3000']).timeoutMs, 3000)
 assert.equal(parseArgs(['--timeout-ms=-1']).timeoutMs, 20000)
 assert.equal(parseArgs(['--json']).json, true)
 assert.equal(parseArgs(['--source-only']).sourceOnly, true)
+assert.equal(parseArgs(['--skip-backend']).sourceOnly, true)
 
 assert.equal(safeUrl('not-a-url'), null)
 assert.equal(safeUrl('https://lexiph.vercel.app')?.hostname, 'lexiph.vercel.app')

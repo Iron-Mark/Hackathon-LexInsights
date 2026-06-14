@@ -366,7 +366,7 @@ After pushing and deploying, verify that production is serving the expected comm
 npm run check:live -- --base-url https://lexiph.vercel.app
 ```
 
-Use `--source-only` when you only need to prove that Vercel is serving this repository commit while Supabase/RAG are still externally blocked:
+Use `--source-only` or `--skip-backend` when you only need to prove that Vercel is serving this repository commit while Supabase/RAG are still externally blocked:
 
 ```bash
 npm run check:live -- --base-url https://lexiph.vercel.app --source-only

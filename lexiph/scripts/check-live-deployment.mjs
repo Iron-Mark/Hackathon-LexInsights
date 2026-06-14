@@ -36,6 +36,11 @@ function parseArgs(argv) {
       continue
     }
 
+    if (arg === '--skip-backend') {
+      args.sourceOnly = true
+      continue
+    }
+
     if (arg === '--base-url') {
       args.baseUrl = argv[index + 1] || DEFAULT_BASE_URL
       index += 1
