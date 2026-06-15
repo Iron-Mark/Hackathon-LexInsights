@@ -7,20 +7,33 @@ import { cn } from '@/lib/utils'
 
 export type ToastType = 'success' | 'error' | 'info'
 
+interface ToastAction {
+  label: string
+  href: string
+}
+
 interface Toast {
   id: string
   message: string
   type: ToastType
+  action?: ToastAction
+  durationMs?: number
 }
 
 let toastId = 0
 const toastListeners: ((toast: Toast) => void)[] = []
 
-export function showToast(message: string, type: ToastType = 'info') {
+export function showToast(
+  message: string,
+  type: ToastType = 'info',
+  options: { action?: ToastAction; durationMs?: number } = {}
+) {
   const toast: Toast = {
     id: `toast-${toastId++}`,
     message,
-    type
+    type,
+    action: options.action,
+    durationMs: options.durationMs,
   }
   toastListeners.forEach(listener => listener(toast))
 }
@@ -32,10 +45,10 @@ export function ToastContainer() {
     const listener = (toast: Toast) => {
       setToasts(prev => [...prev, toast])
       
-      // Auto remove after 3 seconds
+      // Auto remove after the requested duration, defaulting to 3 seconds.
       setTimeout(() => {
         setToasts(prev => prev.filter(t => t.id !== toast.id))
-      }, 3000)
+      }, toast.durationMs ?? 3000)
     }
 
     toastListeners.push(listener)
@@ -96,12 +109,24 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       exit={{ opacity: 0, x: 100, scale: 0.95 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        'flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg pointer-events-auto min-w-[300px] max-w-md',
+        'flex items-start gap-3 px-4 py-3 rounded-lg border shadow-lg pointer-events-auto min-w-[300px] max-w-md',
         colors[toast.type]
       )}
     >
       <Icon className={cn('h-5 w-5 flex-shrink-0', iconColors[toast.type])} />
-      <p className="flex-1 text-sm font-medium">{toast.message}</p>
+      <div className="flex flex-1 flex-col gap-2">
+        <p className="text-sm font-medium">{toast.message}</p>
+        {toast.action && (
+          <a
+            href={toast.action.href}
+            target="_blank"
+            rel="noreferrer"
+            className="w-fit rounded text-sm font-semibold underline underline-offset-2 hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-2"
+          >
+            {toast.action.label}
+          </a>
+        )}
+      </div>
       <button
         onClick={() => onRemove(toast.id)}
         className="flex-shrink-0 rounded p-1 hover:bg-black/5 transition-colors"

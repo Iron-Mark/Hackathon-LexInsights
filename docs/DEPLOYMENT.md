@@ -81,6 +81,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.vercel.app
 NEXT_PUBLIC_RAG_API_URL=https://prod-api.example.com
 NEXT_PUBLIC_RAG_WS_URL=wss://prod-api.example.com
 NEXT_PUBLIC_USE_RAG_PROXY=true
+NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL=https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1
 ```
 
 3. Set environment for: **Production**, **Preview**, **Development**
@@ -358,6 +359,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 NEXT_PUBLIC_RAG_API_URL=https://api.your-domain.com
 NEXT_PUBLIC_RAG_WS_URL=wss://api.your-domain.com
 NEXT_PUBLIC_USE_RAG_PROXY=true
+NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL=https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1
 
 # Optional: Analytics
 NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX

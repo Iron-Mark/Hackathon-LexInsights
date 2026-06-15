@@ -12,6 +12,11 @@ import { ChatModeToggle } from './chat-mode-toggle'
 import { performDeepSearch } from '@/lib/services/deep-search-api'
 import { UploadedFilesList } from './uploaded-files-list'
 import { showToast } from '@/components/ui/toast'
+import {
+  RAG_BACKEND_TOAST_ACTION,
+  RAG_BACKEND_UNAVAILABLE_MESSAGE,
+  isRagBackendUnavailableError,
+} from '@/lib/services/rag-unavailable'
 
 const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024
 
@@ -211,7 +216,14 @@ export function ChatInput() {
 
     } catch (error) {
       console.error('Deep search failed:', error)
-      showToast(error instanceof Error ? error.message : 'Deep search failed. Please try again.', 'error')
+      if (isRagBackendUnavailableError(error)) {
+        showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
+          action: RAG_BACKEND_TOAST_ACTION,
+          durationMs: 10000,
+        })
+      } else {
+        showToast(error instanceof Error ? error.message : 'Deep search failed. Please try again.', 'error')
+      }
     } finally {
       setIsDeepSearching(false)
     }

@@ -24,6 +24,11 @@ import { DragDropOverlay } from './drag-drop-overlay'
 import { showToast } from '@/components/ui/toast'
 import { EmptyState } from './empty-state'
 import { CenteredInput } from './centered-input'
+import {
+  RAG_BACKEND_TOAST_ACTION,
+  RAG_BACKEND_UNAVAILABLE_MESSAGE,
+  isRagBackendUnavailableError,
+} from '@/lib/services/rag-unavailable'
 
 interface ChatContainerProps {
   messages: Message[]
@@ -402,7 +407,14 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown Draft Checker error'
         setCanvasContent(buildComplianceUnavailableReport(file.name, query, errorMessage))
-        showToast('Compliance analysis unavailable', 'error')
+        if (isRagBackendUnavailableError(error)) {
+          showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
+            action: RAG_BACKEND_TOAST_ACTION,
+            durationMs: 10000,
+          })
+        } else {
+          showToast('Compliance analysis unavailable', 'error')
+        }
       } finally {
         setIsProcessing(false)
       }

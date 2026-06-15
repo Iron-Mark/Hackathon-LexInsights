@@ -15,8 +15,8 @@ function detectCommitSha() {
     // fall through to environment fallbacks if git is unavailable in the build environment
   }
 
-  if (process.env.NEXT_PUBLIC_APP_COMMIT_SHA?.trim()) {
-    return process.env.NEXT_PUBLIC_APP_COMMIT_SHA.trim()
+  if (process.env.COMMIT_SHA?.trim()) {
+    return process.env.COMMIT_SHA.trim()
   }
 
   if (process.env.VERCEL_GIT_COMMIT_SHA?.trim()) {
@@ -27,8 +27,8 @@ function detectCommitSha() {
     return process.env.GITHUB_SHA.trim()
   }
 
-  if (process.env.COMMIT_SHA?.trim()) {
-    return process.env.COMMIT_SHA.trim()
+  if (process.env.NEXT_PUBLIC_APP_COMMIT_SHA?.trim()) {
+    return process.env.NEXT_PUBLIC_APP_COMMIT_SHA.trim()
   }
 
   return null

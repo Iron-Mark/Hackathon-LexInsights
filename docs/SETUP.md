@@ -81,6 +81,7 @@ NEXT_PUBLIC_APP_NAME=LexInSight
 NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
 NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
 NEXT_PUBLIC_USE_RAG_PROXY=true
+NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL=https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1
 
 # Analytics (OPTIONAL)
 NEXT_PUBLIC_ANALYTICS_ID=your_analytics_id
@@ -269,6 +270,7 @@ All tables have RLS enabled with the following policies:
 | `NEXT_PUBLIC_RAG_API_URL` | RAG API endpoint | `https://devkada.resqlink.org` |
 | `NEXT_PUBLIC_RAG_WS_URL` | RAG WebSocket endpoint | `wss://devkada.resqlink.org` |
 | `NEXT_PUBLIC_USE_RAG_PROXY` | Route browser RAG calls through `/api/rag-proxy` | `true` |
+| `NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL` | Issue link shown when the retired RAG backend is unavailable | GitHub issue URL |
 | `NEXT_PUBLIC_ANALYTICS_ID` | Analytics tracking ID | - |
 
 ## Development Workflow

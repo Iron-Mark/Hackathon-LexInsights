@@ -84,6 +84,7 @@ Visit `http://localhost:3000` to see the application.
 NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
 NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
 NEXT_PUBLIC_USE_RAG_PROXY=true
+NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL=https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1
 
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -111,7 +112,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 5. Click **Send** to analyze
 6. View results in the compliance canvas
 
-When the RAG/Draft Checker backend is unreachable, LexInSight shows an unavailable status instead of generating a mock compliance report.
+When the RAG/Draft Checker backend is unreachable, LexInSight shows an unavailable status and a snackbar link to the replacement tracker instead of generating a mock compliance report.
 
 ### Deep Search (General Mode Only)
 

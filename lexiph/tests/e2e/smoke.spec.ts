@@ -2,6 +2,9 @@ import { expect, test } from '@playwright/test'
 
 const protectedRoutes = ['/chat', '/documents']
 const isManagedLocalWebServer = !process.env.PLAYWRIGHT_BASE_URL
+const ragBackendIssueUrl =
+  process.env.NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL ||
+  'https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1'
 
 test.describe('LexInSight smoke checks', () => {
   test('public entry routes render', async ({ page }) => {
@@ -208,5 +211,36 @@ test.describe('LexInSight smoke checks', () => {
     expect(serializedBody).not.toContain('<!DOCTYPE')
     expect(serializedBody).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
     expect(serializedBody).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
+  })
+
+  test('RAG backend failure shows replacement issue snackbar', async ({ page }) => {
+    await page.route('**/api/rag-proxy**', async (route) => {
+      await route.fulfill({
+        status: 504,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          detail: 'fetch failed',
+          error: {
+            type: 'upstream_timeout',
+            endpoint: '/api/research/rag-summary',
+            upstreamOrigin: 'https://devkada.resqlink.org',
+            timeoutMs: 20000,
+          },
+        }),
+      })
+    })
+
+    await page.goto('/test-rag')
+    await page.getByLabel('Enter your question about Philippine legislation').fill('What is RA 9003?')
+    await page.getByRole('button', { name: 'Submit Query' }).click()
+
+    await expect(
+      page.getByText('RAG backend is retired and needs replacement. Core app demo is still available.')
+    ).toBeVisible()
+
+    await expect(page.getByRole('link', { name: 'View GitHub issue' })).toHaveAttribute(
+      'href',
+      ragBackendIssueUrl
+    )
   })
 })

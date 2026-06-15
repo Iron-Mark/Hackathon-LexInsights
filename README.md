@@ -260,6 +260,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
 NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
 NEXT_PUBLIC_USE_RAG_PROXY=true
+NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL=https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1
 ```
 
 ### Step 4: Database Setup

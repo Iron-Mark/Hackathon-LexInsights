@@ -10,6 +10,12 @@ import {
   type HealthResponse,
   type WebSocketEvent 
 } from '@/lib/services/rag-api'
+import {
+  RAG_BACKEND_TOAST_ACTION,
+  RAG_BACKEND_UNAVAILABLE_MESSAGE,
+  isRagBackendUnavailableError,
+} from '@/lib/services/rag-unavailable'
+import { showToast } from '@/components/ui/toast'
 
 // Cache utilities
 const CACHE_TTL = 3600000 // 1 hour in milliseconds
@@ -178,11 +184,14 @@ export const useRAGStore = create<RAGStore>()(
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
           
-          // Check if it's a 502 Bad Gateway error
-          if (errorMessage.includes('502') || errorMessage.includes('Bad Gateway')) {
-            console.error('RAG API is currently unavailable (502 Bad Gateway)')
+          if (isRagBackendUnavailableError(errorMessage)) {
+            console.error('RAG backend is retired or unavailable:', errorMessage)
+            showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
+              action: RAG_BACKEND_TOAST_ACTION,
+              durationMs: 10000,
+            })
             set({ 
-              error: 'RAG service is temporarily unavailable. Please try again later.', 
+              error: RAG_BACKEND_UNAVAILABLE_MESSAGE,
               loading: false,
               currentResponse: null
             })

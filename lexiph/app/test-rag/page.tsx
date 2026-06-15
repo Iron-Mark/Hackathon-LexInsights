@@ -5,6 +5,12 @@ import { Button } from '@/components/ui/button'
 import { LoadingIndicator } from '@/components/chat/loading-indicator'
 import { queryRAG, checkRAGHealth, SAMPLE_QUERIES } from '@/lib/services/rag-api'
 import type { RAGResponse } from '@/lib/services/rag-api'
+import {
+  RAG_BACKEND_TOAST_ACTION,
+  RAG_BACKEND_UNAVAILABLE_MESSAGE,
+  isRagBackendUnavailableError,
+} from '@/lib/services/rag-unavailable'
+import { showToast } from '@/components/ui/toast'
 import { AlertCircle, CheckCircle, Clock, FileText } from 'lucide-react'
 
 export default function TestRAGPage() {
@@ -23,6 +29,12 @@ export default function TestRAGPage() {
     } catch (err) {
       setHealthStatus('unhealthy')
       console.error('Health check failed:', err)
+      if (isRagBackendUnavailableError(err)) {
+        showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
+          action: RAG_BACKEND_TOAST_ACTION,
+          durationMs: 10000,
+        })
+      }
     }
   }
 
@@ -46,6 +58,12 @@ export default function TestRAGPage() {
       setDuration(Date.now() - startedAt)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
+      if (isRagBackendUnavailableError(err)) {
+        showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
+          action: RAG_BACKEND_TOAST_ACTION,
+          durationMs: 10000,
+        })
+      }
     } finally {
       setLoading(false)
     }
