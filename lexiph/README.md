@@ -412,7 +412,7 @@ By default, Playwright starts its own Next.js dev server on `127.0.0.1:3100` so 
 $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
 ```
 
-Browser smoke proves route behavior, version metadata, and readiness reporting. Full backend E2E still requires `npm run check:readiness` to pass.
+Browser smoke proves route behavior, protected redirects, version metadata, readiness reporting, and RAG proxy failure handling. The default managed-local run blanks Clerk and Supabase publishable keys so it can verify the setup blocker without depending on a real Clerk tenant. Full auth and backend E2E still require `npm run check:readiness` to pass and a browser signup/login pass against a running app with `.env.local`.
 
 ### Browser Testing
 
@@ -459,7 +459,7 @@ npm start
 ### Environment Setup
 
 1. Set up Supabase project
-2. Configure authentication
+2. Configure Clerk authentication and Supabase Third-Party Auth
 3. Restore or deploy a compatible RAG API server
 4. Update environment variables
 5. Deploy through Vercel with `lexiph` as the root directory
@@ -494,7 +494,8 @@ This project is licensed under the MIT License.
 ## 🙏 Acknowledgments
 
 - Philippine legislative database
-- Supabase for authentication
+- Clerk for authentication
+- Supabase for database and storage
 - Next.js team
 - Open source community
 

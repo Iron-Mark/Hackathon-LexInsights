@@ -175,6 +175,8 @@ $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-
 
 Browser smoke proves route behavior, version metadata, readiness response shape, RAG proxy same-origin handling, and RAG proxy upstream-error redaction. In the default managed-local run, Playwright uses `/api/readiness?externalChecks=skip` and points `NEXT_PUBLIC_RAG_API_URL` at its own dev server so smoke does not depend on external Supabase or RAG availability. Full backend E2E still requires `npm run check:readiness` to pass against real Supabase and RAG services.
 
+The managed-local Playwright server also blanks Clerk and Supabase publishable keys on purpose. That keeps smoke checks deterministic and verifies the missing-Clerk setup blocker instead of depending on a real Clerk tenant. To verify real Clerk signup/login, start the app with `.env.local` and run smoke against that app with `PLAYWRIGHT_BASE_URL`, then complete the interactive signup/login flow in the browser.
+
 ### Method 7: Browser-Based Test Page
 
 1. Start your Next.js development server:
