@@ -22,7 +22,7 @@ export default defineConfig({
           CLERK_SECRET_KEY: '',
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: '',
           NEXT_PUBLIC_RAG_API_URL: baseURL,
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: '',
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_ci_smoke_placeholder',
           NEXT_PUBLIC_USE_RAG_PROXY: 'true',
         },
         url: baseURL,

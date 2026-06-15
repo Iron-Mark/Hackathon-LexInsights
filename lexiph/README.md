@@ -412,7 +412,7 @@ By default, Playwright starts its own Next.js dev server on `127.0.0.1:3100` so 
 $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
 ```
 
-Browser smoke proves route behavior, protected redirects, version metadata, readiness reporting, and RAG proxy failure handling. The default managed-local run blanks Clerk and Supabase publishable keys so it can verify the setup blocker without depending on a real Clerk tenant. Full auth and backend E2E still require `npm run check:readiness` to pass and a browser signup/login pass against a running app with `.env.local`.
+Browser smoke proves route behavior, protected redirects, version metadata, readiness reporting, and RAG proxy failure handling. The default managed-local run blanks Clerk keys and uses a non-secret Supabase publishable-key placeholder so it can verify the setup blocker without depending on real Clerk or Supabase tenants. Full auth and backend E2E still require `npm run check:readiness` to pass and a browser signup/login pass against a running app with `.env.local`.
 
 ### Browser Testing
 
