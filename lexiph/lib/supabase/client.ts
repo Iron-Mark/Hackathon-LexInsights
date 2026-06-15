@@ -1,32 +1,40 @@
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-// Singleton instance to avoid multiple clients
-let supabaseInstance: ReturnType<typeof createSupabaseClient> | null = null
+type SupabaseClient = ReturnType<typeof createSupabaseClient>
+type AccessTokenGetter = () => Promise<string | null>
+
+let supabaseInstance: SupabaseClient | null = null
+let accessTokenGetter: AccessTokenGetter = async () => null
+
+export function setSupabaseAccessTokenGetter(getter: AccessTokenGetter | null) {
+  accessTokenGetter = getter || (async () => null)
+}
 
 function getSupabaseConfig() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+  if (!supabaseUrl || !supabaseKey) {
     throw new Error(
-      'Missing Supabase environment variables. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local.'
+      'Missing Supabase environment variables. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in .env.local.'
     )
   }
 
-  return { supabaseUrl, supabaseAnonKey }
+  return { supabaseUrl, supabaseKey }
 }
 
-// Create a singleton Supabase client instance
 export function createClient() {
   if (!supabaseInstance) {
-    const { supabaseUrl, supabaseAnonKey } = getSupabaseConfig()
+    const { supabaseUrl, supabaseKey } = getSupabaseConfig()
 
-    supabaseInstance = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
+    supabaseInstance = createSupabaseClient(supabaseUrl, supabaseKey, {
+      async accessToken() {
+        return accessTokenGetter()
       },
     })
   }
+
   return supabaseInstance
 }

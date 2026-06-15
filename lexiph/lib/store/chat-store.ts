@@ -4,6 +4,7 @@ import { create } from 'zustand'
 import { Chat, Message } from '@/types'
 import { createClient } from '@/lib/supabase/client'
 import type { RAGResponse } from '@/lib/services/rag-api'
+import { useAuthStore } from './auth-store'
 
 interface ChatMessagePreview {
   id: string
@@ -53,9 +54,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     
     try {
       const supabase = createClient()
-      
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = useAuthStore.getState().user
       
       if (!user) {
         set({ chats: [], loading: false })
@@ -140,9 +139,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   createChat: async (title?: string) => {
     try {
       const supabase = createClient()
-      
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser()
+      const user = useAuthStore.getState().user
       
       if (!user) {
         throw new Error('User not authenticated')

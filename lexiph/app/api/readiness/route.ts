@@ -159,7 +159,7 @@ function supabaseAnonKeyChecks(value: string | null, expectedProjectRef: string 
         name: 'supabase.anon_key_format',
         status: 'fail' as const,
         critical: true,
-        message: 'A secret Supabase key must not be exposed through NEXT_PUBLIC_SUPABASE_ANON_KEY',
+        message: 'A secret Supabase key must not be exposed through NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY',
       },
     ]
   }
@@ -380,7 +380,9 @@ export async function GET(request: NextRequest) {
   const timeoutMs = getTimeoutMs(request)
   const skipExternalChecks = shouldSkipExternalChecks(request)
   const supabaseUrl = getEnvValue('NEXT_PUBLIC_SUPABASE_URL')
+  const supabasePublishableKey = getEnvValue('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY')
   const supabaseAnonKey = getEnvValue('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+  const supabasePublicKey = supabasePublishableKey || supabaseAnonKey
   const ragApiUrl = getEnvValue('NEXT_PUBLIC_RAG_API_URL') || DEFAULT_RAG_API_URL
   const ragWsUrl = getEnvValue('NEXT_PUBLIC_RAG_WS_URL') || DEFAULT_RAG_WS_URL
   const useRagProxy = getEnvValue('NEXT_PUBLIC_USE_RAG_PROXY') ?? 'true'
@@ -412,9 +414,9 @@ export async function GET(request: NextRequest) {
 
   const checks: ReadinessCheck[] = [
     envPresenceCheck('supabase.url', supabaseUrl, supabaseParsedUrl?.host),
-    envPresenceCheck('supabase.anon_key', supabaseAnonKey),
+    envPresenceCheck('supabase.anon_key', supabasePublicKey),
     supabaseProjectRefCheck(supabaseProjectRef, supabaseParsedUrl?.host),
-    ...supabaseAnonKeyChecks(supabaseAnonKey, supabaseProjectRef),
+    ...supabaseAnonKeyChecks(supabasePublicKey, supabaseProjectRef),
     envPresenceCheck('rag.api_url', ragApiUrl, ragParsedUrl?.origin),
     envPresenceCheck('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin),
     {

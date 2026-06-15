@@ -102,7 +102,7 @@ LexInSight is a comprehensive legal compliance platform that combines:
 
 ### 🔐 Enterprise-Grade Security
 
-- **Authentication** - Secure email/password authentication via Supabase
+- **Authentication** - Secure Clerk authentication with Supabase Third-Party Auth
 - **Row-Level Security** - Database-level access control
 - **Encrypted Storage** - Files encrypted at rest and in transit
 - **User Isolation** - Complete data separation between users
@@ -146,7 +146,7 @@ LexInSight is a comprehensive legal compliance platform that combines:
 |------------|---------|
 | **Supabase** | Backend as a Service |
 | **PostgreSQL** | Relational database |
-| **Supabase Auth** | User authentication |
+| **Clerk** | User authentication |
 | **Supabase Storage** | File storage |
 | **Row Level Security** | Data access control |
 | **Real-time** | Live updates |
@@ -179,6 +179,7 @@ Before you begin, ensure you have:
 - **Node.js** 18.0 or higher ([Download](https://nodejs.org/))
 - **npm** 9.0 or higher (comes with Node.js)
 - **Git** ([Download](https://git-scm.com/))
+- **Clerk Account** ([Sign up](https://dashboard.clerk.com/))
 - **Supabase Account** ([Sign up](https://supabase.com))
 - **Code Editor** (VS Code recommended)
 
@@ -196,7 +197,7 @@ npm install
 
 # Set up environment variables
 cp .env.example .env.local
-# Edit .env.local with your Supabase credentials
+# Edit .env.local with your Clerk and Supabase credentials
 
 # Run development server
 npm run dev
@@ -252,9 +253,17 @@ cp .env.example .env.local
 ```
 
 ```env
+# Clerk Configuration
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
+CLERK_SECRET_KEY=your-clerk-secret-key
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/login
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/signup
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/chat
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/chat
+
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key
 
 # RAG API Configuration
 NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
@@ -327,10 +336,9 @@ npm start
 ### Creating an Account
 
 1. Navigate to `/auth/signup`
-2. Enter email and password
-3. Click "Sign Up"
-4. Verify email (if enabled)
-5. Login at `/auth/login`
+2. Complete the Clerk signup flow
+3. Continue to `/chat`
+4. Use the profile icon in the header to manage or sign out
 
 ### Using General Mode
 
@@ -415,7 +423,7 @@ lexiph/
 │   │   ├── login/              # Login page
 │   │   ├── signup/             # Signup page
 │   │   ├── callback/           # Auth callback
-│   │   └── verify-email/       # Email verification
+│   │   └── verify-email/       # Legacy redirect to Clerk signup
 │   ├── chat/                    # Chat interface
 │   │   ├── page.tsx            # Main chat page
 │   │   └── [chatId]/           # Individual chat
@@ -510,7 +518,7 @@ lexiph/
 #### profiles
 ```sql
 CREATE TABLE profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  id TEXT PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   full_name TEXT,
   avatar_url TEXT,
@@ -523,7 +531,7 @@ CREATE TABLE profiles (
 ```sql
 CREATE TABLE chats (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id),
+  user_id TEXT NOT NULL,
   title TEXT NOT NULL,
   mode TEXT NOT NULL DEFAULT 'general',
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -547,7 +555,7 @@ CREATE TABLE messages (
 ```sql
 CREATE TABLE documents (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id),
+  user_id TEXT NOT NULL,
   chat_id UUID REFERENCES chats(id),
   file_name TEXT NOT NULL,
   file_size INTEGER NOT NULL,
@@ -584,25 +592,12 @@ All tables have RLS enabled with policies:
 
 ### Authentication
 
-#### Sign Up
-```typescript
-POST /auth/signup
-Body: { email: string, password: string, full_name?: string }
-Response: { user, session }
-```
+Authentication is handled by Clerk App Router pages:
 
-#### Login
-```typescript
-POST /auth/login
-Body: { email: string, password: string }
-Response: { user, session }
-```
-
-#### Logout
-```typescript
-POST /auth/logout
-Response: { success: boolean }
-```
+- `/auth/signup`
+- `/auth/login`
+- `/auth/callback` redirects into the signed-in app
+- `/auth/verify-email` is a legacy redirect to `/auth/signup`
 
 ### Chat Operations
 
@@ -652,10 +647,9 @@ Response: { success: boolean }
 
 ### Authentication & Authorization
 
-- **Supabase Auth** - Industry-standard authentication
-- **JWT Tokens** - Secure session management
-- **Password Hashing** - bcrypt with salt
-- **Email Verification** - Optional email confirmation
+- **Clerk Auth** - Managed authentication and session UI
+- **Supabase Third-Party Auth** - Clerk session tokens authorize database and storage requests
+- **JWT Claims** - RLS policies compare `auth.jwt()->>'sub'` with stored Clerk user IDs
 - **Session Expiry** - Automatic token refresh
 
 ### Data Protection
@@ -801,8 +795,10 @@ tests/
    In the Vercel dashboard, set **Root Directory** to `lexiph`. A deployment that does not expose `/api/version` is stale or not serving this codebase.
 
 2. **Configure Environment Variables**
+   - Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - Add `CLERK_SECRET_KEY`
    - Add `NEXT_PUBLIC_SUPABASE_URL`
-   - Add `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - Add `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 3. **Deploy**
    ```bash
@@ -837,8 +833,10 @@ npm start
 ```env
 # Production
 NODE_ENV=production
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
 NEXT_PUBLIC_SUPABASE_URL=your_production_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_production_key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_production_publishable_key
 ```
 
 ---

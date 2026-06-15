@@ -151,48 +151,43 @@ npm run dev
 
 **Checklist**:
 
-- [ ] Is Supabase URL correct in `.env.local`?
-- [ ] Is anon key correct?
-- [ ] Is email provider enabled in Supabase Auth settings?
+- [ ] Is `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` set in `.env.local`?
+- [ ] Is `CLERK_SECRET_KEY` set in `.env.local`?
+- [ ] Are Clerk sign-in/sign-up URLs configured as `/auth/login` and `/auth/signup`?
+- [ ] Is the email/password strategy enabled in Clerk?
 - [ ] Is email format valid?
-- [ ] Is password strong enough (min 6 chars)?
+- [ ] Does the password satisfy the Clerk policy?
 
 **Solution**:
 
-```typescript
-// Check Supabase connection
-import { createClient } from "@/lib/supabase/client";
-
-const supabase = createClient();
-const { data, error } = await supabase.auth.getSession();
-console.log("Supabase connection:", data, error);
+```bash
+# Missing keys intentionally show "Clerk setup required"
+npm run dev
 ```
 
 ### Cannot log in
 
-**Problem**: Login fails with "Invalid credentials"
+**Problem**: Login fails or redirects back to `/auth/login`
 
 **Solutions**:
 
-1. **Verify email is confirmed** (if email confirmation enabled)
+1. **Verify Clerk configuration**
 
-   - Check Supabase Dashboard → Authentication → Users
-   - Look for email confirmed status
+   - Check Clerk Dashboard → Users
+   - Confirm the user exists and the sign-in method is enabled
 
-2. **Reset password**
+2. **Check app env**
 
-```typescript
-await supabase.auth.resetPasswordForEmail(email, {
-  redirectTo: "http://localhost:3000/auth/reset-password",
-});
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
+CLERK_SECRET_KEY=...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/login
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/signup
 ```
 
-3. **Check RLS policies**
+3. **Check Supabase Third-Party Auth**
 
-```sql
--- In Supabase SQL Editor
-SELECT * FROM auth.users WHERE email = 'your@email.com';
-```
+Supabase data reads and writes require Clerk to be configured as a Third-Party Auth provider. If login works but chats/documents fail, check Supabase RLS and the Clerk integration.
 
 ### Session expires immediately
 
@@ -200,28 +195,11 @@ SELECT * FROM auth.users WHERE email = 'your@email.com';
 
 **Solution**:
 
-Check cookie settings:
+Check Clerk session and proxy settings:
 
 ```typescript
-// lib/supabase/client.ts
-export const createClient = () =>
-  createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name) {
-          return getCookie(name);
-        },
-        set(name, value, options) {
-          setCookie(name, value, options);
-        },
-        remove(name, options) {
-          deleteCookie(name, options);
-        },
-      },
-    }
-  );
+// proxy.ts should use clerkMiddleware() and protect app routes.
+// app/layout.tsx should mount ClerkProvider inside <body>.
 ```
 
 ---

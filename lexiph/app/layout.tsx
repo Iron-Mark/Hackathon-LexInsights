@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Manrope, Outfit } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { SessionProvider } from "@/components/providers/session-provider";
+import { ClerkAuthHeader } from "@/components/auth/clerk-auth-header";
 import { ToastContainer } from "@/components/ui/toast";
+import { isClerkConfigured } from "@/lib/auth/clerk-config";
 
 // Manrope - Body font
 const manrope = Manrope({
@@ -33,13 +36,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const clerkConfigured = isClerkConfigured();
+
   return (
     <html lang="en" className={`${manrope.variable} ${outfit.variable}`}>
       <body className="antialiased">
-        <SessionProvider>
-          {children}
-          <ToastContainer />
-        </SessionProvider>
+        {clerkConfigured ? (
+          <ClerkProvider>
+            <SessionProvider>
+              <ClerkAuthHeader />
+              {children}
+              <ToastContainer />
+            </SessionProvider>
+          </ClerkProvider>
+        ) : (
+          <>
+            {children}
+            <ToastContainer />
+          </>
+        )}
       </body>
     </html>
   );

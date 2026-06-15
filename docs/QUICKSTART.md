@@ -8,6 +8,7 @@ Before starting, make sure you have:
 
 - ✅ Node.js 18+ installed
 - ✅ Git installed
+- ✅ A Clerk account (free)
 - ✅ A Supabase account (free)
 
 ## ⚡ 5-Minute Setup
@@ -23,16 +24,21 @@ cd Hackathon-LexInsights/lexiph
 npm install
 ```
 
-### Step 2: Supabase Setup (3 minutes)
+### Step 2: Clerk And Supabase Setup (3 minutes)
 
-1. **Create project** at [app.supabase.com](https://app.supabase.com)
-2. **Get credentials**: Settings → API
+1. **Create Clerk app** at [dashboard.clerk.com](https://dashboard.clerk.com/)
+   - Copy the publishable and secret keys
+   - Configure sign-in URL `/auth/login` and sign-up URL `/auth/signup`
+   - Configure Clerk's Supabase compatibility
+2. **Create Supabase project** at [app.supabase.com](https://app.supabase.com)
+3. **Get Supabase credentials**: Settings → API
    - Copy Project URL
-   - Copy anon/public key
-3. **Set up database**: SQL Editor → New Query
+   - Copy publishable key
+4. **Enable Clerk Third-Party Auth** in the Supabase dashboard
+5. **Set up database**: SQL Editor → New Query
    - Paste contents of `supabase-setup.sql`
    - Click Run
-4. **Create storage**: SQL Editor → New Query
+6. **Create storage**: SQL Editor → New Query
    - Paste contents of `supabase-storage-setup.sql`
    - Click Run
 
@@ -41,8 +47,14 @@ npm install
 Create `.env.local`:
 
 ```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/login
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/signup
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/chat
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/chat
 NEXT_PUBLIC_SUPABASE_URL=your_project_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key_here
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 

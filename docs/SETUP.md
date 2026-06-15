@@ -22,9 +22,12 @@ Before you begin, ensure you have the following installed:
 
 ### Required Accounts
 
+- **Clerk Account**: [Sign up](https://dashboard.clerk.com/)
+  - Required for authentication
+
 - **Supabase Account**: [Sign up](https://supabase.com/)
   - Free tier available
-  - Required for database and authentication
+  - Required for database and storage
 
 - **Reachable RAG API** (Optional for full functionality)
   - The default hosted endpoint is `https://devkada.resqlink.org`
@@ -69,9 +72,17 @@ cp .env.example .env.local
 Edit `.env.local` with your configuration:
 
 ```env
+# Clerk Configuration (REQUIRED)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/login
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/signup
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/chat
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/chat
+
 # Supabase Configuration (REQUIRED)
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 
 # App Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -87,7 +98,18 @@ NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL=https://github.com/Iron-Mark/Hackathon-LexInsi
 NEXT_PUBLIC_ANALYTICS_ID=your_analytics_id
 ```
 
-### 4. Set Up Supabase
+### 4. Set Up Clerk And Supabase
+
+#### Create a Clerk Application
+
+1. Go to [Clerk Dashboard](https://dashboard.clerk.com/)
+2. Create an application for LexInSight
+3. Copy the publishable and secret keys into `.env.local`
+4. Confirm these routes are configured:
+   - Sign-in URL: `/auth/login`
+   - Sign-up URL: `/auth/signup`
+   - Fallback redirect URL: `/chat`
+5. Use Clerk's Supabase integration page to configure Supabase compatibility.
 
 #### Create a Supabase Project
 
@@ -104,8 +126,9 @@ NEXT_PUBLIC_ANALYTICS_ID=your_analytics_id
 1. Go to **Project Settings** → **API**
 2. Copy the following values:
    - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
-   - **anon/public key** → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - **publishable key** → `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 3. Paste them into your `.env.local` file
+4. Add Clerk as a Supabase Third-Party Auth provider in the Supabase Dashboard.
 
 #### Run Database Migration
 
@@ -125,7 +148,7 @@ npm run db:setup
 4. Paste into SQL Editor
 5. Click "Run"
 
-This will create:
+The setup script is for a fresh Clerk demo schema. If an older Supabase Auth UUID schema already exists, reset/drop the app-owned public tables first. This will create:
 - `profiles` table
 - `chats` table
 - `messages` table
@@ -176,7 +199,7 @@ The database consists of four main tables:
 #### 1. Profiles Table
 ```sql
 CREATE TABLE public.profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  id TEXT PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   full_name TEXT,
   avatar_url TEXT,
@@ -189,7 +212,7 @@ CREATE TABLE public.profiles (
 ```sql
 CREATE TABLE public.chats (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   title TEXT NOT NULL,
   mode TEXT NOT NULL CHECK (mode IN ('general', 'compliance')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -213,7 +236,7 @@ CREATE TABLE public.messages (
 ```sql
 CREATE TABLE public.documents (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   chat_id UUID REFERENCES public.chats(id) ON DELETE SET NULL,
   file_name TEXT NOT NULL,
   file_size INTEGER NOT NULL,
@@ -258,8 +281,10 @@ All tables have RLS enabled with the following policies:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key | `pk_test_...` |
+| `CLERK_SECRET_KEY` | Clerk server secret key | `sk_test_...` |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | `https://xxxxx.supabase.co` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous/public key | `eyJhbGc...` |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable key | `sb_publishable_...` |
 
 #### Optional Variables
 
@@ -361,10 +386,10 @@ lexiph/
 After setup, verify the following features:
 
 #### Authentication
-- [ ] Sign up with email and password
-- [ ] Sign in with existing account
-- [ ] Sign out functionality
-- [ ] Password reset (if implemented)
+- [ ] Sign up through Clerk at `/auth/signup`
+- [ ] Sign in through Clerk at `/auth/login`
+- [ ] Verify the Clerk `<UserButton>` profile icon appears
+- [ ] Sign out from the Clerk profile menu
 
 #### Chat Interface
 - [ ] Create new chat (General mode)
@@ -392,17 +417,26 @@ After setup, verify the following features:
 
 ### Common Issues
 
-#### 1. "Supabase client is not initialized"
+#### 1. "Clerk setup required"
+
+**Problem**: Missing Clerk environment variables
+
+**Solution**:
+- Set `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- Set `CLERK_SECRET_KEY`
+- Restart development server: `npm run dev`
+
+#### 2. "Supabase client is not initialized"
 
 **Problem**: Missing or incorrect Supabase credentials
 
 **Solution**:
 - Check `.env.local` file exists
 - Verify `NEXT_PUBLIC_SUPABASE_URL` is correct
-- Verify `NEXT_PUBLIC_SUPABASE_ANON_KEY` is correct
+- Verify `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is correct
 - Restart development server: `npm run dev`
 
-#### 2. "Database connection error"
+#### 3. "Database connection error"
 
 **Problem**: Database schema not set up
 
@@ -414,7 +448,7 @@ npm run db:setup
 # OR manually run supabase-setup.sql in Supabase Dashboard
 ```
 
-#### 3. "File upload failed"
+#### 4. "File upload failed"
 
 **Problem**: Storage bucket not configured
 
@@ -424,7 +458,7 @@ npm run db:setup
 - Set up RLS policies
 - Run `supabase-storage-setup.sql`
 
-#### 4. "Port 3000 already in use"
+#### 5. "Port 3000 already in use"
 
 **Problem**: Another process is using port 3000
 
@@ -442,7 +476,7 @@ lsof -ti:3000 | xargs kill -9
 npm run dev -- -p 3001
 ```
 
-#### 5. "Module not found" errors
+#### 6. "Module not found" errors
 
 **Problem**: Dependencies not installed
 
@@ -453,7 +487,7 @@ rm -rf node_modules package-lock.json
 npm install
 ```
 
-#### 6. TypeScript errors after install
+#### 7. TypeScript errors after install
 
 **Problem**: Type definitions not generated
 

@@ -5,6 +5,7 @@ const isManagedLocalWebServer = !process.env.PLAYWRIGHT_BASE_URL
 const ragBackendIssueUrl =
   process.env.NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL ||
   'https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1'
+const authRouteHeading = /Sign in to LexInSight|Clerk setup required/
 
 test.describe('LexInSight smoke checks', () => {
   test('public entry routes render', async ({ page }) => {
@@ -12,17 +13,29 @@ test.describe('LexInSight smoke checks', () => {
     await expect(page.getByText('LexInSight').first()).toBeVisible()
 
     await page.goto('/auth/login')
-    await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: authRouteHeading })).toBeVisible()
 
     await page.goto('/test-rag')
     await expect(page.getByRole('heading', { name: 'RAG API Test Page' })).toBeVisible()
+  })
+
+  test('missing Clerk keys show setup blocker', async ({ page }) => {
+    test.skip(
+      Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY),
+      'Real Clerk keys are configured.'
+    )
+
+    await page.goto('/auth/login')
+
+    await expect(page.getByRole('heading', { name: 'Clerk setup required' })).toBeVisible()
+    await expect(page.getByText('Add Clerk publishable and secret keys')).toBeVisible()
   })
 
   for (const route of protectedRoutes) {
     test(`${route} redirects unauthenticated users to login`, async ({ page }) => {
       await page.goto(route)
 
-      await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: authRouteHeading })).toBeVisible()
       await expect(page).toHaveURL(/\/auth\/login/)
     })
   }

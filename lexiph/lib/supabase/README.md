@@ -2,7 +2,7 @@
 
 ## Database Schema Setup
 
-Use the root setup scripts as the source of truth:
+Use the root setup scripts as the source of truth for a fresh Clerk-auth demo schema:
 
 1. Run `supabase-setup.sql` in the Supabase SQL Editor.
 2. Create the private `documents` storage bucket.
@@ -17,7 +17,7 @@ The setup creates the runtime tables used by the app:
 - `compliance_reports`
 - `search_history`
 
-It also enables RLS, creates ownership policies, and grants the `authenticated` role Data API access to these tables. The explicit grants matter for newer Supabase projects where public tables may not be exposed through the Data API automatically.
+It also enables RLS, creates ownership policies based on the Clerk `sub` claim, and grants the `authenticated` role Data API access to these tables. The explicit grants matter for newer Supabase projects where public tables may not be exposed through the Data API automatically.
 
 ## Verification
 
@@ -27,13 +27,14 @@ After running the SQL, verify the setup:
 2. Confirm RLS is enabled on all six runtime tables.
 3. Confirm the `documents` storage bucket exists and is private.
 4. Confirm storage policies allow users to access only their own user-id folder.
-5. Sign up in the app, create a chat, send a message, and upload a small `.txt` or `.md` document.
+5. Sign up through Clerk in the app, create a chat, send a message, and upload a small `.txt` or `.md` document.
 
 ## Client Configuration
 
 The Supabase client is configured in `client.ts` and uses the following environment variables from `.env.local`:
 
 - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: Your Supabase publishable key for Clerk Third-Party Auth
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Backward-compatible fallback for older local env files
 
-These are already configured in the project.
+The client injects the active Clerk session token with Supabase's `accessToken` hook.

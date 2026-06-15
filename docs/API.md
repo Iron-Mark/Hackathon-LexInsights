@@ -7,23 +7,21 @@ This document describes all API endpoints, services, and integrations used in Le
 LexInSight uses a combination of:
 
 - **Next.js API Routes** - Internal backend endpoints
-- **Supabase APIs** - Database, auth, and storage
+- **Clerk** - Authentication and session management
+- **Supabase APIs** - Database and storage
 - **External RAG API** - AI-powered document analysis
 
 ## 🔐 Authentication
 
-All API requests require authentication using Supabase JWT tokens.
+Protected app data requests use Clerk sessions. Supabase database and storage requests are authorized by Clerk session tokens through Supabase Third-Party Auth.
 
 ### Getting Auth Token
 
 ```typescript
-import { createClient } from "@/lib/supabase/client";
+import { useSession } from "@clerk/nextjs";
 
-const supabase = createClient();
-const {
-  data: { session },
-} = await supabase.auth.getSession();
-const token = session?.access_token;
+const { session } = useSession();
+const token = await session?.getToken();
 ```
 
 ### Using Auth Token
@@ -51,143 +49,14 @@ fetch("/api/endpoint", {
 
 ## Authentication API
 
-### Sign Up
+Authentication is handled by Clerk prebuilt App Router pages:
 
-Create a new user account.
+- `GET /auth/signup`
+- `GET /auth/login`
+- `GET /auth/callback` redirects to `/chat`
+- `GET /auth/verify-email` redirects to `/auth/signup`
 
-**Endpoint:** `POST /auth/signup` (Supabase)
-
-**Request:**
-
-```typescript
-{
-  email: string
-  password: string
-  options?: {
-    data: {
-      full_name?: string
-    }
-  }
-}
-```
-
-**Response:**
-
-```typescript
-{
-  user: {
-    id: string;
-    email: string;
-    created_at: string;
-  }
-  session: {
-    access_token: string;
-    refresh_token: string;
-    expires_in: number;
-  }
-}
-```
-
-**Example:**
-
-```typescript
-const { data, error } = await supabase.auth.signUp({
-  email: "user@example.com",
-  password: "secure_password",
-  options: {
-    data: {
-      full_name: "John Doe",
-    },
-  },
-});
-```
-
-**Error Codes:**
-
-- `400` - Invalid email or password
-- `422` - User already exists
-
-### Sign In
-
-Authenticate existing user.
-
-**Endpoint:** `POST /auth/signin` (Supabase)
-
-**Request:**
-
-```typescript
-{
-  email: string;
-  password: string;
-}
-```
-
-**Response:**
-
-```typescript
-{
-  user: User;
-  session: Session;
-}
-```
-
-**Example:**
-
-```typescript
-const { data, error } = await supabase.auth.signInWithPassword({
-  email: "user@example.com",
-  password: "secure_password",
-});
-```
-
-### Sign Out
-
-End user session.
-
-**Endpoint:** `POST /auth/signout` (Supabase)
-
-**Request:** None
-
-**Response:**
-
-```typescript
-{
-  error: null;
-}
-```
-
-**Example:**
-
-```typescript
-const { error } = await supabase.auth.signOut();
-```
-
-### Get Session
-
-Retrieve current session.
-
-**Endpoint:** `GET /auth/session` (Supabase)
-
-**Response:**
-
-```typescript
-{
-  session: {
-    access_token: string
-    refresh_token: string
-    user: User
-    expires_at: number
-  } | null
-}
-```
-
-**Example:**
-
-```typescript
-const {
-  data: { session },
-} = await supabase.auth.getSession();
-```
+The app does not expose Supabase Auth signup/login endpoints. Supabase receives Clerk session tokens through the configured Supabase client `accessToken` callback.
 
 ---
 

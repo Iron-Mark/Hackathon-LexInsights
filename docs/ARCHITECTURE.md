@@ -106,11 +106,11 @@ This document provides a comprehensive overview of LexInSight's architecture, de
   - JSON support
   - Row-level security
 
-- **Supabase Auth**: Authentication
-  - Email/password
-  - OAuth providers (planned)
-  - JWT tokens
+- **Clerk**: Authentication
+  - Email/password and managed auth UI
   - Session management
+  - User profile menu
+  - Supabase Third-Party Auth token compatibility
 
 - **Supabase Storage**: File storage
   - S3-compatible
@@ -141,13 +141,13 @@ This document provides a comprehensive overview of LexInSight's architecture, de
 ### Authentication Flow
 
 ```
-User → Login Form → Supabase Auth
-                         ↓
-                    JWT Token
-                         ↓
-                   Auth Context
-                         ↓
-                  Protected Routes
+User → Clerk SignIn/SignUp
+             ↓
+        Clerk Session
+             ↓
+   Supabase accessToken hook
+             ↓
+   RLS checks auth.jwt()->>'sub'
 ```
 
 ### Chat Message Flow
@@ -354,13 +354,13 @@ Use Next.js for:
 ### Authentication
 
 ```
-User → Supabase Auth → JWT Token
-                            ↓
-                    HTTP-only Cookie
-                            ↓
-                     Middleware Check
-                            ↓
-                    Protected Routes
+User → Clerk Auth → Clerk Session
+                         ↓
+                  clerkMiddleware()
+                         ↓
+                  Protected Routes
+                         ↓
+       Supabase RLS with Clerk user ID claim
 ```
 
 ### Row-Level Security (RLS)
@@ -372,7 +372,7 @@ Every database table has RLS policies:
 CREATE POLICY "Users can view own chats"
   ON public.chats
   FOR SELECT
-  USING (auth.uid() = user_id);
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 ```
 
 ### File Storage Security
@@ -414,7 +414,7 @@ Upload → Type Check → Size Check
 ### User Profile
 ```typescript
 interface Profile {
-  id: string              // UUID
+  id: string              // Clerk user ID
   email: string           // Unique
   full_name?: string
   avatar_url?: string

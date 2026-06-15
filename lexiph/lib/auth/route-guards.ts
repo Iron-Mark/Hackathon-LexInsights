@@ -1,6 +1,5 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
 import type { User } from '@/types'
 
 interface ProtectedRouteAccessResult {
@@ -8,37 +7,13 @@ interface ProtectedRouteAccessResult {
   redirectTo?: string
 }
 
-export async function verifyProtectedRouteAccess(user: User): Promise<ProtectedRouteAccessResult> {
-  try {
-    const supabase = createClient()
-    const { data, error } = await supabase.auth.getUser()
-    const verifiedEmail = data.user?.email ?? user?.email
-
-    if (error || !data.user) {
-      if (error) {
-        console.error('Failed to verify Supabase user:', error)
-      }
-
-      return {
-        allowed: false,
-        redirectTo: '/auth/login',
-      }
-    }
-
-    if (!data.user.email_confirmed_at) {
-      return {
-        allowed: false,
-        redirectTo: `/auth/verify-email?email=${encodeURIComponent(verifiedEmail)}`,
-      }
-    }
-
-    return { allowed: true }
-  } catch (error) {
-    console.error('Failed to verify chat access:', error)
-
+export async function verifyProtectedRouteAccess(user: User | null): Promise<ProtectedRouteAccessResult> {
+  if (!user) {
     return {
       allowed: false,
       redirectTo: '/auth/login',
     }
   }
+
+  return { allowed: true }
 }

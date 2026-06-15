@@ -1,18 +1,44 @@
 -- =====================================================
 -- LEXINSIGHT SUPABASE DATABASE SETUP
--- Complete SQL script for all tables, policies, and functions
+-- Clerk Auth edition for fresh demo projects
 -- =====================================================
+--
+-- Prerequisites:
+-- 1. Configure Clerk with Supabase compatibility.
+-- 2. Add Clerk as a Third-Party Auth provider in Supabase.
+-- 3. Use Clerk user IDs (for example: user_...) as app user IDs.
+--
+-- Existing Supabase Auth UUID data is not migrated by this script.
+-- Reset/drop the app-owned public tables before running this fresh setup.
 
--- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name IN ('chats', 'documents', 'compliance_reports', 'search_history')
+      AND column_name = 'user_id'
+      AND udt_name = 'uuid'
+  ) THEN
+    RAISE EXCEPTION 'Existing Supabase Auth UUID schema detected. Reset/drop app tables before running the Clerk fresh-demo setup.';
+  END IF;
+END $$;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS public.handle_new_user();
+DROP FUNCTION IF EXISTS public.get_user_chats_with_counts(UUID);
+DROP FUNCTION IF EXISTS public.delete_chat_cascade(UUID, UUID);
 
 -- =====================================================
 -- 1. PROFILES TABLE
--- Extends Supabase auth.users with additional user data
+-- Mirrors Clerk profile data when the app chooses to persist it.
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.profiles (
-  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  id TEXT PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
   full_name TEXT,
   avatar_url TEXT,
@@ -20,81 +46,82 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable RLS
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
--- Profiles policies
 DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
 CREATE POLICY "Users can view own profile"
   ON public.profiles
   FOR SELECT
-  USING (auth.uid() = id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = id);
 
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile"
   ON public.profiles
   FOR UPDATE
-  USING (auth.uid() = id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = id)
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = id);
 
 DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
 CREATE POLICY "Users can insert own profile"
   ON public.profiles
   FOR INSERT
-  WITH CHECK (auth.uid() = id);
+  TO authenticated
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = id);
 
--- Index for faster lookups
 CREATE INDEX IF NOT EXISTS profiles_email_idx ON public.profiles(email);
 
 -- =====================================================
 -- 2. CHATS TABLE
--- Stores chat conversations
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.chats (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   title TEXT NOT NULL,
   mode TEXT NOT NULL DEFAULT 'general' CHECK (mode IN ('general', 'compliance')),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable RLS
 ALTER TABLE public.chats ENABLE ROW LEVEL SECURITY;
 
--- Chats policies
 DROP POLICY IF EXISTS "Users can view own chats" ON public.chats;
 CREATE POLICY "Users can view own chats"
   ON public.chats
   FOR SELECT
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can create own chats" ON public.chats;
 CREATE POLICY "Users can create own chats"
   ON public.chats
   FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  TO authenticated
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can update own chats" ON public.chats;
 CREATE POLICY "Users can update own chats"
   ON public.chats
   FOR UPDATE
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id)
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can delete own chats" ON public.chats;
 CREATE POLICY "Users can delete own chats"
   ON public.chats
   FOR DELETE
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 
--- Indexes for faster queries
 CREATE INDEX IF NOT EXISTS chats_user_id_idx ON public.chats(user_id);
 CREATE INDEX IF NOT EXISTS chats_created_at_idx ON public.chats(created_at DESC);
 CREATE INDEX IF NOT EXISTS chats_user_id_created_at_idx ON public.chats(user_id, created_at DESC);
 
 -- =====================================================
 -- 3. MESSAGES TABLE
--- Stores individual messages in chats
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.messages (
@@ -106,19 +133,18 @@ CREATE TABLE IF NOT EXISTS public.messages (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable RLS
 ALTER TABLE public.messages ENABLE ROW LEVEL SECURITY;
 
--- Messages policies (users can only access messages from their own chats)
 DROP POLICY IF EXISTS "Users can view messages from own chats" ON public.messages;
 CREATE POLICY "Users can view messages from own chats"
   ON public.messages
   FOR SELECT
+  TO authenticated
   USING (
     EXISTS (
       SELECT 1 FROM public.chats
       WHERE chats.id = messages.chat_id
-      AND chats.user_id = auth.uid()
+        AND chats.user_id = (SELECT auth.jwt()->>'sub')
     )
   );
 
@@ -126,11 +152,12 @@ DROP POLICY IF EXISTS "Users can create messages in own chats" ON public.message
 CREATE POLICY "Users can create messages in own chats"
   ON public.messages
   FOR INSERT
+  TO authenticated
   WITH CHECK (
     EXISTS (
       SELECT 1 FROM public.chats
       WHERE chats.id = messages.chat_id
-      AND chats.user_id = auth.uid()
+        AND chats.user_id = (SELECT auth.jwt()->>'sub')
     )
   );
 
@@ -138,11 +165,12 @@ DROP POLICY IF EXISTS "Users can update messages in own chats" ON public.message
 CREATE POLICY "Users can update messages in own chats"
   ON public.messages
   FOR UPDATE
+  TO authenticated
   USING (
     EXISTS (
       SELECT 1 FROM public.chats
       WHERE chats.id = messages.chat_id
-      AND chats.user_id = auth.uid()
+        AND chats.user_id = (SELECT auth.jwt()->>'sub')
     )
   );
 
@@ -150,27 +178,26 @@ DROP POLICY IF EXISTS "Users can delete messages from own chats" ON public.messa
 CREATE POLICY "Users can delete messages from own chats"
   ON public.messages
   FOR DELETE
+  TO authenticated
   USING (
     EXISTS (
       SELECT 1 FROM public.chats
       WHERE chats.id = messages.chat_id
-      AND chats.user_id = auth.uid()
+        AND chats.user_id = (SELECT auth.jwt()->>'sub')
     )
   );
 
--- Indexes for faster queries
 CREATE INDEX IF NOT EXISTS messages_chat_id_idx ON public.messages(chat_id);
 CREATE INDEX IF NOT EXISTS messages_created_at_idx ON public.messages(created_at);
 CREATE INDEX IF NOT EXISTS messages_chat_id_created_at_idx ON public.messages(chat_id, created_at);
 
 -- =====================================================
 -- 4. DOCUMENTS TABLE
--- Stores uploaded documents for compliance analysis
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.documents (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   chat_id UUID REFERENCES public.chats(id) ON DELETE SET NULL,
   file_name TEXT NOT NULL,
   file_size INTEGER NOT NULL,
@@ -182,35 +209,37 @@ CREATE TABLE IF NOT EXISTS public.documents (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable RLS
 ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 
--- Documents policies
 DROP POLICY IF EXISTS "Users can view own documents" ON public.documents;
 CREATE POLICY "Users can view own documents"
   ON public.documents
   FOR SELECT
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can create own documents" ON public.documents;
 CREATE POLICY "Users can create own documents"
   ON public.documents
   FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  TO authenticated
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can update own documents" ON public.documents;
 CREATE POLICY "Users can update own documents"
   ON public.documents
   FOR UPDATE
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id)
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can delete own documents" ON public.documents;
 CREATE POLICY "Users can delete own documents"
   ON public.documents
   FOR DELETE
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 
--- Indexes
 CREATE INDEX IF NOT EXISTS documents_user_id_idx ON public.documents(user_id);
 CREATE INDEX IF NOT EXISTS documents_chat_id_idx ON public.documents(chat_id);
 CREATE INDEX IF NOT EXISTS documents_status_idx ON public.documents(status);
@@ -218,12 +247,11 @@ CREATE INDEX IF NOT EXISTS documents_created_at_idx ON public.documents(created_
 
 -- =====================================================
 -- 5. COMPLIANCE_REPORTS TABLE
--- Stores generated compliance analysis reports
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.compliance_reports (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   chat_id UUID REFERENCES public.chats(id) ON DELETE CASCADE,
   document_id UUID REFERENCES public.documents(id) ON DELETE SET NULL,
   title TEXT NOT NULL,
@@ -234,35 +262,37 @@ CREATE TABLE IF NOT EXISTS public.compliance_reports (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable RLS
 ALTER TABLE public.compliance_reports ENABLE ROW LEVEL SECURITY;
 
--- Compliance reports policies
 DROP POLICY IF EXISTS "Users can view own compliance reports" ON public.compliance_reports;
 CREATE POLICY "Users can view own compliance reports"
   ON public.compliance_reports
   FOR SELECT
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can create own compliance reports" ON public.compliance_reports;
 CREATE POLICY "Users can create own compliance reports"
   ON public.compliance_reports
   FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  TO authenticated
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can update own compliance reports" ON public.compliance_reports;
 CREATE POLICY "Users can update own compliance reports"
   ON public.compliance_reports
   FOR UPDATE
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id)
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can delete own compliance reports" ON public.compliance_reports;
 CREATE POLICY "Users can delete own compliance reports"
   ON public.compliance_reports
   FOR DELETE
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 
--- Indexes
 CREATE INDEX IF NOT EXISTS compliance_reports_user_id_idx ON public.compliance_reports(user_id);
 CREATE INDEX IF NOT EXISTS compliance_reports_chat_id_idx ON public.compliance_reports(chat_id);
 CREATE INDEX IF NOT EXISTS compliance_reports_document_id_idx ON public.compliance_reports(document_id);
@@ -270,12 +300,11 @@ CREATE INDEX IF NOT EXISTS compliance_reports_created_at_idx ON public.complianc
 
 -- =====================================================
 -- 6. SEARCH_HISTORY TABLE
--- Stores user search queries for analytics and suggestions
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.search_history (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
   chat_id UUID REFERENCES public.chats(id) ON DELETE SET NULL,
   query TEXT NOT NULL,
   results_count INTEGER DEFAULT 0,
@@ -283,37 +312,34 @@ CREATE TABLE IF NOT EXISTS public.search_history (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable RLS
 ALTER TABLE public.search_history ENABLE ROW LEVEL SECURITY;
 
--- Search history policies
 DROP POLICY IF EXISTS "Users can view own search history" ON public.search_history;
 CREATE POLICY "Users can view own search history"
   ON public.search_history
   FOR SELECT
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can create own search history" ON public.search_history;
 CREATE POLICY "Users can create own search history"
   ON public.search_history
   FOR INSERT
-  WITH CHECK (auth.uid() = user_id);
+  TO authenticated
+  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
 
 DROP POLICY IF EXISTS "Users can delete own search history" ON public.search_history;
 CREATE POLICY "Users can delete own search history"
   ON public.search_history
   FOR DELETE
-  USING (auth.uid() = user_id);
+  TO authenticated
+  USING ((SELECT auth.jwt()->>'sub') = user_id);
 
--- Indexes
 CREATE INDEX IF NOT EXISTS search_history_user_id_idx ON public.search_history(user_id);
 CREATE INDEX IF NOT EXISTS search_history_created_at_idx ON public.search_history(created_at DESC);
 
 -- =====================================================
 -- 7. DATA API GRANTS
--- Supabase no longer guarantees new public tables are automatically exposed
--- through the Data API. Keep RLS enabled, then explicitly grant only the
--- authenticated role access to the app-owned tables used by supabase-js.
 -- =====================================================
 
 GRANT USAGE ON SCHEMA public TO authenticated;
@@ -338,32 +364,8 @@ FROM anon;
 
 -- =====================================================
 -- 8. FUNCTIONS
--- Utility functions for the application
 -- =====================================================
 
--- Function to automatically create profile on user signup
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO public.profiles (id, email, full_name, avatar_url)
-  VALUES (
-    NEW.id,
-    NEW.email,
-    NEW.raw_user_meta_data->>'full_name',
-    NEW.raw_user_meta_data->>'avatar_url'
-  );
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
-
--- Trigger to create profile on user signup
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW
-  EXECUTE FUNCTION public.handle_new_user();
-
--- Function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -372,7 +374,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers for updated_at
 DROP TRIGGER IF EXISTS set_updated_at_profiles ON public.profiles;
 CREATE TRIGGER set_updated_at_profiles
   BEFORE UPDATE ON public.profiles
@@ -397,12 +398,9 @@ CREATE TRIGGER set_updated_at_compliance_reports
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_updated_at();
 
--- Trigger helper functions are not client-callable RPC endpoints.
-REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon, authenticated, public;
 REVOKE EXECUTE ON FUNCTION public.handle_updated_at() FROM anon, authenticated, public;
 
--- Function to get user's recent chats with message count
-CREATE OR REPLACE FUNCTION public.get_user_chats_with_counts(user_uuid UUID)
+CREATE OR REPLACE FUNCTION public.get_user_chats_with_counts(user_id_param TEXT)
 RETURNS TABLE (
   id UUID,
   title TEXT,
@@ -414,101 +412,77 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
   RETURN QUERY
-  SELECT 
+  SELECT
     c.id,
     c.title,
     c.mode,
     c.created_at,
     c.updated_at,
-    COUNT(m.id) as message_count,
-    MAX(m.created_at) as last_message_at
+    COUNT(m.id) AS message_count,
+    MAX(m.created_at) AS last_message_at
   FROM public.chats c
   LEFT JOIN public.messages m ON c.id = m.chat_id
-  WHERE c.user_id = auth.uid()
-  AND c.user_id = user_uuid
+  WHERE c.user_id = (SELECT auth.jwt()->>'sub')
+    AND c.user_id = user_id_param
   GROUP BY c.id, c.title, c.mode, c.created_at, c.updated_at
   ORDER BY COALESCE(MAX(m.created_at), c.created_at) DESC;
 END;
 $$ LANGUAGE plpgsql SECURITY INVOKER;
 
--- Function to delete chat and all related data
-CREATE OR REPLACE FUNCTION public.delete_chat_cascade(chat_uuid UUID, user_uuid UUID)
+CREATE OR REPLACE FUNCTION public.delete_chat_cascade(chat_uuid UUID, user_id_param TEXT)
 RETURNS BOOLEAN AS $$
 DECLARE
   chat_exists BOOLEAN;
 BEGIN
-  IF user_uuid IS DISTINCT FROM auth.uid() THEN
+  IF user_id_param IS DISTINCT FROM (SELECT auth.jwt()->>'sub') THEN
     RETURN FALSE;
   END IF;
 
-  -- Check if chat exists and belongs to user
   SELECT EXISTS(
     SELECT 1 FROM public.chats
-    WHERE id = chat_uuid AND user_id = auth.uid()
+    WHERE id = chat_uuid
+      AND user_id = (SELECT auth.jwt()->>'sub')
   ) INTO chat_exists;
-  
+
   IF NOT chat_exists THEN
     RETURN FALSE;
   END IF;
-  
-  -- Delete chat (cascade will handle messages, documents, reports)
-  DELETE FROM public.chats WHERE id = chat_uuid AND user_id = auth.uid();
-  
+
+  DELETE FROM public.chats
+  WHERE id = chat_uuid
+    AND user_id = (SELECT auth.jwt()->>'sub');
+
   RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql SECURITY INVOKER;
 
-REVOKE EXECUTE ON FUNCTION public.get_user_chats_with_counts(UUID) FROM public;
-REVOKE EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, UUID) FROM public;
-GRANT EXECUTE ON FUNCTION public.get_user_chats_with_counts(UUID) TO authenticated;
-GRANT EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, UUID) TO authenticated;
-REVOKE EXECUTE ON FUNCTION public.get_user_chats_with_counts(UUID) FROM anon;
-REVOKE EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, UUID) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.get_user_chats_with_counts(TEXT) FROM public;
+REVOKE EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, TEXT) FROM public;
+GRANT EXECUTE ON FUNCTION public.get_user_chats_with_counts(TEXT) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, TEXT) TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.get_user_chats_with_counts(TEXT) FROM anon;
+REVOKE EXECUTE ON FUNCTION public.delete_chat_cascade(UUID, TEXT) FROM anon;
 
 -- =====================================================
 -- 9. STORAGE BUCKETS
--- Note: These need to be created in Supabase Storage UI or via API
 -- =====================================================
 
--- Create storage bucket for documents (run this in Supabase Dashboard > Storage)
--- Bucket name: 'documents'
+-- Create storage bucket for documents in Supabase Dashboard:
+-- Bucket name: documents
 -- Public: false
 -- File size limit: 5MB
--- Allowed MIME types: application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, text/plain, text/markdown
+-- Allowed MIME types: application/pdf, application/msword,
+-- application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+-- text/plain, text/markdown
 
--- Storage policies (run after creating bucket)
--- These allow users to upload, view, and delete their own documents
-
--- Policy: Users can upload their own documents
--- CREATE POLICY "Users can upload own documents"
--- ON storage.objects FOR INSERT
--- WITH CHECK (
---   bucket_id = 'documents' AND
---   auth.uid()::text = (storage.foldername(name))[1]
--- );
-
--- Policy: Users can view their own documents
--- CREATE POLICY "Users can view own documents"
--- ON storage.objects FOR SELECT
--- USING (
---   bucket_id = 'documents' AND
---   auth.uid()::text = (storage.foldername(name))[1]
--- );
-
--- Policy: Users can delete their own documents
--- CREATE POLICY "Users can delete own documents"
--- ON storage.objects FOR DELETE
--- USING (
---   bucket_id = 'documents' AND
---   auth.uid()::text = (storage.foldername(name))[1]
--- );
+-- Storage object names must start with the Clerk user ID:
+--   user_.../file-id.pdf
+-- Run supabase-storage-setup.sql after creating the bucket.
 
 -- =====================================================
 -- 10. REALTIME SUBSCRIPTIONS
--- Enable realtime for tables that need live updates
 -- =====================================================
 
--- Enable realtime for chats
 DO $$
 BEGIN
   ALTER PUBLICATION supabase_realtime ADD TABLE public.chats;
@@ -516,7 +490,6 @@ EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
 
--- Enable realtime for messages
 DO $$
 BEGIN
   ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
@@ -524,7 +497,6 @@ EXCEPTION
   WHEN duplicate_object THEN NULL;
 END $$;
 
--- Enable realtime for documents
 DO $$
 BEGIN
   ALTER PUBLICATION supabase_realtime ADD TABLE public.documents;
@@ -533,35 +505,26 @@ EXCEPTION
 END $$;
 
 -- =====================================================
--- 11. SAMPLE DATA (OPTIONAL - FOR TESTING)
--- Uncomment to insert sample data
+-- 11. SAMPLE DATA
 -- =====================================================
 
--- Note: Replace 'YOUR_USER_ID' with actual user UUID after signup
-
+-- Replace YOUR_CLERK_USER_ID with a real Clerk user ID after signup.
 -- INSERT INTO public.chats (id, user_id, title, mode) VALUES
--- ('550e8400-e29b-41d4-a716-446655440001', 'YOUR_USER_ID', 'Data Privacy Compliance', 'compliance'),
--- ('550e8400-e29b-41d4-a716-446655440002', 'YOUR_USER_ID', 'General Legal Questions', 'general');
-
--- INSERT INTO public.messages (chat_id, role, content) VALUES
--- ('550e8400-e29b-41d4-a716-446655440001', 'user', 'What are the requirements for RA 10173?'),
--- ('550e8400-e29b-41d4-a716-446655440001', 'assistant', 'RA 10173, also known as the Data Privacy Act of 2012...');
+-- ('550e8400-e29b-41d4-a716-446655440001', 'YOUR_CLERK_USER_ID', 'Data Privacy Compliance', 'compliance'),
+-- ('550e8400-e29b-41d4-a716-446655440002', 'YOUR_CLERK_USER_ID', 'General Legal Questions', 'general');
 
 -- =====================================================
 -- SETUP COMPLETE
 -- =====================================================
 
--- Verify tables were created
-SELECT 
+SELECT
   schemaname,
   tablename,
   tableowner
 FROM pg_tables
 WHERE schemaname = 'public'
 ORDER BY tablename;
-
--- Verify RLS is enabled
-SELECT 
+SELECT
   schemaname,
   tablename,
   rowsecurity

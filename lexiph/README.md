@@ -54,7 +54,8 @@ LexInSight is a modern web application that helps users understand and comply wi
 ### Prerequisites
 
 - Node.js 18+ and npm
-- Supabase account (for authentication)
+- Clerk account for authentication
+- Supabase account for database and storage
 - Reachable RAG API server for full AI features. The default hosted backend is `https://devkada.resqlink.org`; use a local compatible backend only if you update `.env.local`.
 
 ### Installation
@@ -86,9 +87,17 @@ NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
 NEXT_PUBLIC_USE_RAG_PROXY=true
 NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL=https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1
 
+# Clerk Configuration
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/login
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/signup
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/chat
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/chat
+
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 ```
 
 ---
@@ -167,7 +176,8 @@ lexiph/
 - **Lucide React** - Icons
 
 ### Backend Services
-- **Supabase** - Authentication & database
+- **Clerk** - Authentication and session management
+- **Supabase** - Database and storage with Clerk Third-Party Auth
 - **RAG API** - AI-powered search (Python/FastAPI)
 - **ChromaDB** - Vector database
 
