@@ -23,11 +23,11 @@ LexInSight is maintained from the fork repository at `Iron-Mark/Hackathon-LexIns
   - `npm run smoke:browser`
   - `npm run check:readiness` after backend env is available
 - Required live gate after production deploy:
-  - `npm run check:deployment -- --base-url https://lexinsights.vercel.app`
-  - `npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes` when diagnosing Vercel ownership/linkage
-  - `npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev` when the project should be under the team scope
-  - `npm run check:live -- --base-url https://lexinsights.vercel.app --source-only`
-  - `npm run check:live -- --base-url https://lexinsights.vercel.app`
+  - `npm run check:deployment -- --base-url https://lexiph.vercel.app`
+  - `npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes` when diagnosing Vercel ownership/linkage
+  - `npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev` when the project should be under the team scope
+  - `npm run check:live -- --base-url https://lexiph.vercel.app --source-only`
+  - `npm run check:live -- --base-url https://lexiph.vercel.app`
 
 ## Maintenance Priorities
 

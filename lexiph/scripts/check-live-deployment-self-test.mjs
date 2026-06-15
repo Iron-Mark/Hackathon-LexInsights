@@ -5,6 +5,7 @@ import assert from 'node:assert/strict'
 import {
   appendPath,
   compareSha,
+  gitWorktreeCheck,
   parseArgs,
   publicCheckDetails,
   safeUrl,
@@ -17,6 +18,7 @@ function assertNoSensitiveMarkers(value) {
 }
 
 assert.deepEqual(parseArgs([]), {
+  allowDirty: false,
   baseUrl: 'https://lexiph.vercel.app',
   expectedSha: null,
   json: false,
@@ -30,6 +32,7 @@ assert.equal(parseArgs(['--expect-sha=abc123']).expectedSha, 'abc123')
 assert.equal(parseArgs(['--timeout-ms', '3000']).timeoutMs, 3000)
 assert.equal(parseArgs(['--timeout-ms=-1']).timeoutMs, 20000)
 assert.equal(parseArgs(['--json']).json, true)
+assert.equal(parseArgs(['--allow-dirty']).allowDirty, true)
 assert.equal(parseArgs(['--source-only']).sourceOnly, true)
 assert.equal(parseArgs(['--skip-backend']).sourceOnly, true)
 assert.equal(parseArgs(['--skip-backend', '--source-only']).sourceOnly, true)
@@ -45,6 +48,16 @@ assert.equal(compareSha('5363fa7', '5363fa7699f88f2bcb974c55a4d42a6b1c7e941f'), 
 assert.equal(compareSha('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbb'), false)
 assert.equal(compareSha(null, 'bbbbbbb'), false)
 assert.equal(compareSha('aaaaaaaa', null), null)
+assert.equal(gitWorktreeCheck('').status, 'pass')
+assert.equal(gitWorktreeCheck(null).status, 'warn')
+const dirtyWorktreeCheck = gitWorktreeCheck(' M README.md\n?? local.txt')
+assert.equal(dirtyWorktreeCheck.status, 'fail')
+assert.equal(dirtyWorktreeCheck.critical, true)
+assert.equal(dirtyWorktreeCheck.details.changedCount, 2)
+const allowedDirtyWorktreeCheck = gitWorktreeCheck(' M README.md\n?? local.txt', true)
+assert.equal(allowedDirtyWorktreeCheck.status, 'warn')
+assert.equal(allowedDirtyWorktreeCheck.critical, false)
+assert.equal(allowedDirtyWorktreeCheck.details.allowDirty, true)
 
 const details = publicCheckDetails({
   name: 'app.version',

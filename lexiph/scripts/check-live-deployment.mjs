@@ -16,6 +16,7 @@ const ROUTES_TO_CHECK = [
 
 function parseArgs(argv) {
   const args = {
+    allowDirty: false,
     baseUrl: DEFAULT_BASE_URL,
     expectedSha: null,
     json: false,
@@ -28,6 +29,11 @@ function parseArgs(argv) {
 
     if (arg === '--json') {
       args.json = true
+      continue
+    }
+
+    if (arg === '--allow-dirty') {
+      args.allowDirty = true
       continue
     }
 
@@ -87,6 +93,54 @@ function getCurrentGitSha() {
     }).trim()
   } catch {
     return null
+  }
+}
+
+function getCurrentGitStatusShort() {
+  try {
+    return execFileSync('git', ['status', '--short'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim()
+  } catch {
+    return null
+  }
+}
+
+function gitWorktreeCheck(statusText, allowDirty = false) {
+  if (statusText === null) {
+    return {
+      name: 'git.worktree',
+      status: 'warn',
+      critical: false,
+      message: 'Could not read local git worktree status.',
+      details: {
+        dirty: null,
+      },
+    }
+  }
+
+  const changedPaths = statusText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  return {
+    name: 'git.worktree',
+    status: changedPaths.length > 0 ? (allowDirty ? 'warn' : 'fail') : 'pass',
+    critical: !allowDirty,
+    message:
+      changedPaths.length > 0
+        ? allowDirty
+          ? `${changedPaths.length} uncommitted change(s); continuing because --allow-dirty was provided.`
+          : `${changedPaths.length} uncommitted change(s); live deployment cannot include them yet.`
+        : 'Local git worktree is clean.',
+    details: {
+      allowDirty,
+      dirty: changedPaths.length > 0,
+      changedCount: changedPaths.length,
+      changedPaths: changedPaths.slice(0, 20),
+    },
   }
 }
 
@@ -261,6 +315,7 @@ async function run() {
   }
 
   const expectedSha = args.expectedSha || getCurrentGitSha()
+  const localChecks = [gitWorktreeCheck(getCurrentGitStatusShort(), args.allowDirty)]
   const routeChecks = ROUTES_TO_CHECK.map((route) =>
     fetchCheck(`app.route:${route}`, appendPath(baseUrl, route), args.timeoutMs, [200])
   )
@@ -284,6 +339,7 @@ async function run() {
       ]
 
   const checks = await Promise.all([
+    ...localChecks,
     ...routeChecks,
     versionCheck(baseUrl, args.timeoutMs, expectedSha),
     ...backendChecks,
@@ -295,6 +351,7 @@ async function run() {
     checkedAt: new Date().toISOString(),
     baseUrl: baseUrl.toString(),
     expectedSha,
+    allowDirty: args.allowDirty,
     mode: args.sourceOnly ? 'source-only' : 'full',
     checks,
   }
@@ -306,6 +363,9 @@ async function run() {
     console.log(`Base URL: ${result.baseUrl}`)
     console.log(`Expected commit: ${expectedSha || 'not available'}`)
     console.log(`Mode: ${result.mode}`)
+    if (args.allowDirty) {
+      console.log('Dirty worktree: allowed by --allow-dirty')
+    }
     console.log(`Checked at: ${result.checkedAt}`)
 
     for (const check of checks) {
@@ -341,6 +401,7 @@ async function run() {
 export {
   appendPath,
   compareSha,
+  gitWorktreeCheck,
   parseArgs,
   publicCheckDetails,
   safeUrl,

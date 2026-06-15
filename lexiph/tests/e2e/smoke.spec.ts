@@ -179,4 +179,34 @@ test.describe('LexInSight smoke checks', () => {
     expect(JSON.stringify(body)).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
     expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
   })
+
+  test('RAG proxy redacts upstream error bodies', async ({ request }) => {
+    test.skip(!isManagedLocalWebServer, 'Uses the managed local app as the upstream.')
+
+    const response = await request.get('/api/rag-proxy?endpoint=/missing-rag-upstream&timeoutMs=1000')
+    const body = await response.json()
+    const serializedBody = JSON.stringify(body)
+
+    expect([404, 502, 504]).toContain(response.status())
+    expect(body).toEqual(
+      expect.objectContaining({
+        detail: expect.any(String),
+        error: expect.objectContaining({
+          type: expect.stringMatching(/^upstream_/),
+          endpoint: '/missing-rag-upstream',
+          upstreamOrigin: expect.any(String),
+          timeoutMs: expect.any(Number),
+        }),
+      })
+    )
+
+    if (body.error.type === 'upstream_http_error') {
+      expect(body.detail).toBe(`RAG backend returned HTTP ${body.error.status}. Check server logs or readiness status.`)
+    }
+
+    expect(serializedBody).not.toContain('<html')
+    expect(serializedBody).not.toContain('<!DOCTYPE')
+    expect(serializedBody).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    expect(serializedBody).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
+  })
 })

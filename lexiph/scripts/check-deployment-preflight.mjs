@@ -10,9 +10,11 @@ const DEFAULT_TIMEOUT_MS = 20000
 
 function parseArgs(argv) {
   const args = {
+    allowDirty: false,
     baseUrl: DEFAULT_BASE_URL,
     discoverVercelScopes: false,
     json: false,
+    sourceOnly: false,
     timeoutMs: DEFAULT_TIMEOUT_MS,
     withVercelCli: false,
     vercelScope: null,
@@ -26,6 +28,11 @@ function parseArgs(argv) {
       continue
     }
 
+    if (arg === '--allow-dirty') {
+      args.allowDirty = true
+      continue
+    }
+
     if (arg === '--with-vercel-cli') {
       args.withVercelCli = true
       continue
@@ -33,6 +40,16 @@ function parseArgs(argv) {
 
     if (arg === '--discover-vercel-scopes') {
       args.discoverVercelScopes = true
+      continue
+    }
+
+    if (arg === '--source-only') {
+      args.sourceOnly = true
+      continue
+    }
+
+    if (arg === '--skip-backend') {
+      args.sourceOnly = true
       continue
     }
 
@@ -183,6 +200,11 @@ function getGitHead() {
   return result.ok ? result.output : null
 }
 
+function getGitStatusShort() {
+  const result = runCommand('git', ['status', '--short'], 5000)
+  return result.ok ? result.output : null
+}
+
 function getGitHubRepoInfo() {
   const result = runCommand('git', ['config', '--get', 'remote.origin.url'], 5000)
 
@@ -287,6 +309,43 @@ function gitHeadCheck(expectedSha) {
     message: expectedSha ? `Local HEAD is ${expectedSha.slice(0, 12)}` : 'Could not read local git HEAD.',
     details: {
       expectedSha,
+    },
+  }
+}
+
+function gitWorktreeCheck(statusText, allowDirty = false) {
+  if (statusText === null) {
+    return {
+      name: 'git.worktree',
+      status: 'warn',
+      critical: false,
+      message: 'Could not read local git worktree status.',
+      details: {
+        dirty: null,
+      },
+    }
+  }
+
+  const changedPaths = statusText
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  return {
+    name: 'git.worktree',
+    status: changedPaths.length > 0 ? (allowDirty ? 'warn' : 'fail') : 'pass',
+    critical: !allowDirty,
+    message:
+      changedPaths.length > 0
+        ? allowDirty
+          ? `${changedPaths.length} uncommitted change(s); continuing because --allow-dirty was provided.`
+          : `${changedPaths.length} uncommitted change(s); live deployment cannot include them yet.`
+        : 'Local git worktree is clean.',
+    details: {
+      allowDirty,
+      dirty: changedPaths.length > 0,
+      changedCount: changedPaths.length,
+      changedPaths: changedPaths.slice(0, 20),
     },
   }
 }
@@ -829,21 +888,27 @@ async function run() {
 
   const cwd = process.cwd()
   const expectedSha = getGitHead()
+  const gitStatus = getGitStatusShort()
   const repoInfo = getGitHubRepoInfo()
   const localChecks = [
     localAppRootCheck(cwd),
     gitHeadCheck(expectedSha),
+    gitWorktreeCheck(gitStatus, args.allowDirty),
     gitRemoteCheck(repoInfo),
     vercelLinkCheck(cwd),
     ...(args.withVercelCli
       ? vercelCliChecks(baseUrl, repoInfo, args.vercelScope, args.discoverVercelScopes)
       : []),
   ]
-  const liveChecks = await Promise.all([
-    versionCheck(baseUrl, args.timeoutMs, expectedSha),
-    readinessRouteCheck(baseUrl, args.timeoutMs),
-    ragProxyRouteCheck(baseUrl, args.timeoutMs),
-  ])
+  const liveChecks = await Promise.all(
+    args.sourceOnly
+      ? [versionCheck(baseUrl, args.timeoutMs, expectedSha)]
+      : [
+          versionCheck(baseUrl, args.timeoutMs, expectedSha),
+          readinessRouteCheck(baseUrl, args.timeoutMs),
+          ragProxyRouteCheck(baseUrl, args.timeoutMs),
+        ]
+  )
   const checks = [...localChecks, ...liveChecks]
   const ready = checks.every((check) => !check.critical || check.status === 'pass')
   const result = {
@@ -851,7 +916,9 @@ async function run() {
     checkedAt: new Date().toISOString(),
     baseUrl: baseUrl.toString(),
     expectedSha,
+    allowDirty: args.allowDirty,
     discoverVercelScopes: args.discoverVercelScopes,
+    mode: args.sourceOnly ? 'source-only' : 'full',
     withVercelCli: args.withVercelCli,
     vercelScope: args.vercelScope,
     checks,
@@ -863,6 +930,10 @@ async function run() {
     console.log(`LexInSight deployment preflight: ${ready ? 'ready' : 'blocked'}`)
     console.log(`Base URL: ${result.baseUrl}`)
     console.log(`Expected commit: ${expectedSha || 'not available'}`)
+    console.log(`Mode: ${result.mode}`)
+    if (args.allowDirty) {
+      console.log('Dirty worktree: allowed by --allow-dirty')
+    }
     if (args.withVercelCli && args.vercelScope) {
       console.log(`Vercel scope: ${args.vercelScope}`)
     }
@@ -905,6 +976,7 @@ async function run() {
 export {
   collectProjectAliases,
   compareSha,
+  gitWorktreeCheck,
   listVercelTeamScopes,
   parseArgs,
   parseGitHubRepoUrl,

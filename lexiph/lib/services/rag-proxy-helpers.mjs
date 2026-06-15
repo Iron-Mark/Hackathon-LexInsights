@@ -75,6 +75,14 @@ export function getProxyFailure(error) {
   }
 }
 
+export function publicUpstreamHttpErrorDetail(status) {
+  return `RAG backend returned HTTP ${status}. Check server logs or readiness status.`
+}
+
+export function publicUpstreamPayloadErrorDetail(kind) {
+  return `RAG backend returned ${kind}. Check server logs or readiness status.`
+}
+
 export function summarizeProxyLogDetail(value) {
   const normalized = String(value || '').replace(/\s+/g, ' ').trim()
 

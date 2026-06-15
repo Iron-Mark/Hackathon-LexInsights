@@ -20,7 +20,7 @@ const ROUTES_TO_CHECK = [
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const projectRoot = resolve(scriptDir, '..')
 
-function parseArgs(argv) {
+export function parseArgs(argv) {
   const args = {
     baseUrl: null,
     json: false,
@@ -69,6 +69,27 @@ function parseArgs(argv) {
   }
 
   return args
+}
+
+export function readinessEndpointPath(timeoutMs, skipExternalChecks) {
+  const params = new URLSearchParams({
+    timeoutMs: String(timeoutMs),
+  })
+
+  if (skipExternalChecks) {
+    params.set('externalChecks', 'skip')
+  }
+
+  return `/api/readiness?${params.toString()}`
+}
+
+function skippedExternalCheck(name) {
+  return {
+    name,
+    status: 'skip',
+    critical: false,
+    message: 'External checks skipped by CLI flag',
+  }
 }
 
 export function parseEnvFile(path) {
@@ -444,24 +465,9 @@ async function run() {
 
   const asyncChecks = args.skipExternalChecks
     ? [
-        {
-          name: 'supabase.dns',
-          status: 'skip',
-          critical: false,
-          message: 'External checks skipped by CLI flag',
-        },
-        {
-          name: 'rag.dns',
-          status: 'skip',
-          critical: false,
-          message: 'External checks skipped by CLI flag',
-        },
-        {
-          name: 'rag.direct_health',
-          status: 'skip',
-          critical: false,
-          message: 'External checks skipped by CLI flag',
-        },
+        skippedExternalCheck('supabase.dns'),
+        skippedExternalCheck('rag.dns'),
+        skippedExternalCheck('rag.direct_health'),
       ]
     : [
         checkDns('supabase.dns', supabaseParsedUrl?.hostname || null),
@@ -491,18 +497,25 @@ async function run() {
       asyncChecks.push(
         checkFetch(
           'app.readiness',
-          new URL(`/api/readiness?timeoutMs=${args.timeoutMs}`, baseUrl).toString(),
-          args.timeoutMs
-        ),
-        checkFetch(
-          'app.rag_proxy_health',
-          new URL(
-            `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${args.timeoutMs}`,
-            baseUrl
-          ).toString(),
+          new URL(readinessEndpointPath(args.timeoutMs, args.skipExternalChecks), baseUrl).toString(),
           args.timeoutMs
         )
       )
+
+      if (args.skipExternalChecks) {
+        asyncChecks.push(skippedExternalCheck('app.rag_proxy_health'))
+      } else {
+        asyncChecks.push(
+          checkFetch(
+            'app.rag_proxy_health',
+            new URL(
+              `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${args.timeoutMs}`,
+              baseUrl
+            ).toString(),
+            args.timeoutMs
+          )
+        )
+      }
     }
   }
 

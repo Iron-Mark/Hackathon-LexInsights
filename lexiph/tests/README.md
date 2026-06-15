@@ -56,12 +56,13 @@ npm run dev -- -p 3000
 npm run check:readiness -- --base-url http://localhost:3000
 ```
 
-The command prints non-secret status for Supabase env/key checks, Supabase DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key. For fast backend probes, the HTTP endpoint also accepts `/api/readiness?timeoutMs=2000`; that timeout is forwarded to the RAG proxy health call so blocked upstream checks return quickly with structured `502` or `504` errors. For browser route-shape smoke only, `/api/readiness?externalChecks=skip` skips Supabase DNS and RAG health fetches but keeps those checks critical and skipped, so it never proves backend E2E readiness. RAG proxy `endpoint` values must stay on the configured RAG API origin.
+The command prints non-secret status for Supabase env/key checks, Supabase DNS, direct RAG health, the Next.js RAG proxy, and the key app routes. It exits nonzero when critical backend readiness is blocked. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key. For fast backend probes, the HTTP endpoint also accepts `/api/readiness?timeoutMs=2000`; that timeout is forwarded to the RAG proxy health call so blocked upstream checks return quickly with structured `502` or `504` errors. For browser route-shape smoke only, `/api/readiness?externalChecks=skip` skips Supabase DNS and RAG health fetches as non-blocking checks, so it proves route shape but not backend E2E readiness. RAG proxy `endpoint` values must stay on the configured RAG API origin.
 
 For offline/local-tuning workflows, you can also skip external dependency probes in the script runner:
 
 ```bash
 npm run check:readiness -- --skip-external-checks
+npm run check:readiness -- --base-url http://localhost:3000 --skip-external-checks
 ```
 
 That mode keeps local env/key checks intact while marking DNS and upstream health probes as non-blocking.
@@ -104,14 +105,14 @@ Run this after changing RAG proxy timeout, endpoint-origin, or error-classificat
 npm run check:rag-proxy:self-test
 ```
 
-The self-test is offline and deterministic. It covers timeout clamping, same-origin endpoint resolution, cross-origin endpoint rejection, upstream timeout classification, upstream fetch failure classification, bounded upstream error log summaries, and secret-safe helper output.
+The self-test is offline and deterministic. It covers timeout clamping, same-origin endpoint resolution, cross-origin endpoint rejection, upstream timeout classification, upstream fetch failure classification, public upstream-error redaction, bounded proxy log summaries, and secret-safe helper output.
 
 ### Method 4: Deployment Preflight
 
-After a production deployment, run the preflight first to verify app-root assumptions, local Vercel linkage status, `/api/version`, `/api/readiness`, and RAG proxy route presence:
+After a production deployment, run the preflight first to verify app-root assumptions, clean worktree status, local Vercel linkage status, `/api/version`, `/api/readiness`, and RAG proxy route presence:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app
+npm run check:deployment -- --base-url https://lexiph.vercel.app
 ```
 
 Use `--with-vercel-cli` when you also need to confirm the current shell has an authenticated Vercel CLI session. The command does not print raw env values or provider secrets.
@@ -119,32 +120,44 @@ Use `--with-vercel-cli` when you also need to confirm the current shell has an a
 Use `--discover-vercel-scopes` with the CLI check to print safe team-scope slugs available to the current Vercel account:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
+npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes
 ```
 
 Use `--vercel-scope <team>` with `--with-vercel-cli` when the deployment may live under a team account:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
 ```
 
 When the repo or live URL is still not visible, the preflight prints a non-critical `vercel.recovery_hint` with the next scoped command or provider action.
+
+Use `--source-only` or `--skip-backend` to check app-root assumptions, clean worktree status, Vercel linkage, and commit freshness without calling Supabase/RAG route health:
+
+```bash
+npm run check:deployment -- --base-url https://lexiph.vercel.app --source-only
+npm run check:deployment -- --base-url https://lexiph.vercel.app --skip-backend
+```
+
+For diagnostics only, add `--allow-dirty` to inspect live state while local changes are still uncommitted. Do not use it for release readiness.
 
 ### Method 5: Live Deployment Check
 
 After a production deployment, verify that the public URL serves the expected commit and exposes the backend readiness routes:
 
 ```bash
-npm run check:live -- --base-url https://lexinsights.vercel.app
+npm run check:live -- --base-url https://lexiph.vercel.app
 ```
 
-Use `--source-only` to check only route availability and commit freshness while Supabase/RAG are still down:
+Use `--source-only` or `--skip-backend` to check only route availability and commit freshness while Supabase/RAG are still down:
 
 ```bash
-npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
+npm run check:live -- --base-url https://lexiph.vercel.app --source-only
+npm run check:live -- --base-url https://lexiph.vercel.app --skip-backend
 ```
 
-Full mode compares `GET /api/version` against local `HEAD`, then checks `/api/readiness` and the RAG proxy health path. A `404` for `/api/version` or `/api/readiness` means the live project is stale or not serving this codebase.
+Full mode verifies clean worktree status, compares `GET /api/version` against local `HEAD`, then checks `/api/readiness` and the RAG proxy health path. A `404` for `/api/version` or `/api/readiness` means the live project is stale or not serving this codebase.
+
+For diagnostics only, add `--allow-dirty` to inspect live state while local changes are still uncommitted. Do not use it for release readiness.
 
 ### Method 6: Browser Smoke
 
@@ -160,7 +173,7 @@ By default, Playwright starts its own Next.js dev server on `127.0.0.1:3100` so 
 $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
 ```
 
-Browser smoke proves route behavior, version metadata, readiness response shape, and RAG proxy same-origin handling. In the default managed-local run, Playwright uses `/api/readiness?externalChecks=skip` and points `NEXT_PUBLIC_RAG_API_URL` at its own dev server so smoke does not depend on external Supabase or RAG availability. Full backend E2E still requires `npm run check:readiness` to pass against real Supabase and RAG services.
+Browser smoke proves route behavior, version metadata, readiness response shape, RAG proxy same-origin handling, and RAG proxy upstream-error redaction. In the default managed-local run, Playwright uses `/api/readiness?externalChecks=skip` and points `NEXT_PUBLIC_RAG_API_URL` at its own dev server so smoke does not depend on external Supabase or RAG availability. Full backend E2E still requires `npm run check:readiness` to pass against real Supabase and RAG services.
 
 ### Method 7: Browser-Based Test Page
 

@@ -322,19 +322,20 @@ When the local app is running, include route and proxy checks:
 npm run check:readiness -- --base-url http://localhost:3000
 ```
 
-The app also exposes `GET /api/readiness` for live or local runtime checks. It returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass; otherwise it returns `503` with component-level blocker details. Supabase key checks validate the public key format, anon role claim, and legacy JWT issuer project ref without printing the raw key. Add `?timeoutMs=2000` for a faster probe when an upstream backend is known to be down; the same timeout is forwarded to the RAG proxy health call, which returns structured `502` or `504` blocker errors when the upstream backend cannot be reached. Browser route-shape smoke may use `?externalChecks=skip`; skipped external checks stay critical, so that mode cannot prove backend E2E readiness. RAG proxy `endpoint` values must remain on the configured RAG API origin.
+The app also exposes `GET /api/readiness` for live or local runtime checks. It returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass; otherwise it returns `503` with component-level blocker details. Supabase key checks validate the public key format, anon role claim, and legacy JWT issuer project ref without printing the raw key. Add `?timeoutMs=2000` for a faster probe when an upstream backend is known to be down; the same timeout is forwarded to the RAG proxy health call, which returns structured `502` or `504` blocker errors when the upstream backend cannot be reached. Browser route-shape smoke may use `?externalChecks=skip`; skipped external checks are non-blocking in that mode, so it proves route shape but not backend E2E readiness. RAG proxy `endpoint` values must remain on the configured RAG API origin.
 
 For local checks that need to avoid external DNS/health lookups (for example while the DNS/host is temporarily unavailable), run:
 
 ```bash
 npm run check:readiness -- --skip-external-checks
+npm run check:readiness -- --base-url http://localhost:3000 --skip-external-checks
 ```
 
 When used, external dependency checks are skipped as non-blocking and the remaining checks still validate local env/key safety.
 
 ### Deployment Preflight
 
-After pushing and deploying, verify local app-root assumptions, Vercel linkage, live version metadata, readiness route presence, and the public RAG proxy route:
+After pushing and deploying, verify local app-root assumptions, clean worktree status, Vercel linkage, live version metadata, readiness route presence, and the public RAG proxy route:
 
 ```bash
 npm run check:deployment -- --base-url https://lexiph.vercel.app
@@ -358,6 +359,15 @@ When the repo or live URL is still not visible, the preflight prints a non-criti
 
 If the Vercel CLI checks cannot see this repo or `lexiph.vercel.app`, switch to the owning Vercel team/account or import the repository into a new Vercel project with Root Directory set to `lexiph`.
 
+Use `--source-only` or `--skip-backend` when you only need app-root, clean worktree status, Vercel linkage, and live commit freshness without probing Supabase/RAG route health:
+
+```bash
+npm run check:deployment -- --base-url https://lexiph.vercel.app --source-only
+npm run check:deployment -- --base-url https://lexiph.vercel.app --skip-backend
+```
+
+For diagnostics only, add `--allow-dirty` to inspect live state while local changes are still uncommitted. Do not use it for release readiness.
+
 ### Live Deployment Check
 
 After pushing and deploying, verify that production is serving the expected commit:
@@ -373,7 +383,9 @@ npm run check:live -- --base-url https://lexiph.vercel.app --source-only
 npm run check:live -- --base-url https://lexiph.vercel.app --skip-backend
 ```
 
-Full mode checks key routes, `GET /api/version`, `GET /api/readiness`, and the RAG proxy health path. It exits nonzero when production is stale, when the exposed commit does not match local `HEAD`, or when backend readiness is still blocked.
+Full mode checks clean worktree status, key routes, `GET /api/version`, `GET /api/readiness`, and the RAG proxy health path. It exits nonzero when production is stale, when the exposed commit does not match local `HEAD`, when local changes are uncommitted, or when backend readiness is still blocked.
+
+For diagnostics only, add `--allow-dirty` to inspect live state while local changes are still uncommitted. Do not use it for release readiness.
 
 ### Browser Smoke
 

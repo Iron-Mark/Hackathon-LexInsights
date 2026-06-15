@@ -9,8 +9,10 @@ import {
   checkSupabaseAnonKey,
   checkSupabaseProjectRef,
   parseEnvFile,
+  parseArgs,
   getStandardSupabaseProjectRef,
   inspectSupabaseKey,
+  readinessEndpointPath,
   safeUrl,
 } from './check-readiness.mjs'
 
@@ -63,6 +65,14 @@ const serviceRoleKey = makeLegacySupabaseJwt({
 
 assert.equal(getStandardSupabaseProjectRef(projectUrl), projectRef)
 assert.equal(getStandardSupabaseProjectRef(safeUrl('https://db.example.com')), null)
+assert.deepEqual(parseArgs(['--base-url', 'http://localhost:3000', '--skip-external-checks']), {
+  baseUrl: 'http://localhost:3000',
+  json: false,
+  timeoutMs: 15000,
+  skipExternalChecks: true,
+})
+assert.equal(readinessEndpointPath(2000, false), '/api/readiness?timeoutMs=2000')
+assert.equal(readinessEndpointPath(2000, true), '/api/readiness?timeoutMs=2000&externalChecks=skip')
 
 const projectRefCheck = checkSupabaseProjectRef(projectRef, `${projectRef}.supabase.co`)
 assert.equal(projectRefCheck.status, 'pass')

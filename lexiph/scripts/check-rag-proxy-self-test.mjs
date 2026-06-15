@@ -11,6 +11,8 @@ import {
   getProxyFailure,
   getProxyTimeoutMs,
   getProxyUpstream,
+  publicUpstreamHttpErrorDetail,
+  publicUpstreamPayloadErrorDetail,
   summarizeProxyLogDetail,
 } from '../lib/services/rag-proxy-helpers.mjs'
 
@@ -94,6 +96,15 @@ assert.deepEqual(getProxyFailure('unknown'), {
   type: 'proxy_error',
   detail: 'Failed to fetch from RAG API',
 })
+
+assert.equal(
+  publicUpstreamHttpErrorDetail(500),
+  'RAG backend returned HTTP 500. Check server logs or readiness status.'
+)
+assert.equal(
+  publicUpstreamPayloadErrorDetail('a non-JSON response body'),
+  'RAG backend returned a non-JSON response body. Check server logs or readiness status.'
+)
 
 const summarizedHtml = summarizeProxyLogDetail(`<!DOCTYPE html>
 <html>${'x'.repeat(500)}</html>`)

@@ -703,7 +703,7 @@ Measure the live deployment before publishing performance claims. Useful targets
 - **Vercel deployment logs** - Build and serverless route failures
 - **Supabase dashboard logs** - Auth, storage, and database failures
 - **Readiness endpoint** - Non-secret Supabase and RAG blocker status through `/api/readiness`
-- **Deployment preflight** - Live commit, route, and Vercel linkage checks through `npm run check:deployment`
+- **Deployment preflight** - Clean worktree, live commit, route, and Vercel linkage checks through `npm run check:deployment`
 
 ---
 
@@ -743,19 +743,24 @@ npm run smoke:browser
 npm run check:readiness
 
 # Deployment preflight, after production deploy
-npm run check:deployment -- --base-url https://lexinsights.vercel.app
+npm run check:deployment -- --base-url https://lexiph.vercel.app
+
+# Deployment preflight without backend probes, useful while external backends are still blocked
+npm run check:deployment -- --base-url https://lexiph.vercel.app --source-only
+npm run check:deployment -- --base-url https://lexiph.vercel.app --skip-backend
 
 # Deployment ownership diagnostics, when Vercel linkage is unclear
-npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
+npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes
 
 # Scoped deployment diagnostics, when the project should be under the team scope
-npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
 
 # Live deployment freshness and backend readiness, after production deploy
-npm run check:live -- --base-url https://lexinsights.vercel.app
+npm run check:live -- --base-url https://lexiph.vercel.app
 
 # Deployment freshness only, useful while external backends are still blocked
-npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
+npm run check:live -- --base-url https://lexiph.vercel.app --source-only
+npm run check:live -- --base-url https://lexiph.vercel.app --skip-backend
 ```
 
 ### Test Structure
@@ -805,13 +810,13 @@ tests/
 
    After deployment, run:
    ```bash
-   npm run check:deployment -- --base-url https://lexinsights.vercel.app
+   npm run check:deployment -- --base-url https://lexiph.vercel.app
    ```
 
-   If Vercel does not show a project linked to `Iron-Mark/Hackathon-LexInsights` or the `lexinsights.vercel.app` alias, rerun with CLI ownership diagnostics:
+   If Vercel does not show a project linked to `Iron-Mark/Hackathon-LexInsights` or the `lexiph.vercel.app` alias, rerun with CLI ownership diagnostics:
    ```bash
-   npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
-   npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+   npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes
+   npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
    ```
 
    A preflight that reports `/api/version` or `/api/readiness` as `404` means the live URL is not serving this codebase yet, even if the GitHub push succeeded.
@@ -1101,7 +1106,7 @@ Special thanks to the maintainers and contributors of:
 
 ---
 
-[Website](https://lexinsights.vercel.app) • [Documentation](./lexiph/TESTING_GUIDE.md) • [Report Bug](https://github.com/Iron-Mark/Hackathon-LexInsights/issues) • [Request Feature](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
+[Website](https://lexiph.vercel.app) • [Documentation](./lexiph/TESTING_GUIDE.md) • [Report Bug](https://github.com/Iron-Mark/Hackathon-LexInsights/issues) • [Request Feature](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
 
 **© 2025 LexInSight. All rights reserved.**
 

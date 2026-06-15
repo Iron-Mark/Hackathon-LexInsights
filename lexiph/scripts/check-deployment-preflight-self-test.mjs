@@ -6,6 +6,7 @@ import { win32 } from 'node:path'
 import {
   collectProjectAliases,
   compareSha,
+  gitWorktreeCheck,
   parseArgs,
   parseGitHubRepoUrl,
   publicDetails,
@@ -87,14 +88,27 @@ assert.equal(parseGitHubRepoUrl('https://example.com/Iron-Mark/Hackathon-LexInsi
 assert.equal(compareSha('b13673820a4677fe838e6b9052eb97bc5dbf9175', 'b136738'), true)
 assert.equal(compareSha('b136738', 'b13673820a4677fe838e6b9052eb97bc5dbf9175'), true)
 assert.equal(compareSha('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'bbbbbbbb'), false)
+assert.equal(gitWorktreeCheck('').status, 'pass')
+assert.equal(gitWorktreeCheck(null).status, 'warn')
+const dirtyWorktreeCheck = gitWorktreeCheck(' M README.md\n?? local.txt')
+assert.equal(dirtyWorktreeCheck.status, 'fail')
+assert.equal(dirtyWorktreeCheck.critical, true)
+assert.equal(dirtyWorktreeCheck.details.changedCount, 2)
+const allowedDirtyWorktreeCheck = gitWorktreeCheck(' M README.md\n?? local.txt', true)
+assert.equal(allowedDirtyWorktreeCheck.status, 'warn')
+assert.equal(allowedDirtyWorktreeCheck.critical, false)
+assert.equal(allowedDirtyWorktreeCheck.details.allowDirty, true)
 
 assert.equal(parseArgs(['--base-url', 'https://example.com', '--timeout-ms', '3000', '--with-vercel-cli']).baseUrl, 'https://example.com')
+assert.equal(parseArgs(['--allow-dirty']).allowDirty, true)
 assert.deepEqual(
   parseArgs(['--with-vercel-cli', '--discover-vercel-scopes', '--vercel-scope', 'marksiazon-dev']),
   {
+    allowDirty: false,
     baseUrl: 'https://lexiph.vercel.app',
     discoverVercelScopes: true,
     json: false,
+    sourceOnly: false,
     timeoutMs: 20000,
     withVercelCli: true,
     vercelScope: 'marksiazon-dev',
@@ -102,6 +116,9 @@ assert.deepEqual(
 )
 assert.equal(parseArgs(['--vercel-scope=marksiazon-dev']).vercelScope, 'marksiazon-dev')
 assert.equal(parseArgs(['--discover-vercel-scopes']).discoverVercelScopes, true)
+assert.equal(parseArgs(['--source-only']).sourceOnly, true)
+assert.equal(parseArgs(['--skip-backend']).sourceOnly, true)
+assert.equal(parseArgs(['--skip-backend', '--source-only']).sourceOnly, true)
 assert.equal(parseArgs(['--timeout-ms=-1']).timeoutMs, 20000)
 assert.equal(safeUrl('not a url'), null)
 

@@ -102,7 +102,7 @@ Vercel auto-detects Next.js, but verify:
 vercel --prod
 
 # Verify deployment linkage and freshness
-npm run check:deployment -- --base-url https://lexinsights.vercel.app
+npm run check:deployment -- --base-url https://lexiph.vercel.app
 ```
 
 Or push to main branch (auto-deploys).
@@ -574,10 +574,10 @@ npm run smoke:browser
 
 Production deployment is still handled by Vercel/Git integration, not by a repo-owned deploy workflow. Keep `npm run check:readiness` as the live backend gate after Supabase and RAG environment values point to reachable services.
 
-Before full live QA, run the deployment preflight. It checks the app root, local Vercel link presence, `/api/version`, `/api/readiness`, and the public RAG proxy route without printing env values or provider secrets:
+Before full live QA, run the deployment preflight. It checks the app root, clean worktree status, local Vercel link presence, `/api/version`, `/api/readiness`, and the public RAG proxy route without printing env values or provider secrets:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app
+npm run check:deployment -- --base-url https://lexiph.vercel.app
 ```
 
 Add `--with-vercel-cli` when you also want a local Vercel CLI check from the current shell. This verifies CLI availability, authenticated user, visible projects, whether any visible project is linked to `Iron-Mark/Hackathon-LexInsights`, whether any visible project owns the configured live URL alias, and whether `vercel inspect` can read that deployment.
@@ -585,45 +585,57 @@ Add `--with-vercel-cli` when you also want a local Vercel CLI check from the cur
 Use `--discover-vercel-scopes` with the CLI check to print safe team-scope slugs available to the current Vercel account:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes
+npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes
 ```
 
 If the project may live under a team, pass the team scope explicitly:
 
 ```bash
-npm run check:deployment -- --base-url https://lexinsights.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
+npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
 ```
 
 When the repo or live URL is still not visible, the preflight prints a non-critical `vercel.recovery_hint` with the next scoped command or provider action.
 
-If the CLI check reports no visible project for this repository or live URL, switch to the Vercel team/account that owns the deployment or import this repository into a new Vercel project. Set the project Root Directory to `lexiph`, configure the required env vars, deploy `main`, then rerun the preflight. A GitHub push alone will not update `https://lexinsights.vercel.app` if that domain is attached to an inaccessible or unrelated Vercel project.
+If the CLI check reports no visible project for this repository or live URL, switch to the Vercel team/account that owns the deployment or import this repository into a new Vercel project. Set the project Root Directory to `lexiph`, configure the required env vars, deploy `main`, then rerun the preflight. A GitHub push alone will not update `https://lexiph.vercel.app` if that domain is attached to an inaccessible or unrelated Vercel project.
+
+Use `--source-only` or `--skip-backend` when validating repository linkage, clean worktree status, and live commit freshness before external Supabase/RAG services are healthy:
+
+```bash
+npm run check:deployment -- --base-url https://lexiph.vercel.app --source-only
+npm run check:deployment -- --base-url https://lexiph.vercel.app --skip-backend
+```
+
+For diagnostics only, add `--allow-dirty` to inspect live state while local changes are still uncommitted. Do not use it for release readiness.
 
 After production deploys, verify deployment freshness before claiming live E2E:
 
 ```bash
-npm run check:live -- --base-url https://lexinsights.vercel.app
+npm run check:live -- --base-url https://lexiph.vercel.app
 ```
 
-Use `--source-only` when validating deployment freshness before external Supabase/RAG services are healthy:
+Use `--source-only` or `--skip-backend` when validating deployment freshness before external Supabase/RAG services are healthy:
 
 ```bash
-npm run check:live -- --base-url https://lexinsights.vercel.app --source-only
+npm run check:live -- --base-url https://lexiph.vercel.app --source-only
+npm run check:live -- --base-url https://lexiph.vercel.app --skip-backend
 ```
 
-Full mode checks the public routes, `GET /api/version`, `GET /api/readiness`, and the RAG proxy health path. `/api/version` returns non-secret build metadata, including the Vercel/Git commit SHA when the project is connected through Vercel Git integration. A commit mismatch means the live app is not serving the current repository state.
+Full mode checks clean worktree status, the public routes, `GET /api/version`, `GET /api/readiness`, and the RAG proxy health path. `/api/version` returns non-secret build metadata, including the Vercel/Git commit SHA when the project is connected through Vercel Git integration. A commit mismatch means the live app is not serving the current repository state.
+
+For diagnostics only, add `--allow-dirty` to inspect live state while local changes are still uncommitted. Do not use it for release readiness.
 
 ## 🚦 Health Checks
 
 Use the runtime version and readiness endpoints:
 
 ```bash
-curl https://lexinsights.vercel.app/api/version
-curl https://lexinsights.vercel.app/api/readiness
+curl https://lexiph.vercel.app/api/version
+curl https://lexiph.vercel.app/api/readiness
 ```
 
 The endpoint returns `200` only when critical Supabase env/key checks, Supabase DNS, direct RAG health, and RAG proxy health checks pass. It returns `503` with component-level blocker details while an external backend is down. Supabase key checks validate public key format, anon role, and legacy JWT issuer/project-ref alignment without printing the raw key.
 
-For a faster operator probe while an upstream backend is known to be unavailable, call `/api/readiness?timeoutMs=2000`. The readiness route forwards that timeout to the RAG proxy health call; proxy upstream timeouts return structured `504` errors, upstream connection failures return structured `502` errors, and proxy `endpoint` values must remain on the configured RAG API origin. Browser route-shape smoke may call `/api/readiness?externalChecks=skip`; skipped external checks remain critical, so that mode is not a backend E2E pass.
+For a faster operator probe while an upstream backend is known to be unavailable, call `/api/readiness?timeoutMs=2000`. The readiness route forwards that timeout to the RAG proxy health call; proxy upstream timeouts return structured `504` errors, upstream connection failures return structured `502` errors, and proxy `endpoint` values must remain on the configured RAG API origin. Browser route-shape smoke may call `/api/readiness?externalChecks=skip`; skipped external checks are non-blocking in that mode, so it proves route shape but not backend E2E readiness.
 
 ## 📈 Performance Optimization
 

@@ -9,6 +9,8 @@ import {
   getProxyFailure,
   getProxyTimeoutMs,
   getProxyUpstream,
+  publicUpstreamHttpErrorDetail,
+  publicUpstreamPayloadErrorDetail,
   summarizeProxyLogDetail,
 } from '../../../lib/services/rag-proxy-helpers.mjs'
 
@@ -23,9 +25,8 @@ function noStoreJson(body: unknown, status: number) {
   })
 }
 
-async function readUpstreamError(response: Response) {
-  const text = await response.text()
-  return text.slice(0, 1000)
+function discardUpstreamBody(response: Response) {
+  void response.body?.cancel().catch(() => undefined)
 }
 
 type UpstreamParseResult =
@@ -42,7 +43,7 @@ function readUpstreamSuccess(responseText: string): UpstreamParseResult {
   const text = responseText.trim()
 
   if (!text) {
-    return { ok: false, detail: 'Empty upstream body' }
+    return { ok: false, detail: publicUpstreamPayloadErrorDetail('an empty response body') }
   }
 
   try {
@@ -53,7 +54,7 @@ function readUpstreamSuccess(responseText: string): UpstreamParseResult {
   } catch {
     return {
       ok: false,
-      detail: `Non-JSON upstream response: ${text.slice(0, 250)}`,
+      detail: publicUpstreamPayloadErrorDetail('a non-JSON response body'),
     }
   }
 }
@@ -94,13 +95,11 @@ export async function POST(request: NextRequest) {
     })
 
     if (!response.ok) {
-      const errorText = await readUpstreamError(response)
-      console.error(
-        `[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}: ${summarizeProxyLogDetail(errorText)}`
-      )
+      discardUpstreamBody(response)
+      console.error(`[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}`)
       return noStoreJson(
         {
-          detail: errorText || 'Backend request failed',
+          detail: publicUpstreamHttpErrorDetail(response.status),
           error: {
             type: 'upstream_http_error',
             status: response.status,
@@ -183,13 +182,11 @@ export async function GET(request: NextRequest) {
     })
 
     if (!response.ok) {
-      const errorText = await readUpstreamError(response)
-      console.error(
-        `[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}: ${summarizeProxyLogDetail(errorText)}`
-      )
+      discardUpstreamBody(response)
+      console.error(`[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}`)
       return noStoreJson(
         {
-          detail: errorText || 'Backend request failed',
+          detail: publicUpstreamHttpErrorDetail(response.status),
           error: {
             type: 'upstream_http_error',
             status: response.status,
