@@ -142,6 +142,55 @@ test.describe('LexInSight smoke checks', () => {
     expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
   })
 
+  test('PWA manifest and service worker are install-ready', async ({ request }) => {
+    const manifestResponse = await request.get('/manifest.webmanifest')
+    const manifest = await manifestResponse.json()
+
+    expect(manifestResponse.status()).toBe(200)
+    expect(manifest).toEqual(
+      expect.objectContaining({
+        name: 'LexInSight',
+        short_name: 'LexInSight',
+        start_url: '/',
+        scope: '/',
+        display: 'standalone',
+        background_color: '#FFFFFF',
+        theme_color: '#3F33BD',
+      })
+    )
+    expect(manifest.icons).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          src: '/icons/icon-192x192.png',
+          sizes: '192x192',
+          type: 'image/png',
+        }),
+        expect.objectContaining({
+          src: '/icons/icon-512x512.png',
+          sizes: '512x512',
+          type: 'image/png',
+        }),
+        expect.objectContaining({
+          src: '/icons/maskable-512x512.png',
+          sizes: '512x512',
+          purpose: 'maskable',
+        }),
+      ])
+    )
+
+    const serviceWorkerResponse = await request.get('/sw.js')
+    const serviceWorker = await serviceWorkerResponse.text()
+
+    expect(serviceWorkerResponse.status()).toBe(200)
+    expect(serviceWorkerResponse.headers()['content-type']).toContain('application/javascript')
+    expect(serviceWorkerResponse.headers()['cache-control']).toContain('no-cache')
+    expect(serviceWorkerResponse.headers()['service-worker-allowed']).toBe('/')
+    expect(serviceWorkerResponse.headers()['x-content-type-options']).toBe('nosniff')
+    expect(serviceWorker).toContain("self.addEventListener('install'")
+    expect(serviceWorker).toContain("self.addEventListener('fetch'")
+    expect(serviceWorker).toContain("event.request.mode === 'navigate'")
+  })
+
   test('RAG proxy handles same-origin upstream responses without secrets', async ({ request }) => {
     const endpoint = isManagedLocalWebServer ? '/api/version?expectedSha=proxy-smoke' : '/api/research/health'
     const response = await request.get(`/api/rag-proxy?endpoint=${encodeURIComponent(endpoint)}&timeoutMs=1000`)

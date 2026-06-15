@@ -28,7 +28,7 @@ For the full sequential local gate, run:
 npm run check:local
 ```
 
-This is the pre-push maintainer path. It includes Markdown link parser self-tests and repo-local Markdown link validation. The methods below remain useful when debugging one specific docs, readiness, deployment, proxy, or browser layer.
+This is the pre-push maintainer path. It includes Markdown link parser self-tests, repo-local Markdown link validation, and PWA installability checks. The methods below remain useful when debugging one specific docs, readiness, deployment, proxy, browser, or PWA layer.
 
 ### Markdown Link Check
 
@@ -107,6 +107,16 @@ npm run check:rag-proxy:self-test
 
 The self-test is offline and deterministic. It covers timeout clamping, same-origin endpoint resolution, cross-origin endpoint rejection, upstream timeout classification, upstream fetch failure classification, public upstream-error redaction, bounded proxy log summaries, and secret-safe helper output.
 
+### Method 4.5: PWA Readiness Check
+
+Run this after changing app metadata, install icons, service worker behavior, offline fallback, or service worker response headers:
+
+```bash
+npm run check:pwa
+```
+
+The check is offline and deterministic. It verifies the App Router manifest, install icon dimensions, Apple touch icon, service worker registration, `/sw.js` install/activate/fetch handlers, offline navigation fallback, API/auth cache bypasses, and service worker cache-control headers. Browser smoke also checks the live `/manifest.webmanifest` and `/sw.js` responses.
+
 ### Method 4: Deployment Preflight
 
 After a production deployment, run the preflight first to verify app-root assumptions, clean worktree status, local Vercel linkage status, `/api/version`, `/api/readiness`, and RAG proxy route presence:
@@ -161,7 +171,7 @@ For diagnostics only, add `--allow-dirty` to inspect live state while local chan
 
 ### Method 6: Browser Smoke
 
-Run focused Playwright checks for public pages, protected-route redirects, version metadata, and the readiness endpoint response shape:
+Run focused Playwright checks for public pages, protected-route redirects, version metadata, PWA manifest/service-worker responses, and the readiness endpoint response shape:
 
 ```bash
 npm run smoke:browser
@@ -173,7 +183,7 @@ By default, Playwright starts its own Next.js dev server on `127.0.0.1:3100` so 
 $env:PLAYWRIGHT_BASE_URL='http://localhost:3000'; npm run smoke:browser; Remove-Item Env:PLAYWRIGHT_BASE_URL
 ```
 
-Browser smoke proves route behavior, version metadata, readiness response shape, RAG proxy same-origin handling, and RAG proxy upstream-error redaction. In the default managed-local run, Playwright uses `/api/readiness?externalChecks=skip` and points `NEXT_PUBLIC_RAG_API_URL` at its own dev server so smoke does not depend on external Supabase or RAG availability. Full backend E2E still requires `npm run check:readiness` to pass against real Supabase and RAG services.
+Browser smoke proves route behavior, version metadata, PWA manifest/service-worker responses, readiness response shape, RAG proxy same-origin handling, and RAG proxy upstream-error redaction. In the default managed-local run, Playwright uses `/api/readiness?externalChecks=skip` and points `NEXT_PUBLIC_RAG_API_URL` at its own dev server so smoke does not depend on external Supabase or RAG availability. Full backend E2E still requires `npm run check:readiness` to pass against real Supabase and RAG services.
 
 The managed-local Playwright server also blanks Clerk keys and uses a non-secret Supabase publishable-key placeholder on purpose. That keeps smoke checks deterministic and verifies the missing-Clerk setup blocker instead of depending on real Clerk or Supabase tenants. To verify real Clerk signup/login, start the app with `.env.local` and run smoke against that app with `PLAYWRIGHT_BASE_URL`, then complete the interactive signup/login flow in the browser.
 
