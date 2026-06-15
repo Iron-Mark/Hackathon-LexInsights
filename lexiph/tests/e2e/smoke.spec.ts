@@ -6,6 +6,7 @@ const ragBackendIssueUrl =
   process.env.NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL ||
   'https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1'
 const authRouteHeading = /Sign in to LexInSight|Clerk setup required/
+const signupRouteHeading = /Create your LexInSight account|Clerk setup required/
 
 test.describe('LexInSight smoke checks', () => {
   test('public entry routes render', async ({ page }) => {
@@ -14,6 +15,12 @@ test.describe('LexInSight smoke checks', () => {
 
     await page.goto('/auth/login')
     await expect(page.getByRole('heading', { name: authRouteHeading })).toBeVisible()
+
+    await page.goto('/auth/login/sso-callback?sign_in_fallback_redirect_url=/chat')
+    await expect(page.getByRole('heading', { name: authRouteHeading })).toBeVisible()
+
+    await page.goto('/auth/signup/sso-callback?sign_up_fallback_redirect_url=/chat')
+    await expect(page.getByRole('heading', { name: signupRouteHeading })).toBeVisible()
 
     await page.goto('/test-rag')
     await expect(page.getByRole('heading', { name: 'RAG API Test Page' })).toBeVisible()
