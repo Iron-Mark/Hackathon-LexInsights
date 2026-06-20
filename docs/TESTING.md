@@ -39,9 +39,12 @@ npm run check:deployment:self-test
 npm run check:live:self-test
 npm run check:rag-proxy:self-test
 npm run check:providerless:self-test
+npm run check:release:self-test
+npm run check:release
 ```
 
 The providerless self-test covers the local legal research and draft-checking engine directly, without network or browser dependencies.
+The release integrity check verifies SemVer formatting, package-lock version sync, and release-tag consistency.
 
 Against production:
 
@@ -49,6 +52,16 @@ Against production:
 npm run check:deployment -- --base-url https://lexiph.vercel.app
 npm run check:live -- --base-url https://lexiph.vercel.app
 ```
+
+## Release Tag Check
+
+Before publishing a GitHub release for an already-created tag, run:
+
+```powershell
+npm run check:release:tag
+```
+
+This strict mode requires `HEAD` to have a matching `v<package version>` tag. Do not add it to regular CI because development commits after a release tag are expected.
 
 ## Browser Smoke
 
@@ -66,4 +79,4 @@ The smoke suite stubs a failed RAG provider and verifies that `/test-rag` still 
 npm run check:local
 ```
 
-This is intentionally broad: lint, typecheck, production dependency audit, docs checks, readiness self-tests, deployment self-tests, RAG proxy self-test, providerless self-test, PWA check, build, and browser smoke.
+This is intentionally broad: lint, typecheck, production dependency audit, docs checks, readiness self-tests, deployment self-tests, RAG proxy self-test, providerless self-test, release integrity checks, PWA check, build, and browser smoke.

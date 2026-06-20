@@ -78,6 +78,15 @@ jobs:
       - name: RAG proxy self-test
         run: npm run check:rag-proxy:self-test
 
+      - name: Providerless research self-test
+        run: npm run check:providerless:self-test
+
+      - name: Release integrity self-test
+        run: npm run check:release:self-test
+
+      - name: Release integrity check
+        run: npm run check:release
+
       - name: Build
         run: npm run build
 
