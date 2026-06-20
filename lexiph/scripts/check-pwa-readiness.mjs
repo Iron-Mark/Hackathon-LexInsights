@@ -36,7 +36,7 @@ function readPngSize(relativePath) {
   }
 }
 
-const manifest = readProjectFile('app/manifest.ts')
+const manifest = readProjectFile('src/app/manifest.ts')
 assertIncludes(manifest, "name: 'LexInSight'", 'PWA manifest')
 assertIncludes(manifest, "short_name: 'LexInSight'", 'PWA manifest')
 assertIncludes(manifest, "start_url: '/'", 'PWA manifest')
@@ -48,13 +48,13 @@ assertIncludes(manifest, "src: '/icons/icon-192x192.png'", 'PWA manifest')
 assertIncludes(manifest, "src: '/icons/icon-512x512.png'", 'PWA manifest')
 assertIncludes(manifest, "purpose: 'maskable'", 'PWA manifest')
 
-const layout = readProjectFile('app/layout.tsx')
+const layout = readProjectFile('src/app/layout.tsx')
 assertIncludes(layout, 'ServiceWorkerRegistration', 'Root layout')
 assertIncludes(layout, 'export const viewport', 'Root layout')
 assertIncludes(layout, "themeColor: '#3F33BD'", 'Root layout viewport')
 assertMatches(layout, /apple:\s*["']\/icons\/apple-touch-icon\.png["']/, 'Root layout metadata icons')
 
-const registration = readProjectFile('components/pwa/service-worker-registration.tsx')
+const registration = readProjectFile('src/components/pwa/service-worker-registration.tsx')
 assertIncludes(registration, "'use client'", 'Service worker registration component')
 assertIncludes(registration, "navigator.serviceWorker.register('/sw.js'", 'Service worker registration component')
 assertIncludes(registration, "scope: '/'", 'Service worker registration component')

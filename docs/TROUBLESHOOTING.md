@@ -1,637 +1,78 @@
-# Troubleshooting Guide
+# Troubleshooting
 
-Common issues and their solutions for LexInSight development and deployment.
+Run commands from [lexiph](../lexiph) unless noted.
 
-## 📋 Table of Contents
+## Install Fails
 
-- [Installation Issues](#installation-issues)
-- [Development Server Issues](#development-server-issues)
-- [Authentication Issues](#authentication-issues)
-- [Database Issues](#database-issues)
-- [File Upload Issues](#file-upload-issues)
-- [API Issues](#api-issues)
-- [Build Issues](#build-issues)
-- [Deployment Issues](#deployment-issues)
-
----
-
-## Installation Issues
-
-### npm install fails
-
-**Problem**: `npm install` throws errors
-
-**Solutions**:
-
-```bash
-# Clear npm cache
-npm cache clean --force
-
-# Delete node_modules and package-lock.json
-rm -rf node_modules package-lock.json
-
-# Reinstall
+```powershell
+Remove-Item -Recurse -Force node_modules
+Remove-Item -Force package-lock.json
 npm install
-
-# If still failing, try with legacy peer deps
-npm install --legacy-peer-deps
 ```
 
-### Node version mismatch
+Prefer `npm ci` when `package-lock.json` is already valid and dependencies should not change.
 
-**Problem**: "Unsupported Node.js version"
+## TypeScript Cannot Resolve `@/...`
 
-**Solution**:
+`@/*` maps to `src/*` in [tsconfig.json](../lexiph/tsconfig.json). If a file moved into `src`, imports should continue to use `@/...`. If a file is intentionally outside `src`, import it with an explicit relative path.
 
-```bash
-# Check current version
-node --version
+## Clerk Redirects Unexpectedly
 
-# Install correct version (18+)
-# Using nvm:
-nvm install 20
-nvm use 20
+Check:
 
-# Verify
-node --version
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+- `CLERK_SECRET_KEY`
+- Clerk redirect URLs in `.env.local`
+- The route protection rules in [proxy.ts](../lexiph/src/proxy.ts)
+
+## Supabase Requests Fail
+
+Check:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+- RLS policies from [database/schema.sql](../lexiph/database/schema.sql)
+- Storage policies from [database/storage.sql](../lexiph/database/storage.sql)
+
+Run:
+
+```powershell
+npm run check:readiness -- --skip-external-checks
 ```
 
-### Permission errors
+Use the full readiness check when the external services should be reachable.
 
-**Problem**: EACCES permission denied
+## RAG Requests Fail
 
-**Solution**:
+Keep proxy mode enabled unless the backend supports CORS:
 
-```bash
-# On Mac/Linux - fix npm permissions
-sudo chown -R $USER:$(id -gn $USER) ~/.npm
-sudo chown -R $USER:$(id -gn $USER) ~/.config
-
-# On Windows - run as administrator or:
-npm config set prefix %APPDATA%\npm
-```
-
----
-
-## Development Server Issues
-
-### Port 3000 already in use
-
-**Problem**: "Port 3000 is already in use"
-
-**Solution**:
-
-```bash
-# Windows
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F
-
-# Mac/Linux
-lsof -ti:3000 | xargs kill -9
-
-# Or use different port
-npm run dev -- -p 3001
-```
-
-### Hot reload not working
-
-**Problem**: Changes not reflecting
-
-**Solutions**:
-
-1. **Clear .next folder**
-
-```bash
-rm -rf .next
-npm run dev
-```
-
-2. **Check file watcher limits (Linux)**
-
-```bash
-echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
-```
-
-3. **Disable antivirus watching node_modules**
-
-### Module not found errors
-
-**Problem**: "Module not found: Can't resolve '@/...'"
-
-**Solution**:
-
-Check `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    }
-  }
-}
-```
-
-Then:
-
-```bash
-rm -rf .next
-npm run dev
-```
-
----
-
-## Authentication Issues
-
-### Cannot sign up
-
-**Problem**: Sign up fails with error
-
-**Checklist**:
-
-- [ ] Is `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` set in `.env.local`?
-- [ ] Is `CLERK_SECRET_KEY` set in `.env.local`?
-- [ ] Are Clerk sign-in/sign-up URLs configured as `/auth/login` and `/auth/signup`?
-- [ ] Is the email/password strategy enabled in Clerk?
-- [ ] Is email format valid?
-- [ ] Does the password satisfy the Clerk policy?
-
-**Solution**:
-
-```bash
-# Missing keys intentionally show "Clerk setup required"
-npm run dev
-```
-
-### Cannot log in
-
-**Problem**: Login fails or redirects back to `/auth/login`
-
-**Solutions**:
-
-1. **Verify Clerk configuration**
-
-   - Check Clerk Dashboard → Users
-   - Confirm the user exists and the sign-in method is enabled
-
-2. **Check app env**
-
-```env
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
-CLERK_SECRET_KEY=...
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/auth/login
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/auth/signup
-```
-
-3. **Check Supabase Third-Party Auth**
-
-Supabase data reads and writes require Clerk to be configured as a Third-Party Auth provider. If login works but chats/documents fail, check Supabase RLS and the Clerk integration.
-
-### Session expires immediately
-
-**Problem**: User gets logged out instantly
-
-**Solution**:
-
-Check Clerk session and proxy settings:
-
-```typescript
-// proxy.ts should use clerkMiddleware() and protect app routes.
-// app/layout.tsx should mount ClerkProvider inside <body>.
-```
-
----
-
-## Database Issues
-
-### Connection refused
-
-**Problem**: Cannot connect to Supabase
-
-**Checklist**:
-
-- [ ] Is Supabase project active?
-- [ ] Is URL correct?
-- [ ] Is anon key correct?
-- [ ] Is internet connection working?
-
-**Test connection**:
-
-```bash
-# Test API endpoint
-curl https://your-project.supabase.co/rest/v1/
-```
-
-### RLS preventing access
-
-**Problem**: "row-level security policy violated"
-
-**Solutions**:
-
-1. **Check auth state**
-
-```typescript
-const {
-  data: { user },
-} = await supabase.auth.getUser();
-console.log("Current user:", user);
-```
-
-2. **Verify RLS policies**
-
-```sql
--- List policies for a table
-SELECT * FROM pg_policies WHERE tablename = 'chats';
-
--- Temporarily disable RLS (DEV ONLY!)
-ALTER TABLE chats DISABLE ROW LEVEL SECURITY;
-```
-
-3. **Check user_id matches**
-
-```sql
--- Verify user owns record
-SELECT * FROM chats WHERE user_id = 'user-uuid-here';
-```
-
-### Tables not found
-
-**Problem**: "relation does not exist"
-
-**Solution**:
-
-Run setup script:
-
-```bash
-# In Supabase SQL Editor
-# Copy and run: supabase-setup.sql
-```
-
-Verify tables:
-
-```sql
-SELECT tablename FROM pg_tables WHERE schemaname = 'public';
-```
-
----
-
-## File Upload Issues
-
-### File too large
-
-**Problem**: Upload fails - file too large
-
-**Solution**:
-
-Check file size:
-
-```typescript
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
-if (file.size > MAX_FILE_SIZE) {
-  throw new Error("File exceeds 5MB limit");
-}
-```
-
-Increase limit in Supabase:
-
-1. Storage → documents → Edit bucket
-2. Change file size limit
-
-### Invalid file type
-
-**Problem**: File type not allowed
-
-**Solution**:
-
-```typescript
-const ALLOWED_TYPES = [
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "text/plain",
-  "text/markdown",
-];
-
-if (!ALLOWED_TYPES.includes(file.type)) {
-  throw new Error("Invalid file type");
-}
-```
-
-### Upload fails silently
-
-**Problem**: Upload doesn't complete
-
-**Debug steps**:
-
-```typescript
-const { data, error } = await supabase.storage
-  .from("documents")
-  .upload(path, file);
-
-console.log("Upload result:", { data, error });
-
-if (error) {
-  console.error("Upload error details:", error);
-}
-```
-
-Check bucket policies:
-
-```sql
--- In Supabase SQL Editor
-SELECT * FROM storage.buckets WHERE name = 'documents';
-```
-
----
-
-## API Issues
-
-### CORS errors
-
-**Problem**: "CORS policy: No 'Access-Control-Allow-Origin'"
-
-**Solution**:
-
-Enable proxy in `.env.local`:
-
-```env
+```text
 NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
-Or add CORS headers:
+Check proxy health:
 
-```typescript
-// next.config.ts
-async headers() {
-  return [
-    {
-      source: '/api/:path*',
-      headers: [
-        { key: 'Access-Control-Allow-Origin', value: '*' },
-        { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,DELETE' },
-        { key: 'Access-Control-Allow-Headers', value: 'Content-Type' }
-      ]
-    }
-  ]
-}
+```powershell
+curl "http://localhost:3000/api/rag-proxy?endpoint=/api/research/health"
 ```
 
-### 404 Not Found
+If the proxy returns an upstream error, verify `NEXT_PUBLIC_RAG_API_URL` and backend availability.
 
-**Problem**: API endpoint returns 404
+## Markdown Link Check Fails
 
-**Solutions**:
+All Markdown should live in [docs](./README.md). Update links relative to the file containing the link, then run:
 
-1. **Check route file structure**
-
-```
-app/
-└── api/
-    └── endpoint/
-        └── route.ts  ← Must be named 'route.ts'
+```powershell
+npm run check:docs:self-test
+npm run check:docs
 ```
 
-2. **Verify HTTP method**
+## Production Serves Old Code
 
-```typescript
-// route.ts must export correct method
-export async function GET() {}
-export async function POST() {}
+Check:
+
+```powershell
+curl https://lexiph.vercel.app/api/version
 ```
 
-3. **Clear .next folder**
-
-```bash
-rm -rf .next
-npm run dev
-```
-
-### Timeout errors
-
-**Problem**: Request times out
-
-**Solution**:
-
-Increase timeout:
-
-```typescript
-export const maxDuration = 60; // seconds
-
-export async function POST() {
-  // Your code
-}
-```
-
----
-
-## Build Issues
-
-### TypeScript errors
-
-**Problem**: Build fails with type errors
-
-**Solution**:
-
-```bash
-# Check types
-npx tsc --noEmit
-
-# If type definitions missing:
-npm install --save-dev @types/node @types/react @types/react-dom
-```
-
-### Out of memory
-
-**Problem**: "JavaScript heap out of memory"
-
-**Solution**:
-
-```bash
-# Increase Node memory
-NODE_OPTIONS="--max-old-space-size=4096" npm run build
-
-# Or in package.json
-"scripts": {
-  "build": "NODE_OPTIONS='--max-old-space-size=4096' next build"
-}
-```
-
-### Build takes too long
-
-**Problem**: Build process is slow
-
-**Solutions**:
-
-1. **Disable source maps in production**
-
-```typescript
-// next.config.ts
-const nextConfig = {
-  productionBrowserSourceMaps: false,
-};
-```
-
-2. **Enable SWC minification**
-
-```typescript
-const nextConfig = {
-  swcMinify: true,
-};
-```
-
-3. **Check for large dependencies**
-
-```bash
-npm install -g webpack-bundle-analyzer
-```
-
----
-
-## Deployment Issues
-
-### Vercel build fails
-
-**Problem**: Deployment fails on Vercel
-
-**Solutions**:
-
-1. **Check build logs** in Vercel dashboard
-
-2. **Verify environment variables** are set
-
-3. **Test build locally**
-
-```bash
-npm run build
-npm start
-```
-
-4. **Check Next.js version compatibility**
-
-### Environment variables not working
-
-**Problem**: Env vars undefined in production
-
-**Checklist**:
-
-- [ ] Variables prefixed with `NEXT_PUBLIC_`?
-- [ ] Variables set in Vercel dashboard?
-- [ ] Environment selected (Production/Preview/Development)?
-- [ ] Redeployed after adding variables?
-
-**Solution**:
-
-Redeploy:
-
-```bash
-vercel --prod
-```
-
-### Database connection fails in production
-
-**Problem**: Can't connect to Supabase from production
-
-**Solutions**:
-
-1. **Use production Supabase project**
-
-2. **Check IP restrictions** in Supabase
-
-3. **Verify connection pooling** settings
-
-4. **Test connection**
-
-```typescript
-// app/api/test-db/route.ts
-export async function GET() {
-  const { data, error } = await supabase.from("profiles").select("count");
-
-  return Response.json({ success: !error, error });
-}
-```
-
----
-
-## 🔍 Debugging Tips
-
-### Enable Debug Logging
-
-```typescript
-// lib/utils/logger.ts
-export const debug = (...args: any[]) => {
-  if (process.env.NEXT_PUBLIC_DEBUG === "true") {
-    console.log("[DEBUG]", ...args);
-  }
-};
-```
-
-### Check Browser Console
-
-1. Open DevTools (F12)
-2. Go to Console tab
-3. Look for errors (red text)
-4. Check Network tab for failed requests
-
-### Check Server Logs
-
-Development:
-
-- Terminal where `npm run dev` is running
-
-Production (Vercel):
-
-- Dashboard → Your Project → Logs
-
-### Use React DevTools
-
-Install: [React Developer Tools](https://react.dev/learn/react-developer-tools)
-
-Features:
-
-- Inspect component props
-- View component state
-- Profile performance
-
-### Database Debugging
-
-```sql
--- Check RLS policies
-SELECT * FROM pg_policies;
-
--- Check table permissions
-SELECT * FROM information_schema.table_privileges;
-
--- View recent errors
-SELECT * FROM pg_stat_database;
-```
-
----
-
-## 🆘 Getting Help
-
-If you're still stuck:
-
-1. **Search existing issues**: [GitHub Issues](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
-
-2. **Create new issue** with:
-
-   - Clear problem description
-   - Steps to reproduce
-   - Expected vs actual behavior
-   - Environment details
-   - Error messages
-   - Screenshots
-
-3. **Ask questions**: [GitHub Issues](https://github.com/Iron-Mark/Hackathon-LexInsights/issues)
-
-4. **Check documentation**:
-   - [Setup Guide](./SETUP.md)
-   - [Architecture](./ARCHITECTURE.md)
-   - [API Docs](./API.md)
-
----
-
-**Last Updated**: November 2025
+If the route is missing, Vercel is likely not using `lexiph` as the root directory or is serving a stale project.
