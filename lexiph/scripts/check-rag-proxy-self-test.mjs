@@ -14,7 +14,7 @@ import {
   publicUpstreamHttpErrorDetail,
   publicUpstreamPayloadErrorDetail,
   summarizeProxyLogDetail,
-} from '../lib/services/rag-proxy-helpers.mjs'
+} from '../src/lib/services/rag-proxy-helpers.mjs'
 
 function params(value) {
   return new URLSearchParams(value)
