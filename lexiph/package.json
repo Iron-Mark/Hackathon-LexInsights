@@ -16,8 +16,9 @@
     "check:deployment": "node scripts/check-deployment-preflight.mjs",
     "check:deployment:self-test": "node scripts/check-deployment-preflight-self-test.mjs",
     "check:rag-proxy:self-test": "node scripts/check-rag-proxy-self-test.mjs",
+    "check:providerless:self-test": "node scripts/check-providerless-self-test.mjs",
     "check:pwa": "node scripts/check-pwa-readiness.mjs",
-    "check:local": "npm run lint -- --max-warnings=0 && npx tsc --noEmit && npm audit --omit=dev && npm run check:docs:self-test && npm run check:docs && npm run check:readiness:self-test && npm run check:deployment:self-test && npm run check:live:self-test && npm run check:rag-proxy:self-test && npm run check:pwa && npm run build && npm run smoke:browser",
+    "check:local": "npm run lint -- --max-warnings=0 && npx tsc --noEmit && npm audit --omit=dev && npm run check:docs:self-test && npm run check:docs && npm run check:readiness:self-test && npm run check:deployment:self-test && npm run check:live:self-test && npm run check:rag-proxy:self-test && npm run check:providerless:self-test && npm run check:pwa && npm run build && npm run smoke:browser",
     "deploy:prod": "node scripts/deploy-vercel.mjs",
     "smoke:browser": "playwright test"
   },

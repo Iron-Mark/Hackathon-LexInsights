@@ -16,6 +16,7 @@ npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm run check:docs:self-test
 npm run check:docs
+npm run check:providerless:self-test
 npm run build
 ```
 

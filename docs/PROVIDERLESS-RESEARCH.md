@@ -12,6 +12,26 @@ The implementation lives in [local-legal-research.ts](../lexiph/src/lib/services
 - Responses include `provider_mode`, `fallback_used`, `fallback_reason`, and `confidence_score` when available.
 - The UI shows a local-mode notice and keeps storing research responses in chat history.
 
+## Regression Coverage
+
+Run the providerless self-test from [lexiph](../lexiph):
+
+```powershell
+npm run check:providerless:self-test
+```
+
+The self-test compiles [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts) with TypeScript and executes it in Node. It verifies:
+
+- Corpus coverage for core statutes.
+- RA 9003, RA 11058, and RA 10173 research matching.
+- Deep Search providerless metadata.
+- No-result behavior for unrelated queries.
+- Red findings for risky privacy and penalty drafting.
+- Green findings for a stronger solid-waste ordinance draft.
+- Local health-check metadata.
+
+`npm run check:local` includes this self-test, so release gates catch providerless regressions before browser smoke starts.
+
 ## Local Research Algorithm
 
 The providerless research path is deterministic:

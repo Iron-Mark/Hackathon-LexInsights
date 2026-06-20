@@ -38,7 +38,10 @@ npm run check:readiness
 npm run check:deployment:self-test
 npm run check:live:self-test
 npm run check:rag-proxy:self-test
+npm run check:providerless:self-test
 ```
+
+The providerless self-test covers the local legal research and draft-checking engine directly, without network or browser dependencies.
 
 Against production:
 
@@ -63,4 +66,4 @@ The smoke suite stubs a failed RAG provider and verifies that `/test-rag` still 
 npm run check:local
 ```
 
-This is intentionally broad: lint, typecheck, production dependency audit, docs checks, readiness self-tests, deployment self-tests, PWA check, build, and browser smoke.
+This is intentionally broad: lint, typecheck, production dependency audit, docs checks, readiness self-tests, deployment self-tests, RAG proxy self-test, providerless self-test, PWA check, build, and browser smoke.
