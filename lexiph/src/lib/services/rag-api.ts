@@ -6,7 +6,9 @@ import {
   buildRagUrl,
   DEFAULT_RAG_API_URL,
   RAG_API_BASE_URL,
+  RAG_PROVIDER_MODE,
   RAG_WS_URL,
+  USE_REMOTE_RAG,
   USE_RAG_PROXY,
 } from './rag-config'
 import {
@@ -52,6 +54,7 @@ async function extractErrorDetail(response: Response): Promise<string> {
 // Debug: Log the API URL being used (only in development)
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   console.log('RAG API Configuration:')
+  console.log('- Provider Mode:', RAG_PROVIDER_MODE)
   console.log('- Use Proxy:', USE_RAG_PROXY)
   console.log('- Base URL:', RAG_API_BASE_URL)
   console.log('- WS URL:', RAG_WS_URL)
@@ -183,6 +186,10 @@ export async function queryRAG(params: RAGQuery): Promise<RAGResponse> {
     throw new Error('Query is required.')
   }
 
+  if (!USE_REMOTE_RAG) {
+    return runLocalResearch(params)
+  }
+
   try {
     const url = buildRagUrl('/api/research/rag-summary')
 
@@ -252,6 +259,10 @@ export async function checkDraft(params: DraftCheckerRequest): Promise<DraftChec
     return runLocalDraftCheck(params)
   }
 
+  if (!USE_REMOTE_RAG) {
+    return runLocalDraftCheck(params)
+  }
+
   try {
     const url = buildRagUrl('/api/legislation/draft-checker')
 
@@ -308,6 +319,10 @@ export async function checkDraft(params: DraftCheckerRequest): Promise<DraftChec
  * Check RAG API health status
  */
 export async function checkRAGHealth(): Promise<HealthResponse> {
+  if (!USE_REMOTE_RAG) {
+    return getLocalResearchHealth()
+  }
+
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), HEALTH_CHECK_TIMEOUT_MS)
 
@@ -355,6 +370,10 @@ export async function checkRAGHealth(): Promise<HealthResponse> {
  * Check Draft Checker API health status
  */
 export async function checkDraftCheckerHealth(): Promise<HealthResponse> {
+  if (!USE_REMOTE_RAG) {
+    return getLocalResearchHealth()
+  }
+
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), HEALTH_CHECK_TIMEOUT_MS)
 

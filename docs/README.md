@@ -1,6 +1,6 @@
 # LexInSight Documentation
 
-LexInSight is a Next.js app for Philippine legal compliance chat, document review, RAG research, providerless local research fallback, and draft checking. The app code lives in [lexiph](../lexiph), with source code organized under [lexiph/src](../lexiph/src).
+LexInSight is a Next.js app for Philippine legal compliance chat, Markdown/text/PDF/Word document review, RAG research, providerless local research, and draft checking. The app code lives in [lexiph](../lexiph), with source code organized under [lexiph/src](../lexiph/src).
 
 ## Documentation Map
 

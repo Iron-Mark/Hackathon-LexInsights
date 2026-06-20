@@ -14,6 +14,13 @@ const BACKEND_EXTRACTION_MIME_TYPES = new Set([
 ])
 
 export type ComplianceDocumentSupport = 'browser-text' | 'backend-extraction' | 'unsupported'
+export type DocumentExtractionMode = 'browser-text' | 'server-pdf' | 'server-docx' | 'server-doc'
+export type ExtractedDocumentText = {
+  text: string
+  extractionMode: DocumentExtractionMode
+  fileName: string
+  warnings: string[]
+}
 
 export type BrowserDocumentFile = {
   name: string
@@ -67,6 +74,15 @@ export function normalizeBrowserDocumentText(value: string) {
     .replace(/\u0000/g, '')
 }
 
+function isDocumentExtractionMode(value: unknown): value is DocumentExtractionMode {
+  return (
+    value === 'browser-text' ||
+    value === 'server-pdf' ||
+    value === 'server-docx' ||
+    value === 'server-doc'
+  )
+}
+
 export async function readBrowserTextDocument(file: BrowserDocumentFile) {
   const support = getComplianceDocumentSupport(file)
 
@@ -89,4 +105,49 @@ export async function readBrowserTextDocument(file: BrowserDocumentFile) {
   }
 
   return text
+}
+
+export async function extractComplianceDocumentText(file: BrowserDocumentFile): Promise<ExtractedDocumentText> {
+  const support = getComplianceDocumentSupport(file)
+
+  if (support === 'browser-text') {
+    return {
+      text: await readBrowserTextDocument(file),
+      extractionMode: 'browser-text',
+      fileName: file.name,
+      warnings: [],
+    }
+  }
+
+  if (support === 'unsupported') {
+    throw new Error('Unsupported compliance document type. Upload Markdown, plain text, PDF, or Word documents.')
+  }
+
+  if (file.size > MAX_BROWSER_TEXT_DOCUMENT_BYTES) {
+    throw new Error('Maximum document size is 5MB.')
+  }
+
+  const formData = new FormData()
+  formData.set('file', file as unknown as Blob, file.name)
+
+  const response = await fetch('/api/document-text', {
+    method: 'POST',
+    body: formData,
+  })
+  const body = await response.json().catch(() => null) as Partial<ExtractedDocumentText> & { error?: string } | null
+
+  if (!response.ok) {
+    throw new Error(body?.error || `Document text extraction failed with HTTP ${response.status}.`)
+  }
+
+  if (!body?.text?.trim()) {
+    throw new Error('Document extraction did not return readable text.')
+  }
+
+  return {
+    text: normalizeBrowserDocumentText(body.text),
+    extractionMode: isDocumentExtractionMode(body.extractionMode) ? body.extractionMode : 'server-pdf',
+    fileName: body.fileName || file.name,
+    warnings: Array.isArray(body.warnings) ? body.warnings.filter((warning): warning is string => typeof warning === 'string') : [],
+  }
 }

@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 
 const DEFAULT_RAG_API_URL = 'https://devkada.resqlink.org'
 const DEFAULT_RAG_WS_URL = 'wss://devkada.resqlink.org'
+const DEFAULT_RAG_PROVIDER_MODE = 'local-providerless'
 const DEFAULT_TIMEOUT_MS = 15000
 const SUPABASE_PROJECT_HOST_SUFFIX = '.supabase.co'
 const ROUTES_TO_CHECK = [
@@ -15,6 +16,7 @@ const ROUTES_TO_CHECK = [
   '/chat',
   '/documents',
   '/test-rag',
+  '/test-document',
 ]
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
@@ -89,6 +91,16 @@ function skippedExternalCheck(name) {
     status: 'skip',
     critical: false,
     message: 'External checks skipped by CLI flag',
+  }
+}
+
+function skippedProviderlessCheck(name, target) {
+  return {
+    name,
+    status: 'skip',
+    critical: false,
+    message: 'Skipped because providerless local research is the active provider mode.',
+    ...(target ? { target } : {}),
   }
 }
 
@@ -365,6 +377,26 @@ function checkEnv(name, value, target) {
   }
 }
 
+function checkOptionalEnv(name, value, target) {
+  return {
+    name,
+    status: value ? 'pass' : 'skip',
+    critical: false,
+    message: value ? 'Configured' : 'Optional in providerless mode',
+    target,
+  }
+}
+
+function getRagProviderMode(env) {
+  const value = env.NEXT_PUBLIC_RAG_PROVIDER_MODE?.trim().toLowerCase()
+
+  if (value === 'remote' || value === 'remote-rag') {
+    return 'remote-rag'
+  }
+
+  return DEFAULT_RAG_PROVIDER_MODE
+}
+
 async function checkDns(name, host) {
   const startedAt = Date.now()
 
@@ -456,6 +488,8 @@ async function run() {
   const ragApiUrl = env.NEXT_PUBLIC_RAG_API_URL?.trim() || DEFAULT_RAG_API_URL
   const ragWsUrl = env.NEXT_PUBLIC_RAG_WS_URL?.trim() || DEFAULT_RAG_WS_URL
   const useRagProxy = env.NEXT_PUBLIC_USE_RAG_PROXY?.trim() || 'true'
+  const ragProviderMode = getRagProviderMode(env)
+  const remoteRagEnabled = ragProviderMode === 'remote-rag'
 
   const supabaseParsedUrl = safeUrl(supabaseUrl)
   const ragParsedUrl = safeUrl(ragApiUrl)
@@ -465,16 +499,29 @@ async function run() {
     ? new URL('/api/research/health', ragParsedUrl).toString()
     : null
 
+  const ragAsyncChecks = !remoteRagEnabled
+    ? [
+        skippedProviderlessCheck('rag.dns', ragParsedUrl?.hostname || null),
+        skippedProviderlessCheck('rag.direct_health', ragHealthTarget),
+      ]
+    : args.skipExternalChecks
+      ? [
+          skippedExternalCheck('rag.dns'),
+          skippedExternalCheck('rag.direct_health'),
+        ]
+      : [
+          checkDns('rag.dns', ragParsedUrl?.hostname || null),
+          checkFetch('rag.direct_health', ragHealthTarget, args.timeoutMs),
+        ]
+
   const asyncChecks = args.skipExternalChecks
     ? [
         skippedExternalCheck('supabase.dns'),
-        skippedExternalCheck('rag.dns'),
-        skippedExternalCheck('rag.direct_health'),
+        ...ragAsyncChecks,
       ]
     : [
         checkDns('supabase.dns', supabaseParsedUrl?.hostname || null),
-        checkDns('rag.dns', ragParsedUrl?.hostname || null),
-        checkFetch('rag.direct_health', ragHealthTarget, args.timeoutMs),
+        ...ragAsyncChecks,
       ]
   const immediateChecks = []
 
@@ -504,7 +551,17 @@ async function run() {
         )
       )
 
-      if (args.skipExternalChecks) {
+      if (!remoteRagEnabled) {
+        asyncChecks.push(
+          skippedProviderlessCheck(
+            'app.rag_proxy_health',
+            new URL(
+              `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${args.timeoutMs}`,
+              baseUrl
+            ).toString()
+          )
+        )
+      } else if (args.skipExternalChecks) {
         asyncChecks.push(skippedExternalCheck('app.rag_proxy_health'))
       } else {
         asyncChecks.push(
@@ -526,8 +583,24 @@ async function run() {
     checkEnv('supabase.anon_key', supabasePublicKey),
     checkSupabaseProjectRef(supabaseProjectRef, supabaseParsedUrl?.hostname),
     ...checkSupabaseAnonKey(supabasePublicKey, supabaseProjectRef),
-    checkEnv('rag.api_url', ragApiUrl, ragParsedUrl?.origin),
-    checkEnv('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin),
+    {
+      name: 'rag.provider_mode',
+      status: 'pass',
+      critical: false,
+      message:
+        ragProviderMode === 'remote-rag'
+          ? 'Remote RAG provider is explicitly enabled.'
+          : 'Providerless local research is the default provider mode.',
+      details: {
+        value: ragProviderMode,
+      },
+    },
+    remoteRagEnabled
+      ? checkEnv('rag.api_url', ragApiUrl, ragParsedUrl?.origin)
+      : checkOptionalEnv('rag.api_url', ragApiUrl, ragParsedUrl?.origin),
+    remoteRagEnabled
+      ? checkEnv('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin)
+      : checkOptionalEnv('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin),
     {
       name: 'rag.proxy_enabled',
       status: useRagProxy === 'false' ? 'warn' : 'pass',

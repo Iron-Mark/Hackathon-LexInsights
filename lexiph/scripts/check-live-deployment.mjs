@@ -12,6 +12,7 @@ const ROUTES_TO_CHECK = [
   '/chat',
   '/documents',
   '/test-rag',
+  '/test-document',
 ]
 
 function parseArgs(argv) {
@@ -279,6 +280,54 @@ async function versionCheck(baseUrl, timeoutMs, expectedSha) {
   return check
 }
 
+function providerModeFromReadiness(check) {
+  const body = check.details?.body
+  const checks = body && typeof body === 'object' && Array.isArray(body.checks) ? body.checks : []
+  const providerModeCheck = checks.find((item) => item?.name === 'rag.provider_mode')
+  const value = providerModeCheck?.details?.value
+
+  return typeof value === 'string' ? value : null
+}
+
+function skippedProviderlessCheck(name, target) {
+  return {
+    name,
+    status: 'skip',
+    critical: false,
+    message: 'Skipped because providerless local research is the active provider mode.',
+    target,
+  }
+}
+
+async function providerAwareBackendChecks(baseUrl, timeoutMs) {
+  const readiness = await fetchCheck(
+    'app.readiness',
+    appendPath(baseUrl, `/api/readiness?timeoutMs=${timeoutMs}`),
+    timeoutMs,
+    [200],
+    true
+  )
+  const ragProxyTarget = appendPath(baseUrl, `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${timeoutMs}`)
+
+  if (providerModeFromReadiness(readiness) === 'local-providerless') {
+    return [
+      readiness,
+      skippedProviderlessCheck('app.rag_proxy_health', ragProxyTarget),
+    ]
+  }
+
+  return [
+    readiness,
+    await fetchCheck(
+      'app.rag_proxy_health',
+      ragProxyTarget,
+      timeoutMs,
+      [200],
+      true
+    ),
+  ]
+}
+
 function publicCheckDetails(check) {
   const details = check.details || {}
   const body = details.body
@@ -299,6 +348,7 @@ function publicCheckDetails(check) {
             summary: body.summary,
             source: body.source,
             expected: body.expected,
+            providerMode: providerModeFromReadiness(check),
           }
         : body,
   }
@@ -319,24 +369,7 @@ async function run() {
   const routeChecks = ROUTES_TO_CHECK.map((route) =>
     fetchCheck(`app.route:${route}`, appendPath(baseUrl, route), args.timeoutMs, [200])
   )
-  const backendChecks = args.sourceOnly
-    ? []
-    : [
-        fetchCheck(
-          'app.readiness',
-          appendPath(baseUrl, `/api/readiness?timeoutMs=${args.timeoutMs}`),
-          args.timeoutMs,
-          [200],
-          true
-        ),
-        fetchCheck(
-          'app.rag_proxy_health',
-          appendPath(baseUrl, `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${args.timeoutMs}`),
-          args.timeoutMs,
-          [200],
-          true
-        ),
-      ]
+  const backendChecks = args.sourceOnly ? [] : await providerAwareBackendChecks(baseUrl, args.timeoutMs)
 
   const checks = await Promise.all([
     ...localChecks,

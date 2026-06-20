@@ -1,14 +1,15 @@
 # Providerless Research
 
-LexInSight can answer basic Philippine legal research questions and review plain text or Markdown drafts even when the remote RAG backend or an AI provider is unavailable.
+LexInSight can answer basic Philippine legal research questions and review Markdown, text, PDF, and Word drafts without a remote RAG backend or AI provider.
 
-The implementation lives in [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts). The normal service entry points in [rag-api.ts](../lexiph/src/lib/services/rag-api.ts) try the configured provider first, then return local providerless output on timeout, network failure, or upstream error.
+The implementation lives in [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts). The normal service entry points in [rag-api.ts](../lexiph/src/lib/services/rag-api.ts) use local providerless mode by default. If `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag`, they try the configured provider first, then return local providerless output on timeout, network failure, or upstream error.
 
 ## Runtime Behavior
 
-- Standard research still calls the configured RAG endpoint first.
+- Standard research uses local providerless mode by default.
+- Remote-first research is opt-in with `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag`.
 - Deep Search still uses the same service contract, but local mode expands cross-references instead of downloading PDFs or calling an AI provider.
-- Draft checking works locally for browser-readable plain text and Markdown files. [document-text.ts](../lexiph/src/lib/utils/document-text.ts) normalizes BOMs, line endings, and null bytes before local review. PDF and Word files still require backend-side text extraction before review.
+- Draft checking works locally for browser-readable plain text and Markdown files. [document-text.ts](../lexiph/src/lib/utils/document-text.ts) normalizes BOMs, line endings, and null bytes before local review. PDF, DOCX, and DOC files are extracted through `/api/document-text` before review.
 - Responses include `provider_mode`, `fallback_used`, `fallback_reason`, and `confidence_score` when available.
 - The UI shows a local-mode notice and keeps storing research responses in chat history.
 
@@ -18,6 +19,8 @@ Run the providerless self-test from [lexiph](../lexiph):
 
 ```powershell
 npm run check:providerless:self-test
+npm run check:document-text:self-test
+npm run check:document-extraction:self-test
 ```
 
 The self-test compiles [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts) with TypeScript and executes it in Node. It verifies:
@@ -34,7 +37,18 @@ The self-test compiles [local-legal-research.ts](../lexiph/src/lib/services/loca
 - Green findings for a stronger solid-waste ordinance draft.
 - Local health-check metadata.
 
-`npm run check:local` includes this self-test, so release gates catch providerless regressions before browser smoke starts.
+The document tests cover Markdown/text normalization and deterministic PDF/DOCX extraction. `npm run check:local` includes these self-tests, so release gates catch providerless and ingestion regressions before browser smoke starts.
+
+## Document Ingestion
+
+Draft checking starts with text extraction:
+
+1. Browser-readable Markdown and text files are normalized directly in the browser.
+2. PDF, DOCX, and legacy DOC files are posted to `/api/document-text`.
+3. The server extracts text with maintained parser libraries, normalizes it, and returns an `extractionMode` value such as `server-pdf` or `server-docx`.
+4. The draft checker reviews the extracted text locally when providerless mode is active.
+
+The upload limit is 5MB. Scanned image-only PDFs may fail with `Document extraction did not find readable text` because OCR is not bundled.
 
 ## Local Research Algorithm
 

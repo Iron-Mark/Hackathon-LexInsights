@@ -21,6 +21,9 @@ test.describe('LexInSight smoke checks', () => {
 
     await page.goto('/test-rag')
     await expect(page.getByRole('heading', { name: 'Legal Research Engine Test Page' })).toBeVisible()
+
+    await page.goto('/test-document')
+    await expect(page.getByRole('heading', { name: 'Document Compliance Test Page' })).toBeVisible()
   })
 
   test('missing Clerk keys show setup blocker', async ({ page }) => {
@@ -306,5 +309,33 @@ test.describe('LexInSight smoke checks', () => {
     const summary = page.locator('pre').filter({ hasText: '# Providerless Local Research Brief' })
     await expect(summary).toContainText('RA 9003')
     await expect(summary).toContainText('Ecological Solid Waste Management Act of 2000')
+  })
+
+  test('Markdown document upload returns compliance analysis', async ({ page }) => {
+    await page.goto('/test-document')
+    await page.setInputFiles('#document-upload', {
+      name: 'sample-barangay-registry.md',
+      mimeType: 'text/markdown',
+      buffer: Buffer.from(`# Barangay Resident Registry Ordinance
+
+## Purpose
+Create a registry of residents for local services.
+
+## Requirements
+All residents shall submit name, address, phone number, government ID number, and health status.
+
+## Penalties
+Failure to submit shall be fined PHP 5,000 and may result in suspension of barangay clearance.
+
+## Reporting
+The barangay office shall submit monthly registry reports.`),
+    })
+
+    await page.getByRole('button', { name: 'Analyze Document' }).click()
+
+    await expect(page.getByRole('heading', { name: 'Compliance Analysis Complete' })).toBeVisible()
+    await expect(page.getByText('Browser text/Markdown')).toBeVisible()
+    await expect(page.getByText('Score')).toBeVisible()
+    await expect(page.getByText('Red', { exact: true })).toBeVisible()
   })
 })

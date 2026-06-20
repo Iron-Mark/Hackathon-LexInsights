@@ -24,7 +24,7 @@ import { DragDropOverlay } from './drag-drop-overlay'
 import { showToast } from '@/components/ui/toast'
 import { EmptyState } from './empty-state'
 import { CenteredInput } from './centered-input'
-import { readBrowserTextDocument } from '@/lib/utils/document-text'
+import { extractComplianceDocumentText, type ExtractedDocumentText } from '@/lib/utils/document-text'
 import {
   RAG_BACKEND_TOAST_ACTION,
   RAG_BACKEND_UNAVAILABLE_MESSAGE,
@@ -64,7 +64,12 @@ function formatFindings(title: string, findings: Finding[]) {
   ]
 }
 
-function formatDraftCheckerReport(fileName: string, query: string, response: DraftCheckerResponse) {
+function formatDraftCheckerReport(
+  fileName: string,
+  query: string,
+  response: DraftCheckerResponse,
+  extraction?: Pick<ExtractedDocumentText, 'extractionMode' | 'warnings'>
+) {
   const { analysis } = response
   const timestamp = new Date().toLocaleDateString('en-PH', { 
     year: 'numeric', 
@@ -81,10 +86,12 @@ function formatDraftCheckerReport(fileName: string, query: string, response: Dra
     `- Analysis Date: ${timestamp}`,
     `- Query: ${query}`,
     `- Draft Title: ${analysis.draft_title}`,
+    extraction ? `- Text Extraction: ${formatExtractionMode(extraction.extractionMode)}` : null,
     `- Processing Time: ${analysis.processing_time_seconds.toFixed(1)}s`,
     analysis.documents_searched !== undefined ? `- Documents Searched: ${analysis.documents_searched}` : null,
     analysis.chunks_analyzed !== undefined ? `- Chunks Analyzed: ${analysis.chunks_analyzed}` : null,
     analysis.keywords_extracted !== undefined ? `- Keywords Extracted: ${analysis.keywords_extracted}` : null,
+    extraction && extraction.warnings.length > 0 ? `- Extraction Warnings: ${extraction.warnings.join('; ')}` : null,
     '',
     '## Overall Assessment',
     '',
@@ -112,6 +119,19 @@ function formatDraftCheckerReport(fileName: string, query: string, response: Dra
   ].filter((line): line is string => line !== null).join('\n')
 }
 
+function formatExtractionMode(mode: ExtractedDocumentText['extractionMode']) {
+  switch (mode) {
+    case 'browser-text':
+      return 'Browser text/Markdown'
+    case 'server-pdf':
+      return 'Server PDF text extraction'
+    case 'server-docx':
+      return 'Server DOCX text extraction'
+    case 'server-doc':
+      return 'Server legacy DOC text extraction'
+  }
+}
+
 function buildComplianceUnavailableReport(fileName: string, query: string, reason: string) {
   const timestamp = formatAnalysisDate()
 
@@ -133,7 +153,7 @@ ${reason}
 
 ## What This Means
 
-No compliance report was generated for this file. Plain text and Markdown drafts can be reviewed locally. PDF and Word files require backend-side text extraction before draft checks can run.
+No compliance report was generated for this file. Plain text and Markdown drafts can be reviewed locally. PDF and Word files are sent to the internal document-text route for extraction before draft checks run.
 
 ## Legal Disclaimer
 
@@ -151,7 +171,7 @@ function buildDeepSearchOnlyReport(fileName: string, query: string) {
 
 ## Status
 
-Deep Search results are available in the section above. For a full local draft check, upload a plain text or Markdown file; PDF and Word files require backend-side text extraction.`
+Deep Search results are available in the section above. For a full local draft check, upload a plain text, Markdown, PDF, or Word file.`
 }
 
 export function ChatContainer({ messages: initialMessages }: ChatContainerProps) {
@@ -357,10 +377,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       setDeepSearchResult(null) // Clear previous deep search
       
       try {
-        const draftMarkdown = await readBrowserTextDocument(file)
+        const extractedDocument = await extractComplianceDocumentText(file)
 
         const response = await checkDraft({
-          draft_markdown: draftMarkdown,
+          draft_markdown: extractedDocument.text,
           user_id: user?.id || 'compliance-user',
           include_summary: true,
         })
@@ -369,7 +389,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
           throw new Error(response.error || 'Draft Checker returned an error response.')
         }
 
-        setCanvasContent(formatDraftCheckerReport(file.name, query, response))
+        setCanvasContent(formatDraftCheckerReport(file.name, query, response, extractedDocument))
         showToast(`Compliance analysis complete for ${file.name}`, 'success')
 
         const announcement = `Compliance analysis complete for ${file.name}`

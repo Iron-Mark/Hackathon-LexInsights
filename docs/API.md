@@ -1,6 +1,6 @@
 # API
 
-LexInSight uses a small set of internal Next.js routes, an optional remote RAG backend, and a bundled providerless local research engine.
+LexInSight uses a small set of internal Next.js routes, an optional remote RAG backend, and a bundled providerless local research engine. Providerless local research is the default runtime mode.
 
 ## Internal Routes
 
@@ -17,7 +17,7 @@ curl "http://localhost:3000/api/version?expectedSha=<commit>"
 
 ### `GET /api/readiness`
 
-Checks Supabase env values, Supabase key format, RAG DNS, direct RAG health, and RAG proxy health.
+Checks Supabase env values, Supabase key format, provider mode, and external backend health. In the default `local-providerless` mode, RAG DNS, direct health, and proxy health are reported as noncritical skipped checks. When `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag`, remote RAG health becomes part of readiness.
 
 Query parameters:
 
@@ -52,11 +52,34 @@ Default upstream endpoint: `/api/research/rag-summary`.
 
 The body is forwarded as JSON to the upstream RAG backend. Upstream HTTP errors and malformed upstream payloads are converted into stable JSON errors.
 
+### `POST /api/document-text`
+
+Extracts text from PDF and Word uploads before local draft checking.
+
+Request:
+
+- Multipart form data with a `file` field.
+- Supported file types: `.pdf`, `.docx`, `.doc`, `application/pdf`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document`, and `application/msword`.
+- Maximum size: 5MB.
+
+Response:
+
+```json
+{
+  "text": "normalized extracted text",
+  "extractionMode": "server-pdf",
+  "fileName": "draft.pdf",
+  "warnings": []
+}
+```
+
+Text and Markdown files are read in the browser and do not call this route.
+
 ## RAG Service Contracts
 
 Client wrappers live in [rag-api.ts](../lexiph/src/lib/services/rag-api.ts) and [deep-search-api.ts](../lexiph/src/lib/services/deep-search-api.ts).
 
-The wrappers try the configured RAG provider first. If the remote provider times out, fails CORS or network checks, or returns an upstream error, the wrappers return deterministic local output from [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts). See [Providerless Research](./PROVIDERLESS-RESEARCH.md) for algorithm and corpus details.
+The default provider mode is `local-providerless`, so wrappers return deterministic local output from [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts) without calling an AI provider. If `NEXT_PUBLIC_RAG_PROVIDER_MODE` is set to `remote` or `remote-rag`, the wrappers try the configured RAG provider first and fall back locally on timeout, CORS/network failure, or upstream error. See [Providerless Research](./PROVIDERLESS-RESEARCH.md) for algorithm and corpus details.
 
 ### Standard RAG
 
@@ -124,11 +147,11 @@ Request:
 }
 ```
 
-The response is consumed as green, amber, and red findings with recommendations and references. Plain text and Markdown drafts can be checked locally if the remote Draft Checker is unavailable. PDF and Word files still need backend-side extraction before draft checking.
+The response is consumed as green, amber, and red findings with recommendations and references. Plain text and Markdown drafts can be checked locally in the browser path. PDF and Word files are extracted through `/api/document-text`, then checked locally when providerless mode is active or the remote Draft Checker is unavailable.
 
 ### Health Checks
 
-`checkRAGHealth()` and `checkDraftCheckerHealth()` return remote health when available. If the remote provider is unavailable but local fallback can run, they return:
+`checkRAGHealth()` and `checkDraftCheckerHealth()` return local providerless health by default. In remote mode, they return remote health when available. If the remote provider is unavailable but local fallback can run, they return:
 
 ```json
 {
@@ -146,5 +169,7 @@ RAG configuration is centralized in [rag-config.ts](../lexiph/src/lib/services/r
 
 - `NEXT_PUBLIC_USE_RAG_PROXY=true` means browser calls use `/api/rag-proxy`.
 - `NEXT_PUBLIC_USE_RAG_PROXY=false` means browser calls go directly to `NEXT_PUBLIC_RAG_API_URL`.
+- `NEXT_PUBLIC_RAG_PROVIDER_MODE=local-providerless` uses the bundled deterministic provider and is the default.
+- `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag` opts into the remote provider first, with local fallback.
 - Keep proxy mode enabled unless the RAG backend explicitly supports browser CORS.
 - The app remains usable without a reachable RAG provider through local providerless research and draft checks.

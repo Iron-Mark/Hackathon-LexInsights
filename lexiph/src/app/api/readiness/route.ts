@@ -10,6 +10,7 @@ const DEFAULT_CHECK_TIMEOUT_MS = 10000
 const MIN_CHECK_TIMEOUT_MS = 500
 const MAX_CHECK_TIMEOUT_MS = 60000
 const SUPABASE_PROJECT_HOST_SUFFIX = '.supabase.co'
+const DEFAULT_RAG_PROVIDER_MODE = 'local-providerless'
 
 type CheckStatus = 'pass' | 'fail' | 'warn' | 'skip'
 
@@ -254,6 +255,16 @@ function envPresenceCheck(name: string, value: string | null, target?: string): 
   }
 }
 
+function optionalEnvCheck(name: string, value: string | null, target?: string): ReadinessCheck {
+  return {
+    name,
+    status: value ? 'pass' : 'skip',
+    critical: false,
+    message: value ? 'Configured' : 'Optional in providerless mode',
+    target,
+  }
+}
+
 async function dnsCheck(name: string, host: string | null): Promise<ReadinessCheck> {
   const startedAt = Date.now()
 
@@ -360,6 +371,16 @@ function skippedExternalCheck(name: string, target?: string | null): ReadinessCh
   }
 }
 
+function skippedProviderlessCheck(name: string, target?: string | null): ReadinessCheck {
+  return {
+    name,
+    status: 'skip',
+    critical: false,
+    message: 'Skipped because providerless local research is the active provider mode.',
+    ...(target ? { target } : {}),
+  }
+}
+
 function getTimeoutMs(request: NextRequest) {
   const requestedTimeout = Number(request.nextUrl.searchParams.get('timeoutMs'))
 
@@ -374,6 +395,16 @@ function shouldSkipExternalChecks(request: NextRequest) {
   return request.nextUrl.searchParams.get('externalChecks') === 'skip'
 }
 
+function getRagProviderMode() {
+  const value = getEnvValue('NEXT_PUBLIC_RAG_PROVIDER_MODE')?.toLowerCase()
+
+  if (value === 'remote' || value === 'remote-rag') {
+    return 'remote-rag'
+  }
+
+  return DEFAULT_RAG_PROVIDER_MODE
+}
+
 export async function GET(request: NextRequest) {
   const checkedAt = new Date().toISOString()
   const origin = request.nextUrl.origin
@@ -386,6 +417,8 @@ export async function GET(request: NextRequest) {
   const ragApiUrl = getEnvValue('NEXT_PUBLIC_RAG_API_URL') || DEFAULT_RAG_API_URL
   const ragWsUrl = getEnvValue('NEXT_PUBLIC_RAG_WS_URL') || DEFAULT_RAG_WS_URL
   const useRagProxy = getEnvValue('NEXT_PUBLIC_USE_RAG_PROXY') ?? 'true'
+  const ragProviderMode = getRagProviderMode()
+  const remoteRagEnabled = ragProviderMode === 'remote-rag'
 
   const supabaseParsedUrl = safeUrl(supabaseUrl)
   const ragParsedUrl = safeUrl(ragApiUrl)
@@ -398,27 +431,56 @@ export async function GET(request: NextRequest) {
     : null
   const ragProxyHealthTarget = `${origin}/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${timeoutMs}`
 
+  const ragExternalChecks = !remoteRagEnabled
+    ? [
+        skippedProviderlessCheck('rag.dns', ragDnsHost),
+        skippedProviderlessCheck('rag.direct_health', ragHealthTarget),
+        skippedProviderlessCheck('rag.proxy_health', ragProxyHealthTarget),
+      ]
+    : skipExternalChecks
+      ? [
+          skippedExternalCheck('rag.dns', ragDnsHost),
+          skippedExternalCheck('rag.direct_health', ragHealthTarget),
+          skippedExternalCheck('rag.proxy_health', ragProxyHealthTarget),
+        ]
+      : await Promise.all([
+          dnsCheck('rag.dns', ragDnsHost),
+          fetchHealthCheck('rag.direct_health', ragHealthTarget, timeoutMs),
+          fetchHealthCheck('rag.proxy_health', ragProxyHealthTarget, timeoutMs),
+        ])
+
   const externalChecks = skipExternalChecks
     ? [
         skippedExternalCheck('supabase.dns', supabaseDnsHost),
-        skippedExternalCheck('rag.dns', ragDnsHost),
-        skippedExternalCheck('rag.direct_health', ragHealthTarget),
-        skippedExternalCheck('rag.proxy_health', ragProxyHealthTarget),
+        ...ragExternalChecks,
       ]
     : await Promise.all([
         dnsCheck('supabase.dns', supabaseDnsHost),
-        dnsCheck('rag.dns', ragDnsHost),
-        fetchHealthCheck('rag.direct_health', ragHealthTarget, timeoutMs),
-        fetchHealthCheck('rag.proxy_health', ragProxyHealthTarget, timeoutMs),
-      ])
+      ]).then((checks) => [...checks, ...ragExternalChecks])
 
   const checks: ReadinessCheck[] = [
     envPresenceCheck('supabase.url', supabaseUrl, supabaseParsedUrl?.host),
     envPresenceCheck('supabase.anon_key', supabasePublicKey),
     supabaseProjectRefCheck(supabaseProjectRef, supabaseParsedUrl?.host),
     ...supabaseAnonKeyChecks(supabasePublicKey, supabaseProjectRef),
-    envPresenceCheck('rag.api_url', ragApiUrl, ragParsedUrl?.origin),
-    envPresenceCheck('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin),
+    {
+      name: 'rag.provider_mode',
+      status: 'pass',
+      critical: false,
+      message:
+        ragProviderMode === 'remote-rag'
+          ? 'Remote RAG provider is explicitly enabled.'
+          : 'Providerless local research is the default provider mode.',
+      details: {
+        value: ragProviderMode,
+      },
+    },
+    remoteRagEnabled
+      ? envPresenceCheck('rag.api_url', ragApiUrl, ragParsedUrl?.origin)
+      : optionalEnvCheck('rag.api_url', ragApiUrl, ragParsedUrl?.origin),
+    remoteRagEnabled
+      ? envPresenceCheck('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin)
+      : optionalEnvCheck('rag.websocket_url', ragWsUrl, ragWsParsedUrl?.origin),
     {
       name: 'rag.proxy_enabled',
       status: useRagProxy === 'false' ? 'warn' : 'pass',
