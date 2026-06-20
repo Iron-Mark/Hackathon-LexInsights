@@ -44,7 +44,13 @@ Use the full readiness check when the external services should be reachable.
 
 ## RAG Requests Fail
 
-The app should still answer through local providerless research when the RAG provider is down. Check the response metadata for `provider_mode=local-providerless`.
+The app should answer through local providerless research by default. Check the response metadata for `provider_mode=local-providerless`.
+
+Remote RAG is opt-in:
+
+```text
+NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag
+```
 
 Keep proxy mode enabled unless the backend supports CORS:
 
@@ -58,11 +64,27 @@ Check proxy health:
 curl "http://localhost:3000/api/rag-proxy?endpoint=/api/research/health"
 ```
 
-If the proxy returns an upstream error, verify `NEXT_PUBLIC_RAG_API_URL` and backend availability.
+If the proxy returns an upstream error in remote mode, verify `NEXT_PUBLIC_RAG_API_URL` and backend availability.
 
 If local mode does not return a result, try a narrower query with a statute number such as `RA 9003`, `RA 10173`, `RA 11058`, `RA 7160`, or `RA 10121`. The local corpus is intentionally limited and does not search live government sites.
 
-For draft checks, upload plain text or Markdown when working without a provider. PDF and Word files require backend extraction before their text can be reviewed.
+For draft checks, upload Markdown, plain text, PDF, DOCX, or DOC files up to 5MB. Markdown and text files are read in the browser. PDF and Word files are posted to `/api/document-text` for server-side extraction before their text is reviewed.
+
+## Document Extraction Fails
+
+Check the upload type and size first:
+
+- Supported: `.md`, `.markdown`, `.txt`, `.text`, `.pdf`, `.docx`, `.doc`
+- Maximum size: 5MB
+
+If a PDF upload returns `Document extraction did not find readable text`, it may be a scanned image-only PDF. OCR is not bundled. Convert it to selectable text before uploading.
+
+Run the focused checks:
+
+```powershell
+npm run check:document-text:self-test
+npm run check:document-extraction:self-test
+```
 
 ## Markdown Link Check Fails
 

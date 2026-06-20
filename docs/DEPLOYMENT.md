@@ -27,13 +27,16 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 
 ## Optional Remote RAG Environment
 
-Configure these when a remote provider is available. The app still serves providerless local research without them.
+Configure these when a remote provider is available and should be used before local fallback. The app serves providerless local research without them.
 
 ```text
+NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag
 NEXT_PUBLIC_RAG_API_URL
 NEXT_PUBLIC_RAG_WS_URL
 NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
+
+Leave `NEXT_PUBLIC_RAG_PROVIDER_MODE` unset or set to `local-providerless` for the production default. In that mode, `/api/readiness` and `npm run check:live` skip remote RAG health as noncritical providerless checks.
 
 ## Pre-Deployment
 
@@ -72,6 +75,7 @@ npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-c
 
 - `https://lexiph.vercel.app/api/version`
 - `https://lexiph.vercel.app/api/readiness`
-- `https://lexiph.vercel.app/api/rag-proxy?endpoint=/api/research/health`
+- `https://lexiph.vercel.app/test-rag`
+- `https://lexiph.vercel.app/test-document`
 
 If `/api/version` returns 404, the deployment is likely not serving the current `lexiph` app root.

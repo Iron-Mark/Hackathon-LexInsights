@@ -55,6 +55,7 @@ try {
     MAX_BROWSER_TEXT_DOCUMENT_BYTES,
     getComplianceDocumentSupport,
     getDocumentExtension,
+    extractComplianceDocumentText,
     isBrowserReadableTextDocument,
     isSupportedComplianceDocument,
     normalizeBrowserDocumentText,
@@ -105,6 +106,17 @@ try {
     await readBrowserTextDocument(fakeFile({ name: 'draft.text', text: '\uFEFFSection 1\r\nSection 2\u0000' })),
     'Section 1\nSection 2',
     'Browser text reader should normalize readable documents'
+  )
+
+  assert.deepEqual(
+    await extractComplianceDocumentText(fakeFile({ name: 'draft.md', type: 'text/markdown', text: 'Policy text' })),
+    {
+      text: 'Policy text',
+      extractionMode: 'browser-text',
+      fileName: 'draft.md',
+      warnings: [],
+    },
+    'Top-level extraction should handle browser-readable documents without calling the API route'
   )
 
   await assert.rejects(

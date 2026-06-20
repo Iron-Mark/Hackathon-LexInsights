@@ -29,11 +29,13 @@ The TypeScript alias `@/*` resolves to `lexiph/src/*`. Keep application imports 
 - `/chat/[chatId]` - chat workspace with a selected chat.
 - `/documents` - uploaded document management.
 - `/test-rag` - manual legal research engine test surface.
+- `/test-document` - manual compliance document ingestion and draft-check test surface.
 - `/offline` - PWA offline page.
 
 ## Internal API Routes
 
 - `/api/rag-proxy` - server-side proxy to the RAG backend. It prevents browser CORS failures and centralizes timeout and upstream error handling.
+- `/api/document-text` - server-side PDF and Word text extraction for compliance document uploads.
 - `/api/readiness` - backend readiness checks for Supabase configuration, RAG health, and proxy health.
 - `/api/version` - build and source metadata for deployment verification.
 
@@ -57,7 +59,9 @@ The browser talks to Supabase through [client.ts](../lexiph/src/lib/supabase/cli
 
 By default, browser RAG calls go through `/api/rag-proxy`; direct browser calls should only be used when the upstream backend is configured for CORS.
 
-Remote RAG is optional at runtime. [rag-api.ts](../lexiph/src/lib/services/rag-api.ts) tries the configured provider first and falls back to [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts) when the provider is unavailable. Local mode provides deterministic research, Deep Search cross-reference expansion, and text/Markdown draft checks without AI providers.
+Remote RAG is optional at runtime and opt-in through `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag`. [rag-api.ts](../lexiph/src/lib/services/rag-api.ts) uses [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts) by default, and remote mode falls back locally when the provider is unavailable. Local mode provides deterministic research, Deep Search cross-reference expansion, and draft checks without AI providers.
+
+Compliance document ingestion is split between [document-text.ts](../lexiph/src/lib/utils/document-text.ts) for browser-readable text and [server-document-extraction.ts](../lexiph/src/lib/utils/server-document-extraction.ts) for PDF and Word extraction behind `/api/document-text`.
 
 ## Engineering Principles
 
