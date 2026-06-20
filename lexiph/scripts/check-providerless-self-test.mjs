@@ -45,6 +45,16 @@ function assertResearchMatch(response, expectedStatute, label) {
   assertIncludes(response.summary, expectedStatute, `${label} summary`)
 }
 
+function assertMatchedTerm(response, expectedStatute, expectedTerm, label) {
+  const match = response.matched_documents?.find((document) => document.statute === expectedStatute)
+
+  assert.ok(match, `${label} should include ${expectedStatute}`)
+  assert.ok(
+    match.matched_terms.includes(expectedTerm),
+    `${label} should include matched term "${expectedTerm}"`
+  )
+}
+
 async function loadProviderlessModule() {
   assert.equal(existsSync(sourcePath), true, 'local-legal-research.ts is missing')
 
@@ -127,6 +137,34 @@ try {
     'Deep search processing metadata'
   )
 
+  const formattedCitationResponse = runLocalResearch(
+    {
+      query: 'What controls apply under R.A. No. 10173 and RA No. 8792 for online consent records?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+
+  assertResearchMatch(formattedCitationResponse, 'RA 10173', 'formatted citation query')
+  assertMatchedTerm(
+    formattedCitationResponse,
+    'RA 10173',
+    'explicit citation: RA 10173',
+    'formatted citation query'
+  )
+  assertMatchedTerm(
+    formattedCitationResponse,
+    'RA 8792',
+    'explicit citation: RA 8792',
+    'formatted citation query'
+  )
+  assertIncludes(
+    formattedCitationResponse.summary,
+    'RA 10173 was cited and is included in the bundled local corpus',
+    'Formatted citation coverage summary'
+  )
+
   const noResultsResponse = runLocalResearch(
     { query: 'banana smoothie recipe with cinnamon', user_id: 'self-test' },
     'simulated remote outage'
@@ -160,6 +198,36 @@ The barangay office shall submit monthly registry reports.`
   assertFinding(riskyDraftResponse, 'red', 'No explicit legal authority')
   assertFinding(riskyDraftResponse, 'red', 'Personal-data processing')
   assertFinding(riskyDraftResponse, 'red', 'Penalties lack due process')
+
+  const unknownCitationDraft = `# Local Licensing Ordinance
+
+## Purpose
+Create a local licensing workflow for covered businesses.
+
+## Legal Basis
+Pursuant to RA No. 12345 and implementing local authority.
+
+## Scope
+This applies to all covered establishments operating in the municipality.
+
+## Responsible Office
+The Business Permits and Licensing Office shall implement this ordinance.
+
+## Requirements
+Covered establishments shall file applications and maintain records.
+
+## Monitoring
+The responsible office shall inspect and submit quarterly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const unknownCitationDraftResponse = runLocalDraftCheck(
+    { draft_markdown: unknownCitationDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(unknownCitationDraftResponse.status, 'success', 'Unknown-citation draft check should succeed locally')
+  assertFinding(unknownCitationDraftResponse, 'amber', 'Cited authority is outside the local corpus')
 
   const strongerDraft = `# Solid Waste Segregation Ordinance
 

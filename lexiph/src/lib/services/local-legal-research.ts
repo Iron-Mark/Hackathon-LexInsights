@@ -570,8 +570,46 @@ function uniqueByNormalized(values: string[]) {
 }
 
 function extractRaNumbers(value: string) {
-  const matches = value.matchAll(/\b(?:r\.?\s*a\.?|republic\s+act(?:\s+no\.?)?)\s*(\d{3,5})\b/gi)
+  const matches = value.matchAll(
+    /\b(?:r\.?\s*a\.?|republic\s+act)(?:\s+(?:no|number)\.?)?\s*(\d{3,5})\b/gi
+  )
   return unique([...matches].map((match) => match[1]))
+}
+
+function getDocumentRaNumber(document: LocalLegalDocument) {
+  return extractRaNumbers(document.statute)[0]
+}
+
+function getDocumentByRaNumber(raNumber: string) {
+  return LEGAL_CORPUS.find((document) => getDocumentRaNumber(document) === raNumber)
+}
+
+function getCitationAnalysis(value: string) {
+  const raNumbers = extractRaNumbers(value)
+  const citedDocuments = raNumbers
+    .map((raNumber) => getDocumentByRaNumber(raNumber))
+    .filter((document): document is LocalLegalDocument => Boolean(document))
+  const knownNumbers = citedDocuments
+    .map((document) => getDocumentRaNumber(document))
+    .filter((raNumber): raNumber is string => Boolean(raNumber))
+  const unknownNumbers = raNumbers.filter((raNumber) => !knownNumbers.includes(raNumber))
+
+  return {
+    raNumbers,
+    knownNumbers,
+    unknownNumbers,
+    citedDocuments,
+  }
+}
+
+function getCitationMatchedTerms(value: string, document: LocalLegalDocument) {
+  const documentRaNumber = getDocumentRaNumber(document)
+
+  if (!documentRaNumber || !extractRaNumbers(value).includes(documentRaNumber)) {
+    return []
+  }
+
+  return [`explicit citation: ${document.statute}`]
 }
 
 function createSearchableText(document: LocalLegalDocument) {
@@ -689,7 +727,10 @@ function rankLegalCorpus(query: string): RankedDocument[] {
   }
 
   const rawScores = INDEXED_CORPUS.map((entry) => {
-    const matchedTerms = queryTokens.filter((token) => entry.tokenCounts.has(token))
+    const matchedTerms = unique([
+      ...getCitationMatchedTerms(query, entry.document),
+      ...queryTokens.filter((token) => entry.tokenCounts.has(token)),
+    ])
     const bm25 = queryTokens.reduce((score, token) => score + getBm25Score(token, entry), 0)
     const titleBoost = matchedTerms.reduce((score, token) => {
       const titleText = normalizeText(`${entry.document.statute} ${entry.document.shortTitle} ${entry.document.title}`)
@@ -725,6 +766,29 @@ function generateLocalSearchQueries(query: string, rankedDocuments: RankedDocume
   const documentQueries = rankedDocuments.slice(0, 3).map((match) => `${match.document.statute} ${match.document.shortTitle}`)
 
   return uniqueByNormalized([query.trim(), ...raQueries, ...expansions, ...documentQueries]).slice(0, 10)
+}
+
+function buildCitationCoverageSection(value: string) {
+  const citationAnalysis = getCitationAnalysis(value)
+
+  if (citationAnalysis.raNumbers.length === 0) {
+    return []
+  }
+
+  const knownLines = citationAnalysis.citedDocuments.map(
+    (document) => `- ${document.statute} was cited and is included in the bundled local corpus.`
+  )
+  const unknownLines = citationAnalysis.unknownNumbers.map(
+    (raNumber) => `- RA ${raNumber} was cited but is not in the bundled local corpus; verify it against current official sources.`
+  )
+
+  return [
+    '## Citation Coverage',
+    '',
+    ...knownLines,
+    ...unknownLines,
+    '',
+  ]
 }
 
 function toPercent(value: number) {
@@ -777,6 +841,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     '',
     'No strong match was found in the bundled local legal corpus.',
     '',
+    ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
     '- Include a Republic Act number, such as RA 9003, RA 10173, RA 11058, RA 7160, or RA 10121.',
@@ -819,6 +884,7 @@ function buildResearchSummary(query: string, rankedDocuments: RankedDocument[], 
     '',
     `${reasonLine} ${deepSearchLine}`,
     '',
+    ...buildCitationCoverageSection(query),
     '## Likely Relevant Authorities',
     '',
     ...topMatches.map((match, index) => formatMatchedDocument(match, index, deepSearchUsed)).join('\n\n').split('\n'),
@@ -955,7 +1021,12 @@ function genericDraftingReference() {
 function analyzeDraft(markdown: string) {
   const normalizedDraft = normalizeText(markdown)
   const rankedDocuments = rankLegalCorpus(markdown)
-  const topReferences = rankedDocuments.slice(0, 4).map((match) => referenceFor(match.document))
+  const citationAnalysis = getCitationAnalysis(markdown)
+  const citedDocumentIds = new Set(citationAnalysis.citedDocuments.map((document) => document.id))
+  const topReferences = uniqueByNormalized([
+    ...citationAnalysis.citedDocuments.map((document) => referenceFor(document)),
+    ...rankedDocuments.slice(0, 4).map((match) => referenceFor(match.document)),
+  ])
   const paragraphCount = markdown.split(/\n\s*\n/).filter((paragraph) => paragraph.trim()).length
   const uniqueKeywords = unique(tokenize(markdown)).length
 
@@ -1076,6 +1147,41 @@ function analyzeDraft(markdown: string) {
         'Add a legal-basis section and map each major duty, fee, penalty, permit, and office action to the specific enabling authority.',
         9,
         topReferences.length > 0 ? topReferences : [genericDraftingReference()]
+      )
+    )
+  }
+
+  if (citationAnalysis.unknownNumbers.length > 0) {
+    amber.push(
+      createFinding(
+        'amber',
+        'gap',
+        'Cited authority is outside the local corpus',
+        `The draft cites ${citationAnalysis.unknownNumbers.map((raNumber) => `RA ${raNumber}`).join(', ')}, but LexInSight does not have that authority in its bundled providerless corpus.`,
+        'Verify the cited authority against current official sources, then add enough title, agency, and operative context for manual review.',
+        4,
+        topReferences.length > 0 ? topReferences : [genericDraftingReference()]
+      )
+    )
+  }
+
+  const uncitedStrongMatches = rankedDocuments
+    .filter((match) => match.relevance >= 0.45 && !citedDocumentIds.has(match.document.id))
+    .slice(0, 2)
+
+  if (citationAnalysis.citedDocuments.length > 0 && uncitedStrongMatches.length > 0) {
+    amber.push(
+      createFinding(
+        'amber',
+        'gap',
+        'Likely relevant authority is not cited',
+        `The draft cites ${citationAnalysis.citedDocuments.map((document) => document.statute).join(', ')}, but the local checker also strongly matched ${uncitedStrongMatches.map((match) => match.document.statute).join(', ')} from the draft text.`,
+        'Confirm whether each strongly matched authority should be included in the legal-basis section or intentionally excluded with a short rationale.',
+        5,
+        uniqueByNormalized([
+          ...topReferences,
+          ...uncitedStrongMatches.map((match) => referenceFor(match.document)),
+        ])
       )
     )
   }

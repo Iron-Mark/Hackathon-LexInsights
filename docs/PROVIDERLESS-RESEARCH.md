@@ -24,8 +24,10 @@ The self-test compiles [local-legal-research.ts](../lexiph/src/lib/services/loca
 
 - Corpus coverage for core statutes.
 - RA 9003, RA 11058, and RA 10173 research matching.
+- Common citation formats such as `R.A. No. 10173` and `RA No. 8792`.
 - Deep Search providerless metadata.
 - No-result behavior for unrelated queries.
+- Draft warnings when a cited Republic Act is outside the bundled local corpus.
 - Red findings for risky privacy and penalty drafting.
 - Green findings for a stronger solid-waste ordinance draft.
 - Local health-check metadata.
@@ -36,10 +38,10 @@ The self-test compiles [local-legal-research.ts](../lexiph/src/lib/services/loca
 
 The providerless research path is deterministic:
 
-1. Normalize the query, strip punctuation, remove common stop words, and extract Republic Act numbers.
+1. Normalize the query, strip punctuation, remove common stop words, and extract Republic Act numbers from common formats such as `RA 9003`, `RA No. 9003`, `R.A. No. 9003`, and `Republic Act Number 9003`.
 2. Expand terms through legal-topic triggers such as waste, privacy, workplace safety, fire safety, DRRM, air, water, LGU authority, corporate governance, harassment, and electronic records.
 3. Score the bundled corpus with BM25-style term ranking plus boosts for exact RA numbers, statute aliases, short titles, and topic phrases.
-4. Return the top matches with source links, matched terms, practical checklists, and common gaps.
+4. Return the top matches with source links, citation coverage, matched terms, practical checklists, and common gaps.
 5. Generate Markdown through templates only. Local mode does not call an AI model.
 
 ## Draft Checker Algorithm
@@ -47,6 +49,8 @@ The providerless research path is deterministic:
 The providerless draft checker uses structural and topic-specific heuristics:
 
 - Checks for legal authority, purpose, scope, definitions, responsible office, operative duties, monitoring, budget, effectivity, and due process.
+- Prioritizes explicitly cited local-corpus authorities in finding references.
+- Flags amber findings when a draft cites a Republic Act that is not in the bundled local corpus.
 - Flags red findings when penalties appear without notice, hearing, appeal, or reconsideration safeguards.
 - Adds topic checks for privacy, solid waste, workplace safety, fire safety, DRRM, water quality, air quality, and digital records.
 - Computes a conservative compliance score from green, amber, and red findings.
