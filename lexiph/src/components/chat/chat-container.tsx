@@ -24,6 +24,7 @@ import { DragDropOverlay } from './drag-drop-overlay'
 import { showToast } from '@/components/ui/toast'
 import { EmptyState } from './empty-state'
 import { CenteredInput } from './centered-input'
+import { readBrowserTextDocument } from '@/lib/utils/document-text'
 import {
   RAG_BACKEND_TOAST_ACTION,
   RAG_BACKEND_UNAVAILABLE_MESSAGE,
@@ -40,11 +41,6 @@ function formatAnalysisDate() {
     month: 'long',
     day: 'numeric',
   })
-}
-
-function canAnalyzeTextFile(file: File) {
-  const name = file.name.toLowerCase()
-  return file.type === 'text/plain' || file.type === 'text/markdown' || name.endsWith('.md') || name.endsWith('.txt')
 }
 
 function formatFindings(title: string, findings: Finding[]) {
@@ -361,27 +357,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       setDeepSearchResult(null) // Clear previous deep search
       
       try {
-        if (!canAnalyzeTextFile(file)) {
-          setCanvasContent(
-            buildComplianceUnavailableReport(
-              file.name,
-              query,
-              'Only plain text and Markdown drafts can be analyzed directly in the browser. PDF and Word document analysis requires backend-side extraction before the Draft Checker can run.'
-            )
-          )
-          showToast('Document analysis requires backend extraction for this file type', 'error')
-          return
-        }
-
-        const draftMarkdown = await file.text()
-
-        if (!draftMarkdown.trim()) {
-          setCanvasContent(
-            buildComplianceUnavailableReport(file.name, query, 'The selected file does not contain readable text.')
-          )
-          showToast('Selected file has no readable text', 'error')
-          return
-        }
+        const draftMarkdown = await readBrowserTextDocument(file)
 
         const response = await checkDraft({
           draft_markdown: draftMarkdown,

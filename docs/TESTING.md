@@ -39,11 +39,13 @@ npm run check:deployment:self-test
 npm run check:live:self-test
 npm run check:rag-proxy:self-test
 npm run check:providerless:self-test
+npm run check:document-text:self-test
 npm run check:release:self-test
 npm run check:release
 ```
 
 The providerless self-test covers the local legal research and draft-checking engine directly, without network or browser dependencies.
+The document text self-test covers browser-readable Markdown and text normalization plus unsupported PDF, Word, oversized, empty, and unknown-file handling.
 The release integrity check verifies SemVer formatting, package-lock version sync, and release-tag consistency.
 
 Against production:
@@ -79,4 +81,4 @@ The smoke suite stubs a failed RAG provider and verifies that `/test-rag` still 
 npm run check:local
 ```
 
-This is intentionally broad: lint, typecheck, production dependency audit, docs checks, readiness self-tests, deployment self-tests, RAG proxy self-test, providerless self-test, release integrity checks, PWA check, build, and browser smoke.
+This is intentionally broad: lint, typecheck, production dependency audit, docs checks, readiness self-tests, deployment self-tests, RAG proxy self-test, providerless self-test, document text self-test, release integrity checks, PWA check, build, and browser smoke.

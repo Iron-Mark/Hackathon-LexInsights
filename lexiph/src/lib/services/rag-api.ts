@@ -486,6 +486,10 @@ export const SAMPLE_QUERIES = [
   'What are the requirements for business permits?',
   'What laws govern labor and employment?',
   'What is RA 10173 about?',
+  'What safeguards apply under RA 12009 for LGU procurement?',
+  'What does RA 11032 require for permit processing timelines?',
+  'How should online fraud reports be handled under RA 10175?',
+  'What consumer warranty and labeling controls apply under RA 7394?',
 ]
 
 export const SAMPLE_DRAFT = `# Solid Waste Management Compliance Act 2025

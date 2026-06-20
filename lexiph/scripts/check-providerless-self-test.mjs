@@ -97,10 +97,14 @@ try {
   assert.equal(typeof runLocalDraftCheck, 'function', 'runLocalDraftCheck export is missing')
 
   const corpus = getLocalResearchCorpus()
-  assert.ok(corpus.length >= 10, 'Local corpus should include at least 10 authorities')
+  assert.ok(corpus.length >= 15, 'Local corpus should include at least 15 authorities')
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
   assert.ok(corpus.some((document) => document.statute === 'RA 11058'), 'Corpus should include RA 11058')
+  assert.ok(corpus.some((document) => document.statute === 'RA 12009'), 'Corpus should include RA 12009')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11032'), 'Corpus should include RA 11032')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10175'), 'Corpus should include RA 10175')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7394'), 'Corpus should include RA 7394')
 
   assertResearchMatch(
     runLocalResearch(
@@ -163,6 +167,42 @@ try {
     formattedCitationResponse.summary,
     'RA 10173 was cited and is included in the bundled local corpus',
     'Formatted citation coverage summary'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What safeguards apply under RA 12009 for LGU procurement and BAC bidding?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 12009',
+    'procurement query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 11032 require for business permit processing and citizen charter timelines?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11032',
+    'service delivery query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'How should an online fraud and account compromise ordinance handle cyber incident reports?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10175',
+    'cybercrime query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What consumer warranty and labeling controls apply to local product sellers?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7394',
+    'consumer protection query'
   )
 
   const noResultsResponse = runLocalResearch(
@@ -228,6 +268,126 @@ This ordinance takes effect 30 days after publication.`
   )
   assert.equal(unknownCitationDraftResponse.status, 'success', 'Unknown-citation draft check should succeed locally')
   assertFinding(unknownCitationDraftResponse, 'amber', 'Cited authority is outside the local corpus')
+
+  const thinProcurementDraft = `# Municipal Procurement Ordinance
+
+## Purpose
+This ordinance creates a procurement program for supplies and infrastructure contracts.
+
+## Legal Basis
+Pursuant to RA 12009 and RA 7160.
+
+## Scope
+This applies to local procurement of goods and services.
+
+## Responsible Office
+The procurement office shall implement this ordinance.
+
+## Requirements
+The municipality shall select suppliers and issue contract awards.
+
+## Monitoring
+The responsible office shall submit annual procurement reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinProcurementDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinProcurementDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinProcurementDraftResponse.status, 'success', 'Procurement draft check should succeed locally')
+  assertFinding(thinProcurementDraftResponse, 'amber', 'Procurement safeguards')
+
+  const thinServiceDraft = `# Business Permit Streamlining Ordinance
+
+## Purpose
+This ordinance creates a faster application process for business permits.
+
+## Legal Basis
+Pursuant to RA 11032 and RA 7160.
+
+## Scope
+This applies to covered business permit applications.
+
+## Responsible Office
+The licensing office shall implement this ordinance.
+
+## Requirements
+Applicants shall submit forms and pay applicable fees.
+
+## Monitoring
+The licensing office shall submit annual reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinServiceDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinServiceDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinServiceDraftResponse.status, 'success', 'Service delivery draft check should succeed locally')
+  assertFinding(thinServiceDraftResponse, 'amber', 'Government service delivery')
+
+  const thinCyberDraft = `# Online Safety Incident Ordinance
+
+## Purpose
+This ordinance addresses online fraud and account compromise reports.
+
+## Legal Basis
+Pursuant to RA 10175 and RA 10173.
+
+## Scope
+This applies to municipal digital services and public reports.
+
+## Responsible Office
+The information office shall implement this ordinance.
+
+## Requirements
+Users shall report hacking, phishing, and account compromise incidents.
+
+## Monitoring
+The information office shall submit quarterly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinCyberDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinCyberDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinCyberDraftResponse.status, 'success', 'Cyber draft check should succeed locally')
+  assertFinding(thinCyberDraftResponse, 'amber', 'Cyber incident controls')
+
+  const thinConsumerDraft = `# Local Consumer Complaint Ordinance
+
+## Purpose
+This ordinance creates a consumer complaint desk for product sellers.
+
+## Legal Basis
+Pursuant to RA 7394 and RA 7160.
+
+## Scope
+This applies to local sellers and consumer complaints.
+
+## Responsible Office
+The consumer welfare desk shall implement this ordinance.
+
+## Requirements
+Sellers shall respond to customer quality and sales issues.
+
+## Monitoring
+The responsible office shall submit monthly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinConsumerDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinConsumerDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinConsumerDraftResponse.status, 'success', 'Consumer draft check should succeed locally')
+  assertFinding(thinConsumerDraftResponse, 'amber', 'Consumer protection')
 
   const strongerDraft = `# Solid Waste Segregation Ordinance
 

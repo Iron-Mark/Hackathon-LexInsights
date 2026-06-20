@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, FileText, AlertCircle } from 'lucide-react'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
+import {
+  MAX_BROWSER_TEXT_DOCUMENT_BYTES,
+  isSupportedComplianceDocument,
+} from '@/lib/utils/document-text'
 
 interface DragDropOverlayProps {
   onFileDrop: (files: File[]) => void
@@ -54,23 +58,10 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
 
       const files = Array.from(e.dataTransfer?.files || [])
       
-      // Filter valid file types
-      const validTypes = [
-        'application/pdf',
-        'text/markdown',
-        'text/plain',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/msword'
-      ]
-      
       // Validate file type and size (5MB limit)
-      const maxSize = 5 * 1024 * 1024 // 5MB
       const validFiles = files.filter(file => {
-        const validType = validTypes.includes(file.type) || 
-          file.name.endsWith('.md') ||
-          file.name.endsWith('.txt')
-        const validSize = file.size <= maxSize
-        return validType && validSize
+        const validSize = file.size <= MAX_BROWSER_TEXT_DOCUMENT_BYTES
+        return isSupportedComplianceDocument(file) && validSize
       })
 
       if (validFiles.length > 0) {

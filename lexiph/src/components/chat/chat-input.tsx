@@ -13,12 +13,14 @@ import { performDeepSearch } from '@/lib/services/deep-search-api'
 import { UploadedFilesList } from './uploaded-files-list'
 import { showToast } from '@/components/ui/toast'
 import {
+  MAX_BROWSER_TEXT_DOCUMENT_BYTES,
+  isSupportedComplianceDocument,
+} from '@/lib/utils/document-text'
+import {
   RAG_BACKEND_TOAST_ACTION,
   RAG_BACKEND_UNAVAILABLE_MESSAGE,
   isRagBackendUnavailableError,
 } from '@/lib/services/rag-unavailable'
-
-const MAX_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024
 
 export function ChatInput() {
   const [message, setMessage] = useState('')
@@ -126,23 +128,13 @@ export function ChatInput() {
         return
       }
 
-      // Validate file type
-      const validTypes = [
-        'application/pdf',
-        'text/markdown',
-        'text/plain',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/msword'
-      ]
-      
-      if (file.size > MAX_UPLOAD_SIZE_BYTES) {
+      if (file.size > MAX_BROWSER_TEXT_DOCUMENT_BYTES) {
         showToast('Maximum file size is 5MB', 'error')
         e.target.value = ''
         return
       }
 
-      const lowerFileName = file.name.toLowerCase()
-      if (validTypes.includes(file.type) || lowerFileName.endsWith('.md') || lowerFileName.endsWith('.txt')) {
+      if (isSupportedComplianceDocument(file)) {
         addFiles([file])
         showToast(`${file.name} added. Click send to analyze.`, 'success')
         // Announce to screen readers

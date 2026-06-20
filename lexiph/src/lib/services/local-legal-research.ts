@@ -482,6 +482,146 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'The fallback process for failed systems is undefined.',
     ],
   },
+  {
+    id: 'ra-12009',
+    statute: 'RA 12009',
+    title: 'Republic Act No. 12009',
+    shortTitle: 'New Government Procurement Act',
+    year: 2024,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2024/ra_12009_2024.html',
+    aliases: ['ra 12009', 'republic act 12009', 'new government procurement act', 'government procurement', 'public bidding'],
+    topics: ['procurement', 'public bidding', 'government contracts', 'lgu procurement', 'supplier eligibility'],
+    keywords: [
+      'bids and awards committee',
+      'bac',
+      'procurement plan',
+      'competitive bidding',
+      'alternative procurement',
+      'contract award',
+      'bid security',
+      'post qualification',
+      'conflict of interest',
+    ],
+    summary:
+      'The current public procurement framework for goods, infrastructure projects, and consulting services by national government agencies, GOCCs, GFIs, SUCs, and LGUs.',
+    obligations: [
+      'Identify the procuring entity, procurement mode, approved budget, funding source, and accountable BAC or procurement office.',
+      'Check planning, publication, eligibility, technical and financial evaluation, post-qualification, award, contract implementation, and records requirements.',
+      'Use alternative procurement methods only when the draft states the allowed condition, approval, documentation, and transparency controls.',
+      'Address conflicts of interest, supplier eligibility, bid security, performance security, contract variation, inspection, acceptance, and audit trails.',
+    ],
+    commonGaps: [
+      'Procurement is authorized without a procurement plan, BAC role, or approved budget control.',
+      'Alternative procurement is allowed without conditions, approvals, or publication safeguards.',
+      'Supplier eligibility, conflicts of interest, contract monitoring, and acceptance records are missing.',
+    ],
+  },
+  {
+    id: 'ra-11032',
+    statute: 'RA 11032',
+    title: 'Republic Act No. 11032',
+    shortTitle: 'Ease of Doing Business and Efficient Government Service Delivery Act of 2018',
+    year: 2018,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2018/ra_11032_2018.html',
+    aliases: ['ra 11032', 'republic act 11032', 'ease of doing business', 'efficient government service delivery', 'anti red tape'],
+    topics: ['government service', 'permits', 'licenses', 'citizens charter', 'processing time', 'anti-red tape'],
+    keywords: [
+      'citizen charter',
+      'processing time',
+      'simple transaction',
+      'complex transaction',
+      'highly technical transaction',
+      'one stop shop',
+      'automatic approval',
+      'complete staff work',
+      'anti red tape authority',
+    ],
+    summary:
+      'A government service delivery law requiring clear citizen-facing requirements, transaction processing times, accountability, and anti-red-tape controls.',
+    obligations: [
+      'State the exact service, application requirements, receiving office, decision maker, fees, and processing time classification.',
+      'Align permits, licenses, clearances, and certifications with citizen charter, one-stop shop, completeness, and action-period rules.',
+      'Include written denial or deficiency notices, escalation, accountability, recordkeeping, and public-facing service standards.',
+      'Avoid creating open-ended approval steps, undocumented requirements, or repeated submissions outside the published service flow.',
+    ],
+    commonGaps: [
+      'Permit or license requirements are listed without processing time, receiving office, or citizen charter controls.',
+      'The draft allows discretionary extra requirements after filing.',
+      'No recordkeeping, escalation, or written denial procedure is provided.',
+    ],
+  },
+  {
+    id: 'ra-10175',
+    statute: 'RA 10175',
+    title: 'Republic Act No. 10175',
+    shortTitle: 'Cybercrime Prevention Act of 2012',
+    year: 2012,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2012/ra_10175_2012.html',
+    aliases: ['ra 10175', 'republic act 10175', 'cybercrime prevention act', 'cybercrime', 'computer data'],
+    topics: ['cybercrime', 'computer systems', 'online fraud', 'system access', 'electronic evidence'],
+    keywords: [
+      'illegal access',
+      'data interference',
+      'system interference',
+      'computer related fraud',
+      'computer related forgery',
+      'content related offense',
+      'traffic data',
+      'service provider',
+      'cyber warrant',
+    ],
+    summary:
+      'A cybercrime law covering offenses against computer systems and data, computer-related fraud or forgery, content-related offenses, enforcement powers, and electronic evidence concerns.',
+    obligations: [
+      'For digital enforcement, define prohibited system access, data misuse, fraud, forgery, preservation, reporting, and referral pathways.',
+      'Coordinate cyber incident language with privacy, electronic records, evidence preservation, and authorized law-enforcement processes.',
+      'Keep investigation, monitoring, takedown, and data-preservation powers tied to lawful authority and due process.',
+      'Avoid broad surveillance or device-inspection language without clear scope, approval, safeguards, and records.',
+    ],
+    commonGaps: [
+      'Cybersecurity duties are stated without incident reporting, evidence preservation, or referral procedure.',
+      'Online fraud or account compromise is mentioned without system-access and data-protection safeguards.',
+      'Monitoring powers are broad and lack authority, scope, or due-process controls.',
+    ],
+  },
+  {
+    id: 'ra-7394',
+    statute: 'RA 7394',
+    title: 'Republic Act No. 7394',
+    shortTitle: 'Consumer Act of the Philippines',
+    year: 1992,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1992/ra_7394_1992.html',
+    aliases: ['ra 7394', 'republic act 7394', 'consumer act', 'consumer protection', 'consumer products'],
+    topics: ['consumer protection', 'product safety', 'labeling', 'warranty', 'advertising', 'consumer complaints'],
+    keywords: [
+      'product standards',
+      'label',
+      'packaging',
+      'warranty',
+      'deceptive sales',
+      'consumer complaint',
+      'price tag',
+      'advertising',
+      'redress',
+    ],
+    summary:
+      'A consumer protection law for product quality and safety, deceptive or unfair sales practices, labeling, warranties, advertising, and consumer redress.',
+    obligations: [
+      'For consumer-facing products or services, check labeling, product standards, safety warnings, warranties, pricing, and complaint handling.',
+      'Separate consumer education, inspection, enforcement, recall or correction, and redress procedures.',
+      'Review advertising, online sales, promos, fees, and representations for deceptive, unfair, or misleading terms.',
+      'Coordinate sector-specific consumer rules with DTI or other competent regulators where the draft assigns local roles.',
+    ],
+    commonGaps: [
+      'Consumer complaint handling is missing or not assigned to an accountable office.',
+      'Labeling, warranty, product safety, pricing, or advertising rules are too general.',
+      'Enforcement duties are created without redress, correction, or regulator coordination.',
+    ],
+  },
 ]
 
 const TOPIC_EXPANSIONS = [
@@ -528,6 +668,22 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['electronic', 'digital', 'online', 'signature', 'record', 'filing'],
     expansions: ['electronic commerce act', 'electronic document', 'electronic signature', 'audit trail'],
+  },
+  {
+    triggers: ['procurement', 'bidding', 'bid', 'supplier', 'contract', 'bac', 'award'],
+    expansions: ['new government procurement act', 'public bidding', 'bids and awards committee', 'contract implementation'],
+  },
+  {
+    triggers: ['permit', 'license', 'clearance', 'service', 'transaction', 'citizen charter', 'red tape'],
+    expansions: ['ease of doing business', 'citizen charter', 'processing time', 'anti red tape'],
+  },
+  {
+    triggers: ['cyber', 'computer', 'online fraud', 'account', 'platform', 'hacking', 'phishing'],
+    expansions: ['cybercrime prevention act', 'computer related fraud', 'illegal access', 'electronic evidence'],
+  },
+  {
+    triggers: ['consumer', 'customer', 'warranty', 'label', 'advertising', 'product safety', 'complaint'],
+    expansions: ['consumer act', 'consumer protection', 'product standards', 'consumer complaint'],
   },
 ]
 
@@ -1455,6 +1611,70 @@ function applyTopicSpecificDraftChecks(
           'Add authentication, audit trail, record integrity, retention, access controls, and manual fallback for system downtime.',
           5,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8792') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(procurement|bidding|bid|supplier|contract award|bac|purchase order|government contract)\b/.test(normalizedDraft)) {
+    if (!/\b(procurement plan|approved budget|bac|bids and awards|competitive bidding|eligibility|post qualification|performance security|contract implementation|audit trail)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Procurement safeguards are incomplete',
+          'Procurement or contracting language was detected without enough planning, BAC, budget, bidding, eligibility, award, contract-monitoring, or audit controls.',
+          'Add procuring entity, approved budget, procurement mode, BAC responsibilities, publication, eligibility, award, contract implementation, acceptance, and audit trail safeguards.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-12009') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(permit|license|clearance|certification|application|citizen charter|government service|transaction)\b/.test(normalizedDraft)) {
+    if (!/\b(citizen charter|processing time|receiving office|requirements checklist|one stop|written denial|deficiency notice|anti red tape|complete staff work)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Government service delivery controls are missing',
+          'Permit, license, clearance, application, or government-service language was detected without clear citizen-charter, processing-time, receiving-office, or denial controls.',
+          'Add a published requirements checklist, receiving office, processing-time class, fees, written deficiency or denial notice, escalation, and recordkeeping.',
+          5,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11032') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(cyber|computer|online fraud|phishing|hacking|account compromise|system access|platform|electronic evidence)\b/.test(normalizedDraft)) {
+    if (!/\b(incident report|evidence preservation|access control|authorized officer|law enforcement|data breach|audit log|retention|referral)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Cyber incident controls need more detail',
+          'Cybercrime, online fraud, system access, or account-compromise language was detected without clear incident reporting, evidence preservation, access-control, or referral safeguards.',
+          'Add incident classification, reporting channel, evidence-preservation steps, access controls, authorized officers, privacy coordination, and lawful referral procedure.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10175') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(consumer|customer|warranty|advertising|label|product safety|price tag|complaint|refund|return)\b/.test(normalizedDraft)) {
+    if (!/\b(product standard|label|warranty|redress|refund|repair|replace|recall|dti|deceptive|misleading)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Consumer protection controls are thin',
+          'Consumer-facing product, service, warranty, advertising, labeling, or complaint language was detected without enough safety, labeling, warranty, redress, or regulator coordination detail.',
+          'Add product-safety and labeling controls, warranty or redress handling, complaint intake, deceptive-advertising safeguards, correction or recall path, and regulator coordination.',
+          5,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7394') || LEGAL_CORPUS[0])]
         )
       )
     }

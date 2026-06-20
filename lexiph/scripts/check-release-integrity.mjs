@@ -171,6 +171,18 @@ function gitVersionChecks(packageVersion, options) {
     .sort((left, right) => compareSemver(right.version, left.version))
   const latestReachable = reachableTags[0] || null
   const conflictingHeadTags = versionTagsAtHead.filter((tag) => tag !== exactTag)
+  const conflictingHeadTagVersions = conflictingHeadTags
+    .map((tag) => ({ tag, version: versionFromTag(tag) }))
+    .filter((item) => item.version && parseSemver(item.version))
+  const hasNewerConflictingHeadTag = conflictingHeadTagVersions.some(
+    (item) => compareSemver(item.version, packageVersion) > 0
+  )
+  const currentVersionTagStatus =
+    versionTagsAtHead.length === 0 || versionTagsAtHead.includes(exactTag)
+      ? 'pass'
+      : options.requireCurrentTag || hasNewerConflictingHeadTag
+        ? 'fail'
+        : 'warn'
 
   checks.push(
     makeCheck(
@@ -184,16 +196,19 @@ function gitVersionChecks(packageVersion, options) {
   checks.push(
     makeCheck(
       'git.current_version_tag',
-      versionTagsAtHead.length === 0 || versionTagsAtHead.includes(exactTag) ? 'pass' : 'fail',
+      currentVersionTagStatus,
       versionTagsAtHead.length === 0
         ? 'No version tag is attached to HEAD; this is allowed outside final release tagging.'
         : versionTagsAtHead.includes(exactTag)
           ? `HEAD has matching version tag ${exactTag}.`
-          : `HEAD has version tag(s) ${versionTagsAtHead.join(', ')} but package version is ${packageVersion}.`,
+          : currentVersionTagStatus === 'warn'
+            ? `HEAD has older version tag(s) ${versionTagsAtHead.join(', ')} while package version is ${packageVersion}; this is allowed in non-strict development before tagging the release.`
+            : `HEAD has version tag(s) ${versionTagsAtHead.join(', ')} but package version is ${packageVersion}.`,
       {
         exactTag,
         tagsAtHead: versionTagsAtHead,
         conflictingHeadTags,
+        conflictingHeadTagVersions,
       }
     )
   )
