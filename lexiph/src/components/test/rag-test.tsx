@@ -300,7 +300,7 @@ export function RAGTestComponent() {
                       onChange={(e) => setUseDeepSearch(e.target.checked)}
                       className="rounded border-iris-300 text-iris-600 focus:ring-iris-500"
                     />
-                    <span className="text-sm text-neutral-700">Enable Deep Search (PDF extraction)</span>
+                    <span className="text-sm text-neutral-700">Enable Deep Search (remote or local cross-reference mode)</span>
                   </label>
                 )}
               </div>

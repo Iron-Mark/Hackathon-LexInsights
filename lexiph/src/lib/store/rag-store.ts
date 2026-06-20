@@ -165,6 +165,13 @@ export const useRAGStore = create<RAGStore>()(
 
         try {
           const response = await queryRAG({ query, user_id: userId })
+
+          if (response.fallback_used) {
+            showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
+              action: RAG_BACKEND_TOAST_ACTION,
+              durationMs: 7000,
+            })
+          }
           
           // Cache the response
           setCachedResponse(query, response)
@@ -185,7 +192,7 @@ export const useRAGStore = create<RAGStore>()(
           const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
           
           if (isRagBackendUnavailableError(errorMessage)) {
-            console.error('RAG backend is retired or unavailable:', errorMessage)
+            console.error('RAG provider is unavailable:', errorMessage)
             showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
               action: RAG_BACKEND_TOAST_ACTION,
               durationMs: 10000,

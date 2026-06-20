@@ -6,17 +6,17 @@ LexInSight is a single Next.js application in [lexiph](../lexiph). Runtime code 
 
 ```text
 lexiph/
-├── database/              # Supabase SQL schema, storage, and seed scripts
-├── public/                # Static assets served by Next.js
-├── scripts/               # Local, CI, deployment, readiness, and docs checks
-├── src/
-│   ├── app/               # Next.js App Router pages and API routes
-│   ├── components/        # Reusable React UI
-│   ├── hooks/             # Shared client hooks
-│   ├── lib/               # Auth, services, stores, Supabase client, utilities
-│   ├── proxy.ts           # Clerk route protection proxy
-│   └── types/             # Shared TypeScript domain types
-└── tests/                 # Playwright and API test utilities
+|-- database/              # Supabase SQL schema, storage, and seed scripts
+|-- public/                # Static assets served by Next.js
+|-- scripts/               # Local, CI, deployment, readiness, and docs checks
+|-- src/
+|   |-- app/               # Next.js App Router pages and API routes
+|   |-- components/        # Reusable React UI
+|   |-- hooks/             # Shared client hooks
+|   |-- lib/               # Auth, services, stores, Supabase client, utilities
+|   |-- proxy.ts           # Clerk route protection proxy
+|   `-- types/             # Shared TypeScript domain types
+`-- tests/                 # Playwright and API test utilities
 ```
 
 The TypeScript alias `@/*` resolves to `lexiph/src/*`. Keep application imports inside this boundary. Import project metadata or configuration outside `src` with explicit relative paths.
@@ -28,7 +28,7 @@ The TypeScript alias `@/*` resolves to `lexiph/src/*`. Keep application imports 
 - `/chat` - empty or active chat workspace.
 - `/chat/[chatId]` - chat workspace with a selected chat.
 - `/documents` - uploaded document management.
-- `/test-rag` - manual RAG test surface.
+- `/test-rag` - manual legal research engine test surface.
 - `/offline` - PWA offline page.
 
 ## Internal API Routes
@@ -45,7 +45,7 @@ Zustand stores under [lexiph/src/lib/store](../lexiph/src/lib/store) own client 
 - `chat-store` - chats, active chat, messages, and persistence to Supabase.
 - `chat-mode-store` - general versus compliance mode.
 - `file-upload-store` - uploaded file state.
-- `rag-store` - RAG request state.
+- `rag-store` - RAG request state, response caching, and local fallback notifications.
 - `sidebar-store` - responsive sidebar state.
 - `compliance-store` - compliance canvas and version history state.
 
@@ -53,7 +53,11 @@ Route-level duplication is intentionally kept low. Shared protected-route behavi
 
 ## Backend Boundaries
 
-The browser talks to Supabase through [client.ts](../lexiph/src/lib/supabase/client.ts) and to RAG through service wrappers in [lexiph/src/lib/services](../lexiph/src/lib/services). By default, browser RAG calls go through `/api/rag-proxy`; direct browser calls should only be used when the upstream backend is configured for CORS.
+The browser talks to Supabase through [client.ts](../lexiph/src/lib/supabase/client.ts) and to legal research services through wrappers in [lexiph/src/lib/services](../lexiph/src/lib/services).
+
+By default, browser RAG calls go through `/api/rag-proxy`; direct browser calls should only be used when the upstream backend is configured for CORS.
+
+Remote RAG is optional at runtime. [rag-api.ts](../lexiph/src/lib/services/rag-api.ts) tries the configured provider first and falls back to [local-legal-research.ts](../lexiph/src/lib/services/local-legal-research.ts) when the provider is unavailable. Local mode provides deterministic research, Deep Search cross-reference expansion, and text/Markdown draft checks without AI providers.
 
 ## Engineering Principles
 

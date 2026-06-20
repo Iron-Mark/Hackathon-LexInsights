@@ -24,11 +24,16 @@ export interface Message {
       summary: string
       search_queries_used: string[]
       documents_found: number
+      provider_mode?: 'remote-rag' | 'local-providerless'
+      fallback_used?: boolean
+      confidence_score?: number
     }
     searchQueries?: string[]
     documentCount?: number
     deepSearch?: boolean
     documentsSearched?: number
+    providerMode?: 'remote-rag' | 'local-providerless'
+    fallbackUsed?: boolean
     relatedDocuments?: Array<{
       title: string
       relevance_score: number

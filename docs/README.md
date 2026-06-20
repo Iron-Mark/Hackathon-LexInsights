@@ -1,12 +1,13 @@
 # LexInSight Documentation
 
-LexInSight is a Next.js app for Philippine legal compliance chat, document review, RAG research, and draft checking. The app code lives in [lexiph](../lexiph), with source code organized under [lexiph/src](../lexiph/src).
+LexInSight is a Next.js app for Philippine legal compliance chat, document review, RAG research, providerless local research fallback, and draft checking. The app code lives in [lexiph](../lexiph), with source code organized under [lexiph/src](../lexiph/src).
 
 ## Documentation Map
 
 - [Architecture](./ARCHITECTURE.md) - source layout, runtime boundaries, and data flow.
 - [Setup](./SETUP.md) - local installation and environment configuration.
-- [API](./API.md) - internal routes, RAG proxy behavior, and upstream API contracts used by the app.
+- [API](./API.md) - internal routes, RAG proxy behavior, providerless fallback, and upstream contracts.
+- [Providerless Research](./PROVIDERLESS-RESEARCH.md) - local fallback algorithm, corpus, draft checks, and limits.
 - [Database](./DATABASE.md) - Supabase schema, storage, and seed scripts.
 - [Testing](./TESTING.md) - local and CI quality gates.
 - [Deployment](./DEPLOYMENT.md) - Vercel deployment and production checks.
@@ -21,22 +22,22 @@ LexInSight is a Next.js app for Philippine legal compliance chat, document revie
 
 ```text
 Hackathon-LexInsights/
-├── docs/
-│   ├── *.md
-│   └── specs/
-└── lexiph/
-    ├── database/
-    ├── public/
-    ├── scripts/
-    ├── src/
-    │   ├── app/
-    │   ├── components/
-    │   ├── hooks/
-    │   ├── lib/
-    │   ├── proxy.ts
-    │   └── types/
-    ├── tests/
-    └── package.json
+|-- docs/
+|   |-- *.md
+|   `-- specs/
+`-- lexiph/
+    |-- database/
+    |-- public/
+    |-- scripts/
+    |-- src/
+    |   |-- app/
+    |   |-- components/
+    |   |-- hooks/
+    |   |-- lib/
+    |   |-- proxy.ts
+    |   `-- types/
+    |-- tests/
+    `-- package.json
 ```
 
 ## Documentation Rules

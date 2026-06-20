@@ -9,8 +9,17 @@ import {
   RAG_WS_URL,
   USE_RAG_PROXY,
 } from './rag-config'
+import {
+  getLocalResearchHealth,
+  runLocalDraftCheck,
+  runLocalResearch,
+} from './local-legal-research'
+import { getErrorMessage } from './rag-unavailable'
 
 const HEALTH_CHECK_TIMEOUT_MS = 20000
+const STANDARD_QUERY_TIMEOUT_MS = 30000
+const DEEP_SEARCH_QUERY_TIMEOUT_MS = 90000
+const DRAFT_CHECK_TIMEOUT_MS = 30000
 
 async function readTextSafely(response: Response): Promise<string> {
   try {
@@ -75,6 +84,18 @@ export interface RAGResponse {
   }
   deep_search_used?: boolean
   processing_time_seconds?: number
+  provider_mode?: 'remote-rag' | 'local-providerless'
+  fallback_used?: boolean
+  fallback_reason?: string
+  confidence_score?: number
+  matched_documents?: Array<{
+    title: string
+    statute: string
+    source_name: string
+    source_url: string
+    relevance_score: number
+    matched_terms: string[]
+  }>
 }
 
 // Draft Checker Request
@@ -126,6 +147,9 @@ export interface DraftCheckerResponse {
 export interface HealthResponse {
   status: string
   service: string
+  provider_mode?: 'remote-rag' | 'local-providerless'
+  degraded?: boolean
+  fallback_reason?: string
 }
 
 // WebSocket Event
@@ -152,7 +176,12 @@ export interface WebSocketEvent {
  */
 export async function queryRAG(params: RAGQuery): Promise<RAGResponse> {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 300000) // 5 minutes for deep search
+  const timeoutMs = params.use_deep_search ? DEEP_SEARCH_QUERY_TIMEOUT_MS : STANDARD_QUERY_TIMEOUT_MS
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+  if (!params.query.trim()) {
+    throw new Error('Query is required.')
+  }
 
   try {
     const url = buildRagUrl('/api/research/rag-summary')
@@ -176,27 +205,33 @@ export async function queryRAG(params: RAGQuery): Promise<RAGResponse> {
     }
 
     const data: RAGResponse = await response.json()
-    return data
+    return {
+      ...data,
+      provider_mode: data.provider_mode || 'remote-rag',
+      fallback_used: data.fallback_used || false,
+    }
   } catch (error) {
     clearTimeout(timeoutId)
+    const fallbackReason = getErrorMessage(error) || 'Unknown remote provider error'
 
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        throw new Error(
-          'Request timed out after 5 minutes. The query may be too complex or the server is busy.'
+        return runLocalResearch(
+          params,
+          `Remote RAG request timed out after ${Math.round(timeoutMs / 1000)} seconds.`
         )
       }
 
       if (error.message.includes('Failed to fetch')) {
-        throw new Error(
-          `Cannot connect to RAG API at ${RAG_API_BASE_URL}. Check if the server is running and CORS is configured.`
+        return runLocalResearch(
+          params,
+          `Cannot connect to RAG API at ${RAG_API_BASE_URL}.`
         )
       }
-
-      throw error
     }
 
-    throw new Error('Unknown error occurred')
+    console.warn('Remote RAG provider unavailable; using local providerless research.', fallbackReason)
+    return runLocalResearch(params, fallbackReason)
   }
 }
 
@@ -211,7 +246,11 @@ export async function queryRAG(params: RAGQuery): Promise<RAGResponse> {
  */
 export async function checkDraft(params: DraftCheckerRequest): Promise<DraftCheckerResponse> {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 120000) // 2 minutes
+  const timeoutId = setTimeout(() => controller.abort(), DRAFT_CHECK_TIMEOUT_MS)
+
+  if (!params.draft_markdown.trim()) {
+    return runLocalDraftCheck(params)
+  }
 
   try {
     const url = buildRagUrl('/api/legislation/draft-checker')
@@ -238,22 +277,26 @@ export async function checkDraft(params: DraftCheckerRequest): Promise<DraftChec
     return data
   } catch (error) {
     clearTimeout(timeoutId)
+    const fallbackReason = getErrorMessage(error) || 'Unknown remote draft-checker error'
 
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        throw new Error('Draft check timed out after 2 minutes.')
-      }
-
-      if (error.message.includes('Failed to fetch')) {
-        throw new Error(
-          `Cannot connect to Draft Checker API at ${RAG_API_BASE_URL}. Check if the server is running.`
+        return runLocalDraftCheck(
+          params,
+          `Remote Draft Checker timed out after ${Math.round(DRAFT_CHECK_TIMEOUT_MS / 1000)} seconds.`
         )
       }
 
-      throw error
+      if (error.message.includes('Failed to fetch')) {
+        return runLocalDraftCheck(
+          params,
+          `Cannot connect to Draft Checker API at ${RAG_API_BASE_URL}.`
+        )
+      }
     }
 
-    throw new Error('Unknown error occurred during draft check')
+    console.warn('Remote Draft Checker unavailable; using local providerless draft checks.', fallbackReason)
+    return runLocalDraftCheck(params, fallbackReason)
   }
 }
 
@@ -291,24 +334,20 @@ export async function checkRAGHealth(): Promise<HealthResponse> {
     return await response.json()
   } catch (error) {
     clearTimeout(timeoutId)
+    const fallbackReason = getErrorMessage(error) || 'Unknown remote health-check error'
 
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        throw new Error(
-          'Health check timed out after 20 seconds. The RAG API server may be unreachable.'
-        )
+        return getLocalResearchHealth('Remote RAG health check timed out after 20 seconds.')
       }
 
       if (error.message.includes('Failed to fetch')) {
-        throw new Error(
-          `Cannot connect to RAG API at ${RAG_API_BASE_URL}. Check if the server is running and CORS is configured.`
-        )
+        return getLocalResearchHealth(`Cannot connect to RAG API at ${RAG_API_BASE_URL}.`)
       }
-
-      throw error
     }
 
-    throw new Error('Unknown error occurred during health check')
+    console.warn('Remote RAG health check unavailable; local providerless research is ready.', fallbackReason)
+    return getLocalResearchHealth(fallbackReason)
   }
 }
 
@@ -342,22 +381,20 @@ export async function checkDraftCheckerHealth(): Promise<HealthResponse> {
     return await response.json()
   } catch (error) {
     clearTimeout(timeoutId)
+    const fallbackReason = getErrorMessage(error) || 'Unknown remote draft-checker health error'
 
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        throw new Error('Health check timed out after 20 seconds.')
+        return getLocalResearchHealth('Remote Draft Checker health check timed out after 20 seconds.')
       }
 
       if (error.message.includes('Failed to fetch')) {
-        throw new Error(
-          `Cannot connect to Draft Checker API at ${RAG_API_BASE_URL}. Check if the server is running.`
-        )
+        return getLocalResearchHealth(`Cannot connect to Draft Checker API at ${RAG_API_BASE_URL}.`)
       }
-
-      throw error
     }
 
-    throw new Error('Unknown error occurred during health check')
+    console.warn('Remote Draft Checker health check unavailable; local providerless checks are ready.', fallbackReason)
+    return getLocalResearchHealth(fallbackReason)
   }
 }
 

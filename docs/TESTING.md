@@ -55,6 +55,8 @@ npm run smoke:browser
 
 Playwright starts the dev server on `127.0.0.1:3100` unless `PLAYWRIGHT_BASE_URL` is set.
 
+The smoke suite stubs a failed RAG provider and verifies that `/test-rag` still returns providerless local research.
+
 ## Full Local Gate
 
 ```powershell

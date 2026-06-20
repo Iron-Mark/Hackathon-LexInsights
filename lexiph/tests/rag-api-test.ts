@@ -51,7 +51,7 @@ async function testSimpleQuery() {
 
   try {
     log(`Query: "${query}"`, 'blue')
-    log('Sending request... (this may take 50-90 seconds)', 'yellow')
+    log('Sending request... (remote RAG may take longer; local fallback is immediate)', 'yellow')
 
     const startTime = Date.now()
     const response = await ragSummary(query, 'test-user')
@@ -89,7 +89,7 @@ async function testComplexQuery() {
 
   try {
     log(`Query: "${query}"`, 'blue')
-    log('Sending request... (this may take 50-90 seconds)', 'yellow')
+    log('Sending request... (remote RAG may take longer; local fallback is immediate)', 'yellow')
 
     const startTime = Date.now()
     const response = await ragSummary(query, 'test-user')
@@ -119,7 +119,7 @@ async function testDataPrivacyQuery() {
 
   try {
     log(`Query: "${query}"`, 'blue')
-    log('Sending request... (this may take 50-90 seconds)', 'yellow')
+    log('Sending request... (remote RAG may take longer; local fallback is immediate)', 'yellow')
 
     const startTime = Date.now()
     const response = await ragSummary(query, 'test-user')
@@ -163,7 +163,7 @@ async function runAllTests() {
 
   log(`API Base URL: ${process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'}`, 'blue')
   log('Endpoint: POST /api/research/rag-summary', 'blue')
-  log('Timeout: 300 seconds (5 minutes)\n', 'blue')
+  log('Providerless fallback: enabled through maintained service layer\n', 'blue')
 
   const results = {
     passed: 0,

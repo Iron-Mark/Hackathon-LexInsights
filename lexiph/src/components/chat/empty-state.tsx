@@ -66,7 +66,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
         >
           {mode === 'compliance' 
             ? 'Upload documents for compliance analysis'
-            : 'Your AI assistant for Philippine legal compliance'}
+            : 'Your Philippine legal research assistant'}
         </motion.p>
       </motion.div>
 

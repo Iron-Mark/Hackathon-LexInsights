@@ -50,7 +50,7 @@ export function LoginForm() {
               LexInSight
             </h1>
             <p className="text-sm sm:text-base font-medium bg-linear-to-r from-iris-400 via-purple-500 to-iris-600 animate-gradient bg-clip-text text-transparent">
-              AI compliance assistant
+              Legal compliance assistant
             </p>
           </div>
         </div>

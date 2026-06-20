@@ -1,131 +1,38 @@
 /**
- * RAG API Service for Philippine Legislative Research
- * Base URL: https://devkada.resqlink.org
- * 
- * API Documentation:
- * - Main Endpoint: POST /api/research/rag-summary
- * - WebSocket: wss://devkada.resqlink.org/api/research/ws/rag-summary
- * - Timeout: 300 seconds (5 minutes) for full pipeline
- * - Pipeline: Query Generation → Database Search → AI Summarization
+ * Legacy RAG API wrapper.
+ *
+ * New code should import from src/lib/services/rag-api.ts. This file remains
+ * for older diagnostics and now delegates to the maintained service layer,
+ * including providerless local fallback behavior.
  */
 
-const RAG_API_BASE_URL = process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'
+import {
+  checkRAGHealth,
+  queryRAG,
+  type HealthResponse,
+  type RAGResponse,
+} from '../services/rag-api'
 
-async function readTextSafely(response: Response): Promise<string> {
-  try {
-    return await response.text()
-  } catch {
-    return ''
-  }
-}
+const DEFAULT_RAG_API_URL = 'https://devkada.resqlink.org'
 
-async function extractErrorDetail(response: Response): Promise<string> {
-  const text = (await readTextSafely(response)).trim()
-
-  if (!text) {
-    return 'No response body'
-  }
-
-  try {
-    const parsed = JSON.parse(text) as { detail?: string }
-
-    if (typeof parsed?.detail === 'string' && parsed.detail.trim().length > 0) {
-      return parsed.detail.trim()
-    }
-  } catch {
-    return text.slice(0, 250)
-  }
-
-  return `Unexpected response: ${text.slice(0, 250)}`
-}
+export type { RAGResponse }
 
 export interface RAGRequest {
   query: string
   user_id?: string
 }
 
-export interface RAGResponse {
-  status: 'completed' | 'no_results' | 'error'
-  query: string
-  summary: string
-  search_queries_used?: string[]
-  documents_found?: number
-  processing_stages?: {
-    query_generator: string
-    search_executor: string
-    summarizer: string
-  }
-}
-
-/**
- * RAG API Call - Full 3-Stage Pipeline
- * Executes: Query Generation → Database Search → AI Summarization
- * Expected time: 50-90 seconds
- * Timeout: 300 seconds (5 minutes)
- */
 export async function ragSummary(query: string, userId?: string): Promise<RAGResponse> {
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 300000) // 300 seconds
-
-  try {
-    const response = await fetch(`${RAG_API_BASE_URL}/api/research/rag-summary`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-        user_id: userId || 'lexinsight-user',
-      }),
-      signal: controller.signal,
-    })
-
-    clearTimeout(timeoutId)
-
-    if (!response.ok) {
-      const detail = await extractErrorDetail(response)
-      throw new Error(detail ? `HTTP ${response.status}: ${detail}` : `HTTP ${response.status}`)
-    }
-
-    const data: RAGResponse = await response.json()
-    return data
-  } catch (error) {
-    clearTimeout(timeoutId)
-    
-    if (error instanceof Error) {
-      if (error.name === 'AbortError') {
-        throw new Error('Request timed out after 5 minutes. Please try again.')
-      }
-    }
-    
-    console.error('RAG API Error:', error)
-    throw error
-  }
+  return queryRAG({
+    query,
+    user_id: userId || 'lexinsight-user',
+  })
 }
 
-/**
- * Health Check
- * Verify API is available
- */
-export async function healthCheck(): Promise<{ status: string; service: string }> {
-  try {
-    const response = await fetch(`${RAG_API_BASE_URL}/api/research/health`)
-    
-    if (!response.ok) {
-      const detail = await extractErrorDetail(response)
-      throw new Error(`HTTP ${response.status}: ${detail}`)
-    }
-
-    return await response.json()
-  } catch (error) {
-    console.error('Health Check Error:', error)
-    throw error
-  }
+export async function healthCheck(): Promise<HealthResponse> {
+  return checkRAGHealth()
 }
 
-/**
- * WebSocket Streaming (for real-time updates)
- */
 export interface RAGStreamEvent {
   stage: 'query_generation' | 'search' | 'summarization'
   status: 'in_progress' | 'completed'
@@ -140,7 +47,8 @@ export function createRAGWebSocket(
   onEvent: (event: RAGStreamEvent) => void,
   onError?: (error: Error) => void
 ): WebSocket {
-  const wsUrl = RAG_API_BASE_URL.replace('http://', 'ws://').replace('https://', 'wss://')
+  const ragApiUrl = process.env.NEXT_PUBLIC_RAG_API_URL || DEFAULT_RAG_API_URL
+  const wsUrl = ragApiUrl.replace('http://', 'ws://').replace('https://', 'wss://')
   const ws = new WebSocket(`${wsUrl}/api/research/ws/rag-summary`)
 
   ws.onopen = () => {
@@ -156,8 +64,7 @@ export function createRAGWebSocket(
     }
   }
 
-  ws.onerror = (error) => {
-    console.error('WebSocket error:', error)
+  ws.onerror = () => {
     if (onError) {
       onError(new Error('WebSocket connection failed'))
     }
@@ -166,9 +73,6 @@ export function createRAGWebSocket(
   return ws
 }
 
-/**
- * Validate query before sending
- */
 export function validateQuery(query: string): { valid: boolean; error?: string } {
   if (!query || query.trim().length < 5) {
     return { valid: false, error: 'Query must be at least 5 characters' }
