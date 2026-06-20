@@ -44,6 +44,8 @@ Use the full readiness check when the external services should be reachable.
 
 ## RAG Requests Fail
 
+The app should still answer through local providerless research when the RAG provider is down. Check the response metadata for `provider_mode=local-providerless`.
+
 Keep proxy mode enabled unless the backend supports CORS:
 
 ```text
@@ -57,6 +59,10 @@ curl "http://localhost:3000/api/rag-proxy?endpoint=/api/research/health"
 ```
 
 If the proxy returns an upstream error, verify `NEXT_PUBLIC_RAG_API_URL` and backend availability.
+
+If local mode does not return a result, try a narrower query with a statute number such as `RA 9003`, `RA 10173`, `RA 11058`, `RA 7160`, or `RA 10121`. The local corpus is intentionally limited and does not search live government sites.
+
+For draft checks, upload plain text or Markdown when working without a provider. PDF and Word files require backend extraction before their text can be reviewed.
 
 ## Markdown Link Check Fails
 

@@ -317,9 +317,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           summary: response.summary,
           search_queries_used: response.search_queries_used || [],
           documents_found: response.documents_found || 0,
+          provider_mode: response.provider_mode,
+          fallback_used: response.fallback_used,
+          confidence_score: response.confidence_score,
         },
         searchQueries: response.search_queries_used,
         documentCount: response.documents_found,
+        providerMode: response.provider_mode,
+        fallbackUsed: response.fallback_used,
       }
     })
   },

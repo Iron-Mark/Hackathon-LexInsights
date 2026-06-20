@@ -6,7 +6,7 @@
 - npm.
 - Supabase project.
 - Clerk application.
-- Access to the RAG backend, or use the default development backend configured in `.env.example`.
+- Optional access to the RAG backend. The app still provides local providerless research and Markdown/text draft checks when no RAG provider is reachable.
 
 ## Install
 
@@ -26,12 +26,19 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+```
+
+Optional remote RAG values:
+
+```text
 NEXT_PUBLIC_RAG_API_URL=https://devkada.resqlink.org
 NEXT_PUBLIC_RAG_WS_URL=wss://devkada.resqlink.org
 NEXT_PUBLIC_USE_RAG_PROXY=true
 ```
 
 Use `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` for current Supabase projects. `NEXT_PUBLIC_SUPABASE_ANON_KEY` remains supported as a fallback for older local env files.
+
+If these RAG values are omitted or point to an unavailable provider, LexInSight falls back to the bundled providerless research engine documented in [Providerless Research](./PROVIDERLESS-RESEARCH.md).
 
 ## Database
 

@@ -180,6 +180,13 @@ export function ChatInput() {
         max_results: 50
       })
 
+      if (result.fallback_used) {
+        showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
+          action: RAG_BACKEND_TOAST_ACTION,
+          durationMs: 7000,
+        })
+      }
+
       await addMessage(chatId, {
         role: 'user',
         content: query,
@@ -191,6 +198,8 @@ export function ChatInput() {
         metadata: {
           deepSearch: true,
           documentsSearched: result.documents_searched,
+          providerMode: result.provider_mode,
+          fallbackUsed: result.fallback_used,
           relatedDocuments: result.related_documents,
         },
       })

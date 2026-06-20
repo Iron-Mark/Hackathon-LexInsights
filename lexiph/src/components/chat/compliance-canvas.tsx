@@ -334,6 +334,11 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 {documentCount} docs
               </span>
             )}
+            {ragResponse?.provider_mode === 'local-providerless' && (
+              <span className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700">
+                Local mode
+              </span>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -596,6 +601,16 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 
                 <div className="flex items-center gap-4 text-xs text-neutral-600">
                   <span>Status: <span className="font-medium text-green-600">{ragResponse.status}</span></span>
+                  {ragResponse.provider_mode && (
+                    <span>
+                      Provider: <span className="font-medium">
+                        {ragResponse.provider_mode === 'local-providerless' ? 'Local providerless' : 'Remote RAG'}
+                      </span>
+                    </span>
+                  )}
+                  {ragResponse.confidence_score !== undefined && (
+                    <span>Confidence: <span className="font-medium">{(ragResponse.confidence_score * 100).toFixed(0)}%</span></span>
+                  )}
                   {documentCount !== undefined && (
                     <span>Documents: <span className="font-medium">{documentCount}</span></span>
                   )}

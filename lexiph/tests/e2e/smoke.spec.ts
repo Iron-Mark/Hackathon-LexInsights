@@ -2,9 +2,6 @@ import { expect, test } from '@playwright/test'
 
 const protectedRoutes = ['/chat', '/documents']
 const isManagedLocalWebServer = !process.env.PLAYWRIGHT_BASE_URL
-const ragBackendIssueUrl =
-  process.env.NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL ||
-  'https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1'
 const authRouteHeading = /Sign in to LexInSight|Clerk setup required/
 const signupRouteHeading = /Create your LexInSight account|Clerk setup required/
 
@@ -23,7 +20,7 @@ test.describe('LexInSight smoke checks', () => {
     await expect(page.getByRole('heading', { name: signupRouteHeading })).toBeVisible()
 
     await page.goto('/test-rag')
-    await expect(page.getByRole('heading', { name: 'RAG API Test Page' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Legal Research Engine Test Page' })).toBeVisible()
   })
 
   test('missing Clerk keys show setup blocker', async ({ page }) => {
@@ -282,7 +279,7 @@ test.describe('LexInSight smoke checks', () => {
     expect(serializedBody).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
   })
 
-  test('RAG backend failure shows replacement issue snackbar', async ({ page }) => {
+  test('RAG backend failure returns providerless local research', async ({ page }) => {
     await page.route('**/api/rag-proxy**', async (route) => {
       await route.fulfill({
         status: 504,
@@ -303,13 +300,11 @@ test.describe('LexInSight smoke checks', () => {
     await page.getByLabel('Enter your question about Philippine legislation').fill('What is RA 9003?')
     await page.getByRole('button', { name: 'Submit Query' }).click()
 
-    await expect(
-      page.getByText('RAG backend is retired and needs replacement. Core app demo is still available.')
-    ).toBeVisible()
+    await expect(page.getByText('Providerless local mode generated this result.')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Research Summary' })).toBeVisible()
 
-    await expect(page.getByRole('link', { name: 'View GitHub issue' })).toHaveAttribute(
-      'href',
-      ragBackendIssueUrl
-    )
+    const summary = page.locator('pre').filter({ hasText: '# Providerless Local Research Brief' })
+    await expect(summary).toContainText('RA 9003')
+    await expect(summary).toContainText('Ecological Solid Waste Management Act of 2000')
   })
 })

@@ -1,12 +1,12 @@
 export const RAG_BACKEND_UNAVAILABLE_MESSAGE =
-  'RAG backend is retired and needs replacement. Core app demo is still available.'
+  'AI/RAG provider unavailable. Using local providerless legal research mode.'
 
 export const RAG_BACKEND_ISSUE_URL =
   process.env.NEXT_PUBLIC_RAG_BACKEND_ISSUE_URL ||
   'https://github.com/Iron-Mark/Hackathon-LexInsights/issues/1'
 
 export const RAG_BACKEND_TOAST_ACTION = {
-  label: 'View GitHub issue',
+  label: 'View backend issue',
   href: RAG_BACKEND_ISSUE_URL,
 }
 

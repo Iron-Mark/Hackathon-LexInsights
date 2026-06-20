@@ -25,7 +25,7 @@ export function ChatHeader() {
               LexInSight
             </h1>
             <p className="text-[10px] sm:text-xs font-medium bg-linear-to-r from-iris-400 via-purple-500 to-iris-600 animate-gradient bg-clip-text text-transparent leading-tight">
-              AI compliance assistant
+              Legal compliance assistant
             </p>
           </div>
         </div>

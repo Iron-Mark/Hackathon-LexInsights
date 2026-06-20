@@ -26,6 +26,7 @@ Run `npm run check:local` before release branches when credentials and browser d
 - Verify `.env.example` still matches required runtime variables.
 - Verify database changes are reflected in `lexiph/database`.
 - Verify `/api/version` and `/api/readiness` locally.
+- Verify `/test-rag` returns providerless local research when the RAG provider is unavailable.
 - Deploy with Vercel root directory set to `lexiph`.
 - Run production deployment and live checks.
 - Confirm docs have no Markdown outside root `docs`.

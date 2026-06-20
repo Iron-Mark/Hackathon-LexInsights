@@ -23,6 +23,13 @@ NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/chat
 NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/chat
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+```
+
+## Optional Remote RAG Environment
+
+Configure these when a remote provider is available. The app still serves providerless local research without them.
+
+```text
 NEXT_PUBLIC_RAG_API_URL
 NEXT_PUBLIC_RAG_WS_URL
 NEXT_PUBLIC_USE_RAG_PROXY=true

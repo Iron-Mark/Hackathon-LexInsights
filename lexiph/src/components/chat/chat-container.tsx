@@ -112,7 +112,7 @@ function formatDraftCheckerReport(fileName: string, query: string, response: Dra
     ...formatFindings('Red Findings', analysis.red_findings),
     '## Legal Disclaimer',
     '',
-    'This AI-generated analysis is for informational purposes only. It is not legal advice and should be verified against official sources and qualified legal counsel before any compliance decision.',
+    'This generated analysis is for informational purposes only. It is not legal advice and should be verified against official sources and qualified legal counsel before any compliance decision.',
   ].filter((line): line is string => line !== null).join('\n')
 }
 
@@ -129,7 +129,7 @@ function buildComplianceUnavailableReport(fileName: string, query: string, reaso
 
 ## Status
 
-Backend-backed compliance analysis could not be completed.
+Browser-readable compliance analysis could not be completed.
 
 ## Reason
 
@@ -137,7 +137,7 @@ ${reason}
 
 ## What This Means
 
-No mock compliance report was generated. To complete E2E analysis, restore the configured RAG/Draft Checker backend or provide a compatible local backend in \`.env.local\`.
+No compliance report was generated for this file. Plain text and Markdown drafts can be reviewed locally. PDF and Word files require backend-side text extraction before draft checks can run.
 
 ## Legal Disclaimer
 
@@ -155,7 +155,7 @@ function buildDeepSearchOnlyReport(fileName: string, query: string) {
 
 ## Status
 
-Deep Search results are available in the section above. A full compliance report still requires backend-backed document analysis.`
+Deep Search results are available in the section above. For a full local draft check, upload a plain text or Markdown file; PDF and Word files require backend-side text extraction.`
 }
 
 export function ChatContainer({ messages: initialMessages }: ChatContainerProps) {

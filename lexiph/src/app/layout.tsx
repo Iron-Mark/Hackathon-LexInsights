@@ -26,7 +26,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: "LexInsight - Philippine Legal Compliance Assistant",
-  description: "Your AI-powered Philippine legal compliance assistant",
+  description: "Your Philippine legal research and compliance assistant",
   applicationName: "LexInSight",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
