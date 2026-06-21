@@ -83,7 +83,12 @@ export function ChatInput() {
           const chatId = await ensureActiveChat(message.trim() || 'Compliance Analysis')
 
           if (user) {
-            await uploadToSupabase(user.id, chatId)
+            try {
+              await uploadToSupabase(user.id, chatId)
+            } catch (error) {
+              console.warn('Supabase upload unavailable; running local document analysis only:', error)
+              showToast('Supabase upload unavailable. Running a temporary local document check.', 'info')
+            }
           } else {
             showToast('Guest document checks are temporary and not saved.', 'info')
           }
