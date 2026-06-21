@@ -19,16 +19,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lexiph:
+  app:
     name: LexInSight app gates
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: lexiph
-
     env:
       NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_placeholder
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder-anon-key
       NEXT_PUBLIC_RAG_API_URL: https://devkada.resqlink.org
       NEXT_PUBLIC_RAG_WS_URL: wss://devkada.resqlink.org
@@ -43,7 +40,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: lexiph/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci

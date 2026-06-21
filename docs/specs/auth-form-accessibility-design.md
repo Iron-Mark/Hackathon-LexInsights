@@ -10,8 +10,8 @@ This design focuses on improving the user experience and accessibility of authen
 
 The changes will be isolated to the form components without requiring architectural modifications:
 
-- `lexiph/components/auth/login-form.tsx` - Login form component
-- `lexiph/components/auth/signup-form.tsx` - Signup form component
+- `src/components/auth/login-form.tsx` - Login form component
+- `src/components/auth/signup-form.tsx` - Signup form component
 
 Both components use the same UI primitives (`Input`, `Button`, `FormError`) ensuring consistent styling and behavior.
 
