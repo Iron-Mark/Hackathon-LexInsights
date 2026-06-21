@@ -54,11 +54,11 @@ export function CenteredInput({
 
       // Upload files to Supabase if in compliance mode
       if (hasComplianceFiles) {
-        if (!user) {
-          throw new Error('Sign in before uploading compliance documents.')
+        if (user) {
+          await uploadToSupabase(user.id, chatId)
+        } else {
+          showToast('Guest document checks are temporary and not saved.', 'info')
         }
-
-        await uploadToSupabase(user.id, chatId)
 
         uploadedFiles.forEach((uploadedFile) => {
           const event = new CustomEvent('file-uploaded', {

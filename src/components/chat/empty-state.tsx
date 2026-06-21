@@ -68,6 +68,17 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
             ? 'Upload documents for compliance analysis'
             : 'Your Philippine legal research assistant'}
         </motion.p>
+
+        {!user && mode === 'compliance' && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.25 }}
+            className="text-xs text-slate-500"
+          >
+            Guest document checks are temporary and are not saved to an account.
+          </motion.p>
+        )}
       </motion.div>
 
       {/* Show uploaded files in compliance mode */}

@@ -84,6 +84,8 @@ export function ChatInput() {
 
           if (user) {
             await uploadToSupabase(user.id, chatId)
+          } else {
+            showToast('Guest document checks are temporary and not saved.', 'info')
           }
           
           // Process each uploaded file
@@ -250,6 +252,11 @@ export function ChatInput() {
         <div className="border-b border-slate-200 bg-slate-50">
           <div className="mx-auto max-w-5xl px-3 sm:px-4 py-3">
             <UploadedFilesList />
+            {!user && mode === 'compliance' && (
+              <p className="mt-2 text-xs text-slate-500">
+                Guest document checks are temporary and are not saved to an account.
+              </p>
+            )}
           </div>
         </div>
       )}

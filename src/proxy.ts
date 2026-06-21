@@ -1,7 +1,7 @@
 import { NextResponse, type NextFetchEvent, type NextRequest } from 'next/server'
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-const isProtectedRoute = createRouteMatcher(['/chat(.*)', '/documents(.*)'])
+const isProtectedRoute = createRouteMatcher(['/documents(.*)'])
 const isClerkProxyRoute = createRouteMatcher(['/__clerk(.*)'])
 const hasClerkKeys = Boolean(
   process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&

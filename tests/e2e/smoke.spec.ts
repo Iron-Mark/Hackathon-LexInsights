@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const protectedRoutes = ['/chat', '/documents']
+const protectedRoutes = ['/documents']
 const isManagedLocalWebServer = !process.env.PLAYWRIGHT_BASE_URL
 const diagnosticsExpected = isManagedLocalWebServer || process.env.ENABLE_DIAGNOSTIC_ROUTES === 'true'
 const authRouteHeading = /Sign in to LexInSight|Clerk setup required/
@@ -10,6 +10,9 @@ test.describe('LexInSight smoke checks', () => {
   test('public entry routes render', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByText('LexInSight').first()).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Sign in' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Sign up' })).toBeVisible()
+    await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
 
     await page.goto('/auth/login')
     await expect(page.getByRole('heading', { name: authRouteHeading })).toBeVisible()
@@ -28,6 +31,31 @@ test.describe('LexInSight smoke checks', () => {
       await page.goto('/test-document')
       await expect(page.getByRole('heading', { name: 'Document Compliance Test Page' })).toBeVisible()
     }
+  })
+
+  test('chat is available to signed-out visitors with local guest history', async ({ page }) => {
+    await page.goto('/chat')
+
+    await expect(page.getByText('LexInSight').first()).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Sign in' })).toBeVisible()
+    await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
+
+    await page.getByRole('button', { name: /^New Chat$/ }).click()
+    await expect(page).toHaveURL(/\/chat\/guest_/)
+
+    const guestPayload = await page.evaluate(() => window.localStorage.getItem('lexinsight_guest_chats_v1'))
+    expect(guestPayload).toBeTruthy()
+    expect(JSON.parse(guestPayload || '{}')).toEqual(
+      expect.objectContaining({
+        version: 1,
+        chats: expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.stringMatching(/^guest_/),
+            user_id: 'guest-local',
+          }),
+        ]),
+      })
+    )
   })
 
   test('missing Clerk keys show setup blocker', async ({ page }) => {
