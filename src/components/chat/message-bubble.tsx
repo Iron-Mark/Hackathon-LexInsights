@@ -210,15 +210,15 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     <div
       data-revealing={isRevealing ? 'true' : 'false'}
       aria-busy={isRevealing}
-      className={`mb-4 max-w-[90%] sm:max-w-[85%] lg:max-w-[90%] rounded-xl p-4 sm:p-5 shadow-md transition-all hover:shadow-lg ${
+      className={`mb-4 max-w-[90%] sm:max-w-[85%] lg:max-w-[90%] rounded-xl p-4 sm:p-5 transition-all ${
         isUser
-          ? 'ml-auto bg-gradient-to-br from-iris-500 to-purple-500 text-white border-2 border-iris-300'
-          : 'mr-auto border-2 border-slate-200 bg-white text-slate-900'
+          ? 'ml-auto border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md'
+          : 'mr-auto border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg'
       }`}
     >
       {isUser ? (
         // User message - simple text with better contrast
-        <p className="font-body whitespace-pre-wrap text-base leading-relaxed break-word font-semibold text-white">
+        <p className="font-body whitespace-pre-wrap text-base leading-relaxed break-word font-medium text-slate-900">
           {message.content}
         </p>
       ) : (
@@ -347,11 +347,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         </div>
       )}
       
-      <p
-        className={`mt-3 font-body text-xs font-semibold ${
-          isUser ? 'text-white/90' : 'text-slate-500'
-        }`}
-      >
+      <p className="mt-3 font-body text-xs font-semibold text-slate-500">
         {formatTime(message.created_at)}
       </p>
     </div>
