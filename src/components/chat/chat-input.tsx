@@ -325,20 +325,19 @@ export function ChatInput() {
             <button
               onClick={handleDeepSearch}
               disabled={!message.trim() || isDeepSearching || isSending || loading || uploading}
-              className="group relative flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 p-2.5 text-white shadow-lg shadow-purple-500/50 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:scale-100 disabled:opacity-50 disabled:shadow-none"
-              aria-label={isDeepSearching ? 'Performing deep search...' : 'Perform deep search'}
+              className="group flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-iris-200 bg-iris-50 px-3 py-2.5 text-iris-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-100 hover:text-iris-900 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:hover:shadow-sm sm:min-w-[7rem]"
+              aria-label={isDeepSearching ? 'Running deep research...' : 'Run deep research'}
               type="button"
-              title="Deep Search - Enhanced analysis with cross-references"
+              title="Run deep research"
             >
-              {/* Animated glow effect */}
-              <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-purple-400 to-pink-400 opacity-0 group-hover:opacity-20 blur-sm transition-opacity duration-200" />
-              
               {isDeepSearching ? (
-                <Loader2 className="h-5 w-5 animate-spin relative z-10" aria-hidden="true" />
+                <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
               ) : (
-                <Sparkles className="h-5 w-5 relative z-10 group-hover:animate-pulse" aria-hidden="true" />
+                <Sparkles className="h-5 w-5 group-hover:animate-pulse" aria-hidden="true" />
               )}
-              <span className="sr-only">{isDeepSearching ? 'Searching...' : 'Deep Search'}</span>
+              <span className="hidden text-sm font-semibold sm:inline">
+                {isDeepSearching ? 'Researching' : 'Research'}
+              </span>
             </button>
           )}
           
@@ -347,8 +346,9 @@ export function ChatInput() {
             onClick={handleSend}
             disabled={(!message.trim() && uploadedFiles.length === 0) || isSending || loading || uploading}
             className="group flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-primary p-2.5 text-primary-foreground transition-all duration-200 hover:scale-105 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none"
-            aria-label={isSending || loading || uploading ? 'Sending message...' : 'Send message'}
+            aria-label={isSending || loading || uploading ? 'Sending standard message...' : 'Send standard message'}
             type="submit"
+            title="Send standard message"
           >
             {isSending || loading || uploading ? (
               <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
