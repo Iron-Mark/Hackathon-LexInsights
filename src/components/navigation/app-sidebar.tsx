@@ -21,6 +21,29 @@ interface NavItem {
   active?: boolean
 }
 
+interface SidebarTooltipButtonProps {
+  label: string
+  children: React.ReactNode
+}
+
+function SidebarTooltipButton({ label, children }: SidebarTooltipButtonProps) {
+  return (
+    <div className="group relative">
+      {children}
+      <div
+        className={cn(
+          'pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-slate-900/10',
+          'transition-all duration-150 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100'
+        )}
+        role="tooltip"
+      >
+        {label}
+        <span className="absolute left-[-5px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-b border-l border-slate-200 bg-white" />
+      </div>
+    </div>
+  )
+}
+
 export function AppSidebar() {
   const router = useRouter()
   const pathname = usePathname()
@@ -106,24 +129,24 @@ export function AppSidebar() {
             const active = isActive(item)
             
             return (
-              <Button
-                key={item.label + index}
-                onClick={() => handleItemClick(item)}
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  'h-12 w-12 rounded-xl transition-all duration-200',
-                  'hover:bg-iris-50 hover:text-iris-700 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2',
-                  active
-                    ? 'bg-iris-100 text-iris-900 dark:bg-neutral-700 dark:text-iris-300'
-                    : 'text-neutral-600 dark:text-neutral-400'
-                )}
-                aria-label={item.label}
-                title={item.label}
-              >
-                <Icon className="h-5 w-5" />
-              </Button>
+              <SidebarTooltipButton key={item.label + index} label={item.label}>
+                <Button
+                  onClick={() => handleItemClick(item)}
+                  variant="ghost"
+                  size="icon"
+                  className={cn(
+                    'h-12 w-12 rounded-xl transition-all duration-200',
+                    'hover:bg-iris-50 hover:text-iris-700 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2',
+                    active
+                      ? 'bg-iris-100 text-iris-900 dark:bg-neutral-700 dark:text-iris-300'
+                      : 'text-neutral-600 dark:text-neutral-400'
+                  )}
+                  aria-label={item.label}
+                >
+                  <Icon className="h-5 w-5" />
+                </Button>
+              </SidebarTooltipButton>
             )
           })}
         </nav>
@@ -131,50 +154,9 @@ export function AppSidebar() {
         {/* Bottom Section - Help & Profile */}
         <div className="flex flex-col items-center gap-2">
           {/* Help/Resources Button */}
-          <Button
-            onClick={() => setShowResourcesDialog(true)}
-            variant="ghost"
-            size="icon"
-            className={cn(
-              'h-12 w-12 rounded-xl transition-all duration-200',
-              'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
-            )}
-            aria-label="Help & Resources"
-            title="Help & Resources"
-          >
-            <HelpCircle className="h-5 w-5" />
-          </Button>
-
-          {user ? (
+          <SidebarTooltipButton label="Help & Resources">
             <Button
-              onClick={() => setShowProfileDialog(true)}
-              variant="ghost"
-              size="icon"
-              className={cn(
-                'h-12 w-12 rounded-full transition-all duration-200',
-                'hover:ring-2 hover:ring-iris-400',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
-              )}
-              aria-label="Profile"
-              title="Profile"
-            >
-              {avatarUrl ? (
-                <span
-                  aria-label="Profile"
-                  className="h-10 w-10 rounded-full bg-cover bg-center"
-                  role="img"
-                  style={{ backgroundImage: `url(${avatarUrl})` }}
-                />
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-iris-500 to-iris-700">
-                  <User className="h-5 w-5 text-white" aria-hidden="true" />
-                </div>
-              )}
-            </Button>
-          ) : (
-            <Button
-              onClick={() => router.push('/auth/login')}
+              onClick={() => setShowResourcesDialog(true)}
               variant="ghost"
               size="icon"
               className={cn(
@@ -182,11 +164,55 @@ export function AppSidebar() {
                 'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
               )}
-              aria-label="Sign in"
-              title="Sign in"
+              aria-label="Help & Resources"
             >
-              <LogIn className="h-5 w-5" aria-hidden="true" />
+              <HelpCircle className="h-5 w-5" />
             </Button>
+          </SidebarTooltipButton>
+
+          {user ? (
+            <SidebarTooltipButton label="Profile">
+              <Button
+                onClick={() => setShowProfileDialog(true)}
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  'h-12 w-12 rounded-full transition-all duration-200',
+                  'hover:ring-2 hover:ring-iris-400',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
+                )}
+                aria-label="Profile"
+              >
+                {avatarUrl ? (
+                  <span
+                    aria-label="Profile"
+                    className="h-10 w-10 rounded-full bg-cover bg-center"
+                    role="img"
+                    style={{ backgroundImage: `url(${avatarUrl})` }}
+                  />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-iris-500 to-iris-700">
+                    <User className="h-5 w-5 text-white" aria-hidden="true" />
+                  </div>
+                )}
+              </Button>
+            </SidebarTooltipButton>
+          ) : (
+            <SidebarTooltipButton label="Sign in">
+              <Button
+                onClick={() => router.push('/auth/login')}
+                variant="ghost"
+                size="icon"
+                className={cn(
+                  'h-12 w-12 rounded-xl transition-all duration-200',
+                  'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
+                )}
+                aria-label="Sign in"
+              >
+                <LogIn className="h-5 w-5" aria-hidden="true" />
+              </Button>
+            </SidebarTooltipButton>
           )}
         </div>
       </aside>
