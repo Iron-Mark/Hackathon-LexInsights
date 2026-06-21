@@ -1,11 +1,13 @@
 'use client'
 
-import { Clock, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { Clock, Trash2, X } from 'lucide-react'
 import { useComplianceStore } from '@/lib/store/compliance-store'
 import { cn } from '@/lib/utils'
 
 export function VersionHistorySidebar() {
   const { versions, currentVersionId, setCurrentVersion, deleteVersion } = useComplianceStore()
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const formatTimestamp = (date: Date) => {
     const d = new Date(date)
@@ -82,18 +84,46 @@ export function VersionHistorySidebar() {
                   </div>
 
                   {versions.length > 1 && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        if (confirm(`Delete ${version.label}?`)) {
-                          deleteVersion(version.id)
-                        }
-                      }}
-                      className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-slate-100 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                      aria-label={`Delete ${version.label}`}
+                    <div
+                      className={cn(
+                        'flex items-center gap-1 transition-opacity',
+                        confirmDeleteId === version.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                      )}
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <Trash2 className="h-3.5 w-3.5 text-slate-400 hover:text-red-600" aria-hidden="true" />
-                    </button>
+                      {confirmDeleteId === version.id ? (
+                        <>
+                          <button
+                            onClick={() => {
+                              deleteVersion(version.id)
+                              setConfirmDeleteId(null)
+                            }}
+                            className="flex h-7 w-7 items-center justify-center rounded bg-red-600 text-white transition-colors hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                            aria-label={`Confirm delete ${version.label}`}
+                            type="button"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                          </button>
+                          <button
+                            onClick={() => setConfirmDeleteId(null)}
+                            className="flex h-7 w-7 items-center justify-center rounded bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                            aria-label={`Cancel delete ${version.label}`}
+                            type="button"
+                          >
+                            <X className="h-3.5 w-3.5" aria-hidden="true" />
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmDeleteId(version.id)}
+                          className="flex h-7 w-7 items-center justify-center rounded p-0 transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                          aria-label={`Delete ${version.label}`}
+                          type="button"
+                        >
+                          <Trash2 className="h-3.5 w-3.5 text-slate-400 hover:text-red-600" aria-hidden="true" />
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>

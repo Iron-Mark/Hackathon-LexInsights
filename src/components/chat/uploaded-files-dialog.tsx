@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { FileText, Download, Eye, Trash2, Calendar, FileIcon, Loader2 } from 'lucide-react'
+import { FileText, Download, Eye, Trash2, Calendar, FileIcon, Loader2, X } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
@@ -36,6 +36,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const fetchFiles = useCallback(async () => {
     if (!user) return
@@ -69,12 +70,17 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
     }
   }, [user])
 
-  // Load uploaded files from Supabase
   useEffect(() => {
     if (open && user) {
       fetchFiles()
     }
   }, [open, user, fetchFiles])
+
+  useEffect(() => {
+    if (!open) {
+      setConfirmDeleteId(null)
+    }
+  }, [open])
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes'
@@ -82,13 +88,6 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
     const sizes = ['Bytes', 'KB', 'MB', 'GB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
-  }
-
-  const getFileIcon = (type: string) => {
-    if (type.includes('pdf')) return '📄'
-    if (type.includes('word') || type.includes('document')) return '📝'
-    if (type.includes('markdown') || type.includes('text')) return '📋'
-    return '📁'
   }
 
   const getFileType = (fileName: string, mimeType: string) => {
@@ -106,7 +105,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
       const supabase = createClient()
       const { data, error } = await supabase.storage
         .from('documents')
-        .createSignedUrl(file.storage_path, 3600) // 1 hour expiry
+        .createSignedUrl(file.storage_path, 3600)
 
       if (error) throw error
 
@@ -143,7 +142,10 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
   }
 
   const handleDelete = async (fileId: string) => {
-    if (!confirm('Are you sure you want to delete this file?')) return
+    if (confirmDeleteId !== fileId) {
+      setConfirmDeleteId(fileId)
+      return
+    }
 
     setDeletingId(fileId)
     try {
@@ -152,14 +154,12 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
 
       const supabase = createClient()
 
-      // Delete from storage
       const { error: storageError } = await supabase.storage
         .from('documents')
         .remove([file.storage_path])
 
       if (storageError) throw storageError
 
-      // Delete from database
       const { error: dbError } = await supabase
         .from('documents')
         .delete()
@@ -167,7 +167,8 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
 
       if (dbError) throw dbError
 
-      setFiles(files.filter(f => f.id !== fileId))
+      setFiles(currentFiles => currentFiles.filter(f => f.id !== fileId))
+      setConfirmDeleteId(null)
       showToast('File deleted', 'success')
     } catch (error) {
       console.error('Error deleting file:', error)
@@ -179,10 +180,10 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[75vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[75vh] max-w-3xl flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-iris-600" />
+            <FileText className="h-5 w-5 text-iris-600" aria-hidden="true" />
             Uploaded Files
           </DialogTitle>
           <DialogDescription>
@@ -190,85 +191,122 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-2">
+        <div className="flex-1 space-y-2 overflow-y-auto">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-iris-600" />
+              <Loader2 className="h-8 w-8 animate-spin text-iris-600" aria-hidden="true" />
             </div>
           ) : files.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">
-              <FileIcon className="h-16 w-16 mx-auto mb-3 text-slate-300" />
+            <div className="py-12 text-center text-slate-500">
+              <FileIcon className="mx-auto mb-3 h-16 w-16 text-slate-300" aria-hidden="true" />
               <p className="text-lg font-medium">No files uploaded yet</p>
-              <p className="text-sm mt-1">Upload documents to analyze them for compliance</p>
+              <p className="mt-1 text-sm">Upload documents to analyze them for compliance</p>
             </div>
           ) : (
-            files.map((file) => (
-              <div
-                key={file.id}
-                className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:border-iris-300 hover:bg-iris-50/30 transition-colors group"
-              >
-                {/* File Icon */}
-                <div className="text-3xl flex-shrink-0">
-                  {getFileIcon(file.type)}
-                </div>
+            files.map((file) => {
+              const isConfirmingDelete = confirmDeleteId === file.id
 
-                {/* File Info */}
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-slate-900 truncate">{file.name}</h4>
-                  <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
-                    <span className="font-semibold text-iris-600 bg-iris-50 px-1.5 py-0.5 rounded text-[10px]">
-                      {getFileType(file.name, file.type)}
-                    </span>
-                    <span>{formatFileSize(file.size)}</span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {new Date(file.uploadedAt).toLocaleDateString()}
-                    </span>
+              return (
+                <div
+                  key={file.id}
+                  className="group flex items-center gap-3 rounded-lg border border-slate-200 p-3 transition-colors hover:border-iris-300 hover:bg-iris-50/30"
+                >
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-iris-50 text-iris-600">
+                    <FileText className="h-5 w-5" aria-hidden="true" />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <h4 className="truncate font-medium text-slate-900">{file.name}</h4>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                      <span className="rounded bg-iris-50 px-1.5 py-0.5 text-[10px] font-semibold text-iris-600">
+                        {getFileType(file.name, file.type)}
+                      </span>
+                      <span>{formatFileSize(file.size)}</span>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" aria-hidden="true" />
+                        {new Date(file.uploadedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1 opacity-100 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+                    {isConfirmingDelete ? (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(file.id)}
+                          disabled={deletingId === file.id}
+                          className="h-10 w-10 text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50"
+                          title="Confirm delete"
+                          aria-label={`Confirm delete ${file.name}`}
+                        >
+                          {deletingId === file.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setConfirmDeleteId(null)}
+                          disabled={deletingId === file.id}
+                          className="h-10 w-10 text-slate-600 hover:bg-slate-100"
+                          title="Cancel"
+                          aria-label={`Cancel delete ${file.name}`}
+                        >
+                          <X className="h-4 w-4" aria-hidden="true" />
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleView(file)}
+                          className="h-10 w-10"
+                          title="View file"
+                          aria-label={`View ${file.name}`}
+                        >
+                          <Eye className="h-4 w-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDownload(file)}
+                          className="h-10 w-10"
+                          title="Download file"
+                          aria-label={`Download ${file.name}`}
+                        >
+                          <Download className="h-4 w-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(file.id)}
+                          disabled={deletingId === file.id}
+                          className="h-10 w-10 text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50"
+                          title="Delete file"
+                          aria-label={`Delete ${file.name}`}
+                        >
+                          {deletingId === file.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" aria-hidden="true" />
+                          )}
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleView(file)}
-                    className="h-8 w-8"
-                    title="View file"
-                  >
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDownload(file)}
-                    className="h-8 w-8"
-                    title="Download file"
-                  >
-                    <Download className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(file.id)}
-                    disabled={deletingId === file.id}
-                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50 disabled:opacity-50"
-                    title="Delete file"
-                  >
-                    {deletingId === file.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            ))
+              )
+            })
           )}
         </div>
 
         {files.length > 0 && (
-          <div className="pt-3 border-t text-sm text-slate-500">
+          <div className="border-t pt-3 text-sm text-slate-500">
             Total: {files.length} file{files.length !== 1 ? 's' : ''} ({formatFileSize(files.reduce((acc, f) => acc + f.size, 0))})
           </div>
         )}

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X } from 'lucide-react'
+import { FileText, X } from 'lucide-react'
 import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { showToast } from '@/components/ui/toast'
 
@@ -12,15 +12,6 @@ export function UploadedFilesList() {
     if (bytes < 1024) return bytes + ' B'
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
-  }
-
-  const getFileIcon = (fileName: string) => {
-    const lower = fileName.toLowerCase()
-    if (lower.endsWith('.pdf')) return '📄'
-    if (lower.endsWith('.doc') || lower.endsWith('.docx')) return '📝'
-    if (lower.endsWith('.md')) return '📋'
-    if (lower.endsWith('.txt')) return '📃'
-    return '📁'
   }
 
   const getFileType = (fileName: string) => {
@@ -42,18 +33,16 @@ export function UploadedFilesList() {
 
   return (
     <div className="space-y-2">
-      {/* Compliance Mode Indicator */}
-      <div className="flex items-center gap-2 px-3 py-1.5 bg-iris-50 border border-iris-200 rounded-lg">
+      <div className="flex items-center gap-2 rounded-lg border border-iris-200 bg-iris-50 px-3 py-1.5">
         <div className="flex items-center gap-1.5">
-          <div className="h-2 w-2 rounded-full bg-iris-600 animate-pulse" />
+          <div className="h-2 w-2 rounded-full bg-iris-600 animate-pulse" aria-hidden="true" />
           <span className="text-xs font-medium text-iris-900">Compliance Mode</span>
         </div>
         <span className="text-xs text-iris-700">
           {uploadedFiles.length}/{maxFiles} documents ready
         </span>
       </div>
-      
-      {/* Compact Single Row Files */}
+
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
         <AnimatePresence>
           {uploadedFiles.map((uploadedFile) => (
@@ -63,20 +52,18 @@ export function UploadedFilesList() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 shadow-sm hover:border-iris-300 hover:shadow-md transition-all flex-shrink-0"
+              className="flex flex-shrink-0 items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 shadow-sm transition-all hover:border-iris-300 hover:shadow-md"
             >
-              {/* File Icon */}
-              <div className="flex-shrink-0 text-base">
-                {getFileIcon(uploadedFile.file.name)}
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-iris-50 text-iris-600">
+                <FileText className="h-4 w-4" aria-hidden="true" />
               </div>
 
-              {/* File Info - Compact */}
-              <div className="flex flex-col min-w-0">
-                <p className="text-xs font-medium text-slate-900 truncate max-w-[120px]">
+              <div className="flex min-w-0 flex-col">
+                <p className="max-w-[120px] truncate text-xs font-medium text-slate-900">
                   {uploadedFile.file.name}
                 </p>
                 <div className="flex items-center gap-1">
-                  <span className="text-[10px] font-semibold text-iris-600 bg-iris-50 px-1 py-0.5 rounded">
+                  <span className="rounded bg-iris-50 px-1 py-0.5 text-[10px] font-semibold text-iris-600">
                     {getFileType(uploadedFile.file.name)}
                   </span>
                   <span className="text-[10px] text-slate-500">
@@ -85,13 +72,13 @@ export function UploadedFilesList() {
                 </div>
               </div>
 
-              {/* Remove Button - Smaller */}
               <button
                 onClick={() => handleRemove(uploadedFile.id, uploadedFile.file.name)}
-                className="flex-shrink-0 rounded-full p-0.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 aria-label={`Remove ${uploadedFile.file.name}`}
+                type="button"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </motion.div>
           ))}

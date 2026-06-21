@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles } from 'lucide-react'
+import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useComplianceStore } from '@/lib/store/compliance-store'
 import { VersionHistorySidebar } from './version-history-sidebar'
@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { type RAGResponse } from '@/lib/services/rag-api'
 import { exportToDocx } from '@/lib/utils/docx-export'
 import { type DeepSearchResponse } from '@/lib/services/deep-search-api'
+import { showToast } from '@/components/ui/toast'
 
 interface ComplianceCanvasProps {
   content: string
@@ -87,7 +88,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       setShowDownloadMenu(false)
     } catch (error) {
       console.error('Error exporting to DOCX:', error)
-      alert('Failed to export to DOCX. Please try again.')
+      showToast('Failed to export to DOCX. Please try again.', 'error')
     } finally {
       setIsDownloading(false)
     }
@@ -113,117 +114,182 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   // Always prioritize the content prop over stored versions for fresh analysis
   const displayContent = content || currentVersion?.content || ''
 
-  // Enhanced markdown rendering with full color-coded section blocks
+  // Enhanced markdown rendering with semantic status blocks
   const renderContent = (text: string) => {
+    type ComplianceTone = 'green' | 'yellow' | 'red'
+
     const lines = text.split('\n')
     const elements: React.ReactElement[] = []
-    let currentSection: 'green' | 'yellow' | 'red' | null = null
+    let currentSection: ComplianceTone | null = null
     let sectionContent: string[] = []
-    
-    const renderSection = (content: string[], color: 'green' | 'yellow' | 'red' | null, startIndex: number) => {
+
+    const toneStyles = {
+      green: {
+        section: 'bg-green-50 border-green-200',
+        heading: 'text-green-800 border-green-600',
+        text: 'text-green-800',
+        badge: 'text-green-700 bg-green-50',
+        icon: 'text-green-600',
+      },
+      yellow: {
+        section: 'bg-amber-50 border-amber-200',
+        heading: 'text-amber-800 border-amber-600',
+        text: 'text-amber-800',
+        badge: 'text-amber-700 bg-amber-50',
+        icon: 'text-amber-600',
+      },
+      red: {
+        section: 'bg-red-50 border-red-200',
+        heading: 'text-red-800 border-red-600',
+        text: 'text-red-800',
+        badge: 'text-red-700 bg-red-50',
+        icon: 'text-red-600',
+      },
+      neutral: {
+        section: 'bg-white border-slate-200',
+      },
+    } as const
+
+    const getComplianceTone = (value: string): ComplianceTone | null => {
+      const lower = value.toLowerCase()
+
+      if (
+        value.includes('\ud83d\udeab') ||
+        /\b(red|critical|blocked|failed|fail|non[-\s]?compliant|violation|missing)\b/.test(lower)
+      ) {
+        return 'red'
+      }
+
+      if (
+        value.includes('\u26a0') ||
+        /\b(amber|yellow|warning|warnings|needs review|partial|at risk|caution)\b/.test(lower)
+      ) {
+        return 'yellow'
+      }
+
+      if (
+        value.includes('\u2705') ||
+        /\b(green|compliant|passed|pass|satisfactory)\b/.test(lower)
+      ) {
+        return 'green'
+      }
+
+      return null
+    }
+
+    const renderToneIcon = (tone: ComplianceTone, className = 'h-4 w-4') => {
+      const iconClass = className + ' flex-shrink-0 ' + toneStyles[tone].icon
+
+      if (tone === 'green') return <CheckCircle2 className={iconClass} aria-hidden="true" />
+      if (tone === 'yellow') return <AlertTriangle className={iconClass} aria-hidden="true" />
+      return <XCircle className={iconClass} aria-hidden="true" />
+    }
+
+    const renderSection = (content: string[], color: ComplianceTone | null, startIndex: number) => {
       if (content.length === 0) return null
-      
-      const bgColor = color === 'green' ? 'bg-green-50' : color === 'yellow' ? 'bg-amber-50' : color === 'red' ? 'bg-red-50' : 'bg-white'
-      const borderColor = color === 'green' ? 'border-green-200' : color === 'yellow' ? 'border-amber-200' : color === 'red' ? 'border-red-200' : 'border-slate-200'
-      
+
+      const style = color ? toneStyles[color].section : toneStyles.neutral.section
+
       return (
-        <div key={`section-${startIndex}`} className={`${bgColor} border ${borderColor} rounded-lg p-4 my-4`}>
+        <div key={'section-' + startIndex} className={'my-4 rounded-lg border p-4 ' + style}>
           {content.map((line, idx) => renderLine(line, startIndex + idx))}
         </div>
       )
     }
-    
+
     const renderLine = (line: string, index: number) => {
-      // Color-coded section headers
-      if (line.startsWith('## ✅')) {
-        return <h2 key={index} className="text-xl font-bold text-green-800 border-l-4 border-green-600 pl-4 py-2 mb-2">{line.slice(2)}</h2>
+      const trimmed = line.trim()
+      const headingTone = getComplianceTone(line)
+
+      if (line.startsWith('## ') && headingTone) {
+        return (
+          <h2 key={index} className={'mb-2 flex items-center gap-2 border-l-4 py-2 pl-4 text-xl font-bold ' + toneStyles[headingTone].heading}>
+            {renderToneIcon(headingTone, 'h-5 w-5')}
+            <span>{line.slice(3)}</span>
+          </h2>
+        )
       }
-      if (line.startsWith('## ⚠️')) {
-        return <h2 key={index} className="text-xl font-bold text-amber-800 border-l-4 border-amber-600 pl-4 py-2 mb-2">{line.slice(2)}</h2>
+
+      if (line.startsWith('### ') && headingTone) {
+        return (
+          <h3 key={index} className={'mb-2 mt-3 flex items-center gap-2 border-l-2 px-3 py-2 text-lg font-bold ' + toneStyles[headingTone].heading}>
+            {renderToneIcon(headingTone)}
+            <span>{line.slice(4)}</span>
+          </h3>
+        )
       }
-      if (line.startsWith('## 🚫')) {
-        return <h2 key={index} className="text-xl font-bold text-red-800 border-l-4 border-red-600 pl-4 py-2 mb-2">{line.slice(2)}</h2>
-      }
-      
-      // Subsection headers with status indicators
-      if (line.startsWith('### ') && line.includes('✅')) {
-        return <h3 key={index} className="text-lg font-bold text-green-800 px-3 py-2 mt-3 mb-2 border-l-2 border-green-600">{line.slice(4)}</h3>
-      }
-      if (line.startsWith('### ') && line.includes('⚠️')) {
-        return <h3 key={index} className="text-lg font-bold text-amber-800 px-3 py-2 mt-3 mb-2 border-l-2 border-amber-600">{line.slice(4)}</h3>
-      }
-      if (line.startsWith('### ') && line.includes('🚫')) {
-        return <h3 key={index} className="text-lg font-bold text-red-800 px-3 py-2 mt-3 mb-2 border-l-2 border-red-600">{line.slice(4)}</h3>
-      }
-      
-      // Regular headers
+
       if (line.startsWith('# ')) {
-        return <h1 key={index} className="text-2xl font-bold text-slate-900 mt-6 mb-4">{line.slice(2)}</h1>
+        return <h1 key={index} className="mb-4 mt-6 text-2xl font-bold text-slate-900">{line.slice(2)}</h1>
       }
       if (line.startsWith('## ')) {
-        return <h2 key={index} className="text-xl font-semibold text-slate-900 mt-5 mb-3">{line.slice(3)}</h2>
+        return <h2 key={index} className="mb-3 mt-5 text-xl font-semibold text-slate-900">{line.slice(3)}</h2>
       }
       if (line.startsWith('### ')) {
-        return <h3 key={index} className="text-lg font-semibold text-slate-800 mt-4 mb-2">{line.slice(4)}</h3>
+        return <h3 key={index} className="mb-2 mt-4 text-lg font-semibold text-slate-800">{line.slice(4)}</h3>
       }
-      
-      // Status indicators in content
-      if (line.includes('**Status:** ✅')) {
-        return <p key={index} className="font-semibold text-green-700 my-2 bg-green-50 px-2 py-1 rounded inline-block">{line}</p>
+
+      if (line.includes('**Status:**') || /^status:/i.test(trimmed)) {
+        const statusTone = getComplianceTone(line)
+        if (statusTone) {
+          return (
+            <p key={index} className={'my-2 inline-flex items-center gap-2 rounded px-2 py-1 font-semibold ' + toneStyles[statusTone].badge}>
+              {renderToneIcon(statusTone)}
+              <span>{line}</span>
+            </p>
+          )
+        }
       }
-      if (line.includes('**Status:** ⚠️') || line.includes('**Status:** 🚫')) {
-        const isWarning = line.includes('⚠️')
-        return <p key={index} className={`font-semibold my-2 px-2 py-1 rounded inline-block ${isWarning ? 'text-amber-700 bg-amber-50' : 'text-red-700 bg-red-50'}`}>{line}</p>
-      }
-      
-      // Compliance score
+
       if (line.includes('Compliance Score:')) {
         const score = line.match(/(\d+)%/)
         const scoreNum = score ? parseInt(score[1]) : 0
         let colorClass = 'text-red-700 bg-red-50 border-red-200'
         if (scoreNum >= 80) colorClass = 'text-green-700 bg-green-50 border-green-200'
         else if (scoreNum >= 60) colorClass = 'text-amber-700 bg-amber-50 border-amber-200'
-        
-        return <div key={index} className={`text-2xl font-bold my-4 p-4 rounded-lg border-2 ${colorClass}`}>{line}</div>
+
+        return <div key={index} className={'my-4 rounded-lg border-2 p-4 text-2xl font-bold ' + colorClass}>{line}</div>
       }
-      
-      // Bold text
+
       if (line.startsWith('**') && line.endsWith('**')) {
-        return <p key={index} className="font-semibold text-slate-900 my-2">{line.slice(2, -2)}</p>
+        return <p key={index} className="my-2 font-semibold text-slate-900">{line.slice(2, -2)}</p>
       }
-      
-      // List items with color coding
-      if (line.trim().startsWith('- ✅') || line.trim().startsWith('✅')) {
-        return <li key={index} className="text-green-800 ml-4 my-1 px-2 py-1.5 font-medium">{line.trim().replace(/^-?\s*✅\s*/, '✅ ')}</li>
+
+      if (trimmed.startsWith('- ')) {
+        const listText = trimmed.slice(2)
+        const listTone = getComplianceTone(listText)
+        const statusListPattern = /^(green|amber|yellow|red|compliant|non[-\s]?compliant|warning|critical|blocked|failed|missing|passed|needs review)\b/i
+        const iconList = listText.startsWith('\u2705') || listText.startsWith('\u26a0') || listText.startsWith('\ud83d\udeab')
+
+        if (listTone && (statusListPattern.test(listText) || iconList)) {
+          const cleanedText = listText
+            .replace(/^[\u2705\u26a0\ufe0f\s]+/, '')
+            .replace(/^\ud83d\udeab\s*/, '')
+            .trim()
+
+          return (
+            <li key={index} className={'ml-4 my-1 flex items-start gap-2 rounded px-2 py-1.5 font-medium ' + toneStyles[listTone].text}>
+              {renderToneIcon(listTone)}
+              <span>{cleanedText || listText}</span>
+            </li>
+          )
+        }
+
+        return <li key={index} className="ml-4 my-1 text-slate-700">{listText}</li>
       }
-      if (line.trim().startsWith('- ⚠️') || line.trim().startsWith('⚠️')) {
-        return <li key={index} className="text-amber-800 ml-4 my-1 px-2 py-1.5 font-medium">{line.trim().replace(/^-?\s*⚠️\s*/, '⚠️ ')}</li>
+
+      if (/^\d+\./.test(trimmed)) {
+        return <li key={index} className="ml-4 my-1 text-slate-700">{trimmed.replace(/^\d+\.\s*/, '')}</li>
       }
-      if (line.trim().startsWith('- 🚫') || line.trim().startsWith('🚫')) {
-        return <li key={index} className="text-red-800 ml-4 my-1 px-2 py-1.5 font-medium">{line.trim().replace(/^-?\s*🚫\s*/, '🚫 ')}</li>
+
+      if (/^(action|deadline|target|owner):/i.test(trimmed)) {
+        return <p key={index} className="my-2 pl-6 leading-relaxed text-slate-700">{line}</p>
       }
-      
-      // Regular list items
-      if (line.trim().startsWith('- ')) {
-        return <li key={index} className="text-slate-700 ml-4 my-1">{line.trim().slice(2)}</li>
-      }
-      
-      // Numbered lists
-      if (/^\d+\./.test(line.trim())) {
-        return <li key={index} className="text-slate-700 ml-4 my-1">{line.trim().replace(/^\d+\.\s*/, '')}</li>
-      }
-      
-      // Action items with icons
-      if (line.trim().startsWith('✏️') || line.trim().startsWith('📅') || line.trim().startsWith('🎯')) {
-        return <p key={index} className="text-slate-700 my-2 pl-6 leading-relaxed">{line}</p>
-      }
-      
-      // Horizontal rule
-      if (line.trim() === '---') {
+
+      if (trimmed === '---') {
         return <hr key={index} className="my-6 border-slate-200" />
       }
-      
-      // Table rows (simple detection)
+
       if (line.includes('|')) {
         const cells = line.split('|').filter(cell => cell.trim())
         return (
@@ -234,47 +300,27 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
           </div>
         )
       }
-      
-      // Empty lines
-      if (!line.trim()) {
+
+      if (!trimmed) {
         return <div key={index} className="h-2" />
       }
-      
-      // Regular paragraphs
-      return <p key={index} className="text-slate-700 my-2 leading-relaxed">{line}</p>
+
+      return <p key={index} className="my-2 leading-relaxed text-slate-700">{line}</p>
     }
-    
-    // Process lines and group by sections
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]
-      
-      // Detect section changes
-      if (line.startsWith('## ✅')) {
+      const sectionTone = line.startsWith('## ') ? getComplianceTone(line) : null
+
+      if (line.startsWith('## ') && sectionTone) {
         if (sectionContent.length > 0) {
           const section = renderSection(sectionContent, currentSection, i - sectionContent.length)
           if (section) elements.push(section)
           sectionContent = []
         }
-        currentSection = 'green'
+        currentSection = sectionTone
         sectionContent.push(line)
-      } else if (line.startsWith('## ⚠️')) {
-        if (sectionContent.length > 0) {
-          const section = renderSection(sectionContent, currentSection, i - sectionContent.length)
-          if (section) elements.push(section)
-          sectionContent = []
-        }
-        currentSection = 'yellow'
-        sectionContent.push(line)
-      } else if (line.startsWith('## 🚫')) {
-        if (sectionContent.length > 0) {
-          const section = renderSection(sectionContent, currentSection, i - sectionContent.length)
-          if (section) elements.push(section)
-          sectionContent = []
-        }
-        currentSection = 'red'
-        sectionContent.push(line)
-      } else if (line.startsWith('## ') && !line.includes('✅') && !line.includes('⚠️') && !line.includes('🚫')) {
-        // Regular section - end current colored section
+      } else if (line.startsWith('## ')) {
         if (sectionContent.length > 0) {
           const section = renderSection(sectionContent, currentSection, i - sectionContent.length)
           if (section) elements.push(section)
@@ -282,22 +328,18 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         }
         currentSection = null
         elements.push(renderLine(line, i))
+      } else if (currentSection) {
+        sectionContent.push(line)
       } else {
-        // Add to current section
-        if (currentSection) {
-          sectionContent.push(line)
-        } else {
-          elements.push(renderLine(line, i))
-        }
+        elements.push(renderLine(line, i))
       }
     }
-    
-    // Render remaining section
+
     if (sectionContent.length > 0) {
       const section = renderSection(sectionContent, currentSection, lines.length - sectionContent.length)
       if (section) elements.push(section)
     }
-    
+
     return elements
   }
 
@@ -541,7 +583,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                     <ul className="space-y-1">
                       {deepSearchResult.additional_insights.map((insight, idx) => (
                         <li key={idx} className="text-sm text-slate-700 flex items-start gap-2">
-                          <span className="text-iris-600 mt-0.5">•</span>
+                          <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-iris-600" aria-hidden="true" />
                           <span>{insight}</span>
                         </li>
                       ))}
