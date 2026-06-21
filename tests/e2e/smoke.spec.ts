@@ -114,6 +114,13 @@ test.describe('LexInSight smoke checks', () => {
     await expect(page.getByText('Ecological Solid Waste Management Act of 2000')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Run deep research' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Send standard message' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Mode: General' })).toBeVisible()
+    await page.getByRole('button', { name: 'Mode: General' }).click()
+    await page.getByRole('menuitemradio', { name: /Compliance/ }).click()
+    await expect(page.getByRole('button', { name: 'Upload compliance document', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Mode: Compliance' })).toBeVisible()
+    await page.getByRole('button', { name: 'Mode: Compliance' }).click()
+    await page.getByRole('menuitemradio', { name: /General/ }).click()
     const wordDownloadPromise = page.waitForEvent('download')
     await completedAssistantMessage.getByRole('button', { name: 'Download as Word (.docx)' }).click()
     const wordDownload = await wordDownloadPromise
