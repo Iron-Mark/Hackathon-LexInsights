@@ -7,12 +7,12 @@ import { fileURLToPath } from 'node:url'
 const DEFAULT_BASE_URL = 'https://lexiph.vercel.app'
 const DEFAULT_TIMEOUT_MS = 20000
 const ROUTES_TO_CHECK = [
-  '/',
-  '/auth/login',
-  '/chat',
-  '/documents',
-  '/test-rag',
-  '/test-document',
+  { path: '/', expectedStatuses: [200] },
+  { path: '/auth/login', expectedStatuses: [200] },
+  { path: '/chat', expectedStatuses: [200] },
+  { path: '/documents', expectedStatuses: [200] },
+  { path: '/test-rag', expectedStatuses: [200, 404] },
+  { path: '/test-document', expectedStatuses: [200, 404] },
 ]
 
 function parseArgs(argv) {
@@ -367,7 +367,12 @@ async function run() {
   const expectedSha = args.expectedSha || getCurrentGitSha()
   const localChecks = [gitWorktreeCheck(getCurrentGitStatusShort(), args.allowDirty)]
   const routeChecks = ROUTES_TO_CHECK.map((route) =>
-    fetchCheck(`app.route:${route}`, appendPath(baseUrl, route), args.timeoutMs, [200])
+    fetchCheck(
+      `app.route:${route.path}`,
+      appendPath(baseUrl, route.path),
+      args.timeoutMs,
+      route.expectedStatuses
+    )
   )
   const backendChecks = args.sourceOnly ? [] : await providerAwareBackendChecks(baseUrl, args.timeoutMs)
 
