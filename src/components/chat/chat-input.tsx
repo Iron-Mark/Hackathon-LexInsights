@@ -267,12 +267,7 @@ export function ChatInput() {
         </div>
       )}
       
-      <div className="mx-auto max-w-5xl space-y-3 p-3 sm:p-4">
-        {/* Mode Toggle */}
-        <div className="flex justify-center">
-          <ChatModeToggle />
-        </div>
-
+      <div className="mx-auto max-w-5xl p-3 sm:p-4">
         {/* Input Area */}
         <div className="flex items-end gap-2 rounded-lg border-2 border-slate-200 bg-white p-2 transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 dark:border-neutral-700 dark:bg-neutral-800 dark:focus-within:border-iris-400 dark:focus-within:ring-iris-400/20">
           {/* File Upload Button (Compliance Mode Only) */}
@@ -297,6 +292,8 @@ export function ChatInput() {
               </button>
             </>
           )}
+
+          <ChatModeToggle />
 
           <label htmlFor="message-input" className="sr-only">
             {placeholder}
