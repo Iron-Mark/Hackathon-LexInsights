@@ -654,12 +654,12 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 ) : (
                   /* Empty State with Centered Input */
                   <motion.div 
-                    className="flex flex-col h-full justify-center py-8"
+                    className="flex h-full flex-col justify-start py-12 sm:py-16"
                     initial={{ opacity: 1 }}
                     animate={{ opacity: isTransitioning ? 0 : 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="space-y-8">
+                    <div className="space-y-7">
                       {/* 1. Greeting and assistant text */}
                       <EmptyState onPromptSelect={handlePromptSelect} />
                       
