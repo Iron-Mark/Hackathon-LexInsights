@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Plus, PanelLeftClose, PanelLeft, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -51,8 +52,26 @@ export function SidebarHeader() {
   return (
     <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
       {/* App Branding Area */}
-      <div className="flex items-center gap-2">
-        <h1 className="font-display text-lg font-semibold text-neutral-900 truncate tracking-tight">LexInSight</h1>
+      <div
+        className="flex min-w-0 items-center gap-1.5"
+        aria-label="LexInSight Legal compliance assistant"
+      >
+        <Image
+          src="/logo/LOGO-0.5-woBG.svg"
+          alt=""
+          width={32}
+          height={32}
+          className="h-8 w-8 shrink-0"
+          aria-hidden="true"
+        />
+        <div className="min-w-0">
+          <h1 className="animate-gradient truncate bg-linear-to-r from-iris-500 via-purple-600 to-iris-700 bg-clip-text text-base font-bold leading-tight text-transparent">
+            LexInSight
+          </h1>
+          <p className="animate-gradient truncate bg-linear-to-r from-iris-400 via-purple-500 to-iris-600 bg-clip-text text-[9px] font-medium leading-tight text-transparent">
+            Legal compliance assistant
+          </p>
+        </div>
       </div>
 
       {/* Action Buttons */}
