@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { MessageSquare, PenSquare, Search, FileText, User, HelpCircle } from 'lucide-react'
+import { MessageSquare, PenSquare, Search, FileText, User, HelpCircle, LogIn } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/store/auth-store'
@@ -55,16 +55,20 @@ export function AppSidebar() {
       label: 'New Chat',
       action: handleNewChat,
     },
-    {
-      icon: Search,
-      label: 'Search Documents',
-      action: () => setShowSearchDialog(true),
-    },
-    {
-      icon: FileText,
-      label: 'Uploaded Files',
-      action: () => setShowFilesDialog(true),
-    },
+    ...(user
+      ? [
+          {
+            icon: Search,
+            label: 'Search Documents',
+            action: () => setShowSearchDialog(true),
+          },
+          {
+            icon: FileText,
+            label: 'Uploaded Files',
+            action: () => setShowFilesDialog(true),
+          },
+        ]
+      : []),
   ]
 
   const isActive = (item: NavItem) => {
@@ -89,9 +93,9 @@ export function AppSidebar() {
   return (
     <>
       {/* Dialogs */}
-      <SearchDialog open={showSearchDialog} onOpenChange={setShowSearchDialog} />
-      <UploadedFilesDialog open={showFilesDialog} onOpenChange={setShowFilesDialog} />
-      <ProfileDialog open={showProfileDialog} onOpenChange={setShowProfileDialog} />
+      {user && <SearchDialog open={showSearchDialog} onOpenChange={setShowSearchDialog} />}
+      {user && <UploadedFilesDialog open={showFilesDialog} onOpenChange={setShowFilesDialog} />}
+      {user && <ProfileDialog open={showProfileDialog} onOpenChange={setShowProfileDialog} />}
       <ResourcesDialog open={showResourcesDialog} onOpenChange={setShowResourcesDialog} />
       
       <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center bg-white dark:bg-neutral-900 border-r border-neutral-300 dark:border-neutral-700 py-4">
@@ -142,32 +146,48 @@ export function AppSidebar() {
             <HelpCircle className="h-5 w-5" />
           </Button>
 
-          {/* User Profile */}
-          <Button
-            onClick={() => setShowProfileDialog(true)}
-            variant="ghost"
-            size="icon"
-            className={cn(
-              'h-12 w-12 rounded-full transition-all duration-200',
-              'hover:ring-2 hover:ring-iris-400',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
-            )}
-            aria-label="Profile"
-            title="Profile"
-          >
-            {avatarUrl ? (
-              <span
-                aria-label="Profile"
-                className="h-10 w-10 rounded-full bg-cover bg-center"
-                role="img"
-                style={{ backgroundImage: `url(${avatarUrl})` }}
-              />
-            ) : (
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-iris-500 to-iris-700">
-                <User className="h-5 w-5 text-white" />
-              </div>
-            )}
-          </Button>
+          {user ? (
+            <Button
+              onClick={() => setShowProfileDialog(true)}
+              variant="ghost"
+              size="icon"
+              className={cn(
+                'h-12 w-12 rounded-full transition-all duration-200',
+                'hover:ring-2 hover:ring-iris-400',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
+              )}
+              aria-label="Profile"
+              title="Profile"
+            >
+              {avatarUrl ? (
+                <span
+                  aria-label="Profile"
+                  className="h-10 w-10 rounded-full bg-cover bg-center"
+                  role="img"
+                  style={{ backgroundImage: `url(${avatarUrl})` }}
+                />
+              ) : (
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-iris-500 to-iris-700">
+                  <User className="h-5 w-5 text-white" aria-hidden="true" />
+                </div>
+              )}
+            </Button>
+          ) : (
+            <Button
+              onClick={() => router.push('/auth/login')}
+              variant="ghost"
+              size="icon"
+              className={cn(
+                'h-12 w-12 rounded-xl transition-all duration-200',
+                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
+              )}
+              aria-label="Sign in"
+              title="Sign in"
+            >
+              <LogIn className="h-5 w-5" aria-hidden="true" />
+            </Button>
+          )}
         </div>
       </aside>
     </>

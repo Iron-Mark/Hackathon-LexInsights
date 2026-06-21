@@ -4,7 +4,7 @@ import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
-const APP_SHELL_ROUTES = ['/chat', '/documents']
+const APP_SHELL_ROUTES = ['/', '/chat', '/documents']
 
 export function ClerkAuthHeader() {
   const pathname = usePathname()

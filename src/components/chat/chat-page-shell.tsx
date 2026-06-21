@@ -10,8 +10,8 @@ import { ChatSidebar } from '@/components/chat/chat-sidebar'
 import { MobileOverlay } from '@/components/chat/mobile-overlay'
 import { LoadingScreen } from '@/components/layout/loading-screen'
 import { Button } from '@/components/ui/button'
-import { useProtectedRoute } from '@/hooks/use-protected-route'
 import { useResponsiveSidebar } from '@/hooks/use-responsive-sidebar'
+import { useAuthStore } from '@/lib/store/auth-store'
 import { useChatStore } from '@/lib/store/chat-store'
 import { cn } from '@/lib/utils'
 import type { Message } from '@/types'
@@ -24,39 +24,34 @@ interface ChatPageShellProps {
 
 export function ChatPageShell({ chatId }: ChatPageShellProps) {
   const router = useRouter()
-  const { user, loading, checkingAccess, redirecting } = useProtectedRoute()
+  const { user, loading } = useAuthStore()
   const { isOpen, isMobile, open } = useResponsiveSidebar()
   const { fetchChats } = useChatStore()
 
   useEffect(() => {
-    if (checkingAccess || !user || chatId) {
+    if (loading) {
       return
     }
 
-    fetchChats()
-  }, [checkingAccess, user, chatId, fetchChats])
+    void fetchChats()
+  }, [loading, user?.id, fetchChats])
 
   useEffect(() => {
-    if (checkingAccess || !user || !chatId) {
+    if (loading || !chatId) {
       return
     }
 
     let cancelled = false
 
     const loadChat = async () => {
-      let latestStore = useChatStore.getState()
-      let chat = latestStore.chats.find((item) => item.id === chatId)
-
-      if (!chat) {
-        await fetchChats()
-      }
+      await fetchChats()
 
       if (cancelled) {
         return
       }
 
-      latestStore = useChatStore.getState()
-      chat = latestStore.chats.find((item) => item.id === chatId)
+      const latestStore = useChatStore.getState()
+      const chat = latestStore.chats.find((item) => item.id === chatId)
 
       if (chat) {
         if (latestStore.activeChat?.id !== chatId) {
@@ -70,19 +65,15 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
       router.push('/chat')
     }
 
-    loadChat()
+    void loadChat()
 
     return () => {
       cancelled = true
     }
-  }, [checkingAccess, user, chatId, fetchChats, router])
+  }, [loading, user?.id, chatId, fetchChats, router])
 
-  if (loading || checkingAccess || redirecting) {
+  if (loading) {
     return <LoadingScreen />
-  }
-
-  if (!user) {
-    return null
   }
 
   return (
@@ -108,7 +99,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
               className="h-10 w-10 bg-white shadow-md transition-all duration-150 hover:bg-slate-50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
               aria-label="Open sidebar menu"
             >
-              <Menu className="h-5 w-5 text-slate-700" />
+              <Menu className="h-5 w-5 text-slate-700" aria-hidden="true" />
             </Button>
           </div>
         )}
