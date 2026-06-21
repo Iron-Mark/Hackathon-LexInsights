@@ -288,6 +288,16 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role='button'][aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
   /* Typography Hierarchy */
   h1,
   h2,
