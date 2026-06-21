@@ -7,6 +7,8 @@ import { ClerkAuthHeader } from "@/components/auth/clerk-auth-header";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { ToastContainer } from "@/components/ui/toast";
 import { isClerkClientConfigured } from "@/lib/auth/clerk-config";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { themeInitScript } from "@/lib/theme";
 
 // Manrope - Body font
 const manrope = Manrope({
@@ -45,7 +47,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: '#3F33BD',
-  colorScheme: 'light',
+  colorScheme: 'light dark',
 };
 
 export default function RootLayout({
@@ -56,23 +58,28 @@ export default function RootLayout({
   const clerkClientConfigured = isClerkClientConfigured();
 
   return (
-    <html lang="en" className={`${manrope.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${manrope.variable} ${outfit.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="antialiased">
         {clerkClientConfigured ? (
           <ClerkProvider>
-            <SessionProvider>
-              <ServiceWorkerRegistration />
-              <ClerkAuthHeader />
-              {children}
-              <ToastContainer />
-            </SessionProvider>
+            <ThemeProvider>
+              <SessionProvider>
+                <ServiceWorkerRegistration />
+                <ClerkAuthHeader />
+                {children}
+                <ToastContainer />
+              </SessionProvider>
+            </ThemeProvider>
           </ClerkProvider>
         ) : (
-          <>
+          <ThemeProvider>
             <ServiceWorkerRegistration />
             {children}
             <ToastContainer />
-          </>
+          </ThemeProvider>
         )}
       </body>
     </html>

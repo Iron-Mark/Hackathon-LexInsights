@@ -54,7 +54,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="text-3xl font-bold leading-tight text-slate-950 sm:text-4xl"
+          className="text-3xl font-bold leading-tight text-slate-950 sm:text-4xl dark:text-slate-100"
         >
           {greeting}, {userName}
         </motion.h1>
@@ -63,7 +63,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="mx-auto max-w-md text-sm leading-6 text-slate-500 sm:text-base"
+          className="mx-auto max-w-md text-sm leading-6 text-slate-500 sm:text-base dark:text-slate-400"
         >
           {mode === 'compliance' 
             ? 'Upload documents for compliance analysis'
@@ -75,7 +75,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.25 }}
-            className="text-xs text-slate-500"
+            className="text-xs text-slate-500 dark:text-slate-400"
           >
             Guest document checks are temporary and are not saved to an account.
           </motion.p>
@@ -109,17 +109,17 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
             transition={{ delay: 0.4 + index * 0.05 }}
             whileHover={{ x: 4 }}
             onClick={() => onPromptSelect(prompt)}
-            className={`group flex min-h-12 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm leading-5 transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 ${
+            className={`group flex min-h-12 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm leading-5 transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900 ${
               index === 0
-                ? 'border-iris-200 bg-iris-50/70 text-slate-900 shadow-sm'
-                : 'border-slate-200 bg-white text-slate-700 shadow-xs'
+                ? 'border-iris-200 bg-iris-50/70 text-slate-900 shadow-sm dark:border-iris-400/40 dark:bg-iris-400/10 dark:text-slate-100'
+                : 'border-slate-200 bg-white text-slate-700 shadow-xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-300 dark:hover:border-iris-400/50'
             }`}
           >
             <span
               className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
                 index === 0
-                  ? 'bg-white text-iris-700 shadow-xs'
-                  : 'bg-slate-100 text-slate-500 group-hover:bg-iris-50 group-hover:text-iris-700'
+                  ? 'bg-white text-iris-700 shadow-xs dark:bg-neutral-900 dark:text-iris-200'
+                  : 'bg-slate-100 text-slate-500 group-hover:bg-iris-50 group-hover:text-iris-700 dark:bg-neutral-700 dark:text-slate-400 dark:group-hover:bg-iris-400/15 dark:group-hover:text-iris-200'
               }`}
               aria-hidden="true"
             >

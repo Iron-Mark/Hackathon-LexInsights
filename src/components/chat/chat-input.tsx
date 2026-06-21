@@ -251,14 +251,14 @@ export function ChatInput() {
     : 'Upload a document and ask about compliance...'
 
   return (
-    <div className="border-t bg-white" role="region" aria-label="Message input">
+    <div className="border-t border-slate-200 bg-white dark:border-neutral-700 dark:bg-neutral-900" role="region" aria-label="Message input">
       {/* Uploaded Files List - Shows files from drag-drop */}
       {uploadedFiles.length > 0 && (
-        <div className="border-b border-slate-200 bg-slate-50">
+        <div className="border-b border-slate-200 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800">
           <div className="mx-auto max-w-5xl px-3 sm:px-4 py-3">
             <UploadedFilesList />
             {!user && mode === 'compliance' && (
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                 Guest document checks are temporary and are not saved to an account.
               </p>
             )}
@@ -273,7 +273,7 @@ export function ChatInput() {
         </div>
 
         {/* Input Area */}
-        <div className="flex items-end gap-2 rounded-lg border-2 border-slate-200 bg-white p-2 focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 transition-all">
+        <div className="flex items-end gap-2 rounded-lg border-2 border-slate-200 bg-white p-2 transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 dark:border-neutral-700 dark:bg-neutral-800 dark:focus-within:border-iris-400 dark:focus-within:ring-iris-400/20">
           {/* File Upload Button (Compliance Mode Only) */}
           {mode === 'compliance' && (
             <>
@@ -288,7 +288,7 @@ export function ChatInput() {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 dark:text-slate-300 dark:hover:bg-neutral-700 dark:hover:text-slate-100 dark:focus-visible:ring-offset-neutral-800"
                 aria-label="Upload compliance document"
                 type="button"
               >
@@ -310,7 +310,7 @@ export function ChatInput() {
             rows={1}
             aria-label={placeholder}
             aria-describedby="message-hint"
-            className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50 transition-opacity"
+            className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-slate-900 placeholder-slate-400 transition-opacity focus:outline-none disabled:opacity-50 dark:text-slate-100 dark:placeholder:text-slate-500"
             style={{
               minHeight: '44px',
               maxHeight: '100px',
@@ -325,7 +325,7 @@ export function ChatInput() {
             <button
               onClick={handleDeepSearch}
               disabled={!message.trim() || isDeepSearching || isSending || loading || uploading}
-              className="group flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-iris-200 bg-iris-50 px-3 py-2.5 text-iris-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-100 hover:text-iris-900 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:hover:shadow-sm sm:min-w-[7rem]"
+              className="group flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-iris-200 bg-iris-50 px-3 py-2.5 text-iris-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-100 hover:text-iris-900 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:hover:shadow-sm sm:min-w-[7rem] dark:border-iris-400/30 dark:bg-iris-400/10 dark:text-iris-200 dark:hover:border-iris-300/50 dark:hover:bg-iris-400/20 dark:hover:text-iris-100 dark:focus-visible:ring-offset-neutral-800 dark:disabled:border-neutral-700 dark:disabled:bg-neutral-800 dark:disabled:text-slate-600"
               aria-label={isDeepSearching ? 'Running deep research...' : 'Run deep research'}
               type="button"
               title="Run deep research"
@@ -345,7 +345,7 @@ export function ChatInput() {
           <button
             onClick={handleSend}
             disabled={(!message.trim() && uploadedFiles.length === 0) || isSending || loading || uploading}
-            className="group flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-primary p-2.5 text-primary-foreground transition-all duration-200 hover:scale-105 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none"
+            className="group flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-primary p-2.5 text-primary-foreground transition-all duration-200 hover:scale-105 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none dark:hover:bg-iris-300 dark:focus-visible:ring-offset-neutral-800 dark:disabled:bg-neutral-700 dark:disabled:text-slate-500"
             aria-label={isSending || loading || uploading ? 'Sending standard message...' : 'Send standard message'}
             type="submit"
             title="Send standard message"

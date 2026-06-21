@@ -50,7 +50,7 @@ export function SidebarHeader() {
   }
 
   return (
-    <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+    <header className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-neutral-700">
       {/* App Branding Area */}
       <div
         className="flex min-w-0 items-center gap-1.5"
@@ -82,7 +82,7 @@ export function SidebarHeader() {
           disabled={isCreating}
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95"
+          className="h-9 w-9 text-slate-600 transition-all duration-150 hover:scale-105 hover:bg-slate-100 hover:text-slate-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-300 dark:hover:bg-neutral-800 dark:hover:text-white dark:focus-visible:ring-offset-neutral-900"
           aria-label={isCreating ? "Creating new chat..." : "Create new chat"}
         >
           <AnimatePresence mode="wait">
@@ -115,7 +115,7 @@ export function SidebarHeader() {
           onClick={toggle}
           variant="ghost"
           size="icon"
-          className="h-9 w-9 text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 transition-colors duration-150"
+          className="h-9 w-9 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:text-slate-300 dark:hover:bg-neutral-800 dark:hover:text-white dark:focus-visible:ring-offset-neutral-900"
           aria-label="Toggle sidebar"
           aria-expanded={isOpen}
         >

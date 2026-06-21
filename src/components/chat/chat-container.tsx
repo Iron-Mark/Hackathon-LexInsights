@@ -568,7 +568,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const isComplianceWithCanvas = mode === 'compliance' && showCanvas && canvasContent
 
   return (
-    <div className="flex h-screen flex-col bg-slate-50">
+    <div className="flex h-screen flex-col bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-slate-100">
       {/* Drag and Drop Overlay */}
       <DragDropOverlay onFileDrop={handleFileDrop} maxFiles={3} />
       
@@ -591,7 +591,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="mb-4 p-4 bg-white rounded-lg border border-slate-200 shadow-sm"
+                  className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800"
                 >
                   <RAGProgress 
                     events={wsEvents} 
@@ -609,12 +609,12 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="mb-4 p-4 bg-red-50 rounded-lg border border-red-200"
+                  className="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/60 dark:bg-red-950/40"
                 >
                   <div className="flex items-start gap-2">
                     <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
-                      <p className="font-body text-sm text-red-800">{error}</p>
+                      <p className="font-body text-sm text-red-800 dark:text-red-200">{error}</p>
                       <Button
                         onClick={handleRetry}
                         variant="outline"

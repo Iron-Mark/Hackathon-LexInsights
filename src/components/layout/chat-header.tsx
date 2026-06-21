@@ -14,7 +14,7 @@ export function ChatHeader() {
   const clerkClientConfigured = isClerkClientConfigured()
 
   return (
-    <header className="sticky top-0 z-10 h-14 border-b border-slate-200 bg-white sm:h-16">
+    <header className="sticky top-0 z-10 h-14 border-b border-slate-200 bg-white sm:h-16 dark:border-neutral-700 dark:bg-neutral-900">
       <div className="flex h-full w-full items-center justify-between gap-4 px-4 sm:px-6">
         <div className="flex-1" />
 
