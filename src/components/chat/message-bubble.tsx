@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import { Copy, Download, FileText, Check } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { showToast } from '@/components/ui/toast'
+import { exportToDocx } from '@/lib/utils/docx-export'
 
 interface MessageBubbleProps {
   message: Message
@@ -21,25 +22,6 @@ function stripMarkdownNode<T extends { node?: unknown }>(props: T): Omit<T, 'nod
   const { node, ...domProps } = props
   void node
   return domProps
-}
-
-function escapeHtmlText(value: string) {
-  return value.replace(/[&<>"']/g, (character) => {
-    switch (character) {
-      case '&':
-        return '&amp;'
-      case '<':
-        return '&lt;'
-      case '>':
-        return '&gt;'
-      case '"':
-        return '&quot;'
-      case "'":
-        return '&#39;'
-      default:
-        return character
-    }
-  })
 }
 
 function getRevealStep(contentLength: number) {
@@ -83,6 +65,7 @@ function getCurrentReducedMotionPreference() {
 export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const [copied, setCopied] = useState(false)
+  const [isExportingWord, setIsExportingWord] = useState(false)
   const prefersReducedMotion = usePrefersReducedMotion()
   const [visibleContent, setVisibleContent] = useState(() => {
     if (message.role === 'user' || getCurrentReducedMotionPreference()) {
@@ -167,42 +150,25 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     }
   }
 
-  // Download as Word (using HTML format that Word can open)
-  const handleDownloadWord = () => {
+  // Download as modern Word document
+  const handleDownloadWord = async () => {
+    if (isExportingWord) {
+      return
+    }
+
+    setIsExportingWord(true)
+
     try {
-      const escapedContent = escapeHtmlText(message.content)
-      // Convert markdown to basic HTML for Word
-      const htmlContent = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>LexInSight Response</title>
-  <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
-    h1, h2, h3 { color: #3F33BD; }
-    code { background-color: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
-    pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
-    blockquote { border-left: 4px solid #3F33BD; padding-left: 15px; margin-left: 0; color: #666; }
-  </style>
-</head>
-<body>
-  <pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">${escapedContent}</pre>
-</body>
-</html>
-      `
-      const blob = new Blob([htmlContent], { type: 'application/msword' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `response-${Date.now()}.doc`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-      showToast('Downloaded as Word document', 'success')
+      await exportToDocx({
+        content: message.content,
+        fileName: `response-${Date.now()}`,
+        title: 'LexInSight Response',
+      })
+      showToast('Downloaded as Word (.docx)', 'success')
     } catch {
       showToast('Failed to download', 'error')
+    } finally {
+      setIsExportingWord(false)
     }
   }
 
@@ -338,11 +304,13 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
           <button
             onClick={handleDownloadWord}
-            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200"
-            aria-label="Download as Word"
+            disabled={isExportingWord}
+            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 disabled:cursor-not-allowed disabled:opacity-60 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200"
+            aria-label={isExportingWord ? 'Exporting Word document' : 'Download as Word (.docx)'}
+            type="button"
           >
             <FileText className="h-3.5 w-3.5" />
-            <span>Word</span>
+            <span>{isExportingWord ? 'Exporting...' : 'Word (.docx)'}</span>
           </button>
         </div>
       )}
