@@ -26,9 +26,15 @@ const outfit = Outfit({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lexiph.vercel.app";
+const appTitle = "LexInSight - Philippine Legal Compliance Assistant";
+const appDescription = "Your Philippine legal research and compliance assistant";
+const ogImage = "/og/lexinsight-og.png";
+
 export const metadata: Metadata = {
-  title: "LexInSight - Philippine Legal Compliance Assistant",
-  description: "Your Philippine legal research and compliance assistant",
+  metadataBase: new URL(siteUrl),
+  title: appTitle,
+  description: appDescription,
   applicationName: "LexInSight",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -40,8 +46,37 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/logo/LOGO-0.5-woBG.svg",
-    apple: "/icons/apple-touch-icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/logo/LOGO-0.5-woBG.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  openGraph: {
+    title: appTitle,
+    description: appDescription,
+    url: "/",
+    siteName: "LexInSight",
+    images: [
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: "LexInSight Philippine legal compliance assistant",
+      },
+    ],
+    locale: "en_PH",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: appTitle,
+    description: appDescription,
+    images: [ogImage],
   },
 };
 
