@@ -20,6 +20,10 @@ test.describe('LexInSight smoke checks', () => {
     await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(authAction(page, 'Sign up')).toBeVisible()
     await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
+    await page.getByRole('button', { name: 'Help & Resources' }).click()
+    await expect(page.getByRole('dialog', { name: 'Philippine Government Resources' })).toBeVisible()
+    await expect(page.getByText('Official Gazette - Laws and Issuances')).toBeVisible()
+    await page.keyboard.press('Escape')
 
     await page.goto('/auth/login')
     await expect(page.getByRole('heading', { name: authRouteHeading })).toBeVisible()
