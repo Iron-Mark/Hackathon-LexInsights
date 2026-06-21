@@ -57,6 +57,9 @@ test.describe('LexInSight smoke checks', () => {
     await expect(page.getByText('LexInSight').first()).toBeVisible()
     await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeVisible()
+    await page.getByRole('button', { name: 'Collapse chat history' }).click()
+    await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeHidden()
 
     await page.getByRole('button', { name: /^New Chat$/ }).click()
     await expect(page).toHaveURL(/\/chat\/guest_/)
