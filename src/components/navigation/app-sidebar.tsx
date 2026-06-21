@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { MessageSquare, PenSquare, Search, FileText, User, HelpCircle, LogIn } from 'lucide-react'
+import { MessageSquare, PenSquare, Search, FileText, User, HelpCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/store/auth-store'
@@ -152,7 +152,7 @@ export function AppSidebar() {
         </nav>
 
         {/* Bottom Section - Help & Profile */}
-        <div className="flex flex-col items-center gap-2">
+        <div className={cn('flex flex-col items-center gap-2', !user && 'pb-14')}>
           {/* Help/Resources Button */}
           <SidebarTooltipButton label="Help & Resources">
             <Button
@@ -170,7 +170,7 @@ export function AppSidebar() {
             </Button>
           </SidebarTooltipButton>
 
-          {user ? (
+          {user && (
             <SidebarTooltipButton label="Profile">
               <Button
                 onClick={() => setShowProfileDialog(true)}
@@ -195,22 +195,6 @@ export function AppSidebar() {
                     <User className="h-5 w-5 text-white" aria-hidden="true" />
                   </div>
                 )}
-              </Button>
-            </SidebarTooltipButton>
-          ) : (
-            <SidebarTooltipButton label="Sign in">
-              <Button
-                onClick={() => router.push('/auth/login')}
-                variant="ghost"
-                size="icon"
-                className={cn(
-                  'h-12 w-12 rounded-xl transition-all duration-200',
-                  'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
-                )}
-                aria-label="Sign in"
-              >
-                <LogIn className="h-5 w-5" aria-hidden="true" />
               </Button>
             </SidebarTooltipButton>
           )}
