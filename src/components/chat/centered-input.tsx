@@ -125,10 +125,10 @@ export function CenteredInput({
       className="mx-auto w-full max-w-3xl px-4"
     >
       <div
-        className={`relative rounded-xl border bg-white transition-all duration-200 ${
+        className={`relative rounded-xl border bg-white transition-all duration-200 dark:bg-neutral-800 ${
           isFocused
-            ? 'border-iris-500 shadow-lg shadow-iris-100'
-            : 'border-slate-200 shadow-md shadow-slate-200/60'
+            ? 'border-iris-500 shadow-lg shadow-iris-100 dark:border-iris-400 dark:shadow-black/30'
+            : 'border-slate-200 shadow-md shadow-slate-200/60 dark:border-neutral-700 dark:shadow-black/20'
         }`}
       >
         <div className="flex items-end gap-2 p-2.5">
@@ -142,7 +142,7 @@ export function CenteredInput({
             placeholder={placeholder}
             disabled={disabled}
             rows={1}
-            className="flex-1 resize-none bg-transparent px-3 py-2.5 text-sm leading-6 text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50"
+            className="flex-1 resize-none bg-transparent px-3 py-2.5 text-sm leading-6 text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50 dark:text-slate-100 dark:placeholder:text-slate-500"
             style={{
               minHeight: '42px',
               maxHeight: '150px',
@@ -152,7 +152,7 @@ export function CenteredInput({
           <button
             onClick={handleSend}
             disabled={(!message.trim() && uploadedFiles.length === 0) || disabled || isSending || uploading}
-            className="flex-shrink-0 rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600"
+            className="flex-shrink-0 rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600 dark:bg-iris-400 dark:text-neutral-900 dark:hover:bg-iris-300 dark:disabled:hover:bg-iris-400"
             aria-label="Send message"
           >
             {(disabled || isSending || uploading) ? (

@@ -97,10 +97,10 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
         onClick={onClick}
         className={cn(
           'w-full rounded-lg px-3 py-2.5 text-left transition-all duration-150 cursor-pointer',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:focus-visible:ring-offset-neutral-900',
           isActive
-            ? 'bg-slate-100 text-slate-900 hover:bg-slate-200 shadow-sm'
-            : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900',
+            ? 'bg-slate-100 text-slate-900 shadow-sm hover:bg-slate-200 dark:bg-neutral-800 dark:text-slate-100 dark:hover:bg-neutral-700'
+            : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-neutral-800 dark:hover:text-white',
           isDeleting && 'opacity-50 cursor-not-allowed pointer-events-none'
         )}
         aria-current={isActive ? 'page' : undefined}
@@ -117,7 +117,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
           <MessageSquare
             className={cn(
               'mt-0.5 h-4 w-4 flex-shrink-0 transition-colors duration-150',
-              isActive ? 'text-slate-600' : 'text-slate-400'
+              isActive ? 'text-slate-600 dark:text-slate-300' : 'text-slate-400 dark:text-slate-500'
             )}
             aria-hidden="true"
           />
@@ -125,7 +125,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
             <p
               className={cn(
                 'font-body truncate text-sm font-semibold leading-snug',
-                isActive ? 'text-neutral-900' : 'text-neutral-800'
+                isActive ? 'text-neutral-900 dark:text-slate-100' : 'text-neutral-800 dark:text-slate-200'
               )}
               title={chat.title}
             >
@@ -134,7 +134,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
             <p
               className={cn(
                 'mt-1 font-body text-xs font-medium transition-colors duration-150',
-                isActive ? 'text-neutral-600' : 'text-neutral-500'
+                isActive ? 'text-neutral-600 dark:text-slate-400' : 'text-neutral-500 dark:text-slate-500'
               )}
             >
               {formatTimestamp(chat.updated_at)}
@@ -165,7 +165,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
                     </button>
                     <button
                       onClick={handleCancelDelete}
-                      className="rounded bg-slate-300 p-1 text-slate-700 transition-colors hover:bg-slate-400"
+                      className="rounded bg-slate-300 p-1 text-slate-700 transition-colors hover:bg-slate-400 dark:bg-neutral-700 dark:text-slate-200 dark:hover:bg-neutral-600"
                       aria-label="Cancel delete"
                       title="Cancel"
                       type="button"
@@ -176,7 +176,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
                 ) : (
                   <button
                     onClick={handleDelete}
-                    className="rounded p-1 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="rounded p-1 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-slate-500 dark:hover:bg-red-950/50 dark:hover:text-red-300"
                     aria-label={`Delete ${chat.title}`}
                     title="Delete chat"
                     type="button"

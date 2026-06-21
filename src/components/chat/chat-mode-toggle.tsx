@@ -12,7 +12,7 @@ export function ChatModeToggle() {
     <div 
       role="group" 
       aria-label="Chat mode selection"
-      className="flex items-center gap-1 rounded-lg bg-slate-100 p-1"
+      className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-neutral-800"
     >
       {/* General Chat Mode */}
       <Button
@@ -26,8 +26,8 @@ export function ChatModeToggle() {
           'h-9 gap-2 rounded-md px-3 transition-all duration-150',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
           mode === 'general'
-            ? 'bg-white text-slate-900 shadow-sm'
-            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            ? 'bg-white text-slate-900 shadow-sm dark:bg-neutral-900 dark:text-slate-100'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-neutral-700 dark:hover:text-slate-100'
         )}
       >
         <MessageSquare className="h-4 w-4" aria-hidden="true" />
@@ -46,8 +46,8 @@ export function ChatModeToggle() {
           'h-9 gap-2 rounded-md px-3 transition-all duration-150',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
           mode === 'compliance'
-            ? 'bg-white text-slate-900 shadow-sm'
-            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+            ? 'bg-white text-slate-900 shadow-sm dark:bg-neutral-900 dark:text-slate-100'
+            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-neutral-700 dark:hover:text-slate-100'
         )}
       >
         <FileText className="h-4 w-4" aria-hidden="true" />

@@ -212,13 +212,13 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       aria-busy={isRevealing}
       className={`mb-4 max-w-[90%] sm:max-w-[85%] lg:max-w-[90%] rounded-xl p-4 sm:p-5 transition-all ${
         isUser
-          ? 'ml-auto border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md'
-          : 'mr-auto border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg'
+          ? 'ml-auto border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md dark:border-iris-400/25 dark:from-iris-400/15 dark:via-neutral-800 dark:to-purple-400/10 dark:text-slate-100 dark:shadow-black/20'
+          : 'mr-auto border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:shadow-black/30'
       }`}
     >
       {isUser ? (
         // User message - simple text with better contrast
-        <p className="font-body whitespace-pre-wrap text-base leading-relaxed break-word font-medium text-slate-900">
+        <p className="font-body whitespace-pre-wrap text-base leading-relaxed break-word font-medium text-slate-900 dark:text-slate-100">
           {message.content}
         </p>
       ) : (
@@ -229,64 +229,64 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             components={{
               // Headings
               h1: (props) => (
-                <h1 className="text-2xl font-bold text-slate-900 mt-6 mb-4 pb-2 border-b-2 border-slate-200" {...stripMarkdownNode(props)} />
+                <h1 className="mb-4 mt-6 border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 dark:border-neutral-700 dark:text-slate-100" {...stripMarkdownNode(props)} />
               ),
               h2: (props) => (
-                <h2 className="text-xl font-bold text-slate-800 mt-5 mb-3" {...stripMarkdownNode(props)} />
+                <h2 className="mb-3 mt-5 text-xl font-bold text-slate-800 dark:text-slate-100" {...stripMarkdownNode(props)} />
               ),
               h3: (props) => (
-                <h3 className="text-lg font-semibold text-slate-700 mt-4 mb-2" {...stripMarkdownNode(props)} />
+                <h3 className="mb-2 mt-4 text-lg font-semibold text-slate-700 dark:text-slate-200" {...stripMarkdownNode(props)} />
               ),
               // Paragraphs
               p: (props) => (
-                <p className="text-base text-slate-700 leading-relaxed my-3" {...stripMarkdownNode(props)} />
+                <p className="my-3 text-base leading-relaxed text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
               // Lists
               ul: (props) => (
-                <ul className="list-disc list-inside space-y-2 my-3 text-slate-700" {...stripMarkdownNode(props)} />
+                <ul className="my-3 list-inside list-disc space-y-2 text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
               ol: (props) => (
-                <ol className="list-decimal list-inside space-y-2 my-3 text-slate-700" {...stripMarkdownNode(props)} />
+                <ol className="my-3 list-inside list-decimal space-y-2 text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
               li: (props) => (
-                <li className="text-slate-700 leading-relaxed" {...stripMarkdownNode(props)} />
+                <li className="leading-relaxed text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
               // Strong/Bold
               strong: (props) => (
-                <strong className="font-bold text-slate-900" {...stripMarkdownNode(props)} />
+                <strong className="font-bold text-slate-900 dark:text-slate-100" {...stripMarkdownNode(props)} />
               ),
               // Code
               code: (props: MarkdownCodeProps) => {
                 const { inline, ...codeProps } = stripMarkdownNode(props)
                 return inline ? (
-                  <code className="bg-slate-100 text-iris-700 px-1.5 py-0.5 rounded text-sm font-mono" {...codeProps} />
+                  <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-iris-700 dark:bg-neutral-900 dark:text-iris-200" {...codeProps} />
                 ) : (
-                  <code className="block bg-slate-900 text-slate-100 p-4 rounded-lg text-sm font-mono overflow-x-auto my-3" {...codeProps} />
+                  <code className="my-3 block overflow-x-auto rounded-lg bg-slate-900 p-4 font-mono text-sm text-slate-100 dark:bg-black/40" {...codeProps} />
                 )
               },
               // Links
               a: (props) => (
-                <a className="text-iris-600 hover:text-iris-700 underline font-medium" {...stripMarkdownNode(props)} />
+                <a className="font-medium text-iris-600 underline hover:text-iris-700 dark:text-iris-300 dark:hover:text-iris-200" {...stripMarkdownNode(props)} />
               ),
               // Blockquotes
               blockquote: (props) => (
-                <blockquote className="border-l-4 border-iris-500 pl-4 py-2 my-3 italic text-slate-600 bg-slate-50 rounded-r" {...stripMarkdownNode(props)} />
+                <blockquote className="my-3 rounded-r border-l-4 border-iris-500 bg-slate-50 py-2 pl-4 italic text-slate-600 dark:bg-neutral-900 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
               // Horizontal rule
               hr: (props) => (
-                <hr className="my-6 border-slate-300" {...stripMarkdownNode(props)} />
+                <hr className="my-6 border-slate-300 dark:border-neutral-700" {...stripMarkdownNode(props)} />
               ),
               // Tables
               table: (props) => (
                 <div className="overflow-x-auto my-4">
-                  <table className="min-w-full border-collapse border border-slate-300" {...stripMarkdownNode(props)} />
+                  <table className="min-w-full border-collapse border border-slate-300 dark:border-neutral-700" {...stripMarkdownNode(props)} />
                 </div>
               ),
               th: (props) => (
-                <th className="border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900" {...stripMarkdownNode(props)} />
+                <th className="border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-slate-100" {...stripMarkdownNode(props)} />
               ),
               td: (props) => (
-                <td className="border border-slate-300 px-4 py-2 text-slate-700" {...stripMarkdownNode(props)} />
+                <td className="border border-slate-300 px-4 py-2 text-slate-700 dark:border-neutral-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
             }}
           >
@@ -297,10 +297,10 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       
       {/* Action Buttons - Only for assistant messages */}
       {!isUser && !isRevealing && (
-        <div className="mt-4 pt-3 border-t border-slate-200 flex items-center gap-2">
+        <div className="mt-4 flex items-center gap-2 border-t border-slate-200 pt-3 dark:border-neutral-700">
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-iris-600 hover:bg-iris-50 rounded-md transition-all duration-150"
+            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200"
             aria-label="Copy to clipboard"
           >
             <AnimatePresence mode="wait">
@@ -329,7 +329,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
           <button
             onClick={handleDownloadMarkdown}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-iris-600 hover:bg-iris-50 rounded-md transition-all duration-150"
+            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200"
             aria-label="Download as Markdown"
           >
             <Download className="h-3.5 w-3.5" />
@@ -338,7 +338,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
           <button
             onClick={handleDownloadWord}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-iris-600 hover:bg-iris-50 rounded-md transition-all duration-150"
+            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200"
             aria-label="Download as Word"
           >
             <FileText className="h-3.5 w-3.5" />
@@ -347,7 +347,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         </div>
       )}
       
-      <p className="mt-3 font-body text-xs font-semibold text-slate-500">
+      <p className="mt-3 font-body text-xs font-semibold text-slate-500 dark:text-slate-400">
         {formatTime(message.created_at)}
       </p>
     </div>

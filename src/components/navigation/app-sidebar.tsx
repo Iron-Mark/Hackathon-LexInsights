@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { MessageSquare, PenSquare, Search, FileText, User, HelpCircle } from 'lucide-react'
+import { MessageSquare, PenSquare, Search, FileText, User, HelpCircle, Moon, Sun } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/store/auth-store'
@@ -12,6 +12,7 @@ import { SearchDialog } from '@/components/chat/search-dialog'
 import { UploadedFilesDialog } from '@/components/chat/uploaded-files-dialog'
 import { ProfileDialog } from '@/components/profile/profile-dialog'
 import { ResourcesDialog } from '@/components/help/resources-dialog'
+import { useTheme } from '@/components/providers/theme-provider'
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>
@@ -32,13 +33,13 @@ function SidebarTooltipButton({ label, children }: SidebarTooltipButtonProps) {
       {children}
       <div
         className={cn(
-          'pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-slate-900/10',
+          'pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-slate-900/10 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:shadow-black/30',
           'transition-all duration-150 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100'
         )}
         role="tooltip"
       >
         {label}
-        <span className="absolute left-[-5px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-b border-l border-slate-200 bg-white" />
+        <span className="absolute left-[-5px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-b border-l border-slate-200 bg-white dark:border-neutral-700 dark:bg-neutral-800" />
       </div>
     </div>
   )
@@ -49,6 +50,7 @@ export function AppSidebar() {
   const pathname = usePathname()
   const { user } = useAuthStore()
   const { toggle } = useSidebarStore()
+  const { resolvedTheme, toggleTheme } = useTheme()
   
   // Dialog states
   const [showSearchDialog, setShowSearchDialog] = useState(false)
@@ -56,6 +58,8 @@ export function AppSidebar() {
   const [showProfileDialog, setShowProfileDialog] = useState(false)
   const [showResourcesDialog, setShowResourcesDialog] = useState(false)
   const avatarUrl = user?.avatar_url || user?.user_metadata?.avatar_url
+  const isDarkTheme = resolvedTheme === 'dark'
+  const themeToggleLabel = isDarkTheme ? 'Switch to light mode' : 'Switch to dark mode'
 
   const handleNewChat = async () => {
     const { createChat } = useChatStore.getState()
@@ -153,6 +157,27 @@ export function AppSidebar() {
 
         {/* Bottom Section - Help & Profile */}
         <div className={cn('flex flex-col items-center gap-2', !user && 'pb-14')}>
+          <SidebarTooltipButton label={themeToggleLabel}>
+            <Button
+              onClick={toggleTheme}
+              variant="ghost"
+              size="icon"
+              className={cn(
+                'h-12 w-12 rounded-xl transition-all duration-200',
+                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900'
+              )}
+              aria-label={themeToggleLabel}
+              aria-pressed={isDarkTheme}
+            >
+              {isDarkTheme ? (
+                <Sun className="h-5 w-5" aria-hidden="true" />
+              ) : (
+                <Moon className="h-5 w-5" aria-hidden="true" />
+              )}
+            </Button>
+          </SidebarTooltipButton>
+
           {/* Help/Resources Button */}
           <SidebarTooltipButton label="Help & Resources">
             <Button
