@@ -109,9 +109,9 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
             className="relative mx-4 max-w-2xl w-full"
           >
             {/* Main Drop Zone */}
-            <div className="relative rounded-2xl border-4 border-dashed border-iris-400 bg-white/95 p-12 shadow-2xl">
+            <div className="relative rounded-2xl border-4 border-dashed border-iris-400 bg-white/95 p-12 shadow-2xl dark:bg-neutral-900/95">
               {/* Animated Background */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-iris-50 to-purple-50 opacity-50" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-iris-50 to-purple-50 opacity-50 dark:from-iris-400/10 dark:to-purple-400/10" />
               
               {/* Content */}
               <div className="relative flex flex-col items-center gap-6 text-center">
@@ -133,45 +133,45 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
 
                 {/* Text */}
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-bold text-slate-900">
+                  <h3 className="text-2xl font-bold text-slate-950 dark:text-slate-100">
                     Drop Your Documents Here
                   </h3>
-                  <p className="text-base text-slate-600">
+                  <p className="text-base text-slate-600 dark:text-slate-300">
                     Release to upload and analyze for compliance
                   </p>
                 </div>
 
                 {/* Supported Files */}
                 <div className="flex flex-wrap items-center justify-center gap-3">
-                  <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm border border-slate-200">
-                    <FileText className="h-4 w-4 text-iris-600" />
-                    <span className="text-sm font-medium text-slate-700">PDF</span>
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                    <FileText className="h-4 w-4 text-iris-600 dark:text-iris-200" />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">PDF</span>
                   </div>
-                  <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm border border-slate-200">
-                    <FileText className="h-4 w-4 text-iris-600" />
-                    <span className="text-sm font-medium text-slate-700">Word</span>
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                    <FileText className="h-4 w-4 text-iris-600 dark:text-iris-200" />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Word</span>
                   </div>
-                  <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm border border-slate-200">
-                    <FileText className="h-4 w-4 text-iris-600" />
-                    <span className="text-sm font-medium text-slate-700">Markdown</span>
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                    <FileText className="h-4 w-4 text-iris-600 dark:text-iris-200" />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Markdown</span>
                   </div>
-                  <div className="flex items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm border border-slate-200">
-                    <FileText className="h-4 w-4 text-iris-600" />
-                    <span className="text-sm font-medium text-slate-700">Text</span>
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                    <FileText className="h-4 w-4 text-iris-600 dark:text-iris-200" />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Text</span>
                   </div>
                 </div>
 
                 {/* Limit Notice */}
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 rounded-lg bg-amber-50 px-4 py-2 border border-amber-200">
-                    <AlertCircle className="h-4 w-4 text-amber-600" />
-                    <span className="text-sm font-medium text-amber-800">
+                  <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 dark:border-amber-400/30 dark:bg-amber-400/10">
+                    <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-200" />
+                    <span className="text-sm font-medium text-amber-800 dark:text-amber-100">
                       Maximum {maxFiles} documents at a time
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-2 border border-blue-200">
-                    <AlertCircle className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-800">
+                  <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-400/30 dark:bg-blue-400/10">
+                    <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-200" />
+                    <span className="text-sm font-medium text-blue-800 dark:text-blue-100">
                       Maximum 5MB per file
                     </span>
                   </div>

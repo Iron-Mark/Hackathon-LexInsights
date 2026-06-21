@@ -77,7 +77,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
       {!isMobile && <AppSidebar />}
 
       <ChatSidebar />
@@ -85,7 +85,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
 
       <main
         className={cn(
-          'flex flex-1 flex-col bg-slate-50 transition-all duration-300',
+          'flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-50 transition-all duration-300 dark:bg-neutral-900',
           !isMobile && !isOpen && 'ml-16',
           !isMobile && isOpen && 'ml-[344px]'
         )}
@@ -96,10 +96,10 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
               onClick={open}
               variant="outline"
               size="icon"
-              className="h-10 w-10 bg-white shadow-md transition-all duration-150 hover:bg-slate-50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
+              className="h-10 w-10 bg-white shadow-md transition-all duration-150 hover:bg-slate-50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus-visible:ring-offset-neutral-900"
               aria-label="Open sidebar menu"
             >
-              <Menu className="h-5 w-5 text-slate-700" aria-hidden="true" />
+              <Menu className="h-5 w-5 text-slate-700 dark:text-slate-200" aria-hidden="true" />
             </Button>
           </div>
         )}

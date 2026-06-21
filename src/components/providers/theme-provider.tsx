@@ -32,13 +32,31 @@ function readStoredPreference(): ThemePreference {
     return 'system'
   }
 
-  const storedPreference = window.localStorage.getItem(THEME_STORAGE_KEY)
+  let storedPreference: string | null = null
+
+  try {
+    storedPreference = window.localStorage.getItem(THEME_STORAGE_KEY)
+  } catch {
+    return 'system'
+  }
 
   if (storedPreference === 'light' || storedPreference === 'dark' || storedPreference === 'system') {
     return storedPreference
   }
 
   return 'system'
+}
+
+function writeStoredPreference(preference: ThemePreference) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, preference)
+  } catch {
+    // Theme still applies for this session when storage is unavailable.
+  }
 }
 
 function applyTheme(theme: ResolvedTheme) {
@@ -81,8 +99,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       applyTheme(nextTheme)
     }
 
-    mediaQuery.addEventListener('change', handleSystemThemeChange)
-    return () => mediaQuery.removeEventListener('change', handleSystemThemeChange)
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleSystemThemeChange)
+      return () => mediaQuery.removeEventListener('change', handleSystemThemeChange)
+    }
+
+    mediaQuery.addListener(handleSystemThemeChange)
+    return () => mediaQuery.removeListener(handleSystemThemeChange)
   }, [preference])
 
   const value = useMemo<ThemeContextValue>(() => ({
@@ -91,7 +114,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setThemePreference: (nextPreference) => {
       const nextTheme = resolveTheme(nextPreference)
 
-      window.localStorage.setItem(THEME_STORAGE_KEY, nextPreference)
+      writeStoredPreference(nextPreference)
       setPreference(nextPreference)
       setResolvedTheme(nextTheme)
       applyTheme(nextTheme)
@@ -100,7 +123,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const nextPreference = resolvedTheme === 'dark' ? 'light' : 'dark'
       const nextTheme = resolveTheme(nextPreference)
 
-      window.localStorage.setItem(THEME_STORAGE_KEY, nextPreference)
+      writeStoredPreference(nextPreference)
       setPreference(nextPreference)
       setResolvedTheme(nextTheme)
       applyTheme(nextTheme)

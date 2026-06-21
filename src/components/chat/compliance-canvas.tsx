@@ -125,28 +125,28 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
     const toneStyles = {
       green: {
-        section: 'bg-green-50 border-green-200',
-        heading: 'text-green-800 border-green-600',
-        text: 'text-green-800',
-        badge: 'text-green-700 bg-green-50',
-        icon: 'text-green-600',
+        section: 'bg-green-50 border-green-200 dark:border-green-400/30 dark:bg-green-400/10',
+        heading: 'text-green-800 border-green-600 dark:border-green-300 dark:text-green-100',
+        text: 'text-green-800 dark:text-green-100',
+        badge: 'text-green-700 bg-green-50 dark:bg-green-400/10 dark:text-green-100',
+        icon: 'text-green-600 dark:text-green-300',
       },
       yellow: {
-        section: 'bg-amber-50 border-amber-200',
-        heading: 'text-amber-800 border-amber-600',
-        text: 'text-amber-800',
-        badge: 'text-amber-700 bg-amber-50',
-        icon: 'text-amber-600',
+        section: 'bg-amber-50 border-amber-200 dark:border-amber-400/30 dark:bg-amber-400/10',
+        heading: 'text-amber-800 border-amber-600 dark:border-amber-300 dark:text-amber-100',
+        text: 'text-amber-800 dark:text-amber-100',
+        badge: 'text-amber-700 bg-amber-50 dark:bg-amber-400/10 dark:text-amber-100',
+        icon: 'text-amber-600 dark:text-amber-300',
       },
       red: {
-        section: 'bg-red-50 border-red-200',
-        heading: 'text-red-800 border-red-600',
-        text: 'text-red-800',
-        badge: 'text-red-700 bg-red-50',
-        icon: 'text-red-600',
+        section: 'bg-red-50 border-red-200 dark:border-red-400/30 dark:bg-red-400/10',
+        heading: 'text-red-800 border-red-600 dark:border-red-300 dark:text-red-100',
+        text: 'text-red-800 dark:text-red-100',
+        badge: 'text-red-700 bg-red-50 dark:bg-red-400/10 dark:text-red-100',
+        icon: 'text-red-600 dark:text-red-300',
       },
       neutral: {
-        section: 'bg-white border-slate-200',
+        section: 'bg-white border-slate-200 dark:border-neutral-700 dark:bg-neutral-800',
       },
     } as const
 
@@ -220,13 +220,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       }
 
       if (line.startsWith('# ')) {
-        return <h1 key={index} className="mb-4 mt-6 text-2xl font-bold text-slate-900">{line.slice(2)}</h1>
+        return <h1 key={index} className="mb-4 mt-6 text-2xl font-bold text-slate-950 dark:text-slate-100">{line.slice(2)}</h1>
       }
       if (line.startsWith('## ')) {
-        return <h2 key={index} className="mb-3 mt-5 text-xl font-semibold text-slate-900">{line.slice(3)}</h2>
+        return <h2 key={index} className="mb-3 mt-5 text-xl font-semibold text-slate-950 dark:text-slate-100">{line.slice(3)}</h2>
       }
       if (line.startsWith('### ')) {
-        return <h3 key={index} className="mb-2 mt-4 text-lg font-semibold text-slate-800">{line.slice(4)}</h3>
+        return <h3 key={index} className="mb-2 mt-4 text-lg font-semibold text-slate-800 dark:text-slate-200">{line.slice(4)}</h3>
       }
 
       if (line.includes('**Status:**') || /^status:/i.test(trimmed)) {
@@ -244,15 +244,15 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       if (line.includes('Compliance Score:')) {
         const score = line.match(/(\d+)%/)
         const scoreNum = score ? parseInt(score[1]) : 0
-        let colorClass = 'text-red-700 bg-red-50 border-red-200'
-        if (scoreNum >= 80) colorClass = 'text-green-700 bg-green-50 border-green-200'
-        else if (scoreNum >= 60) colorClass = 'text-amber-700 bg-amber-50 border-amber-200'
+        let colorClass = 'text-red-700 bg-red-50 border-red-200 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-100'
+        if (scoreNum >= 80) colorClass = 'text-green-700 bg-green-50 border-green-200 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-100'
+        else if (scoreNum >= 60) colorClass = 'text-amber-700 bg-amber-50 border-amber-200 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-100'
 
         return <div key={index} className={'my-4 rounded-lg border-2 p-4 text-2xl font-bold ' + colorClass}>{line}</div>
       }
 
       if (line.startsWith('**') && line.endsWith('**')) {
-        return <p key={index} className="my-2 font-semibold text-slate-900">{line.slice(2, -2)}</p>
+        return <p key={index} className="my-2 font-semibold text-slate-950 dark:text-slate-100">{line.slice(2, -2)}</p>
       }
 
       if (trimmed.startsWith('- ')) {
@@ -275,27 +275,27 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
           )
         }
 
-        return <li key={index} className="ml-4 my-1 text-slate-700">{listText}</li>
+        return <li key={index} className="ml-4 my-1 text-slate-700 dark:text-slate-300">{listText}</li>
       }
 
       if (/^\d+\./.test(trimmed)) {
-        return <li key={index} className="ml-4 my-1 text-slate-700">{trimmed.replace(/^\d+\.\s*/, '')}</li>
+        return <li key={index} className="ml-4 my-1 text-slate-700 dark:text-slate-300">{trimmed.replace(/^\d+\.\s*/, '')}</li>
       }
 
       if (/^(action|deadline|target|owner):/i.test(trimmed)) {
-        return <p key={index} className="my-2 pl-6 leading-relaxed text-slate-700">{line}</p>
+        return <p key={index} className="my-2 pl-6 leading-relaxed text-slate-700 dark:text-slate-300">{line}</p>
       }
 
       if (trimmed === '---') {
-        return <hr key={index} className="my-6 border-slate-200" />
+        return <hr key={index} className="my-6 border-slate-200 dark:border-neutral-700" />
       }
 
       if (line.includes('|')) {
         const cells = line.split('|').filter(cell => cell.trim())
         return (
-          <div key={index} className="flex gap-2 border-b border-slate-200 py-2">
+          <div key={index} className="flex gap-2 border-b border-slate-200 py-2 dark:border-neutral-700">
             {cells.map((cell, i) => (
-              <div key={i} className="flex-1 text-sm text-slate-700">{cell.trim()}</div>
+              <div key={i} className="flex-1 text-sm text-slate-700 dark:text-slate-300">{cell.trim()}</div>
             ))}
           </div>
         )
@@ -305,7 +305,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return <div key={index} className="h-2" />
       }
 
-      return <p key={index} className="my-2 leading-relaxed text-slate-700">{line}</p>
+      return <p key={index} className="my-2 leading-relaxed text-slate-700 dark:text-slate-300">{line}</p>
     }
 
     for (let i = 0; i < lines.length; i++) {
@@ -520,7 +520,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               id="markdown-editor"
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
-              className="h-full w-full resize-none rounded-lg border-2 border-slate-200 bg-white p-4 font-mono text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+              className="h-full w-full resize-none rounded-lg border-2 border-slate-200 bg-white p-4 font-mono text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:focus:ring-offset-neutral-900"
               placeholder="Enter markdown content..."
               aria-label="Markdown editor"
               spellCheck="false"
@@ -537,12 +537,12 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             {!displayContent && (
               <div className="flex flex-col items-center justify-center h-full space-y-4">
                 <div className="relative">
-                  <div className="h-16 w-16 rounded-full border-4 border-slate-200"></div>
+                  <div className="h-16 w-16 rounded-full border-4 border-slate-200 dark:border-neutral-700"></div>
                   <div className="absolute top-0 left-0 h-16 w-16 rounded-full border-4 border-iris-600 border-t-transparent animate-spin"></div>
                 </div>
                 <div className="text-center space-y-2">
-                  <p className="text-lg font-semibold text-slate-900">Analyzing Document...</p>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-lg font-semibold text-slate-950 dark:text-slate-100">Analyzing Document...</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
                     {fileName ? `Processing ${fileName}` : 'Generating compliance report'}
                   </p>
                 </div>
@@ -554,13 +554,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
             {/* Deep Search Results */}
             {showDeepSearch && deepSearchResult && (
-              <div className="mb-6 p-4 bg-gradient-to-r from-iris-50 to-purple-50 border-2 border-iris-200 rounded-lg">
+              <div className="mb-6 rounded-lg border-2 border-iris-200 bg-gradient-to-r from-iris-50 to-purple-50 p-4 dark:border-iris-400/30 dark:from-iris-400/10 dark:to-purple-400/10">
                 <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-5 w-5 text-iris-600" aria-hidden="true" />
-                  <h3 className="font-display text-base font-semibold text-iris-900">
+                  <Sparkles className="h-5 w-5 text-iris-600 dark:text-iris-200" aria-hidden="true" />
+                  <h3 className="font-display text-base font-semibold text-iris-900 dark:text-iris-100">
                     Deep Search Results
                   </h3>
-                  <span className="text-xs text-iris-600 bg-iris-100 px-2 py-0.5 rounded">
+                  <span className="rounded bg-iris-100 px-2 py-0.5 text-xs text-iris-600 dark:bg-iris-400/15 dark:text-iris-200">
                     {deepSearchResult.documents_searched} documents analyzed
                   </span>
                 </div>
@@ -568,17 +568,17 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 {/* Related Documents */}
                 {deepSearchResult.related_documents.length > 0 && (
                   <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-slate-700 mb-2">Related Documents:</h4>
+                    <h4 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Related Documents:</h4>
                     <div className="space-y-2">
                       {deepSearchResult.related_documents.map((doc, idx) => (
-                        <div key={idx} className="bg-white p-3 rounded border border-iris-200">
+                        <div key={idx} className="rounded border border-iris-200 bg-white p-3 dark:border-iris-400/30 dark:bg-neutral-800">
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex-1">
-                              <p className="font-medium text-sm text-slate-900">{doc.title}</p>
-                              <p className="text-xs text-slate-600 mt-1">{doc.excerpt}</p>
-                              <p className="text-xs text-iris-600 mt-1">{doc.reference}</p>
+                              <p className="text-sm font-medium text-slate-950 dark:text-slate-100">{doc.title}</p>
+                              <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{doc.excerpt}</p>
+                              <p className="mt-1 text-xs text-iris-600 dark:text-iris-200">{doc.reference}</p>
                             </div>
-                            <span className="text-xs font-semibold text-iris-700 bg-iris-100 px-2 py-1 rounded">
+                            <span className="rounded bg-iris-100 px-2 py-1 text-xs font-semibold text-iris-700 dark:bg-iris-400/15 dark:text-iris-200">
                               {(doc.relevance_score * 100).toFixed(0)}%
                             </span>
                           </div>
@@ -591,10 +591,10 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 {/* Additional Insights */}
                 {deepSearchResult.additional_insights.length > 0 && (
                   <div className="mb-4">
-                    <h4 className="text-sm font-semibold text-slate-700 mb-2">Additional Insights:</h4>
+                    <h4 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Additional Insights:</h4>
                     <ul className="space-y-1">
                       {deepSearchResult.additional_insights.map((insight, idx) => (
-                        <li key={idx} className="text-sm text-slate-700 flex items-start gap-2">
+                        <li key={idx} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
                           <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-iris-600" aria-hidden="true" />
                           <span>{insight}</span>
                         </li>
@@ -606,10 +606,10 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 {/* Cross References */}
                 {deepSearchResult.cross_references.length > 0 && (
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-700 mb-2">Cross References:</h4>
+                    <h4 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Cross References:</h4>
                     <div className="flex flex-wrap gap-2">
                       {deepSearchResult.cross_references.map((ref, idx) => (
-                        <span key={idx} className="text-xs bg-white text-slate-700 px-2 py-1 rounded border border-iris-200">
+                        <span key={idx} className="rounded border border-iris-200 bg-white px-2 py-1 text-xs text-slate-700 dark:border-iris-400/30 dark:bg-neutral-800 dark:text-slate-300">
                           {ref}
                         </span>
                       ))}
@@ -619,7 +619,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
                 <button
                   onClick={() => setShowDeepSearch(false)}
-                  className="mt-3 text-xs text-iris-600 hover:text-iris-700 underline"
+                  className="mt-3 text-xs text-iris-600 underline hover:text-iris-700 dark:text-iris-200 dark:hover:text-iris-100"
                 >
                   Hide Deep Search Results
                 </button>
@@ -628,10 +628,10 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
             {/* RAG Metadata Section */}
             {displayContent && ragResponse && (
-              <div className="mb-6 pb-4 border-b border-slate-200">
+              <div className="mb-6 border-b border-slate-200 pb-4 dark:border-neutral-700">
                 <div className="flex items-center gap-2 mb-3">
-                  <Search className="h-4 w-4 text-iris-600" aria-hidden="true" />
-                  <h3 className="font-display text-sm font-semibold text-neutral-900">
+                  <Search className="h-4 w-4 text-iris-600 dark:text-iris-200" aria-hidden="true" />
+                  <h3 className="font-display text-sm font-semibold text-neutral-900 dark:text-slate-100">
                     Research Metadata
                   </h3>
                   <AIDisclaimerBadge />
@@ -639,12 +639,12 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 
                 {searchQueries && searchQueries.length > 0 && (
                   <div className="mb-2">
-                    <p className="font-body text-xs text-neutral-600 mb-1">Search Queries Used:</p>
+                    <p className="font-body mb-1 text-xs text-neutral-600 dark:text-slate-400">Search Queries Used:</p>
                     <div className="flex flex-wrap gap-1">
                       {searchQueries.map((query, index) => (
                         <span 
                           key={index} 
-                          className="bg-iris-50 text-iris-700 px-2 py-1 rounded text-xs font-medium border border-iris-200"
+                          className="rounded border border-iris-200 bg-iris-50 px-2 py-1 text-xs font-medium text-iris-700 dark:border-iris-400/30 dark:bg-iris-400/10 dark:text-iris-200"
                         >
                           {query}
                         </span>
@@ -653,8 +653,8 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                   </div>
                 )}
                 
-                <div className="flex items-center gap-4 text-xs text-neutral-600">
-                  <span>Status: <span className="font-medium text-green-600">{ragResponse.status}</span></span>
+                <div className="flex flex-wrap items-center gap-4 text-xs text-neutral-600 dark:text-slate-400">
+                  <span>Status: <span className="font-medium text-green-600 dark:text-green-300">{ragResponse.status}</span></span>
                   {ragResponse.provider_mode && (
                     <span>
                       Provider: <span className="font-medium">

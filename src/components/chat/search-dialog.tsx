@@ -69,18 +69,18 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[80vh] max-w-4xl flex-col overflow-hidden dark:border-neutral-700 dark:bg-neutral-900">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5 text-iris-600" />
+          <DialogTitle className="flex items-center gap-2 dark:text-slate-100">
+            <Search className="h-5 w-5 text-iris-600 dark:text-iris-200" />
             Search Chat History
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
+        <div className="flex flex-1 flex-col space-y-4 overflow-hidden">
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -91,7 +91,9 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             {searchQuery && (
               <button
                 onClick={handleClear}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+                aria-label="Clear search"
+                type="button"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -99,17 +101,17 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           </div>
 
           {/* Results Count */}
-          <div className="text-sm text-slate-600">
+          <div className="text-sm text-slate-600 dark:text-slate-400">
             {filteredChats.length} {filteredChats.length === 1 ? 'conversation' : 'conversations'} found
           </div>
 
           {/* Chat Results */}
-          <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="flex-1 space-y-2 overflow-y-auto">
             {filteredChats.length === 0 ? (
-              <div className="text-center py-16 text-slate-500">
-                <MessageSquare className="h-16 w-16 mx-auto mb-3 text-slate-300" />
-                <p className="text-lg font-medium">No chats found</p>
-                <p className="text-sm mt-1">
+              <div className="py-16 text-center text-slate-500 dark:text-slate-400">
+                <MessageSquare className="mx-auto mb-3 h-16 w-16 text-slate-300 dark:text-slate-600" />
+                <p className="text-lg font-medium text-slate-700 dark:text-slate-200">No chats found</p>
+                <p className="mt-1 text-sm">
                   {searchQuery ? 'Try different keywords' : 'Start a new chat to see it here'}
                 </p>
               </div>
@@ -118,18 +120,18 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                 <div
                   key={chat.id}
                   onClick={() => handleChatClick(chat.id)}
-                  className="p-4 border border-slate-200 rounded-lg hover:border-iris-300 hover:bg-iris-50/50 transition-colors cursor-pointer group"
+                  className="group cursor-pointer rounded-lg border border-slate-200 p-4 transition-colors hover:border-iris-300 hover:bg-iris-50/50 dark:border-neutral-700 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10"
                 >
                   <div className="flex items-start gap-3">
-                    <MessageSquare className="h-5 w-5 text-slate-400 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-slate-900 group-hover:text-iris-700 mb-1">
+                    <MessageSquare className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-500" />
+                    <div className="min-w-0 flex-1">
+                      <h3 className="mb-1 font-semibold text-slate-950 group-hover:text-iris-700 dark:text-slate-100 dark:group-hover:text-iris-200">
                         {chat.title}
                       </h3>
-                      <p className="text-sm text-slate-600 line-clamp-2">
+                      <p className="line-clamp-2 text-sm text-slate-600 dark:text-slate-300">
                         {chat.preview}
                       </p>
-                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                      <div className="mt-2 flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
                           {chat.date}

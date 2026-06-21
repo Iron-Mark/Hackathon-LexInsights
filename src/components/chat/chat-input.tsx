@@ -220,6 +220,7 @@ export function ChatInput() {
         }
       })
       window.dispatchEvent(event)
+      setMessage('')
 
       // Show success message
       const announcement = 'Deep search completed. Enhanced analysis available.'
