@@ -32,6 +32,17 @@ function assertFinding(response, status, titleFragment) {
   assert.ok(match, `Expected ${status} finding containing "${titleFragment}"`)
 }
 
+function assertNoFinding(response, titleFragment) {
+  const findings = [
+    ...response.analysis.green_findings,
+    ...response.analysis.amber_findings,
+    ...response.analysis.red_findings,
+  ]
+  const match = findings.find((finding) => finding.title.toLowerCase().includes(titleFragment.toLowerCase()))
+
+  assert.equal(match, undefined, `Did not expect finding containing "${titleFragment}"`)
+}
+
 function assertResearchMatch(response, expectedStatute, label) {
   assert.equal(response.status, 'completed', `${label} should complete`)
   assert.equal(response.provider_mode, 'local-providerless', `${label} should use local providerless mode`)
@@ -409,6 +420,69 @@ This ordinance takes effect 30 days after publication.`
   assert.equal(thinChildSafetyDraftResponse.status, 'success', 'Child-safety draft check should succeed locally')
   assertFinding(thinChildSafetyDraftResponse, 'amber', 'Child online safety controls')
 
+  const partialChildSafetyDraft = `# Online Child Safety Reporting Ordinance
+
+## Purpose
+This ordinance addresses online child safety incidents in internet cafes.
+
+## Legal Basis
+Pursuant to RA 9775 and RA 10175.
+
+## Scope
+This applies to covered establishments and online reporting channels.
+
+## Responsible Office
+The social welfare office shall implement this ordinance.
+
+## Requirements
+Covered establishments shall report child online safety incidents.
+
+## Monitoring
+The information office shall submit quarterly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const partialChildSafetyDraftResponse = runLocalDraftCheck(
+    { draft_markdown: partialChildSafetyDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(partialChildSafetyDraftResponse.status, 'success', 'Partial child-safety draft check should succeed locally')
+  assertFinding(partialChildSafetyDraftResponse, 'amber', 'Child online safety controls')
+
+  const minorScholarshipDraft = `# Minor Student Scholarship Ordinance
+
+## Purpose
+This ordinance creates a scholarship program for minor students.
+
+## Legal Basis
+Pursuant to RA 7160.
+
+## Scope
+This applies to students who meet eligibility requirements.
+
+## Responsible Office
+The education office shall implement this ordinance.
+
+## Requirements
+Applicants shall submit school records.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Budget
+Funds shall come from the education budget.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const minorScholarshipDraftResponse = runLocalDraftCheck(
+    { draft_markdown: minorScholarshipDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(minorScholarshipDraftResponse.status, 'success', 'Minor scholarship draft check should succeed locally')
+  assertNoFinding(minorScholarshipDraftResponse, 'Child online safety controls')
+
   const thinAmlDraft = `# Local Remittance Monitoring Ordinance
 
 ## Purpose
@@ -438,6 +512,36 @@ This ordinance takes effect 30 days after publication.`
   )
   assert.equal(thinAmlDraftResponse.status, 'success', 'AML draft check should succeed locally')
   assertFinding(thinAmlDraftResponse, 'amber', 'AML controls')
+
+  const partialAmlDraft = `# Local Remittance Monitoring Ordinance
+
+## Purpose
+This ordinance addresses money laundering risks in local remittance and payment services.
+
+## Legal Basis
+Pursuant to RA 9160.
+
+## Scope
+This applies to covered money service businesses operating in the municipality.
+
+## Responsible Office
+The licensing office shall implement this ordinance.
+
+## Requirements
+Covered businesses shall conduct KYC before transactions.
+
+## Monitoring
+The licensing office shall submit quarterly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const partialAmlDraftResponse = runLocalDraftCheck(
+    { draft_markdown: partialAmlDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(partialAmlDraftResponse.status, 'success', 'Partial AML draft check should succeed locally')
+  assertFinding(partialAmlDraftResponse, 'amber', 'AML controls')
 
   const thinConsumerDraft = `# Local Consumer Complaint Ordinance
 
