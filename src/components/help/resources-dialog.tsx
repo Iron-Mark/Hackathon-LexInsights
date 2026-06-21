@@ -1,7 +1,13 @@
 'use client'
 
 import { Globe, ExternalLink, BookOpen } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 interface ResourcesDialogProps {
   open: boolean
@@ -94,61 +100,106 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
-  const categories = Array.from(new Set(GOVERNMENT_RESOURCES.map(r => r.category)))
+  const resourceGroups = Array.from(new Set(GOVERNMENT_RESOURCES.map(r => r.category))).map((category) => ({
+    category,
+    resources: GOVERNMENT_RESOURCES.filter((resource) => resource.category === category),
+  }))
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-iris-600" />
-            Philippine Government Resources
-          </DialogTitle>
-          <p className="text-sm text-slate-600 mt-2">
-            Official sources for Philippine laws, regulations, and compliance information
-          </p>
-        </DialogHeader>
-
-        <div className="flex-1 overflow-y-auto space-y-6">
-          {categories.map((category) => (
-            <div key={category}>
-              <h3 className="text-sm font-semibold text-slate-700 mb-3 px-1">
-                {category}
-              </h3>
-              <div className="space-y-2">
-                {GOVERNMENT_RESOURCES.filter(r => r.category === category).map((resource) => (
-                  <div
-                    key={resource.id}
-                    onClick={() => handleResourceClick(resource.url)}
-                    className="p-4 border border-slate-200 rounded-lg hover:border-iris-300 hover:bg-iris-50/50 transition-colors cursor-pointer group"
-                  >
-                    <div className="flex items-start gap-3">
-                      <Globe className="h-5 w-5 text-iris-600 mt-0.5 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-semibold text-slate-900 group-hover:text-iris-700">
-                            {resource.title}
-                          </h4>
-                          <ExternalLink className="h-4 w-4 text-slate-400 flex-shrink-0 group-hover:text-iris-600" />
-                        </div>
-                        <p className="text-sm text-slate-600 mt-1">
-                          {resource.description}
-                        </p>
-                        <div className="mt-2 text-xs text-slate-500 truncate">
-                          {resource.url}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+      <DialogContent className="flex max-h-[88vh] overflow-hidden p-0 sm:max-w-2xl lg:max-w-5xl xl:max-w-6xl">
+        <DialogHeader className="border-b border-slate-200 bg-slate-50 px-5 py-5 sm:px-7">
+          <div className="flex items-start gap-3 pr-8">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-iris-100 text-iris-700">
+              <BookOpen className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <DialogTitle className="text-xl font-bold leading-tight text-slate-950">
+                Philippine Government Resources
+              </DialogTitle>
+              <DialogDescription className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                Official sources for Philippine laws, regulations, jurisprudence, and compliance information.
+              </DialogDescription>
+              <div className="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-iris-700 shadow-sm">
+                {GOVERNMENT_RESOURCES.length} official sources
               </div>
             </div>
-          ))}
+          </div>
+        </DialogHeader>
+
+        <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-7">
+          <div className="grid gap-6 lg:grid-cols-[190px_1fr]">
+            <aside className="hidden lg:block">
+              <div className="sticky top-0 rounded-xl border border-slate-200 bg-white p-4">
+                <p className="text-xs font-semibold uppercase text-slate-400">Categories</p>
+                <div className="mt-3 space-y-2">
+                  {resourceGroups.map(({ category, resources }) => (
+                    <div
+                      key={category}
+                      className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm text-slate-600"
+                    >
+                      <span>{category}</span>
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500">
+                        {resources.length}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </aside>
+
+            <div className="space-y-7">
+              {resourceGroups.map(({ category, resources }) => (
+                <section key={category} aria-labelledby={`resource-category-${category}`}>
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <h3
+                      id={`resource-category-${category}`}
+                      className="text-sm font-bold text-slate-900"
+                    >
+                      {category}
+                    </h3>
+                    <div className="h-px flex-1 bg-slate-200" />
+                  </div>
+
+                  <div className="grid gap-3 xl:grid-cols-2">
+                    {resources.map((resource) => (
+                      <button
+                        key={resource.id}
+                        onClick={() => handleResourceClick(resource.url)}
+                        className="group rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2"
+                        type="button"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-iris-50 text-iris-700 transition-colors group-hover:bg-iris-100">
+                            <Globe className="h-5 w-5" aria-hidden="true" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-start justify-between gap-3">
+                              <h4 className="text-base font-bold leading-snug text-slate-950 group-hover:text-iris-700">
+                                {resource.title}
+                              </h4>
+                              <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-slate-400 group-hover:text-iris-600" />
+                            </div>
+                            <p className="mt-2 text-sm leading-6 text-slate-600">
+                              {resource.description}
+                            </p>
+                            <div className="mt-3 truncate text-xs font-medium text-slate-500">
+                              {resource.url}
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="pt-4 border-t text-xs text-slate-500">
-          <p>
-            <strong>Note:</strong> These are official Philippine government websites. 
+        <div className="border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-500 sm:px-7">
+          <p className="max-w-4xl">
+            <strong className="text-slate-700">Note:</strong> These are official Philippine government websites.
             Always verify information with the relevant authorities for legal compliance.
           </p>
         </div>
