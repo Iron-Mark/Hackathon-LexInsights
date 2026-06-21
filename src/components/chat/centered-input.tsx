@@ -122,16 +122,16 @@ export function CenteredInput({
         y: 0 
       }}
       transition={{ duration: 0.3 }}
-      className="w-full max-w-3xl mx-auto px-4"
+      className="mx-auto w-full max-w-3xl px-4"
     >
       <div
-        className={`relative rounded-xl border transition-all duration-200 ${
+        className={`relative rounded-xl border bg-white transition-all duration-200 ${
           isFocused
             ? 'border-iris-500 shadow-lg shadow-iris-100'
-            : 'border-slate-200 shadow-sm'
-        } bg-white`}
+            : 'border-slate-200 shadow-md shadow-slate-200/60'
+        }`}
       >
-        <div className="flex items-end gap-2 p-2">
+        <div className="flex items-end gap-2 p-2.5">
           <textarea
             ref={textareaRef}
             value={message}
@@ -142,7 +142,7 @@ export function CenteredInput({
             placeholder={placeholder}
             disabled={disabled}
             rows={1}
-            className="flex-1 resize-none bg-transparent px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50"
+            className="flex-1 resize-none bg-transparent px-3 py-2.5 text-sm leading-6 text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50"
             style={{
               minHeight: '42px',
               maxHeight: '150px',
@@ -152,7 +152,7 @@ export function CenteredInput({
           <button
             onClick={handleSend}
             disabled={(!message.trim() && uploadedFiles.length === 0) || disabled || isSending || uploading}
-            className="flex-shrink-0 rounded-lg bg-iris-600 p-2.5 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600"
+            className="flex-shrink-0 rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600"
             aria-label="Send message"
           >
             {(disabled || isSending || uploading) ? (

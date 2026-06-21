@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Building2, FileSearch, Recycle, ShieldCheck } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
@@ -26,34 +27,34 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
 
   const userName = user?.full_name?.split(' ')[0] || 'there'
 
-  const suggestedPrompts = mode === 'compliance' 
+  const suggestedPrompts = mode === 'compliance'
     ? [
-        'Analyze my document for RA 10173 Data Privacy compliance',
-        'Check compliance with RA 10121 Disaster Risk Reduction',
-        'Review against RA 9003 Waste Management requirements',
-        'Verify compliance with Labor Code provisions'
+        { prompt: 'Analyze my document for RA 10173 Data Privacy compliance', icon: ShieldCheck },
+        { prompt: 'Check compliance with RA 10121 Disaster Risk Reduction', icon: FileSearch },
+        { prompt: 'Review against RA 9003 Waste Management requirements', icon: Recycle },
+        { prompt: 'Verify compliance with Labor Code provisions', icon: Building2 },
       ]
     : [
-        'What are the key requirements for RA 10173 Data Privacy Act?',
-        'Help me review my disaster preparedness plan',
-        'What permits do I need for construction in Metro Manila?',
-        'Explain RA 9003 Solid Waste Management Act'
+        { prompt: 'What are the key requirements for RA 10173 Data Privacy Act?', icon: ShieldCheck },
+        { prompt: 'Help me review my disaster preparedness plan', icon: FileSearch },
+        { prompt: 'What permits do I need for construction in Metro Manila?', icon: Building2 },
+        { prompt: 'Explain RA 9003 Solid Waste Management Act', icon: Recycle },
       ]
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 space-y-8 text-center">
+    <div className="mx-auto w-full max-w-3xl px-4 text-center">
       {/* Minimal Greeting */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="space-y-3"
+        className="mx-auto max-w-2xl space-y-3"
       >
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="text-2xl sm:text-3xl font-semibold text-slate-900"
+          className="text-3xl font-bold leading-tight text-slate-950 sm:text-4xl"
         >
           {greeting}, {userName}
         </motion.h1>
@@ -62,7 +63,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-sm sm:text-base text-slate-500"
+          className="mx-auto max-w-md text-sm leading-6 text-slate-500 sm:text-base"
         >
           {mode === 'compliance' 
             ? 'Upload documents for compliance analysis'
@@ -87,6 +88,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
+          className="mt-7"
         >
           <UploadedFilesList />
         </motion.div>
@@ -97,9 +99,9 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="space-y-2"
+        className="mt-9 grid gap-2.5"
       >
-        {suggestedPrompts.map((prompt, index) => (
+        {suggestedPrompts.map(({ prompt, icon: Icon }, index) => (
           <motion.button
             key={index}
             initial={{ opacity: 0, x: -20 }}
@@ -107,9 +109,23 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
             transition={{ delay: 0.4 + index * 0.05 }}
             whileHover={{ x: 4 }}
             onClick={() => onPromptSelect(prompt)}
-            className="w-full text-left px-4 py-3 rounded-lg border border-slate-200 bg-white hover:border-iris-300 hover:bg-slate-50 transition-all text-sm text-slate-700"
+            className={`group flex min-h-12 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm leading-5 transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 ${
+              index === 0
+                ? 'border-iris-200 bg-iris-50/70 text-slate-900 shadow-sm'
+                : 'border-slate-200 bg-white text-slate-700 shadow-xs'
+            }`}
           >
-            {prompt}
+            <span
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                index === 0
+                  ? 'bg-white text-iris-700 shadow-xs'
+                  : 'bg-slate-100 text-slate-500 group-hover:bg-iris-50 group-hover:text-iris-700'
+              }`}
+              aria-hidden="true"
+            >
+              <Icon className="h-4 w-4" />
+            </span>
+            <span className="font-medium">{prompt}</span>
           </motion.button>
         ))}
       </motion.div>
