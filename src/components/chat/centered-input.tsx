@@ -18,7 +18,7 @@ interface CenteredInputProps {
 
 export function CenteredInput({ 
   onSend, 
-  placeholder = "Ask me anything about Philippine legal compliance...",
+  placeholder = "Ask about Philippine legal compliance...",
   disabled = false,
   isTransitioning = false
 }: CenteredInputProps) {

@@ -568,7 +568,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const isComplianceWithCanvas = mode === 'compliance' && showCanvas && canvasContent
 
   return (
-    <div className="flex h-screen flex-col bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-slate-100">
+    <div className="flex h-full min-h-0 flex-col bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-slate-100">
       {/* Drag and Drop Overlay */}
       <DragDropOverlay onFileDrop={handleFileDrop} maxFiles={3} />
       
@@ -654,12 +654,12 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 ) : (
                   /* Empty State with Centered Input */
                   <motion.div 
-                    className="flex h-full flex-col justify-start py-12 sm:py-16"
+                    className="flex h-full flex-col justify-start py-8 sm:py-16"
                     initial={{ opacity: 1 }}
                     animate={{ opacity: isTransitioning ? 0 : 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="space-y-7">
+                    <div className="space-y-5 sm:space-y-7">
                       {/* 1. Greeting and assistant text */}
                       <EmptyState onPromptSelect={handlePromptSelect} />
                       

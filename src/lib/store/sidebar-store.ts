@@ -28,8 +28,14 @@ export const useSidebarStore = create<SidebarStore>()(
       close: () => set({ isOpen: false }),
       
       setIsMobile: (isMobile: boolean) => set((state) => {
-        // Only auto-open on desktop if sidebar was previously closed due to mobile
-        // Don't override user's manual toggle preference
+        if (isMobile && !state.isMobile) {
+          return {
+            isMobile,
+            isOpen: false,
+          }
+        }
+
+        // Reopen the workspace sidebar when returning to desktop from mobile.
         const shouldAutoOpen = !isMobile && state.isMobile && !state.isOpen
         
         return {

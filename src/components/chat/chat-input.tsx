@@ -252,7 +252,7 @@ export function ChatInput() {
     : 'Upload a document and ask about compliance...'
 
   return (
-    <div className="border-t border-slate-200 bg-white dark:border-neutral-700 dark:bg-neutral-900" role="region" aria-label="Message input">
+    <div className="border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] dark:border-neutral-700 dark:bg-neutral-900" role="region" aria-label="Message input">
       {/* Uploaded Files List - Shows files from drag-drop */}
       {uploadedFiles.length > 0 && (
         <div className="border-b border-slate-200 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-800">
@@ -267,9 +267,9 @@ export function ChatInput() {
         </div>
       )}
       
-      <div className="mx-auto max-w-5xl p-3 sm:p-4">
+      <div className="mx-auto max-w-5xl p-2.5 sm:p-4">
         {/* Input Area */}
-        <div className="flex items-end gap-2 rounded-lg border-2 border-slate-200 bg-white p-2 transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 dark:border-neutral-700 dark:bg-neutral-800 dark:focus-within:border-iris-400 dark:focus-within:ring-iris-400/20">
+        <div className="flex items-end gap-1.5 rounded-lg border-2 border-slate-200 bg-white p-2 transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 sm:gap-2 dark:border-neutral-700 dark:bg-neutral-800 dark:focus-within:border-iris-400 dark:focus-within:ring-iris-400/20">
           {/* File Upload Button (Compliance Mode Only) */}
           {mode === 'compliance' && (
             <>

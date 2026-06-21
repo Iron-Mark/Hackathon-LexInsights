@@ -77,7 +77,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden supports-[height:100dvh]:h-dvh">
       {!isMobile && <AppSidebar />}
 
       <ChatSidebar />
@@ -91,7 +91,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
         )}
       >
         {isMobile && (
-          <div className="fixed left-4 top-4 z-20">
+          <div className="fixed left-[calc(env(safe-area-inset-left)+1rem)] top-[calc(env(safe-area-inset-top)+1rem)] z-20">
             <Button
               onClick={open}
               variant="outline"

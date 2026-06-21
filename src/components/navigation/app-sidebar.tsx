@@ -125,7 +125,7 @@ export function AppSidebar() {
       {user && <ProfileDialog open={showProfileDialog} onOpenChange={setShowProfileDialog} />}
       <ResourcesDialog open={showResourcesDialog} onOpenChange={setShowResourcesDialog} />
       
-      <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center bg-white dark:bg-neutral-900 border-r border-neutral-300 dark:border-neutral-700 py-4">
+      <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center border-r border-neutral-300 bg-white pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-[calc(env(safe-area-inset-top)+1rem)] supports-[height:100dvh]:h-dvh dark:border-neutral-700 dark:bg-neutral-900">
         {/* Top Navigation Items */}
         <nav className="flex flex-1 flex-col items-center gap-2">
           {navItems.map((item, index) => {
