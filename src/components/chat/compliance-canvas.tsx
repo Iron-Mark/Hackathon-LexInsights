@@ -345,7 +345,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
   return (
     <div 
-      className="flex h-full border-l border-slate-200 bg-white dark:border-neutral-700 dark:bg-neutral-900"
+      className="relative flex h-full border-l border-slate-200 bg-white dark:border-neutral-700 dark:bg-neutral-900"
       role="region"
       aria-label="Compliance report viewer"
     >
@@ -529,7 +529,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         ) : (
           /* Preview Mode - Formatted View */
           <article 
-            className="flex-1 overflow-y-auto p-6 focus:outline-none"
+            className="flex-1 overflow-y-auto p-6 pb-32 focus:outline-none"
             tabIndex={0}
             aria-label="Compliance report content"
           >
