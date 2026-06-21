@@ -33,7 +33,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
   const formatTimestamp = (dateString: string) => {
     const date = new Date(dateString)
     const now = new Date()
-    const diffInMs = now.getTime() - date.getTime()
+    const diffInMs = Math.max(0, now.getTime() - date.getTime())
     const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60))
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))

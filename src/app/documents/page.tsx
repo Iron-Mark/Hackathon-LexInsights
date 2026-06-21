@@ -19,7 +19,7 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50">
+    <div className="flex h-screen bg-slate-50 dark:bg-neutral-900">
       <AppSidebar />
       
       <main className="flex-1 ml-16 overflow-y-auto">
@@ -27,16 +27,16 @@ export default function DocumentsPage() {
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-2">
-              <FileText className="h-8 w-8 text-iris-600" />
-              <h1 className="text-3xl font-bold text-slate-900">My Documents</h1>
+              <FileText className="h-8 w-8 text-iris-600 dark:text-iris-200" />
+              <h1 className="text-3xl font-bold text-slate-950 dark:text-slate-100">My Documents</h1>
             </div>
-            <p className="text-slate-600">
+            <p className="text-slate-600 dark:text-slate-400">
               View and manage your uploaded documents
             </p>
           </div>
 
           {/* Documents List */}
-          <div className="bg-white rounded-lg border border-slate-200 p-6">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-900">
             <UserDocumentsList />
           </div>
         </div>

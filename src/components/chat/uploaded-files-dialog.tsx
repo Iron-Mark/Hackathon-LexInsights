@@ -180,10 +180,10 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[75vh] max-w-3xl flex-col overflow-hidden">
+      <DialogContent className="flex max-h-[75vh] max-w-3xl flex-col overflow-hidden dark:border-neutral-700 dark:bg-neutral-900">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-iris-600" aria-hidden="true" />
+          <DialogTitle className="flex items-center gap-2 dark:text-slate-100">
+            <FileText className="h-5 w-5 text-iris-600 dark:text-iris-200" aria-hidden="true" />
             Uploaded Files
           </DialogTitle>
           <DialogDescription>
@@ -197,9 +197,9 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
               <Loader2 className="h-8 w-8 animate-spin text-iris-600" aria-hidden="true" />
             </div>
           ) : files.length === 0 ? (
-            <div className="py-12 text-center text-slate-500">
-              <FileIcon className="mx-auto mb-3 h-16 w-16 text-slate-300" aria-hidden="true" />
-              <p className="text-lg font-medium">No files uploaded yet</p>
+            <div className="py-12 text-center text-slate-500 dark:text-slate-400">
+              <FileIcon className="mx-auto mb-3 h-16 w-16 text-slate-300 dark:text-slate-600" aria-hidden="true" />
+              <p className="text-lg font-medium text-slate-700 dark:text-slate-200">No files uploaded yet</p>
               <p className="mt-1 text-sm">Upload documents to analyze them for compliance</p>
             </div>
           ) : (
@@ -209,16 +209,16 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
               return (
                 <div
                   key={file.id}
-                  className="group flex items-center gap-3 rounded-lg border border-slate-200 p-3 transition-colors hover:border-iris-300 hover:bg-iris-50/30"
+                  className="group flex items-center gap-3 rounded-lg border border-slate-200 p-3 transition-colors hover:border-iris-300 hover:bg-iris-50/30 dark:border-neutral-700 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10"
                 >
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-iris-50 text-iris-600">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-iris-50 text-iris-600 dark:bg-iris-400/10 dark:text-iris-200">
                     <FileText className="h-5 w-5" aria-hidden="true" />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <h4 className="truncate font-medium text-slate-900">{file.name}</h4>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                      <span className="rounded bg-iris-50 px-1.5 py-0.5 text-[10px] font-semibold text-iris-600">
+                    <h4 className="truncate font-medium text-slate-950 dark:text-slate-100">{file.name}</h4>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                      <span className="rounded bg-iris-50 px-1.5 py-0.5 text-[10px] font-semibold text-iris-600 dark:bg-iris-400/10 dark:text-iris-200">
                         {getFileType(file.name, file.type)}
                       </span>
                       <span>{formatFileSize(file.size)}</span>
@@ -237,7 +237,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                           size="icon"
                           onClick={() => handleDelete(file.id)}
                           disabled={deletingId === file.id}
-                          className="h-10 w-10 text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50"
+                          className="h-10 w-10 text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 dark:text-red-300 dark:hover:bg-red-400/10 dark:hover:text-red-200"
                           title="Confirm delete"
                           aria-label={`Confirm delete ${file.name}`}
                         >
@@ -252,7 +252,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                           size="icon"
                           onClick={() => setConfirmDeleteId(null)}
                           disabled={deletingId === file.id}
-                          className="h-10 w-10 text-slate-600 hover:bg-slate-100"
+                          className="h-10 w-10 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-neutral-800"
                           title="Cancel"
                           aria-label={`Cancel delete ${file.name}`}
                         >
@@ -286,7 +286,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                           size="icon"
                           onClick={() => handleDelete(file.id)}
                           disabled={deletingId === file.id}
-                          className="h-10 w-10 text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50"
+                          className="h-10 w-10 text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 dark:text-red-300 dark:hover:bg-red-400/10 dark:hover:text-red-200"
                           title="Delete file"
                           aria-label={`Delete ${file.name}`}
                         >
@@ -306,7 +306,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
         </div>
 
         {files.length > 0 && (
-          <div className="border-t pt-3 text-sm text-slate-500">
+          <div className="border-t border-slate-200 pt-3 text-sm text-slate-500 dark:border-neutral-700 dark:text-slate-400">
             Total: {files.length} file{files.length !== 1 ? 's' : ''} ({formatFileSize(files.reduce((acc, f) => acc + f.size, 0))})
           </div>
         )}

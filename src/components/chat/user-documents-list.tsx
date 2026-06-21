@@ -143,7 +143,7 @@ export function UserDocumentsList() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin text-iris-600" aria-hidden="true" />
+        <Loader2 className="h-6 w-6 animate-spin text-iris-600 dark:text-iris-200" aria-hidden="true" />
       </div>
     )
   }
@@ -151,9 +151,9 @@ export function UserDocumentsList() {
   if (documents.length === 0) {
     return (
       <div className="py-8 text-center">
-        <FileText className="mx-auto mb-3 h-12 w-12 text-slate-300" aria-hidden="true" />
-        <p className="text-sm text-slate-500">No documents uploaded yet</p>
-        <p className="mt-1 text-xs text-slate-400">
+        <FileText className="mx-auto mb-3 h-12 w-12 text-slate-300 dark:text-slate-600" aria-hidden="true" />
+        <p className="text-sm text-slate-500 dark:text-slate-300">No documents uploaded yet</p>
+        <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
           Upload documents in compliance mode to see them here
         </p>
       </div>
@@ -172,20 +172,20 @@ export function UserDocumentsList() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, x: -100 }}
-              className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 transition-all hover:border-iris-300 hover:shadow-sm"
+              className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 transition-all hover:border-iris-300 hover:shadow-sm dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-iris-400/50 dark:hover:shadow-black/20"
             >
-              <FileText className="h-5 w-5 flex-shrink-0 text-iris-600" aria-hidden="true" />
+              <FileText className="h-5 w-5 flex-shrink-0 text-iris-600 dark:text-iris-200" aria-hidden="true" />
 
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-slate-900">
+                <p className="truncate text-sm font-medium text-slate-950 dark:text-slate-100">
                   {doc.file_name}
                 </p>
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                  <span className="rounded bg-iris-50 px-1.5 py-0.5 text-[10px] font-semibold text-iris-600">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                  <span className="rounded bg-iris-50 px-1.5 py-0.5 text-[10px] font-semibold text-iris-600 dark:bg-iris-400/10 dark:text-iris-200">
                     {getFileType(doc.file_name, doc.file_type)}
                   </span>
                   <span>{formatFileSize(doc.file_size)}</span>
-                  <span className="h-1 w-1 rounded-full bg-slate-300" aria-hidden="true" />
+                  <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" aria-hidden="true" />
                   <span>{formatDate(doc.created_at)}</span>
                 </div>
               </div>
@@ -196,7 +196,7 @@ export function UserDocumentsList() {
                     <button
                       onClick={() => handleDelete(doc)}
                       disabled={deletingId === doc.id}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
+                      className="flex h-10 w-10 items-center justify-center rounded-lg text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:text-red-300 dark:hover:bg-red-400/10"
                       aria-label={`Confirm delete ${doc.file_name}`}
                       title="Confirm delete"
                       type="button"
@@ -210,7 +210,7 @@ export function UserDocumentsList() {
                     <button
                       onClick={() => setConfirmDeleteId(null)}
                       disabled={deletingId === doc.id}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 disabled:opacity-50 dark:text-slate-300 dark:hover:bg-neutral-700"
                       aria-label={`Cancel delete ${doc.file_name}`}
                       title="Cancel"
                       type="button"
@@ -222,7 +222,7 @@ export function UserDocumentsList() {
                   <>
                     <button
                       onClick={() => handleDownload(doc)}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-iris-600"
+                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-100 hover:text-iris-600 dark:text-slate-300 dark:hover:bg-neutral-700 dark:hover:text-iris-200"
                       aria-label={`Download ${doc.file_name}`}
                       title="Download"
                       type="button"
@@ -233,7 +233,7 @@ export function UserDocumentsList() {
                     <button
                       onClick={() => handleDelete(doc)}
                       disabled={deletingId === doc.id}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:text-slate-300 dark:hover:bg-red-400/10 dark:hover:text-red-300"
                       aria-label={`Delete ${doc.file_name}`}
                       title="Delete"
                       type="button"

@@ -22,16 +22,16 @@ export function VersionHistorySidebar() {
   if (versions.length === 0) {
     return (
       <div className="flex h-full items-center justify-center p-4 text-center">
-        <p className="text-sm text-slate-500">No versions yet</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">No versions yet</p>
       </div>
     )
   }
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-slate-200 px-4 py-3">
-        <h3 className="font-display text-sm font-semibold text-neutral-900 truncate">Version History</h3>
-        <p className="font-body text-xs text-neutral-600 mt-1 truncate font-medium">{versions.length} versions</p>
+      <div className="border-b border-slate-200 px-4 py-3 dark:border-neutral-700">
+        <h3 className="font-display truncate text-sm font-semibold text-neutral-900 dark:text-slate-100">Version History</h3>
+        <p className="font-body mt-1 truncate text-xs font-medium text-neutral-600 dark:text-slate-400">{versions.length} versions</p>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -43,8 +43,8 @@ export function VersionHistorySidebar() {
             <div
               key={version.id}
               className={cn(
-                'group relative border-b border-slate-100 px-4 py-3 transition-colors',
-                isActive ? 'bg-iris-100' : 'hover:bg-slate-50'
+                'group relative border-b border-slate-100 px-4 py-3 transition-colors dark:border-neutral-800',
+                isActive ? 'bg-iris-100 dark:bg-iris-400/10' : 'hover:bg-slate-50 dark:hover:bg-neutral-800'
               )}
             >
               <div
@@ -67,18 +67,18 @@ export function VersionHistorySidebar() {
                       <span
                         className={cn(
                           'font-body text-sm font-semibold truncate',
-                          isActive ? 'text-iris-700' : 'text-neutral-800'
+                          isActive ? 'text-iris-700 dark:text-iris-200' : 'text-neutral-800 dark:text-slate-200'
                         )}
                       >
                         {version.label}
                       </span>
                       {isLatest && (
-                        <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                        <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-400/10 dark:text-green-200">
                           Latest
                         </span>
                       )}
                     </div>
-                    <p className="mt-1 font-body text-xs text-neutral-600 font-medium">
+                    <p className="font-body mt-1 text-xs font-medium text-neutral-600 dark:text-slate-400">
                       {formatTimestamp(version.timestamp)}
                     </p>
                   </div>
@@ -106,7 +106,7 @@ export function VersionHistorySidebar() {
                           </button>
                           <button
                             onClick={() => setConfirmDeleteId(null)}
-                            className="flex h-7 w-7 items-center justify-center rounded bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                            className="flex h-7 w-7 items-center justify-center rounded bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:bg-neutral-700 dark:text-slate-200 dark:hover:bg-neutral-600"
                             aria-label={`Cancel delete ${version.label}`}
                             type="button"
                           >
@@ -116,11 +116,11 @@ export function VersionHistorySidebar() {
                       ) : (
                         <button
                           onClick={() => setConfirmDeleteId(version.id)}
-                          className="flex h-7 w-7 items-center justify-center rounded p-0 transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                          className="flex h-7 w-7 items-center justify-center rounded p-0 transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:hover:bg-red-400/10"
                           aria-label={`Delete ${version.label}`}
                           type="button"
                         >
-                          <Trash2 className="h-3.5 w-3.5 text-slate-400 hover:text-red-600" aria-hidden="true" />
+                          <Trash2 className="h-3.5 w-3.5 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-300" aria-hidden="true" />
                         </button>
                       )}
                     </div>

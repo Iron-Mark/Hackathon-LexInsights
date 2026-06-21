@@ -39,7 +39,7 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
       {isOpen && (
         <button
           onClick={close}
-          className="absolute bottom-0 right-0 top-0 z-20 w-3 translate-x-1.5 cursor-pointer border-r border-transparent bg-transparent transition-colors hover:border-iris-300 hover:bg-iris-100/70 focus-visible:translate-x-0 focus-visible:border-iris-500 focus-visible:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:hover:border-iris-400/40 dark:hover:bg-iris-400/15 dark:focus-visible:bg-iris-400/15 dark:focus-visible:ring-offset-neutral-900"
+          className="absolute bottom-0 right-0 top-0 z-20 w-2 cursor-pointer border-r border-transparent bg-transparent transition-colors hover:border-iris-300 hover:bg-iris-100/70 focus-visible:border-iris-500 focus-visible:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:hover:border-iris-400/40 dark:hover:bg-iris-400/15 dark:focus-visible:bg-iris-400/15 dark:focus-visible:ring-offset-neutral-900"
           aria-label="Collapse chat history"
           title="Collapse chat history"
           type="button"

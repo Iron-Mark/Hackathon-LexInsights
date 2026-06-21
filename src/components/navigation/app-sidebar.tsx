@@ -100,7 +100,7 @@ export function AppSidebar() {
 
   const isActive = (item: NavItem) => {
     // Chat icon is active when on chat routes
-    if (item.label === 'Chat') {
+    if (item.label === 'Chat History') {
       return pathname === '/chat' || pathname?.startsWith('/chat/')
     }
     if (item.href) {
