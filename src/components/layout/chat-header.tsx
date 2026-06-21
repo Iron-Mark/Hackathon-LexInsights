@@ -1,13 +1,17 @@
 'use client'
 
+import { SignInButton, SignUpButton } from '@clerk/nextjs'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { authFormAppearance } from '@/lib/auth/clerk-appearance'
+import { isClerkClientConfigured } from '@/lib/auth/clerk-config'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { UserMenu } from './user-menu'
 
 export function ChatHeader() {
   const { user } = useAuthStore()
+  const clerkClientConfigured = isClerkClientConfigured()
 
   return (
     <header className="sticky top-0 z-10 h-14 border-b border-slate-200 bg-white sm:h-16">
@@ -37,6 +41,25 @@ export function ChatHeader() {
         <div className="flex flex-1 items-center justify-end gap-2">
           {user ? (
             <UserMenu />
+          ) : clerkClientConfigured ? (
+            <>
+              <SignInButton
+                mode="modal"
+                fallbackRedirectUrl="/chat"
+                signUpFallbackRedirectUrl="/chat"
+                appearance={authFormAppearance}
+              >
+                <Button variant="ghost" size="sm">Sign in</Button>
+              </SignInButton>
+              <SignUpButton
+                mode="modal"
+                fallbackRedirectUrl="/chat"
+                signInFallbackRedirectUrl="/chat"
+                appearance={authFormAppearance}
+              >
+                <Button size="sm">Sign up</Button>
+              </SignUpButton>
+            </>
           ) : (
             <>
               <Button asChild variant="ghost" size="sm">

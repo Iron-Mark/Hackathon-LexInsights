@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 const protectedRoutes = ['/documents']
 const isManagedLocalWebServer = !process.env.PLAYWRIGHT_BASE_URL
@@ -6,12 +6,19 @@ const diagnosticsExpected = isManagedLocalWebServer || process.env.ENABLE_DIAGNO
 const authRouteHeading = /Sign in to LexInSight|Clerk setup required/
 const signupRouteHeading = /Create your LexInSight account|Clerk setup required/
 
+function authAction(page: Page, name: 'Sign in' | 'Sign up') {
+  return page
+    .getByRole('button', { name, exact: true })
+    .or(page.getByRole('link', { name, exact: true }))
+    .first()
+}
+
 test.describe('LexInSight smoke checks', () => {
   test('public entry routes render', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByText('LexInSight').first()).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Sign in' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Sign up' })).toBeVisible()
+    await expect(authAction(page, 'Sign in')).toBeVisible()
+    await expect(authAction(page, 'Sign up')).toBeVisible()
     await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
 
     await page.goto('/auth/login')
@@ -37,7 +44,7 @@ test.describe('LexInSight smoke checks', () => {
     await page.goto('/chat')
 
     await expect(page.getByText('LexInSight').first()).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Sign in' })).toBeVisible()
+    await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
 
     await page.getByRole('button', { name: /^New Chat$/ }).click()

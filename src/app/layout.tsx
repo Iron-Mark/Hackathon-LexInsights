@@ -6,7 +6,7 @@ import { SessionProvider } from "@/components/providers/session-provider";
 import { ClerkAuthHeader } from "@/components/auth/clerk-auth-header";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { ToastContainer } from "@/components/ui/toast";
-import { isClerkConfigured } from "@/lib/auth/clerk-config";
+import { isClerkClientConfigured } from "@/lib/auth/clerk-config";
 
 // Manrope - Body font
 const manrope = Manrope({
@@ -53,12 +53,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const clerkConfigured = isClerkConfigured();
+  const clerkClientConfigured = isClerkClientConfigured();
 
   return (
     <html lang="en" className={`${manrope.variable} ${outfit.variable}`}>
       <body className="antialiased">
-        {clerkConfigured ? (
+        {clerkClientConfigured ? (
           <ClerkProvider>
             <SessionProvider>
               <ServiceWorkerRegistration />
