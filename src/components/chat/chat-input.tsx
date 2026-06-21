@@ -276,7 +276,7 @@ export function ChatInput() {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
                 aria-label="Upload compliance document"
                 type="button"
               >
@@ -300,7 +300,7 @@ export function ChatInput() {
             aria-describedby="message-hint"
             className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50 transition-opacity"
             style={{
-              minHeight: '36px',
+              minHeight: '44px',
               maxHeight: '100px',
             }}
           />
@@ -313,7 +313,7 @@ export function ChatInput() {
             <button
               onClick={handleDeepSearch}
               disabled={!message.trim() || isDeepSearching || isSending || loading || uploading}
-              className="relative rounded-lg bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 p-2 text-white shadow-lg shadow-purple-500/50 transition-all duration-200 hover:shadow-xl hover:shadow-purple-500/60 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:scale-100 min-h-[40px] min-w-[40px] flex items-center justify-center group"
+              className="group relative flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 p-2.5 text-white shadow-lg shadow-purple-500/50 transition-all duration-200 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:scale-100 disabled:opacity-50 disabled:shadow-none"
               aria-label={isDeepSearching ? 'Performing deep search...' : 'Perform deep search'}
               type="button"
               title="Deep Search - Enhanced analysis with cross-references"
@@ -334,7 +334,7 @@ export function ChatInput() {
           <button
             onClick={handleSend}
             disabled={(!message.trim() && uploadedFiles.length === 0) || isSending || loading || uploading}
-            className="rounded-lg bg-primary p-2 text-primary-foreground transition-all duration-200 hover:bg-iris-700 hover:shadow-md hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none min-h-[40px] min-w-[40px] flex items-center justify-center"
+            className="group flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-primary p-2.5 text-primary-foreground transition-all duration-200 hover:scale-105 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none"
             aria-label={isSending || loading || uploading ? 'Sending message...' : 'Send message'}
             type="submit"
           >

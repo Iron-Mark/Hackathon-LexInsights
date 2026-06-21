@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'LexInSight',
     short_name: 'LexInSight',
-    description: 'Philippine legal compliance assistant for chat, documents, and demo-ready compliance analysis.',
+    description: 'Philippine legal compliance assistant for chat, documents, research, and compliance analysis.',
     start_url: '/',
     scope: '/',
     display: 'standalone',
