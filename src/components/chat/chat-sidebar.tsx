@@ -16,7 +16,7 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
     <aside
       className={cn(
         // Base styles with design system colors
-        'relative flex h-screen flex-col border-r border-slate-200 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900',
+        'relative flex h-screen flex-col border-r border-slate-200 bg-slate-50 supports-[height:100dvh]:h-dvh dark:border-neutral-700 dark:bg-neutral-900',
         // Width constraints
         'w-[280px]',
         // Desktop: fixed positioning with offset for app sidebar

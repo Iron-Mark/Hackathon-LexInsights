@@ -52,9 +52,7 @@ export const metadata: Metadata = {
       { url: "/logo/LOGO-0.5-woBG.svg", type: "image/svg+xml" },
     ],
     shortcut: "/favicon.ico",
-    apple: [
-      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
-    ],
+    apple: "/icons/apple-touch-icon.png",
   },
   openGraph: {
     title: appTitle,

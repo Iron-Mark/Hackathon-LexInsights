@@ -1,13 +1,15 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 
 import { useSidebarStore } from '@/lib/store/sidebar-store'
+
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
 export function useResponsiveSidebar() {
   const { isOpen, isMobile, open, close, setIsMobile } = useSidebarStore()
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768)
     }

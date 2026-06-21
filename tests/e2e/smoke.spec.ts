@@ -19,7 +19,7 @@ test.describe('LexInSight smoke checks', () => {
     await expect(page.getByText('LexInSight').first()).toBeVisible()
     await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(authAction(page, 'Sign up')).toBeVisible()
-    await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
+    await expect(page.getByPlaceholder('Ask about Philippine legal compliance...')).toBeVisible()
     const brandMetadata = await page.evaluate(() => ({
       iconHrefs: Array.from(
         document.querySelectorAll<HTMLLinkElement>('link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]')
@@ -71,7 +71,7 @@ test.describe('LexInSight smoke checks', () => {
 
     await expect(page.getByText('LexInSight').first()).toBeVisible()
     await expect(authAction(page, 'Sign in')).toBeVisible()
-    await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
+    await expect(page.getByPlaceholder('Ask about Philippine legal compliance...')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeVisible()
     await page.getByRole('button', { name: 'Collapse chat history' }).click()
     await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeHidden()
@@ -94,11 +94,61 @@ test.describe('LexInSight smoke checks', () => {
     )
   })
 
+  test('mobile web app opens on the assistant without layout overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/chat')
+
+    await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), there/ })).toBeVisible()
+    await expect(page.getByPlaceholder('Ask about Philippine legal compliance...')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Open sidebar menu' })).toBeVisible()
+    await expect.poll(async () => {
+      return page.evaluate(() => {
+        const history = document.querySelector<HTMLElement>('[aria-label="Chat history"]')
+
+        return Math.round(history?.getBoundingClientRect().right ?? 999)
+      })
+    }).toBeLessThanOrEqual(1)
+
+    const initialLayout = await page.evaluate(() => {
+      const history = document.querySelector<HTMLElement>('[aria-label="Chat history"]')
+      const main = document.querySelector<HTMLElement>('main')
+      const menuButton = document.querySelector<HTMLElement>('[aria-label="Open sidebar menu"]')
+
+      return {
+        historyRight: history?.getBoundingClientRect().right ?? null,
+        mainLeft: main?.getBoundingClientRect().left ?? null,
+        menuTop: menuButton?.getBoundingClientRect().top ?? null,
+        menuLeft: menuButton?.getBoundingClientRect().left ?? null,
+        hasHorizontalOverflow:
+          document.documentElement.scrollWidth > window.innerWidth ||
+          document.body.scrollWidth > window.innerWidth,
+      }
+    })
+
+    expect(initialLayout.historyRight).not.toBeNull()
+    expect(initialLayout.historyRight as number).toBeLessThanOrEqual(1)
+    expect(initialLayout.mainLeft).toBe(0)
+    expect(initialLayout.menuTop as number).toBeGreaterThanOrEqual(0)
+    expect(initialLayout.menuLeft as number).toBeGreaterThanOrEqual(0)
+    expect(initialLayout.hasHorizontalOverflow).toBe(false)
+
+    await page.getByRole('button', { name: 'Open sidebar menu' }).click()
+    await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeVisible()
+    await page.getByRole('button', { name: 'Collapse chat history' }).click()
+    await expect.poll(async () => {
+      return page.evaluate(() => {
+        const history = document.querySelector<HTMLElement>('[aria-label="Chat history"]')
+
+        return Math.round(history?.getBoundingClientRect().right ?? 999)
+      })
+    }).toBeLessThanOrEqual(1)
+  })
+
   test('public chat answers end-to-end without external AI', async ({ page }) => {
     const query = 'Explain RA 9003 Solid Waste Management Act'
 
     await page.goto('/')
-    await page.getByPlaceholder('Ask me anything about Philippine legal compliance...').fill(query)
+    await page.getByPlaceholder('Ask about Philippine legal compliance...').fill(query)
     await page.keyboard.press('Enter')
 
     await expect(page.getByRole('main').getByText(query, { exact: true })).toBeVisible()
@@ -293,6 +343,8 @@ test.describe('LexInSight smoke checks', () => {
         start_url: '/',
         scope: '/',
         display: 'standalone',
+        id: '/',
+        lang: 'en-PH',
         background_color: '#FFFFFF',
         theme_color: '#3F33BD',
       })
@@ -313,6 +365,14 @@ test.describe('LexInSight smoke checks', () => {
           src: '/icons/maskable-512x512.png',
           sizes: '512x512',
           purpose: 'maskable',
+        }),
+      ])
+    )
+    expect(manifest.shortcuts).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: 'Start a legal chat',
+          url: '/chat',
         }),
       ])
     )
