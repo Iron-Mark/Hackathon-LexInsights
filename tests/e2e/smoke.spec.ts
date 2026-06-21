@@ -66,6 +66,14 @@ test.describe('LexInSight smoke checks', () => {
     await page.keyboard.press('Enter')
 
     await expect(page.getByRole('main').getByText(query, { exact: true })).toBeVisible()
+    await expect(page.getByRole('status', { name: /Thinking|Checking legal context|Drafting answer/ })).toBeVisible()
+    await expect(page.locator('[data-revealing="true"]').first()).toBeVisible()
+
+    const completedAssistantMessage = page
+      .locator('[data-revealing="false"]')
+      .filter({ hasText: 'Providerless Local Research Brief' })
+
+    await expect(completedAssistantMessage).toBeVisible({ timeout: 15000 })
     await expect(page.getByRole('heading', { name: 'Providerless Local Research Brief' })).toBeVisible()
     await expect(page.getByText('Ecological Solid Waste Management Act of 2000')).toBeVisible()
 

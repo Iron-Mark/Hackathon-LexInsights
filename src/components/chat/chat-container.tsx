@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useCallback, useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChatHeader } from '@/components/layout/chat-header'
-import { ChatMessages } from './chat-messages'
+import { ChatMessages, type PendingChatTurn } from './chat-messages'
 import { ChatInput } from './chat-input'
 import { ComplianceCanvas } from './compliance-canvas'
 import { RAGProgress } from './rag-progress'
@@ -33,6 +33,16 @@ import {
 
 interface ChatContainerProps {
   messages: Message[]
+}
+
+const MIN_THINKING_DURATION_MS = 700
+
+async function waitForThinkingWindow(startedAt: number) {
+  const remainingMs = Math.max(0, MIN_THINKING_DURATION_MS - (Date.now() - startedAt))
+
+  if (remainingMs > 0) {
+    await new Promise((resolve) => window.setTimeout(resolve, remainingMs))
+  }
 }
 
 function formatAnalysisDate() {
@@ -201,7 +211,8 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(null)
   const [currentQuery, setCurrentQuery] = useState<string>('')
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const pendingRAGTargetRef = useRef<{ query: string; chatId: string } | null>(null)
+  const [pendingTurns, setPendingTurns] = useState<Array<PendingChatTurn & { chatId: string }>>([])
+  const pendingRAGTargetRef = useRef<{ query: string; chatId: string; startedAt: number } | null>(null)
   const checkedRAGHealthRef = useRef(false)
 
   const ensureActiveChat = async (fallbackTitle: string) => {
@@ -223,6 +234,32 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
     void submitQuery(query, user?.id)
   }
+
+  const addPendingTurn = useCallback((chatId: string, query: string) => {
+    setPendingTurns((currentTurns) => {
+      const existingTurn = currentTurns.find((turn) => turn.chatId === chatId && turn.query === query)
+
+      if (existingTurn) {
+        return currentTurns
+      }
+
+      return [
+        ...currentTurns,
+        {
+          id: `pending_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
+          chatId,
+          query,
+          createdAt: new Date().toISOString(),
+        },
+      ]
+    })
+  }, [])
+
+  const removePendingTurn = useCallback((chatId: string, query: string) => {
+    setPendingTurns((currentTurns) =>
+      currentTurns.filter((turn) => !(turn.chatId === chatId && turn.query === query))
+    )
+  }, [])
 
   // Handle file drop - only add to list, don't process yet
   const handleFileDrop = (files: File[]) => {
@@ -249,7 +286,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
   // Get messages for active chat
   const messages = activeChat ? (chatMessages[activeChat.id] || []) : initialMessages
-  const hasMessages = messages.length > 0
+  const visiblePendingTurns = activeChat
+    ? pendingTurns.filter((turn) => turn.chatId === activeChat.id)
+    : []
+  const hasMessages = messages.length > 0 || visiblePendingTurns.length > 0
 
   // Fetch messages when active chat changes
   useEffect(() => {
@@ -282,7 +322,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const handlePromptSelect = async (prompt: string) => {
     try {
       const chatId = await ensureActiveChat(prompt)
-      pendingRAGTargetRef.current = { query: prompt, chatId }
+      pendingRAGTargetRef.current = { query: prompt, chatId, startedAt: Date.now() }
     } catch (error) {
       console.error('Failed to prepare chat for prompt:', error)
       showToast(error instanceof Error ? error.message : 'Failed to start chat', 'error')
@@ -308,7 +348,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
     try {
       const chatId = await ensureActiveChat(query)
-      pendingRAGTargetRef.current = { query, chatId }
+      pendingRAGTargetRef.current = { query, chatId, startedAt: Date.now() }
     } catch (error) {
       console.error('Failed to prepare chat for centered input:', error)
       showToast(error instanceof Error ? error.message : 'Failed to start chat', 'error')
@@ -365,7 +405,8 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       setCurrentQuery(query)
 
       if (chatId) {
-        pendingRAGTargetRef.current = { query, chatId }
+        pendingRAGTargetRef.current = { query, chatId, startedAt: Date.now() }
+        addPendingTurn(chatId, query)
       }
     }
 
@@ -374,7 +415,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     return () => {
       window.removeEventListener('query-submitted', handleQuerySubmit)
     }
-  }, [])
+  }, [addPendingTurn])
 
   // Persist RAG responses into the active chat when the RAG store completes a query.
   useEffect(() => {
@@ -385,11 +426,22 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
       if (pendingTarget?.query === query) {
         pendingRAGTargetRef.current = null
-        void addRAGMessageToChat(pendingTarget.chatId, query, response)
+        void (async () => {
+          await waitForThinkingWindow(pendingTarget.startedAt)
+          await addRAGMessageToChat(pendingTarget.chatId, query, response)
+        })().finally(() => {
+          removePendingTurn(pendingTarget.chatId, query)
+        })
         return
       }
 
-      void addRAGMessage(query, response)
+      void addRAGMessage(query, response).finally(() => {
+        const currentChatId = useChatStore.getState().activeChat?.id
+
+        if (currentChatId) {
+          removePendingTurn(currentChatId, query)
+        }
+      })
     }
 
     window.addEventListener('rag-response', handleRAGResponse)
@@ -397,7 +449,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     return () => {
       window.removeEventListener('rag-response', handleRAGResponse)
     }
-  }, [addRAGMessage, addRAGMessageToChat])
+  }, [addRAGMessage, addRAGMessageToChat, removePendingTurn])
 
   // Listen for file upload and deep search events
   useEffect(() => {
@@ -505,7 +557,8 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     }
 
     if (activeChat?.id && !pendingRAGTargetRef.current) {
-      pendingRAGTargetRef.current = { query: retryQuery, chatId: activeChat.id }
+      pendingRAGTargetRef.current = { query: retryQuery, chatId: activeChat.id, startedAt: Date.now() }
+      addPendingTurn(activeChat.id, retryQuery)
     }
 
     runRAGQuery(retryQuery)
@@ -588,11 +641,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
               <div className="flex-1 overflow-y-auto">
                 {hasMessages ? (
                   <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
-                    <ChatMessages messages={messages} />
+                    <ChatMessages messages={messages} pendingTurns={visiblePendingTurns} />
                     
-                    {/* Enhanced Typing Indicator */}
                     <AnimatePresence>
-                      {(loading || isProcessing) && (
+                      {isProcessing && (
                         <div className="mt-4 flex justify-start">
                           <TypingIndicator />
                         </div>

@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -50,9 +51,31 @@ export function LoadingIndicator({
 
 interface TypingIndicatorProps {
   className?: string
+  steps?: string[]
 }
 
-export function TypingIndicator({ className }: TypingIndicatorProps) {
+const DEFAULT_TYPING_STEPS = [
+  'Thinking...',
+  'Checking legal context...',
+  'Drafting answer...',
+]
+
+export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: TypingIndicatorProps) {
+  const [stepIndex, setStepIndex] = useState(0)
+  const currentStep = steps[stepIndex] || DEFAULT_TYPING_STEPS[0]
+
+  useEffect(() => {
+    if (steps.length <= 1) {
+      return
+    }
+
+    const intervalId = window.setInterval(() => {
+      setStepIndex((current) => (current + 1) % steps.length)
+    }, 1500)
+
+    return () => window.clearInterval(intervalId)
+  }, [steps])
+
   const dotVariants = {
     initial: { y: 0 },
     animate: { y: -8 }
@@ -67,7 +90,7 @@ export function TypingIndicator({ className }: TypingIndicatorProps) {
       className={cn('flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-iris-50 to-purple-50 rounded-xl border-2 border-iris-200 w-fit shadow-sm', className)}
       role="status"
       aria-live="polite"
-      aria-label="AI is typing"
+      aria-label={currentStep}
     >
       {/* Animated dots */}
       <div className="flex gap-1.5">
@@ -94,7 +117,7 @@ export function TypingIndicator({ className }: TypingIndicatorProps) {
         transition={{ duration: 1.5, repeat: Infinity }}
         className="text-sm font-medium text-iris-700"
       >
-        AI is thinking...
+        {currentStep}
       </motion.span>
     </motion.div>
   )
