@@ -150,8 +150,23 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
     year: 2012,
     sourceName: 'National Privacy Commission',
     sourceUrl: 'https://privacy.gov.ph/data-privacy-act/',
-    aliases: ['ra 10173', 'republic act 10173', 'data privacy act', 'national privacy commission', 'npc'],
-    topics: ['privacy', 'personal information', 'sensitive personal information', 'data security', 'data breach'],
+    aliases: [
+      'ra 10173',
+      'republic act 10173',
+      'data privacy act',
+      'data protection',
+      'national privacy commission',
+      'npc',
+    ],
+    topics: [
+      'privacy',
+      'personal information',
+      'sensitive personal information',
+      'data protection',
+      'data security',
+      'data breach',
+      'data subject rights',
+    ],
     keywords: [
       'consent',
       'processing',
@@ -162,19 +177,25 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'breach notification',
       'retention',
       'security measures',
+      'purpose limitation',
+      'privacy impact assessment',
+      'data protection officer',
+      'lawful basis',
     ],
     summary:
-      'A privacy and data protection law for personal information systems in government and the private sector, administered by the National Privacy Commission.',
+      'A privacy and data protection law for personal information systems in government and the private sector, administered by the National Privacy Commission, with rules on lawful processing, data-subject rights, security, breach notification, and accountability.',
     obligations: [
       'State the purpose, scope, authority, retention period, and security safeguards for any personal-data processing.',
       'Include data-subject rights, privacy notice duties, access controls, and breach response ownership.',
       'Treat health, biometric, government ID, financial, and other sensitive data as high-risk processing.',
       'Avoid collecting personal data unless the draft identifies a lawful purpose and responsible office.',
+      'Map personal information controllers, processors, third-party transfers, cross-border handling, and breach notification triggers.',
     ],
     commonGaps: [
       'Data collection is required but no privacy notice or retention rule is stated.',
       'Sensitive personal information is processed without access controls or breach procedure.',
       'The responsible personal information controller or office is not named.',
+      'Data sharing, outsourcing, or system access is allowed without accountability, contract, or audit controls.',
     ],
   },
   {
@@ -560,8 +581,24 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
     year: 2012,
     sourceName: 'Lawphil',
     sourceUrl: 'https://lawphil.net/statutes/repacts/ra2012/ra_10175_2012.html',
-    aliases: ['ra 10175', 'republic act 10175', 'cybercrime prevention act', 'cybercrime', 'computer data'],
-    topics: ['cybercrime', 'computer systems', 'online fraud', 'system access', 'electronic evidence'],
+    aliases: [
+      'ra 10175',
+      'republic act 10175',
+      'cybercrime prevention act',
+      'cybercrime',
+      'computer data',
+      'computer system',
+      'cyber offense',
+    ],
+    topics: [
+      'cybercrime',
+      'computer systems',
+      'online fraud',
+      'system access',
+      'electronic evidence',
+      'incident response',
+      'content related offenses',
+    ],
     keywords: [
       'illegal access',
       'data interference',
@@ -572,19 +609,146 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'traffic data',
       'service provider',
       'cyber warrant',
+      'cybersquatting',
+      'identity theft',
+      'cybersex',
+      'online libel',
+      'phishing',
+      'preservation order',
     ],
     summary:
-      'A cybercrime law covering offenses against computer systems and data, computer-related fraud or forgery, content-related offenses, enforcement powers, and electronic evidence concerns.',
+      'A cybercrime law covering offenses against computer systems and data, computer-related fraud or forgery, content-related offenses, enforcement powers, preservation of computer data, and electronic evidence concerns.',
     obligations: [
       'For digital enforcement, define prohibited system access, data misuse, fraud, forgery, preservation, reporting, and referral pathways.',
       'Coordinate cyber incident language with privacy, electronic records, evidence preservation, and authorized law-enforcement processes.',
       'Keep investigation, monitoring, takedown, and data-preservation powers tied to lawful authority and due process.',
       'Avoid broad surveillance or device-inspection language without clear scope, approval, safeguards, and records.',
+      'Separate internal incident response from criminal investigation, and preserve chain-of-custody for logs, traffic data, accounts, and system records.',
     ],
     commonGaps: [
       'Cybersecurity duties are stated without incident reporting, evidence preservation, or referral procedure.',
       'Online fraud or account compromise is mentioned without system-access and data-protection safeguards.',
       'Monitoring powers are broad and lack authority, scope, or due-process controls.',
+      'Electronic evidence, logs, and account records are collected without chain-of-custody or privacy coordination.',
+    ],
+  },
+  {
+    id: 'ra-9775',
+    statute: 'RA 9775',
+    title: 'Republic Act No. 9775',
+    shortTitle: 'Anti-Child Pornography Act of 2009',
+    year: 2009,
+    sourceName: 'Supreme Court E-Library',
+    sourceUrl: 'https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/2/16874',
+    aliases: [
+      'ra 9775',
+      'republic act 9775',
+      'anti child pornography act',
+      'online child protection',
+      'child online safety',
+      'child sexual exploitation material',
+      'csam',
+    ],
+    topics: [
+      'child protection',
+      'online safety',
+      'internet service provider',
+      'internet content host',
+      'internet cafe',
+      'reporting',
+      'confidentiality',
+    ],
+    keywords: [
+      'child protection',
+      'minor',
+      'grooming',
+      'luring',
+      'pandering',
+      'internet cafe',
+      'internet kiosk',
+      'internet content host',
+      'isp',
+      'pnp',
+      'nbi',
+      'dswd',
+      'evidence preservation',
+      'blocking',
+      'filtering',
+      'confidential record',
+      'victim privacy',
+    ],
+    summary:
+      'A child-protection law penalizing child exploitation material and related online conduct, with reporting, evidence-preservation, confidentiality, and coordination duties for ISPs, content hosts, establishments, and local authorities.',
+    obligations: [
+      'For online child-safety policies, define reporting channels, responsible officer, referral to PNP/NBI/DSWD or local social welfare, and victim confidentiality controls.',
+      'Preserve evidence without public disclosure, protect child identity, and limit access to authorized investigators, prosecutors, and support personnel.',
+      'For internet cafes, kiosks, platforms, content hosts, or service providers, state blocking, filtering, notice, takedown, and law-enforcement coordination workflows.',
+      'Avoid public posting, informal evidence sharing, or disciplinary processes that reveal a child victim or expose sensitive material.',
+    ],
+    commonGaps: [
+      'Online child-safety rules mention reporting but omit confidentiality and victim-protection controls.',
+      'Digital evidence may be copied or shared without preservation, chain-of-custody, or authorized access limits.',
+      'Internet cafe, platform, or content-host duties are created without referral, takedown, filtering, or documentation steps.',
+    ],
+  },
+  {
+    id: 'ra-9160',
+    statute: 'RA 9160',
+    title: 'Republic Act No. 9160',
+    shortTitle: 'Anti-Money Laundering Act of 2001',
+    year: 2001,
+    sourceName: 'Anti-Money Laundering Council',
+    sourceUrl: 'https://www.amlc.gov.ph/laws/money-laundering/2015-10-16-02-50-56/republic-act-9160',
+    aliases: [
+      'ra 9160',
+      'republic act 9160',
+      'anti money laundering act',
+      'amla',
+      'amlc',
+      'money laundering',
+      'covered persons',
+    ],
+    topics: [
+      'anti money laundering',
+      'financial compliance',
+      'covered transaction',
+      'suspicious transaction',
+      'customer due diligence',
+      'recordkeeping',
+      'beneficial ownership',
+    ],
+    keywords: [
+      'aml',
+      'kyc',
+      'know your customer',
+      'customer due diligence',
+      'covered transaction report',
+      'ctr',
+      'suspicious transaction report',
+      'str',
+      'beneficial owner',
+      'source of funds',
+      'remittance',
+      'money service business',
+      'casino',
+      'bank',
+      'financial institution',
+      'freeze order',
+      'record retention',
+      'risk assessment',
+    ],
+    summary:
+      'The core Philippine anti-money laundering law creating money-laundering offenses and compliance expectations around covered persons, customer due diligence, transaction monitoring, covered and suspicious transaction reporting, recordkeeping, and AMLC coordination.',
+    obligations: [
+      'Identify whether the actor is a covered person or financial intermediary and map the customer due diligence, beneficial-owner, source-of-funds, and recordkeeping duties.',
+      'Separate covered transaction reports, suspicious transaction reports, internal escalation, confidentiality, and AMLC-facing reporting timelines.',
+      'Include risk assessment, sanctions or watchlist screening where relevant, transaction monitoring, audit trail, and staff training.',
+      'Avoid public disclosure or tipping-off language when handling suspicious transaction review, escalation, or reporting.',
+    ],
+    commonGaps: [
+      'AML language references money laundering but omits customer due diligence, beneficial ownership, or source-of-funds checks.',
+      'Transaction monitoring is required without covered/suspicious transaction reporting workflow or responsible compliance officer.',
+      'Records, audit trail, confidentiality, and AMLC coordination are not specified.',
     ],
   },
   {
@@ -680,6 +844,14 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['cyber', 'computer', 'online fraud', 'account', 'platform', 'hacking', 'phishing'],
     expansions: ['cybercrime prevention act', 'computer related fraud', 'illegal access', 'electronic evidence'],
+  },
+  {
+    triggers: ['child', 'minor', 'grooming', 'luring', 'internet cafe', 'content host', 'csam'],
+    expansions: ['anti child pornography act', 'online child protection', 'reporting', 'evidence preservation'],
+  },
+  {
+    triggers: ['money laundering', 'aml', 'amla', 'kyc', 'covered transaction', 'suspicious transaction', 'beneficial owner'],
+    expansions: ['anti money laundering act', 'customer due diligence', 'suspicious transaction report', 'amlc'],
   },
   {
     triggers: ['consumer', 'customer', 'warranty', 'label', 'advertising', 'product safety', 'complaint'],
@@ -1000,7 +1172,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
-    '- Include a Republic Act number, such as RA 9003, RA 10173, RA 11058, RA 7160, or RA 10121.',
+    '- Include a Republic Act number, such as RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, or RA 11058.',
     '- Add the regulated activity, agency, permit, affected sector, and location.',
     '- Ask for a narrower compliance checklist, for example "solid waste requirements for a barangay ordinance".',
     '',
@@ -1659,6 +1831,38 @@ function applyTopicSpecificDraftChecks(
           'Add incident classification, reporting channel, evidence-preservation steps, access controls, authorized officers, privacy coordination, and lawful referral procedure.',
           6,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10175') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(child|children|minor|grooming|luring|internet cafe|internet kiosk|content host|online child|csam)\b/.test(normalizedDraft)) {
+    if (!/\b(confidential|victim privacy|child identity|dswd|social welfare|pnp|nbi|referral|evidence preservation|blocking|filtering|takedown)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Child online safety controls need more detail',
+          'Child-protection or online-safety language was detected without clear confidentiality, referral, evidence-preservation, platform, or victim-protection controls.',
+          'Add reporting channels, authorized referral to PNP/NBI/DSWD or local social welfare, confidentiality safeguards, evidence-preservation rules, and blocking or takedown workflow where relevant.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9775') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(money laundering|anti money laundering|aml|amla|kyc|covered transaction|suspicious transaction|beneficial owner|remittance|source of funds)\b/.test(normalizedDraft)) {
+    if (!/\b(customer due diligence|know your customer|kyc|beneficial owner|source of funds|covered transaction report|suspicious transaction report|amlc|compliance officer|recordkeeping|risk assessment)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'AML controls need more detail',
+          'Money-laundering, covered-transaction, or financial-monitoring language was detected without enough KYC, beneficial-owner, transaction-reporting, recordkeeping, or AMLC coordination controls.',
+          'Add covered-person scope, customer due diligence, beneficial ownership, transaction monitoring, covered and suspicious transaction reporting, confidentiality, recordkeeping, and AMLC escalation.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9160') || LEGAL_CORPUS[0])]
         )
       )
     }

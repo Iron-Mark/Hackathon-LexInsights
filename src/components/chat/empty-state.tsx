@@ -30,14 +30,14 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
   const suggestedPrompts = mode === 'compliance'
     ? [
         { prompt: 'Analyze my document for RA 10173 Data Privacy compliance', icon: ShieldCheck },
-        { prompt: 'Check compliance with RA 10121 Disaster Risk Reduction', icon: FileSearch },
-        { prompt: 'Review against RA 9003 Waste Management requirements', icon: Recycle },
-        { prompt: 'Verify compliance with Labor Code provisions', icon: Building2 },
+        { prompt: 'Check an AML policy against RA 9160 controls', icon: FileSearch },
+        { prompt: 'Review online incident response under RA 10175', icon: Recycle },
+        { prompt: 'Assess child online safety reporting under RA 9775', icon: Building2 },
       ]
     : [
-        { prompt: 'What are the key requirements for RA 10173 Data Privacy Act?', icon: ShieldCheck },
-        { prompt: 'Help me review my disaster preparedness plan', icon: FileSearch },
-        { prompt: 'What permits do I need for construction in Metro Manila?', icon: Building2 },
+        { prompt: 'Compare RA 10173 and RA 10175 for incident response', icon: ShieldCheck },
+        { prompt: 'What AML controls apply under RA 9160?', icon: FileSearch },
+        { prompt: 'What does RA 9775 require for online child safety reporting?', icon: Building2 },
         { prompt: 'Explain RA 9003 Solid Waste Management Act', icon: Recycle },
       ]
 
