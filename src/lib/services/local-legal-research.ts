@@ -1692,7 +1692,11 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(worker|workplace|construction|hazard|ppe|accident|occupational|safety)\b/.test(normalizedDraft)) {
+  const hasWorkplaceSafetyTopic =
+    /\b(worker|employee|workplace|construction|contractor|job site|work site|hazard|ppe|accident|occupational|safety officer|safety committee|work stoppage)\b/.test(normalizedDraft) ||
+    (/\bsafety\b/.test(normalizedDraft) && /\b(worker|employee|workplace|construction|contractor|job site|work site|hazard|ppe|accident|occupational)\b/.test(normalizedDraft))
+
+  if (hasWorkplaceSafetyTopic) {
     if (!/\b(safety officer|safety committee|ppe|training|orientation|incident|accident report|emergency response)\b/.test(normalizedDraft)) {
       findings.amber.push(
         createFinding(
@@ -1836,8 +1840,18 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(child|children|minor|grooming|luring|internet cafe|internet kiosk|content host|online child|csam)\b/.test(normalizedDraft)) {
-    if (!/\b(confidential|victim privacy|child identity|dswd|social welfare|pnp|nbi|referral|evidence preservation|blocking|filtering|takedown)\b/.test(normalizedDraft)) {
+  const hasChildOnlineSafetyTopic =
+    /\b(ra 9775|anti child pornography|child sexual exploitation|csam|grooming|luring|pandering)\b/.test(normalizedDraft) ||
+    (
+      /\b(child|children|minor|minors)\b/.test(normalizedDraft) &&
+      /\b(online|internet|digital|platform|content host|internet cafe|internet kiosk|website|social media|chat|upload|stream|blocking|filtering|takedown|reporting channel)\b/.test(normalizedDraft)
+    )
+  const hasChildConfidentiality = /\b(confidential|confidentiality|victim privacy|child identity|privacy|non disclosure)\b/.test(normalizedDraft)
+  const hasChildReferral = /\b(dswd|social welfare|pnp|nbi|law enforcement|referral|reporting channel|authorized officer)\b/.test(normalizedDraft)
+  const hasChildEvidenceOrPlatformControl = /\b(evidence preservation|chain of custody|blocking|filtering|takedown|content host|internet cafe|internet kiosk|service provider|platform)\b/.test(normalizedDraft)
+
+  if (hasChildOnlineSafetyTopic) {
+    if (!(hasChildConfidentiality && hasChildReferral && hasChildEvidenceOrPlatformControl)) {
       findings.amber.push(
         createFinding(
           'amber',
@@ -1853,7 +1867,11 @@ function applyTopicSpecificDraftChecks(
   }
 
   if (/\b(money laundering|anti money laundering|aml|amla|kyc|covered transaction|suspicious transaction|beneficial owner|remittance|source of funds)\b/.test(normalizedDraft)) {
-    if (!/\b(customer due diligence|know your customer|kyc|beneficial owner|source of funds|covered transaction report|suspicious transaction report|amlc|compliance officer|recordkeeping|risk assessment)\b/.test(normalizedDraft)) {
+    const hasAmlIdentityControls = /\b(customer due diligence|know your customer|kyc|beneficial owner|source of funds|risk assessment)\b/.test(normalizedDraft)
+    const hasAmlReportingControls = /\b(covered transaction report|suspicious transaction report|ctr|str|amlc|reporting timeline|internal escalation|transaction monitoring)\b/.test(normalizedDraft)
+    const hasAmlGovernanceControls = /\b(compliance officer|recordkeeping|record retention|audit trail|confidentiality|tipping off|staff training)\b/.test(normalizedDraft)
+
+    if (!(hasAmlIdentityControls && hasAmlReportingControls && hasAmlGovernanceControls)) {
       findings.amber.push(
         createFinding(
           'amber',
