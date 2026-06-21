@@ -58,6 +58,54 @@ test.describe('LexInSight smoke checks', () => {
     )
   })
 
+  test('public chat answers end-to-end without external AI', async ({ page }) => {
+    const query = 'Explain RA 9003 Solid Waste Management Act'
+
+    await page.goto('/')
+    await page.getByPlaceholder('Ask me anything about Philippine legal compliance...').fill(query)
+    await page.keyboard.press('Enter')
+
+    await expect(page.getByRole('main').getByText(query, { exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Providerless Local Research Brief' })).toBeVisible()
+    await expect(page.getByText('Ecological Solid Waste Management Act of 2000')).toBeVisible()
+
+    const guestPayloadHandle = await page.waitForFunction(() => {
+      const raw = window.localStorage.getItem('lexinsight_guest_chats_v1')
+
+      if (!raw) {
+        return null
+      }
+
+      const payload = JSON.parse(raw) as {
+        messages?: Record<string, Array<{ role: string; content: string }>>
+      }
+      const messageLists = Object.values(payload.messages || {})
+
+      return messageLists.some((messages) => (
+        Array.isArray(messages) &&
+        messages.some((message) => message.role === 'user') &&
+        messages.some((message) => (
+          message.role === 'assistant' &&
+          message.content.includes('Providerless Local Research Brief')
+        ))
+      ))
+        ? raw
+        : null
+    })
+    const guestPayload = JSON.parse(String(await guestPayloadHandle.jsonValue())) as {
+      chats: Array<{ id: string; user_id: string }>
+      messages: Record<string, Array<{ role: string; content: string }>>
+    }
+
+    expect(guestPayload.chats[0]).toEqual(
+      expect.objectContaining({
+        id: expect.stringMatching(/^guest_/),
+        user_id: 'guest-local',
+      })
+    )
+    expect(Object.values(guestPayload.messages).some((messages) => messages.length >= 2)).toBe(true)
+  })
+
   test('missing Clerk keys show setup blocker', async ({ page }) => {
     test.skip(
       Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY),

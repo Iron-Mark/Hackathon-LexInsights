@@ -81,6 +81,66 @@ function dispatchRAGResponse(query: string, response: RAGResponse): void {
   window.dispatchEvent(event)
 }
 
+function buildDemoFallbackResponse(query: string, reason: string): RAGResponse {
+  const normalizedQuery = query.trim() || 'Demo legal research query'
+
+  return {
+    status: 'completed',
+    query: normalizedQuery,
+    summary: [
+      '# Demo Legal Research Brief',
+      '',
+      `Query: ${normalizedQuery}`,
+      '',
+      '## Demo Mode',
+      '',
+      'The configured AI/RAG provider is not reachable, so LexInSight generated this local demo response to keep the chat workflow usable.',
+      '',
+      '## Practical Next Steps',
+      '',
+      '- Identify the Philippine law, ordinance, agency rule, or compliance topic involved.',
+      '- Check whether the question is about authority, procedure, penalties, privacy, safety, procurement, environment, disaster risk, or local government powers.',
+      '- Ask a narrower follow-up with a Republic Act number, agency, regulated activity, and location for a more useful local result.',
+      '',
+      '## Limits',
+      '',
+      'This fallback keeps the demo conversation moving but is not legal advice and does not verify live laws, cases, agency issuances, or local ordinances. Verify against official sources and qualified counsel.',
+    ].join('\n'),
+    search_queries_used: [normalizedQuery],
+    documents_found: 0,
+    processing_stages: {
+      query_generator: 'local demo fallback',
+      search_executor: 'skipped because provider was unavailable',
+      summarizer: 'deterministic local template',
+    },
+    deep_search_used: false,
+    processing_time_seconds: 0,
+    provider_mode: 'local-providerless',
+    fallback_used: true,
+    fallback_reason: reason,
+    confidence_score: 0.1,
+    matched_documents: [],
+  }
+}
+
+function commitRAGResponse(
+  query: string,
+  response: RAGResponse,
+  mode: 'http' | 'websocket',
+  userId: string | undefined,
+  set: (partial: Partial<RAGStore>) => void,
+  get: () => RAGStore
+) {
+  setCachedResponse(query, response)
+  set({
+    currentResponse: response,
+    loading: false,
+    error: null,
+  })
+  get().addToHistory(query, response, mode, userId)
+  dispatchRAGResponse(query, response)
+}
+
 export interface RAGQueryHistory {
   id: string
   query: string
@@ -156,13 +216,7 @@ export const useRAGStore = create<RAGStore>()(
         // Check cache first
         const cachedResponse = getCachedResponse(query)
         if (cachedResponse) {
-          set({ 
-            currentResponse: cachedResponse, 
-            loading: false,
-            error: null
-          })
-          get().addToHistory(query, cachedResponse, 'http', userId)
-          dispatchRAGResponse(query, cachedResponse)
+          commitRAGResponse(query, cachedResponse, 'http', userId, set, get)
           return
         }
 
@@ -176,35 +230,24 @@ export const useRAGStore = create<RAGStore>()(
             })
           }
           
-          // Cache the response
-          setCachedResponse(query, response)
-          
-          set({ 
-            currentResponse: response, 
-            loading: false,
-            error: null
-          })
-
-          // Add to history
-          get().addToHistory(query, response, 'http', userId)
-          
-          // Add to chat history (will be implemented when chat store is available)
-          // This allows RAG responses to persist in chat messages
-          dispatchRAGResponse(query, response)
+          commitRAGResponse(query, response, 'http', userId, set, get)
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
           
           if (isRagBackendUnavailableError(errorMessage)) {
-            console.error('RAG provider is unavailable:', errorMessage)
+            console.error('RAG provider is unavailable; using demo fallback:', errorMessage)
             showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
               action: RAG_BACKEND_TOAST_ACTION,
               durationMs: 10000,
             })
-            set({ 
-              error: RAG_BACKEND_UNAVAILABLE_MESSAGE,
-              loading: false,
-              currentResponse: null
-            })
+            commitRAGResponse(
+              query,
+              buildDemoFallbackResponse(query, errorMessage),
+              'http',
+              userId,
+              set,
+              get
+            )
             return
           }
           
@@ -217,11 +260,15 @@ export const useRAGStore = create<RAGStore>()(
             return
           }
           
-          set({ 
-            error: errorMessage, 
-            loading: false,
-            currentResponse: null
-          })
+          console.error('RAG query failed; using demo fallback:', errorMessage)
+          commitRAGResponse(
+            query,
+            buildDemoFallbackResponse(query, errorMessage),
+            'http',
+            userId,
+            set,
+            get
+          )
         }
       },
 

@@ -4,11 +4,17 @@ import { create } from 'zustand'
 import { Chat, Message } from '@/types'
 import { createClient } from '@/lib/supabase/client'
 import type { RAGResponse } from '@/lib/services/rag-api'
+import { showToast } from '@/components/ui/toast'
 import { useAuthStore } from './auth-store'
 import { useChatModeStore } from './chat-mode-store'
 
 const GUEST_STORAGE_KEY = 'lexinsight_guest_chats_v1'
+const FALLBACK_STORAGE_KEY = 'lexinsight_supabase_fallback_chats_v1'
 const GUEST_USER_ID = 'guest-local'
+const FALLBACK_USER_PREFIX = 'fallback-local'
+const SUPABASE_FALLBACK_TOAST = 'Supabase is unavailable. Saving this demo chat in local browser storage.'
+
+let supabaseFallbackToastShown = false
 
 interface ChatMessagePreview {
   id: string
@@ -62,17 +68,39 @@ function isGuestChatId(id: string) {
   return id.startsWith('guest_')
 }
 
+function isFallbackChatId(id: string) {
+  return id.startsWith('fallback_')
+}
+
+function isLocalChatId(id: string) {
+  return isGuestChatId(id) || isFallbackChatId(id)
+}
+
 function createId(prefix: string) {
   return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
 }
 
-function readGuestStorage(): GuestChatStorage {
+function getFallbackUserId() {
+  const user = useAuthStore.getState().user
+  return `${FALLBACK_USER_PREFIX}:${user?.id || 'unknown'}`
+}
+
+function notifySupabaseFallback() {
+  if (!isBrowser() || supabaseFallbackToastShown) {
+    return
+  }
+
+  supabaseFallbackToastShown = true
+  showToast(SUPABASE_FALLBACK_TOAST, 'info')
+}
+
+function readLocalChatStorage(storageKey: string, label: string): GuestChatStorage {
   if (!isBrowser()) {
     return { version: 1, chats: [], messages: {} }
   }
 
   try {
-    const raw = window.localStorage.getItem(GUEST_STORAGE_KEY)
+    const raw = window.localStorage.getItem(storageKey)
     if (!raw) {
       return { version: 1, chats: [], messages: {} }
     }
@@ -85,12 +113,17 @@ function readGuestStorage(): GuestChatStorage {
       messages: parsed.messages && typeof parsed.messages === 'object' ? parsed.messages : {},
     }
   } catch (error) {
-    console.error('Failed to read guest chats:', error)
+    console.error(`Failed to read ${label}:`, error)
     return { version: 1, chats: [], messages: {} }
   }
 }
 
-function writeGuestStorage(chats: Chat[], messages: Record<string, Message[]>) {
+function writeLocalChatStorage(
+  storageKey: string,
+  chats: Chat[],
+  messages: Record<string, Message[]>,
+  label: string
+) {
   if (!isBrowser()) {
     return
   }
@@ -101,10 +134,79 @@ function writeGuestStorage(chats: Chat[], messages: Record<string, Message[]>) {
       chats,
       messages,
     }
-    window.localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(payload))
+    window.localStorage.setItem(storageKey, JSON.stringify(payload))
   } catch (error) {
-    console.error('Failed to save guest chats:', error)
+    console.error(`Failed to save ${label}:`, error)
   }
+}
+
+function readGuestStorage(): GuestChatStorage {
+  return readLocalChatStorage(GUEST_STORAGE_KEY, 'guest chats')
+}
+
+function writeGuestStorage(chats: Chat[], messages: Record<string, Message[]>) {
+  writeLocalChatStorage(GUEST_STORAGE_KEY, chats, messages, 'guest chats')
+}
+
+function readFallbackStorage(): GuestChatStorage {
+  const fallbackState = readLocalChatStorage(FALLBACK_STORAGE_KEY, 'Supabase fallback chats')
+  const fallbackUserId = getFallbackUserId()
+  const chats = fallbackState.chats.filter((chat) => chat.user_id === fallbackUserId)
+  const chatIds = new Set(chats.map((chat) => chat.id))
+  const messages = Object.fromEntries(
+    Object.entries(fallbackState.messages).filter(([chatId]) => chatIds.has(chatId))
+  )
+
+  return {
+    version: 1,
+    chats,
+    messages,
+  }
+}
+
+function writeFallbackStorage(chats: Chat[], messages: Record<string, Message[]>) {
+  const fallbackState = readLocalChatStorage(FALLBACK_STORAGE_KEY, 'Supabase fallback chats')
+  const fallbackUserId = getFallbackUserId()
+  const previousLocalChatIds = new Set(
+    fallbackState.chats
+      .filter((chat) => chat.user_id === fallbackUserId)
+      .map((chat) => chat.id)
+  )
+  const nextLocalChatIds = new Set(chats.map((chat) => chat.id))
+
+  const otherChats = fallbackState.chats.filter((chat) => chat.user_id !== fallbackUserId)
+  const otherMessages = Object.fromEntries(
+    Object.entries(fallbackState.messages).filter(([chatId]) => (
+      !previousLocalChatIds.has(chatId) && !nextLocalChatIds.has(chatId)
+    ))
+  )
+
+  writeLocalChatStorage(
+    FALLBACK_STORAGE_KEY,
+    [...chats, ...otherChats],
+    {
+      ...otherMessages,
+      ...messages,
+    },
+    'Supabase fallback chats'
+  )
+}
+
+function readLocalStorageForChat(chatId: string): GuestChatStorage {
+  return isFallbackChatId(chatId) ? readFallbackStorage() : readGuestStorage()
+}
+
+function writeLocalStorageForChat(
+  chatId: string,
+  chats: Chat[],
+  messages: Record<string, Message[]>
+) {
+  if (isFallbackChatId(chatId)) {
+    writeFallbackStorage(chats, messages)
+    return
+  }
+
+  writeGuestStorage(chats, messages)
 }
 
 function makeGuestChat(title?: string, mode?: Chat['mode']): Chat {
@@ -120,10 +222,31 @@ function makeGuestChat(title?: string, mode?: Chat['mode']): Chat {
   }
 }
 
+function makeFallbackChat(title?: string, mode?: Chat['mode']): Chat {
+  const now = new Date().toISOString()
+  return {
+    id: createId('fallback'),
+    title: title || 'New Chat',
+    mode: mode || useChatModeStore.getState().mode,
+    created_at: now,
+    updated_at: now,
+    user_id: getFallbackUserId(),
+    message_count: 0,
+  }
+}
+
 function makeGuestMessage(message: Omit<Message, 'id' | 'created_at'>): Message {
   return {
     ...message,
     id: createId('guest_message'),
+    created_at: new Date().toISOString(),
+  }
+}
+
+function makeFallbackMessage(message: Omit<Message, 'id' | 'created_at'>): Message {
+  return {
+    ...message,
+    id: createId('fallback_message'),
     created_at: new Date().toISOString(),
   }
 }
@@ -213,7 +336,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         }
       })
       const activeChat = get().activeChat
-      const nextActiveChat = activeChat && !isGuestChatId(activeChat.id)
+      const nextActiveChat = activeChat && !isLocalChatId(activeChat.id)
         ? transformedChats.find((chat) => chat.id === activeChat.id) || null
         : null
 
@@ -225,15 +348,31 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       })
     } catch (error) {
       console.error('Failed to fetch chats:', error)
-      set({ loading: false })
+      notifySupabaseFallback()
+
+      const fallbackState = readFallbackStorage()
+      const chats = fallbackState.chats
+        .map((chat) => toChatWithPreview(chat, fallbackState.messages[chat.id] || []))
+        .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+      const activeChat = get().activeChat
+      const nextActiveChat = activeChat
+        ? chats.find((chat) => chat.id === activeChat.id) || null
+        : null
+
+      set({
+        chats,
+        messages: fallbackState.messages,
+        activeChat: nextActiveChat,
+        loading: false,
+      })
     }
   },
 
   fetchMessages: async (chatId: string) => {
     set({ loadingMessages: true })
 
-    if (isGuestMode() || isGuestChatId(chatId)) {
-      const guestState = readGuestStorage()
+    if (isGuestMode() || isLocalChatId(chatId)) {
+      const guestState = readLocalStorageForChat(chatId)
       set((state) => ({
         messages: {
           ...state.messages,
@@ -264,7 +403,16 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       }))
     } catch (error) {
       console.error('Failed to fetch messages:', error)
-      set({ loadingMessages: false })
+      notifySupabaseFallback()
+
+      const fallbackState = readFallbackStorage()
+      set((state) => ({
+        messages: {
+          ...state.messages,
+          [chatId]: fallbackState.messages[chatId] || [],
+        },
+        loadingMessages: false,
+      }))
     }
   },
 
@@ -326,7 +474,27 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       return chatWithCount
     } catch (error) {
       console.error('Failed to create chat:', error)
-      throw error
+      notifySupabaseFallback()
+
+      const fallbackState = readFallbackStorage()
+      const fallbackChat = makeFallbackChat(title, mode)
+      const fallbackChats = [fallbackChat, ...fallbackState.chats]
+      const fallbackMessages = {
+        ...fallbackState.messages,
+        [fallbackChat.id]: [],
+      }
+
+      writeFallbackStorage(fallbackChats, fallbackMessages)
+      set((state) => ({
+        chats: [fallbackChat, ...state.chats.filter((chat) => chat.id !== fallbackChat.id)],
+        activeChat: fallbackChat,
+        messages: {
+          ...state.messages,
+          [fallbackChat.id]: [],
+        },
+      }))
+
+      return fallbackChat
     }
   },
 
@@ -339,18 +507,23 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   deleteChat: async (id: string) => {
-    if (isGuestMode() || isGuestChatId(id)) {
-      const guestState = readGuestStorage()
+    if (isGuestMode() || isLocalChatId(id)) {
+      const guestState = readLocalStorageForChat(id)
       const chats = guestState.chats.filter(c => c.id !== id)
       const messages = { ...guestState.messages }
       delete messages[id]
 
-      writeGuestStorage(chats, messages)
-      set(state => ({
-        chats,
-        activeChat: state.activeChat?.id === id ? null : state.activeChat,
-        messages,
-      }))
+      writeLocalStorageForChat(id, chats, messages)
+      set(state => {
+        const newMessages = { ...state.messages }
+        delete newMessages[id]
+
+        return {
+          chats: isGuestMode() ? chats : state.chats.filter(chat => chat.id !== id),
+          activeChat: state.activeChat?.id === id ? null : state.activeChat,
+          messages: isGuestMode() ? messages : newMessages,
+        }
+      })
       return
     }
 
@@ -378,19 +551,40 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       })
     } catch (error) {
       console.error('Failed to delete chat:', error)
-      throw error
+      notifySupabaseFallback()
+
+      const fallbackState = readFallbackStorage()
+      if (fallbackState.chats.some((chat) => chat.id === id)) {
+        const fallbackChats = fallbackState.chats.filter((chat) => chat.id !== id)
+        const fallbackMessages = { ...fallbackState.messages }
+        delete fallbackMessages[id]
+        writeFallbackStorage(fallbackChats, fallbackMessages)
+      }
+
+      set(state => {
+        const newChats = state.chats.filter(c => c.id !== id)
+        const newActiveChat = state.activeChat?.id === id ? null : state.activeChat
+        const newMessages = { ...state.messages }
+        delete newMessages[id]
+
+        return {
+          chats: newChats,
+          activeChat: newActiveChat,
+          messages: newMessages,
+        }
+      })
     }
   },
 
   updateChatTitle: async (id: string, title: string) => {
-    if (isGuestMode() || isGuestChatId(id)) {
-      const guestState = readGuestStorage()
+    if (isGuestMode() || isLocalChatId(id)) {
+      const guestState = readLocalStorageForChat(id)
       const updatedAt = new Date().toISOString()
       const chats = guestState.chats.map(chat =>
         chat.id === id ? { ...chat, title, updated_at: updatedAt } : chat
       )
 
-      writeGuestStorage(chats, guestState.messages)
+      writeLocalStorageForChat(id, chats, guestState.messages)
       set(state => {
         const updatedChats = state.chats.map(chat =>
           chat.id === id ? { ...chat, title, updated_at: updatedAt } : chat
@@ -435,14 +629,40 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       })
     } catch (error) {
       console.error('Failed to update chat title:', error)
-      throw error
+      notifySupabaseFallback()
+
+      const updatedAt = new Date().toISOString()
+      const fallbackState = readFallbackStorage()
+      if (fallbackState.chats.some((chat) => chat.id === id)) {
+        const fallbackChats = fallbackState.chats.map((chat) =>
+          chat.id === id ? { ...chat, title, updated_at: updatedAt } : chat
+        )
+        writeFallbackStorage(fallbackChats, fallbackState.messages)
+      }
+
+      set(state => {
+        const updatedChats = state.chats.map(chat =>
+          chat.id === id ? { ...chat, title, updated_at: updatedAt } : chat
+        )
+
+        const updatedActiveChat = state.activeChat?.id === id
+          ? { ...state.activeChat, title, updated_at: updatedAt }
+          : state.activeChat
+
+        return {
+          chats: updatedChats,
+          activeChat: updatedActiveChat,
+        }
+      })
     }
   },
 
   addMessage: async (chatId: string, message: Omit<Message, 'id' | 'created_at'>) => {
-    if (isGuestMode() || isGuestChatId(chatId)) {
-      const guestState = readGuestStorage()
-      const newMessage = makeGuestMessage(message)
+    if (isGuestMode() || isLocalChatId(chatId)) {
+      const guestState = readLocalStorageForChat(chatId)
+      const newMessage = isFallbackChatId(chatId)
+        ? makeFallbackMessage(message)
+        : makeGuestMessage(message)
       const chatMessages = [...(guestState.messages[chatId] || []), newMessage]
       const messages = {
         ...guestState.messages,
@@ -462,17 +682,34 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         )
         .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
 
-      writeGuestStorage(chats, messages)
-      set(state => ({
-        messages: {
-          ...state.messages,
-          [chatId]: chatMessages,
-        },
-        chats,
-        activeChat: state.activeChat?.id === chatId
-          ? chats.find(chat => chat.id === chatId) || state.activeChat
-          : state.activeChat,
-      }))
+      writeLocalStorageForChat(chatId, chats, messages)
+      set(state => {
+        const visibleChats = isGuestMode()
+          ? chats
+          : (state.chats.some((chat) => chat.id === chatId) ? state.chats : [...chats, ...state.chats])
+              .map(chat =>
+                chat.id === chatId
+                  ? {
+                      ...chat,
+                      last_message_preview: newMessage.content.substring(0, 100),
+                      updated_at: updatedAt,
+                      message_count: chatMessages.length,
+                    }
+                  : chat
+              )
+              .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+
+        return {
+          messages: {
+            ...state.messages,
+            [chatId]: chatMessages,
+          },
+          chats: visibleChats,
+          activeChat: state.activeChat?.id === chatId
+            ? visibleChats.find(chat => chat.id === chatId) || state.activeChat
+            : state.activeChat,
+        }
+      })
       return
     }
 
@@ -521,7 +758,67 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       })
     } catch (error) {
       console.error('Failed to add message:', error)
-      throw error
+      notifySupabaseFallback()
+
+      const fallbackState = readFallbackStorage()
+      const existingFallbackChat = fallbackState.chats.find((chat) => chat.id === chatId)
+      const visibleChat = get().chats.find((chat) => chat.id === chatId) || get().activeChat
+      const fallbackChat = existingFallbackChat || {
+        ...(visibleChat || makeFallbackChat(message.content.substring(0, 60))),
+        id: chatId,
+        user_id: getFallbackUserId(),
+      }
+      const newMessage = makeFallbackMessage(message)
+      const chatMessages = [...(fallbackState.messages[chatId] || get().messages[chatId] || []), newMessage]
+      const messages = {
+        ...fallbackState.messages,
+        [chatId]: chatMessages,
+      }
+      const updatedAt = newMessage.created_at
+      const fallbackChats = (
+        existingFallbackChat
+          ? fallbackState.chats
+          : [fallbackChat, ...fallbackState.chats]
+      )
+        .map(chat =>
+          chat.id === chatId
+            ? {
+                ...chat,
+                last_message_preview: newMessage.content.substring(0, 100),
+                updated_at: updatedAt,
+                message_count: chatMessages.length,
+              }
+            : chat
+        )
+        .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+
+      writeFallbackStorage(fallbackChats, messages)
+      set(state => {
+        const hasVisibleChat = state.chats.some((chat) => chat.id === chatId)
+        const updatedChats = (hasVisibleChat ? state.chats : [fallbackChat, ...state.chats])
+          .map(chat =>
+            chat.id === chatId
+              ? {
+                  ...chat,
+                  last_message_preview: newMessage.content.substring(0, 100),
+                  updated_at: updatedAt,
+                  message_count: chatMessages.length,
+                }
+              : chat
+          )
+          .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
+
+        return {
+          messages: {
+            ...state.messages,
+            [chatId]: chatMessages,
+          },
+          chats: updatedChats,
+          activeChat: state.activeChat?.id === chatId
+            ? updatedChats.find((chat) => chat.id === chatId) || state.activeChat
+            : state.activeChat,
+        }
+      })
     }
   },
 
