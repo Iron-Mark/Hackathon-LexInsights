@@ -114,6 +114,10 @@ test.describe('LexInSight smoke checks', () => {
     await expect(page.getByText('Ecological Solid Waste Management Act of 2000')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Run deep research' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Send standard message' })).toBeVisible()
+    const wordDownloadPromise = page.waitForEvent('download')
+    await completedAssistantMessage.getByRole('button', { name: 'Download as Word (.docx)' }).click()
+    const wordDownload = await wordDownloadPromise
+    expect(wordDownload.suggestedFilename()).toMatch(/^response-\d+\.docx$/)
 
     const guestPayloadHandle = await page.waitForFunction(() => {
       const raw = window.localStorage.getItem('lexinsight_guest_chats_v1')
