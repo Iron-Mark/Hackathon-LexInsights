@@ -20,6 +20,21 @@ test.describe('LexInSight smoke checks', () => {
     await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(authAction(page, 'Sign up')).toBeVisible()
     await expect(page.getByPlaceholder('Ask me anything about Philippine legal compliance...')).toBeVisible()
+    const brandMetadata = await page.evaluate(() => ({
+      iconHrefs: Array.from(
+        document.querySelectorAll<HTMLLinkElement>('link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]')
+      ).map((link) => link.href),
+      openGraphImage: document.querySelector<HTMLMetaElement>('meta[property="og:image"]')?.content,
+      twitterImage: document.querySelector<HTMLMetaElement>('meta[name="twitter:image"]')?.content,
+    }))
+
+    expect(brandMetadata.iconHrefs).toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/\/favicon\.ico$/),
+      ])
+    )
+    expect(brandMetadata.openGraphImage).toMatch(/\/og\/lexinsight-og\.png$/)
+    expect(brandMetadata.twitterImage).toMatch(/\/og\/lexinsight-og\.png$/)
     await page.getByRole('button', { name: 'Switch to dark mode' }).click()
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
     await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()
