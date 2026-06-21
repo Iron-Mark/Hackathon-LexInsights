@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, type ComponentProps } from 'react'
+import { useEffect, useState, type ComponentProps } from 'react'
 import { Message } from '@/types'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -42,9 +42,90 @@ function escapeHtmlText(value: string) {
   })
 }
 
+function getRevealStep(contentLength: number) {
+  if (contentLength <= 240) {
+    return 6
+  }
+
+  return Math.max(8, Math.ceil(contentLength / 180))
+}
+
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => getCurrentReducedMotionPreference())
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) {
+      return
+    }
+
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches)
+
+    updatePreference()
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', updatePreference)
+      return () => mediaQuery.removeEventListener('change', updatePreference)
+    }
+
+    mediaQuery.addListener(updatePreference)
+    return () => mediaQuery.removeListener(updatePreference)
+  }, [])
+
+  return prefersReducedMotion
+}
+
+function getCurrentReducedMotionPreference() {
+  return typeof window !== 'undefined' &&
+    Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)
+}
+
 export function MessageBubble({ message }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const [copied, setCopied] = useState(false)
+  const prefersReducedMotion = usePrefersReducedMotion()
+  const [visibleContent, setVisibleContent] = useState(() => {
+    if (message.role === 'user' || getCurrentReducedMotionPreference()) {
+      return message.content
+    }
+
+    return message.content.slice(0, getRevealStep(message.content.length))
+  })
+  const [isRevealing, setIsRevealing] = useState(() => (
+    message.role === 'assistant' &&
+    !getCurrentReducedMotionPreference() &&
+    message.content.length > getRevealStep(message.content.length)
+  ))
+
+  useEffect(() => {
+    if (isUser || prefersReducedMotion || message.content.length === 0) {
+      setVisibleContent(message.content)
+      setIsRevealing(false)
+      return
+    }
+
+    const step = getRevealStep(message.content.length)
+    let currentIndex = Math.min(step, message.content.length)
+
+    setVisibleContent(message.content.slice(0, currentIndex))
+    setIsRevealing(currentIndex < message.content.length)
+
+    if (currentIndex >= message.content.length) {
+      return
+    }
+
+    const intervalId = window.setInterval(() => {
+      currentIndex = Math.min(currentIndex + step, message.content.length)
+      setVisibleContent(message.content.slice(0, currentIndex))
+
+      if (currentIndex >= message.content.length) {
+        setIsRevealing(false)
+        window.clearInterval(intervalId)
+      }
+    }, 18)
+
+    return () => window.clearInterval(intervalId)
+  }, [isUser, message.content, message.id, prefersReducedMotion])
   
   // Format timestamp
   const formatTime = (dateString: string) => {
@@ -127,6 +208,8 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <div
+      data-revealing={isRevealing ? 'true' : 'false'}
+      aria-busy={isRevealing}
       className={`mb-4 max-w-[90%] sm:max-w-[85%] lg:max-w-[90%] rounded-xl p-4 sm:p-5 shadow-md transition-all hover:shadow-lg ${
         isUser
           ? 'ml-auto bg-gradient-to-br from-iris-500 to-purple-500 text-white border-2 border-iris-300'
@@ -207,13 +290,13 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               ),
             }}
           >
-            {message.content}
+            {visibleContent}
           </ReactMarkdown>
         </div>
       )}
       
       {/* Action Buttons - Only for assistant messages */}
-      {!isUser && (
+      {!isUser && !isRevealing && (
         <div className="mt-4 pt-3 border-t border-slate-200 flex items-center gap-2">
           <button
             onClick={handleCopy}
