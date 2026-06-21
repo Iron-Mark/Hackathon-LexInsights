@@ -104,6 +104,8 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 12009'), 'Corpus should include RA 12009')
   assert.ok(corpus.some((document) => document.statute === 'RA 11032'), 'Corpus should include RA 11032')
   assert.ok(corpus.some((document) => document.statute === 'RA 10175'), 'Corpus should include RA 10175')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9775'), 'Corpus should include RA 9775')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9160'), 'Corpus should include RA 9160')
   assert.ok(corpus.some((document) => document.statute === 'RA 7394'), 'Corpus should include RA 7394')
 
   assertResearchMatch(
@@ -194,6 +196,24 @@ try {
     ),
     'RA 10175',
     'cybercrime query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 9775 require for online child safety reporting by internet content hosts?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9775',
+    'child online safety query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What AML controls apply under RA 9160 for covered persons, KYC, and suspicious transaction reports?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9160',
+    'anti-money laundering query'
   )
 
   assertResearchMatch(
@@ -358,6 +378,66 @@ This ordinance takes effect 30 days after publication.`
   )
   assert.equal(thinCyberDraftResponse.status, 'success', 'Cyber draft check should succeed locally')
   assertFinding(thinCyberDraftResponse, 'amber', 'Cyber incident controls')
+
+  const thinChildSafetyDraft = `# Online Child Safety Reporting Ordinance
+
+## Purpose
+This ordinance addresses online child safety incidents in internet cafes and local digital platforms.
+
+## Legal Basis
+Pursuant to RA 9775 and RA 10175.
+
+## Scope
+This applies to covered establishments and online reporting channels.
+
+## Responsible Office
+The information office shall implement this ordinance.
+
+## Requirements
+Covered establishments shall report child online safety incidents.
+
+## Monitoring
+The information office shall submit quarterly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinChildSafetyDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinChildSafetyDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinChildSafetyDraftResponse.status, 'success', 'Child-safety draft check should succeed locally')
+  assertFinding(thinChildSafetyDraftResponse, 'amber', 'Child online safety controls')
+
+  const thinAmlDraft = `# Local Remittance Monitoring Ordinance
+
+## Purpose
+This ordinance addresses money laundering risks in local remittance and payment services.
+
+## Legal Basis
+Pursuant to RA 9160.
+
+## Scope
+This applies to covered money service businesses operating in the municipality.
+
+## Responsible Office
+The licensing office shall implement this ordinance.
+
+## Requirements
+Covered businesses shall monitor transactions and report issues.
+
+## Monitoring
+The licensing office shall submit quarterly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinAmlDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinAmlDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinAmlDraftResponse.status, 'success', 'AML draft check should succeed locally')
+  assertFinding(thinAmlDraftResponse, 'amber', 'AML controls')
 
   const thinConsumerDraft = `# Local Consumer Complaint Ordinance
 
