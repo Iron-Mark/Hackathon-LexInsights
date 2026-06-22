@@ -9,6 +9,7 @@ import { AIDisclaimer, AIDisclaimerBadge } from './ai-disclaimer'
 import { cn } from '@/lib/utils'
 import { type RAGResponse } from '@/lib/services/rag-api'
 import { exportToDocx } from '@/lib/utils/docx-export'
+import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
 import { type DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { showToast } from '@/components/ui/toast'
 
@@ -113,6 +114,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
   // Always prioritize the content prop over stored versions for fresh analysis
   const displayContent = content || currentVersion?.content || ''
+  const previewContent = formatReportMarkdownForPreview(displayContent)
 
   // Enhanced markdown rendering with semantic status blocks
   const renderContent = (text: string) => {
@@ -253,6 +255,31 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
       if (line.startsWith('**') && line.endsWith('**')) {
         return <p key={index} className="my-2 font-semibold text-slate-950 dark:text-slate-100">{line.slice(2, -2)}</p>
+      }
+
+      const checklistMatch = trimmed.match(/^-\s+\[([ xX])\]\s+(.+)$/)
+
+      if (checklistMatch) {
+        const checked = checklistMatch[1].toLowerCase() === 'x'
+        const checklistText = checklistMatch[2]
+
+        return (
+          <div
+            key={index}
+            className="my-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed text-slate-700 shadow-sm dark:border-neutral-600 dark:bg-neutral-900/45 dark:text-slate-200"
+          >
+            <input
+              type="checkbox"
+              checked={checked}
+              readOnly
+              disabled
+              tabIndex={-1}
+              aria-label={`Checklist item: ${checklistText}`}
+              className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-neutral-500 dark:bg-neutral-950 dark:accent-iris-300"
+            />
+            <span>{checklistText}</span>
+          </div>
+        )
       }
 
       if (trimmed.startsWith('- ')) {
@@ -674,7 +701,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             
             {displayContent && (
               <div className="max-w-none space-y-1">
-                {renderContent(displayContent)}
+                {renderContent(previewContent)}
               </div>
             )}
           </article>
