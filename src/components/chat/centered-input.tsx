@@ -1,13 +1,19 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
-import { Send, Loader2 } from 'lucide-react'
+import { useEffect, useState, useRef, type MouseEvent } from 'react'
+import { Send, Loader2, Paperclip } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
 import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useChatStore } from '@/lib/store/chat-store'
 import { showToast } from '@/components/ui/toast'
+import { ChatModeToggle } from './chat-mode-toggle'
+import { UploadedFilesList } from './uploaded-files-list'
+import {
+  MAX_BROWSER_TEXT_DOCUMENT_BYTES,
+  isSupportedComplianceDocument,
+} from '@/lib/utils/document-text'
 
 interface CenteredInputProps {
   onSend: (message: string) => void
@@ -18,7 +24,7 @@ interface CenteredInputProps {
 
 export function CenteredInput({ 
   onSend, 
-  placeholder = "Ask about Philippine legal compliance...",
+  placeholder = "Ask about Philippine law...",
   disabled = false,
   isTransitioning = false
 }: CenteredInputProps) {
@@ -27,8 +33,9 @@ export function CenteredInput({
   const [isSending, setIsSending] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const { mode } = useChatModeStore()
-  const { uploadedFiles, clearFiles, uploadToSupabase, uploading } = useFileUploadStore()
+  const { uploadedFiles, addFiles, clearFiles, canAddMore, uploadToSupabase, uploading } = useFileUploadStore()
   const { user } = useAuthStore()
   const { activeChat, createChat } = useChatStore()
 
@@ -95,6 +102,7 @@ export function CenteredInput({
       // Reset textarea height
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto'
+        textareaRef.current.style.overflowY = 'hidden'
       }
     } catch (error) {
       console.error('Error sending message:', error)
@@ -117,7 +125,55 @@ export function CenteredInput({
     // Auto-resize textarea
     e.target.style.height = 'auto'
     e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px'
+    e.target.style.overflowY = e.target.scrollHeight > 150 ? 'auto' : 'hidden'
   }
+
+  const handleComposerClick = (event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target instanceof HTMLElement ? event.target : null
+
+    if (
+      !target ||
+      target.closest('button, a, input, textarea, select, [role="button"], [role="menuitem"], [role="menuitemradio"]')
+    ) {
+      return
+    }
+
+    if (textareaRef.current && !textareaRef.current.disabled) {
+      textareaRef.current.focus()
+    }
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+
+    if (!file) return
+
+    if (!canAddMore()) {
+      showToast('Maximum 3 documents allowed', 'error')
+      e.target.value = ''
+      return
+    }
+
+    if (file.size > MAX_BROWSER_TEXT_DOCUMENT_BYTES) {
+      showToast('Maximum file size is 5MB', 'error')
+      e.target.value = ''
+      return
+    }
+
+    if (!isSupportedComplianceDocument(file)) {
+      showToast('Please upload a valid file: PDF, MD, TXT, or Word document', 'error')
+      e.target.value = ''
+      return
+    }
+
+    addFiles([file])
+    showToast(`${file.name} added. Click send to analyze.`, 'success')
+    e.target.value = ''
+  }
+
+  const effectivePlaceholder = mode === 'compliance'
+    ? 'Upload or ask compliance...'
+    : placeholder
 
   return (
     <motion.div
@@ -127,47 +183,100 @@ export function CenteredInput({
         y: 0 
       }}
       transition={{ duration: 0.3 }}
-      className="mx-auto w-full max-w-3xl px-4"
+      className="pointer-events-auto mx-auto w-full max-w-3xl px-4 pb-[env(safe-area-inset-bottom)] sm:pb-0"
     >
+      <label htmlFor="centered-message-input" className="sr-only">
+        {effectivePlaceholder}
+      </label>
       <div
+        onClick={handleComposerClick}
         className={`relative rounded-xl border bg-white transition-all duration-200 dark:bg-neutral-800 ${
           isFocused
             ? 'border-iris-500 shadow-lg shadow-iris-100 dark:border-iris-400 dark:shadow-black/30'
             : 'border-slate-200 shadow-md shadow-slate-200/60 dark:border-neutral-700 dark:shadow-black/20'
         }`}
       >
+        <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-2.5 py-2 dark:border-white/10">
+          <ChatModeToggle showLabelOnMobile />
+
+          {mode === 'compliance' && (
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.md,.txt,.doc,.docx"
+                onChange={handleFileSelect}
+                className="sr-only"
+                id="centered-file-upload"
+                aria-label="Upload compliance document (PDF, Markdown, Text, or Word)"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-neutral-950/80 dark:text-slate-200 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
+                aria-label="Upload compliance document"
+                type="button"
+              >
+                <Paperclip className="h-4 w-4" aria-hidden="true" />
+                <span className="hidden min-[380px]:inline">Attach</span>
+              </button>
+            </>
+          )}
+        </div>
+
+        {uploadedFiles.length > 0 && (
+          <div className="border-b border-slate-100 bg-slate-50/70 p-2.5 dark:border-white/10 dark:bg-neutral-900/70">
+            <UploadedFilesList />
+            {!user && mode === 'compliance' && (
+              <p className="mt-2 px-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                Guest document checks are temporary and are not saved to an account.
+              </p>
+            )}
+          </div>
+        )}
+
         <div className="flex items-end gap-2 p-2.5">
           <textarea
+            id="centered-message-input"
             ref={textareaRef}
             value={message}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            placeholder={placeholder}
+            placeholder={effectivePlaceholder}
             disabled={disabled || !isHydrated}
             rows={1}
-            className="flex-1 resize-none bg-transparent px-3 py-2.5 text-sm leading-6 text-slate-900 placeholder-slate-400 focus:outline-none disabled:opacity-50 dark:text-slate-100 dark:placeholder:text-slate-500"
+            aria-label={effectivePlaceholder}
+            aria-describedby="centered-message-disclaimer"
+            className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-3 py-2.5 text-base leading-6 text-slate-900 placeholder-slate-500 focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
-              minHeight: '42px',
+              minHeight: '48px',
               maxHeight: '150px',
+              overflowY: 'hidden',
             }}
           />
 
           <button
             onClick={handleSend}
             disabled={(!message.trim() && uploadedFiles.length === 0) || disabled || !isHydrated || isSending || uploading}
-            className="flex-shrink-0 rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600 dark:bg-iris-400 dark:text-neutral-900 dark:hover:bg-iris-300 dark:disabled:hover:bg-iris-400"
+            className="flex min-h-11 min-w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600 dark:bg-iris-400 dark:text-neutral-900 dark:hover:bg-iris-300 dark:focus-visible:ring-offset-neutral-800 dark:disabled:hover:bg-iris-400"
             aria-label="Send message"
+            type="button"
           >
             {(disabled || isSending || uploading) ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
             ) : (
-              <Send className="h-5 w-5" />
+              <Send className="h-5 w-5" aria-hidden="true" />
             )}
           </button>
         </div>
       </div>
+      <p
+        id="centered-message-disclaimer"
+        className="mx-auto mt-2 max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-500 dark:text-slate-400"
+      >
+        LexInSight can make mistakes. Verify legal information with official sources; this is not legal advice.
+      </p>
     </motion.div>
   )
 }

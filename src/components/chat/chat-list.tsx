@@ -154,14 +154,15 @@ export function ChatList() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search chats..."
-            className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-9 text-sm text-slate-900 transition-all placeholder:text-slate-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-iris-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+            className="min-h-11 w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-12 text-sm text-slate-900 transition-all placeholder:text-slate-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-iris-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:placeholder:text-slate-500"
             aria-label="Search chats"
           />
           {searchQuery && (
             <button
               onClick={handleClearSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+              className="absolute right-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-1 dark:text-slate-500 dark:hover:bg-neutral-700 dark:hover:text-slate-300 dark:focus-visible:ring-offset-neutral-800"
               aria-label="Clear search"
+              type="button"
             >
               <X className="h-4 w-4" />
             </button>

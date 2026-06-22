@@ -17,7 +17,7 @@ import { useSidebarStore } from '@/lib/store/sidebar-store'
 import type { Message } from '@/types'
 import type { DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { checkDraft, type DraftCheckerResponse, type Finding, type RAGResponse } from '@/lib/services/rag-api'
-import { AlertCircle, FileText } from 'lucide-react'
+import { AlertCircle, ChevronDown, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { DragDropOverlay } from './drag-drop-overlay'
@@ -36,6 +36,7 @@ interface ChatContainerProps {
 }
 
 const MIN_THINKING_DURATION_MS = 700
+const AUTO_SCROLL_BOTTOM_THRESHOLD_PX = 160
 
 async function waitForThinkingWindow(startedAt: number) {
   const remainingMs = Math.max(0, MIN_THINKING_DURATION_MS - (Date.now() - startedAt))
@@ -211,9 +212,19 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(null)
   const [currentQuery, setCurrentQuery] = useState<string>('')
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false)
   const [pendingTurns, setPendingTurns] = useState<Array<PendingChatTurn & { chatId: string }>>([])
   const pendingRAGTargetRef = useRef<{ query: string; chatId: string; startedAt: number } | null>(null)
   const checkedRAGHealthRef = useRef(false)
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+  const isNearBottomRef = useRef(true)
+  const shouldFollowLatestRef = useRef(false)
+  const scrollStateRef = useRef({
+    conversationKey: '',
+    messageCount: 0,
+    pendingCount: 0,
+  })
+  const suppressInitialHistoryScrollRef = useRef(true)
 
   const ensureActiveChat = async (fallbackTitle: string) => {
     const currentChat = useChatStore.getState().activeChat
@@ -291,12 +302,149 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     : []
   const hasMessages = messages.length > 0 || visiblePendingTurns.length > 0
 
+  const updateScrollToBottomVisibility = useCallback(() => {
+    const container = scrollContainerRef.current
+
+    if (!container || !hasMessages) {
+      setShowScrollToBottom(false)
+      return
+    }
+
+    const distanceFromBottom = Math.max(0, container.scrollHeight - container.scrollTop - container.clientHeight)
+    const isNearBottom = distanceFromBottom <= AUTO_SCROLL_BOTTOM_THRESHOLD_PX
+
+    isNearBottomRef.current = isNearBottom
+    setShowScrollToBottom(!isNearBottom)
+  }, [hasMessages])
+
+  const scrollToLatestMessage = useCallback(() => {
+    const container = scrollContainerRef.current
+
+    if (!container) {
+      return
+    }
+
+    setShowScrollToBottom(false)
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth',
+    })
+  }, [])
+
   // Fetch messages when active chat changes
   useEffect(() => {
     if (activeChat && !chatMessages[activeChat.id]) {
       fetchMessages(activeChat.id)
     }
   }, [activeChat, chatMessages, fetchMessages])
+
+  useEffect(() => {
+    const container = scrollContainerRef.current
+
+    if (!container) {
+      setShowScrollToBottom(false)
+      return
+    }
+
+    updateScrollToBottomVisibility()
+    container.addEventListener('scroll', updateScrollToBottomVisibility, { passive: true })
+
+    return () => {
+      container.removeEventListener('scroll', updateScrollToBottomVisibility)
+    }
+  }, [loadingMessages, updateScrollToBottomVisibility])
+
+  useEffect(() => {
+    updateScrollToBottomVisibility()
+
+    const frameId = window.requestAnimationFrame(updateScrollToBottomVisibility)
+    const timeoutId = window.setTimeout(updateScrollToBottomVisibility, 250)
+
+    return () => {
+      window.cancelAnimationFrame(frameId)
+      window.clearTimeout(timeoutId)
+    }
+  }, [
+    activeChat?.id,
+    loadingMessages,
+    messages.length,
+    visiblePendingTurns.length,
+    isProcessing,
+    updateScrollToBottomVisibility,
+  ])
+
+  useEffect(() => {
+    const conversationKey = activeChat?.id ?? 'initial'
+    const nextState = {
+      conversationKey,
+      messageCount: messages.length,
+      pendingCount: visiblePendingTurns.length,
+    }
+    const previousState = scrollStateRef.current
+    const conversationChanged = previousState.conversationKey !== conversationKey
+
+    if (conversationChanged) {
+      scrollStateRef.current = nextState
+      shouldFollowLatestRef.current = false
+      suppressInitialHistoryScrollRef.current = true
+      window.requestAnimationFrame(updateScrollToBottomVisibility)
+      return
+    }
+
+    const pendingStarted = nextState.pendingCount > previousState.pendingCount
+    const contentAdded =
+      nextState.messageCount > previousState.messageCount ||
+      pendingStarted
+
+    if (pendingStarted) {
+      shouldFollowLatestRef.current = true
+    }
+
+    if (
+      contentAdded &&
+      suppressInitialHistoryScrollRef.current &&
+      previousState.messageCount === 0 &&
+      previousState.pendingCount === 0 &&
+      nextState.pendingCount === 0
+    ) {
+      scrollStateRef.current = nextState
+      suppressInitialHistoryScrollRef.current = false
+      window.requestAnimationFrame(updateScrollToBottomVisibility)
+      return
+    }
+
+    suppressInitialHistoryScrollRef.current = false
+
+    if (contentAdded && (shouldFollowLatestRef.current || isNearBottomRef.current)) {
+      const frameId = window.requestAnimationFrame(() => {
+        const container = scrollContainerRef.current
+
+        if (!container) {
+          return
+        }
+
+        container.scrollTo({
+          top: container.scrollHeight,
+          behavior: 'smooth',
+        })
+        updateScrollToBottomVisibility()
+
+        if (nextState.pendingCount === 0) {
+          shouldFollowLatestRef.current = false
+        }
+      })
+
+      scrollStateRef.current = nextState
+      return () => window.cancelAnimationFrame(frameId)
+    }
+
+    if (nextState.pendingCount === 0) {
+      shouldFollowLatestRef.current = false
+    }
+
+    scrollStateRef.current = nextState
+    window.requestAnimationFrame(updateScrollToBottomVisibility)
+  }, [activeChat?.id, messages.length, visiblePendingTurns.length, updateScrollToBottomVisibility])
 
   useEffect(() => {
     if (mode !== 'compliance') {
@@ -577,7 +725,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Area - 40% width in compliance mode with canvas, full width otherwise */}
         <div 
-          className={`flex flex-col ${
+          className={`relative flex flex-col ${
             isComplianceWithCanvas ? 'w-full lg:w-[40%]' : 'w-full'
           } transition-all duration-300 overflow-hidden`}
         >
@@ -638,7 +786,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
             
             {/* Messages with scrollbar on far right OR Empty State */}
             {!loadingMessages && (
-              <div className="flex-1 overflow-y-auto">
+              <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
                 {hasMessages ? (
                   <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
                     <ChatMessages messages={messages} pendingTurns={visiblePendingTurns} />
@@ -654,22 +802,20 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 ) : (
                   /* Empty State with Centered Input */
                   <motion.div 
-                    className="flex h-full flex-col justify-start py-8 sm:py-16"
+                    className="pointer-events-none flex min-h-full flex-col justify-between gap-8 py-6 sm:justify-start sm:gap-7 sm:py-16"
                     initial={{ opacity: 1 }}
                     animate={{ opacity: isTransitioning ? 0 : 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="space-y-5 sm:space-y-7">
-                      {/* 1. Greeting and assistant text */}
-                      <EmptyState onPromptSelect={handlePromptSelect} />
-                      
-                      {/* 2. Centered Input */}
-                      <CenteredInput 
-                        onSend={handleCenteredSend}
-                        disabled={loading}
-                        isTransitioning={isTransitioning}
-                      />
-                    </div>
+                    {/* 1. Greeting and assistant text */}
+                    <EmptyState onPromptSelect={handlePromptSelect} />
+
+                    {/* 2. Mobile-bottom input with disclaimer */}
+                    <CenteredInput
+                      onSend={handleCenteredSend}
+                      disabled={loading}
+                      isTransitioning={isTransitioning}
+                    />
                   </motion.div>
                 )}
               </div>
@@ -677,6 +823,25 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
           </div>
           {/* Only show ChatInput when there are messages */}
           {hasMessages && <ChatInput />}
+
+          <AnimatePresence>
+            {hasMessages && showScrollToBottom && (
+              <motion.button
+                type="button"
+                aria-label="Scroll to latest message"
+                initial={{ opacity: 0, y: 10, scale: 0.94 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.94 }}
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.18 }}
+                onClick={scrollToLatestMessage}
+                className="absolute bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-lg shadow-slate-900/15 backdrop-blur transition-colors hover:border-iris-300 hover:text-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-800/95 dark:text-slate-100 dark:shadow-black/30 dark:hover:border-iris-400/60 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-900 sm:right-6"
+              >
+                <ChevronDown className="h-5 w-5" aria-hidden="true" />
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Canvas Toggle Button - Icon Only */}

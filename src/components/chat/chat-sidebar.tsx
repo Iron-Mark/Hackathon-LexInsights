@@ -27,12 +27,15 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
         'transition-transform duration-300 ease-out',
         // Slide in/out based on isOpen state
         isOpen ? 'translate-x-0' : '-translate-x-full',
+        // Closed transformed drawers must not leave an invisible edge hit area.
+        isOpen ? 'pointer-events-auto' : 'pointer-events-none',
         // Focus visible outline for keyboard navigation
         'focus-within:outline-none',
         className
       )}
       role="navigation"
       aria-label="Chat history"
+      aria-hidden={!isOpen}
     >
       <SidebarHeader />
       <ChatList />

@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useEffect, useRef } from 'react'
+import { Fragment } from 'react'
 import { Message } from '@/types'
 import { MessageBubble } from './message-bubble'
 import { TypingIndicator } from './loading-indicator'
@@ -17,13 +17,6 @@ interface ChatMessagesProps {
 }
 
 export function ChatMessages({ messages, pendingTurns = [] }: ChatMessagesProps) {
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  // Auto-scroll to bottom when messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, pendingTurns])
-
   const hasVisibleMessages = messages.length > 0 || pendingTurns.length > 0
 
   return (
@@ -52,7 +45,6 @@ export function ChatMessages({ messages, pendingTurns = [] }: ChatMessagesProps)
               </div>
             </Fragment>
           ))}
-          <div ref={messagesEndRef} />
         </>
       )}
     </div>
