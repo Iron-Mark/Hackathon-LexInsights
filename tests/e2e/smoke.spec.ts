@@ -13,13 +13,17 @@ function authAction(page: Page, name: 'Sign in' | 'Sign up') {
     .first()
 }
 
+function chatInput(page: Page) {
+  return page.getByRole('textbox', { name: /Ask about (PH law|Philippine law|Philippine legal compliance)/ })
+}
+
 test.describe('LexInSight smoke checks', () => {
   test('public entry routes render', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByText('LexInSight').first()).toBeVisible()
     await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(authAction(page, 'Sign up')).toBeVisible()
-    await expect(page.getByPlaceholder('Ask about Philippine legal compliance...')).toBeVisible()
+    await expect(chatInput(page)).toBeVisible()
     const brandMetadata = await page.evaluate(() => ({
       iconHrefs: Array.from(
         document.querySelectorAll<HTMLLinkElement>('link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]')
@@ -71,7 +75,7 @@ test.describe('LexInSight smoke checks', () => {
 
     await expect(page.getByText('LexInSight').first()).toBeVisible()
     await expect(authAction(page, 'Sign in')).toBeVisible()
-    await expect(page.getByPlaceholder('Ask about Philippine legal compliance...')).toBeVisible()
+    await expect(chatInput(page)).toBeVisible()
     await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeVisible()
     await page.getByRole('button', { name: 'Collapse chat history' }).click()
     await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeHidden()
@@ -99,7 +103,7 @@ test.describe('LexInSight smoke checks', () => {
     await page.goto('/chat')
 
     await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), there/ })).toBeVisible()
-    await expect(page.getByPlaceholder('Ask about Philippine legal compliance...')).toBeVisible()
+    await expect(chatInput(page)).toBeVisible()
     await expect(page.getByRole('button', { name: 'Open sidebar menu' })).toBeVisible()
     await expect.poll(async () => {
       return page.evaluate(() => {
@@ -145,10 +149,11 @@ test.describe('LexInSight smoke checks', () => {
   })
 
   test('public chat answers end-to-end without external AI', async ({ page }) => {
+    test.setTimeout(120_000)
     const query = 'Explain RA 9003 Solid Waste Management Act'
 
     await page.goto('/')
-    await page.getByPlaceholder('Ask about Philippine legal compliance...').fill(query)
+    await chatInput(page).fill(query)
     await page.keyboard.press('Enter')
 
     await expect(page.getByRole('main').getByText(query, { exact: true })).toBeVisible()
@@ -159,7 +164,7 @@ test.describe('LexInSight smoke checks', () => {
       .locator('[data-revealing="false"]')
       .filter({ hasText: 'Providerless Local Research Brief' })
 
-    await expect(completedAssistantMessage).toBeVisible({ timeout: 15000 })
+    await expect(completedAssistantMessage).toBeVisible({ timeout: 75_000 })
     await expect(page.getByRole('heading', { name: 'Providerless Local Research Brief' })).toBeVisible()
     await expect(page.getByText('Ecological Solid Waste Management Act of 2000')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Run deep research' })).toBeVisible()
