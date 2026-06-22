@@ -1,39 +1,51 @@
 'use client'
 
-import { SignInButton, SignUpButton } from '@clerk/nextjs'
+import { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { AuthDialog, type AuthDialogMode } from '@/components/auth/auth-dialog'
 import { Button } from '@/components/ui/button'
-import { authFormAppearance } from '@/lib/auth/clerk-appearance'
 import { isClerkClientConfigured } from '@/lib/auth/clerk-config'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { UserMenu } from './user-menu'
 
+const authSignInButtonClassName =
+  'h-11 rounded-md border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 shadow-xs transition-all duration-200 hover:border-iris-200 hover:bg-iris-50 hover:text-iris-700 hover:shadow-sm active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-400/15 dark:hover:text-iris-100 dark:focus-visible:ring-offset-neutral-900'
+
+const authSignUpButtonClassName =
+  'h-11 rounded-md border border-iris-500/25 bg-iris-600 px-3 text-xs font-semibold text-white shadow-sm shadow-iris-950/15 transition-all duration-200 hover:bg-iris-700 hover:shadow-md hover:shadow-iris-950/20 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/20 dark:bg-iris-600 dark:text-white dark:hover:bg-iris-500 dark:focus-visible:ring-offset-neutral-900 sm:text-sm'
+
 export function ChatHeader() {
   const { user } = useAuthStore()
   const clerkClientConfigured = isClerkClientConfigured()
+  const [authDialogMode, setAuthDialogMode] = useState<AuthDialogMode>('sign-in')
+  const [authDialogOpen, setAuthDialogOpen] = useState(false)
+
+  const openAuthDialog = (mode: AuthDialogMode) => {
+    setAuthDialogMode(mode)
+    setAuthDialogOpen(true)
+  }
 
   return (
     <header className="sticky top-0 z-10 border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] dark:border-neutral-700 dark:bg-neutral-900">
-      <div className="relative flex h-14 w-full items-center justify-between gap-2 px-3 sm:h-16 sm:gap-4 sm:px-6">
+      <div className="relative flex h-14 w-full items-center justify-between gap-2 px-4 sm:h-16 sm:gap-4 sm:px-6">
         <div className="flex-1" />
 
-        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1">
-          <div className="shrink-0">
+        <div className="absolute left-1/2 top-1/2 flex max-w-[7.5rem] -translate-x-1/2 -translate-y-1/2 items-center gap-2 sm:max-w-[8rem] lg:max-w-none">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white p-1 shadow-sm shadow-slate-900/5 ring-1 ring-white transition-colors duration-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-none dark:ring-white/[0.06] lg:h-11 lg:w-11">
             <Image
               src="/logo/LOGO-0.5-woBG.svg"
               alt="LexInSight logo"
               width={40}
               height={40}
-              className="h-8 w-8 sm:h-10 sm:w-10"
+              className="h-7 w-7 drop-shadow-[0_0_8px_rgba(99,102,241,0.32)] lg:h-9 lg:w-9"
               priority
             />
           </div>
-          <div className="flex flex-col items-start">
-            <h1 className="animate-gradient bg-linear-to-r from-iris-500 via-purple-600 to-iris-700 bg-clip-text text-sm font-bold leading-tight text-transparent sm:text-xl">
+          <div className="hidden min-w-0 flex-col items-start lg:flex">
+            <h1 className="truncate text-xl font-extrabold leading-tight text-slate-950 dark:text-white">
               LexInSight
             </h1>
-            <p className="hidden animate-gradient bg-linear-to-r from-iris-400 via-purple-500 to-iris-600 bg-clip-text text-[9px] font-medium leading-tight text-transparent sm:block sm:text-xs">
+            <p className="hidden text-xs font-semibold leading-tight text-slate-600 dark:text-slate-300 xl:block">
               Legal compliance assistant
             </p>
           </div>
@@ -42,33 +54,30 @@ export function ChatHeader() {
         <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2">
           {user ? (
             <UserMenu />
-          ) : clerkClientConfigured ? (
-            <>
-              <SignInButton
-                mode="modal"
-                fallbackRedirectUrl="/chat"
-                signUpFallbackRedirectUrl="/chat"
-                appearance={authFormAppearance}
-              >
-                <Button variant="ghost" size="sm" className="px-1.5 text-xs sm:px-3 sm:text-sm">Sign in</Button>
-              </SignInButton>
-              <SignUpButton
-                mode="modal"
-                fallbackRedirectUrl="/chat"
-                signInFallbackRedirectUrl="/chat"
-                appearance={authFormAppearance}
-              >
-                <Button size="sm" className="px-2 text-xs sm:px-3 sm:text-sm">Sign up</Button>
-              </SignUpButton>
-            </>
           ) : (
             <>
-              <Button asChild variant="ghost" size="sm" className="px-1.5 text-xs sm:px-3 sm:text-sm">
-                <Link href="/auth/login">Sign in</Link>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={authSignInButtonClassName}
+                onClick={() => openAuthDialog('sign-in')}
+              >
+                Sign in
               </Button>
-              <Button asChild size="sm" className="px-2 text-xs sm:px-3 sm:text-sm">
-                <Link href="/auth/signup">Sign up</Link>
+              <Button
+                size="sm"
+                className={authSignUpButtonClassName}
+                onClick={() => openAuthDialog('sign-up')}
+              >
+                Sign up
               </Button>
+              <AuthDialog
+                clerkConfigured={clerkClientConfigured}
+                mode={authDialogMode}
+                open={authDialogOpen}
+                onModeChange={setAuthDialogMode}
+                onOpenChange={setAuthDialogOpen}
+              />
             </>
           )}
         </div>

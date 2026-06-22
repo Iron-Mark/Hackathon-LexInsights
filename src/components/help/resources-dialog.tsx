@@ -107,8 +107,8 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[88vh] overflow-hidden border-slate-200 bg-white p-0 dark:border-neutral-700 dark:bg-neutral-900 sm:max-w-2xl lg:max-w-5xl xl:max-w-6xl">
-        <DialogHeader className="border-b border-slate-200 bg-slate-50 px-5 py-5 dark:border-neutral-700 dark:bg-neutral-800 sm:px-7">
+      <DialogContent className="flex max-h-[88dvh] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden border-slate-200 bg-white p-0 dark:border-neutral-700 dark:bg-neutral-900 sm:max-w-2xl lg:max-w-[min(calc(100vw-2rem),60rem)] xl:max-w-6xl">
+        <DialogHeader className="shrink-0 border-b border-slate-200 bg-slate-50 px-5 py-5 dark:border-neutral-700 dark:bg-neutral-800 sm:px-7">
           <div className="flex items-start gap-3 pr-8">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-iris-100 text-iris-700 dark:bg-iris-400/15 dark:text-iris-200">
               <BookOpen className="h-5 w-5" aria-hidden="true" />
@@ -127,7 +127,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
           </div>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-7">
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7">
           <div className="grid gap-6 lg:grid-cols-[190px_1fr]">
             <aside className="hidden lg:block">
               <div className="sticky top-0 rounded-xl border border-slate-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
@@ -197,7 +197,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
           </div>
         </div>
 
-        <div className="border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-400 sm:px-7">
+        <div className="shrink-0 border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-400 sm:px-7">
           <p className="max-w-4xl">
             <strong className="text-slate-700 dark:text-slate-200">Note:</strong> These are official Philippine government websites.
             Always verify information with the relevant authorities for legal compliance.
