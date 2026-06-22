@@ -8,6 +8,8 @@ import { Copy, Download, FileText, Check } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { showToast } from '@/components/ui/toast'
 import { exportToDocx } from '@/lib/utils/docx-export'
+import { cn } from '@/lib/utils'
+import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
 
 interface MessageBubbleProps {
   message: Message
@@ -26,10 +28,40 @@ function stripMarkdownNode<T extends { node?: unknown }>(props: T): Omit<T, 'nod
 
 function getRevealStep(contentLength: number) {
   if (contentLength <= 240) {
-    return 6
+    return 2
   }
 
-  return Math.max(8, Math.ceil(contentLength / 180))
+  if (contentLength <= 1200) {
+    return 3
+  }
+
+  if (contentLength <= 3200) {
+    return 5
+  }
+
+  if (contentLength <= 7000) {
+    return 8
+  }
+
+  return 12
+}
+
+function getRevealDelay(content: string, visibleIndex: number) {
+  const previousCharacter = content[visibleIndex - 1]
+
+  if (previousCharacter === '\n') {
+    return 110
+  }
+
+  if (previousCharacter && /[.!?;:]/.test(previousCharacter)) {
+    return 82
+  }
+
+  if (previousCharacter && /[,)]/.test(previousCharacter)) {
+    return 54
+  }
+
+  return 36
 }
 
 function usePrefersReducedMotion() {
@@ -97,17 +129,40 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       return
     }
 
-    const intervalId = window.setInterval(() => {
+    let timeoutId: number | undefined
+    let cancelled = false
+
+    const revealNextChunk = () => {
+      if (cancelled) {
+        return
+      }
+
       currentIndex = Math.min(currentIndex + step, message.content.length)
       setVisibleContent(message.content.slice(0, currentIndex))
 
       if (currentIndex >= message.content.length) {
         setIsRevealing(false)
-        window.clearInterval(intervalId)
+        return
       }
-    }, 18)
 
-    return () => window.clearInterval(intervalId)
+      timeoutId = window.setTimeout(
+        revealNextChunk,
+        getRevealDelay(message.content, currentIndex)
+      )
+    }
+
+    timeoutId = window.setTimeout(
+      revealNextChunk,
+      getRevealDelay(message.content, currentIndex)
+    )
+
+    return () => {
+      cancelled = true
+
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId)
+      }
+    }
   }, [isUser, message.content, message.id, prefersReducedMotion])
   
   // Format timestamp
@@ -172,14 +227,16 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     }
   }
 
+  const renderedAssistantContent = formatReportMarkdownForPreview(visibleContent)
+
   return (
     <div
       data-revealing={isRevealing ? 'true' : 'false'}
       aria-busy={isRevealing}
-      className={`mb-4 max-w-[90%] sm:max-w-[85%] lg:max-w-[90%] rounded-xl p-4 sm:p-5 transition-all ${
+      className={`mb-4 min-w-0 rounded-xl p-4 transition-all sm:p-5 ${
         isUser
-          ? 'ml-auto border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md dark:border-iris-400/25 dark:from-iris-400/15 dark:via-neutral-800 dark:to-purple-400/10 dark:text-slate-100 dark:shadow-black/20'
-          : 'mr-auto border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:shadow-black/30'
+          ? 'ml-auto max-w-[90%] border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-400/25 dark:from-iris-400/15 dark:via-neutral-800 dark:to-purple-400/10 dark:text-slate-100 dark:shadow-black/20'
+          : 'mr-auto w-full max-w-full border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg sm:max-w-[85%] lg:max-w-[90%] dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:shadow-black/30'
       }`}
     >
       {isUser ? (
@@ -189,7 +246,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         </p>
       ) : (
         // AI message - formatted markdown
-        <div className="prose prose-slate max-w-none">
+        <div className="prose prose-slate max-w-none break-words">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -208,15 +265,53 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                 <p className="my-3 text-base leading-relaxed text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
               // Lists
-              ul: (props) => (
-                <ul className="my-3 list-inside list-disc space-y-2 text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
-              ),
+              ul: (props) => {
+                const { className, ...domProps } = stripMarkdownNode(props)
+                const isTaskList = typeof className === 'string' && className.includes('contains-task-list')
+
+                return (
+                  <ul
+                    className={cn(
+                      'my-3 space-y-2 text-slate-700 dark:text-slate-300',
+                      isTaskList ? 'list-none pl-0' : 'list-inside list-disc',
+                      className
+                    )}
+                    {...domProps}
+                  />
+                )
+              },
               ol: (props) => (
                 <ol className="my-3 list-inside list-decimal space-y-2 text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
-              li: (props) => (
-                <li className="leading-relaxed text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
-              ),
+              li: (props) => {
+                const { className, ...domProps } = stripMarkdownNode(props)
+                const isTaskItem = typeof className === 'string' && className.includes('task-list-item')
+
+                return (
+                  <li
+                    className={cn(
+                      'leading-relaxed text-slate-700 dark:text-slate-300',
+                      isTaskItem &&
+                        'flex gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed shadow-sm dark:border-neutral-600 dark:bg-neutral-900/45 dark:text-slate-200',
+                      className
+                    )}
+                    {...domProps}
+                  />
+                )
+              },
+              input: (props) => {
+                const { className, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <input
+                    className={cn(
+                      'mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-neutral-500 dark:bg-neutral-950 dark:accent-iris-300',
+                      className
+                    )}
+                    {...domProps}
+                  />
+                )
+              },
               // Strong/Bold
               strong: (props) => (
                 <strong className="font-bold text-slate-900 dark:text-slate-100" {...stripMarkdownNode(props)} />
@@ -256,18 +351,19 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               ),
             }}
           >
-            {visibleContent}
+            {renderedAssistantContent}
           </ReactMarkdown>
         </div>
       )}
       
       {/* Action Buttons - Only for assistant messages */}
       {!isUser && !isRevealing && (
-        <div className="mt-4 flex items-center gap-2 border-t border-slate-200 pt-3 dark:border-neutral-700">
+        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-slate-200 pt-3 sm:gap-2 dark:border-neutral-700">
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200"
+            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
             aria-label="Copy to clipboard"
+            type="button"
           >
             <AnimatePresence mode="wait">
               {copied ? (
@@ -295,22 +391,31 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
           <button
             onClick={handleDownloadMarkdown}
-            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200"
+            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
             aria-label="Download as Markdown"
+            type="button"
           >
             <Download className="h-3.5 w-3.5" />
-            <span>Markdown</span>
+            <span className="hidden min-[360px]:inline">Markdown</span>
+            <span className="min-[360px]:hidden">MD</span>
           </button>
 
           <button
             onClick={handleDownloadWord}
             disabled={isExportingWord}
-            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 disabled:cursor-not-allowed disabled:opacity-60 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200"
+            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
             aria-label={isExportingWord ? 'Exporting Word document' : 'Download as Word (.docx)'}
             type="button"
           >
             <FileText className="h-3.5 w-3.5" />
-            <span>{isExportingWord ? 'Exporting...' : 'Word (.docx)'}</span>
+            {isExportingWord ? (
+              <span>Exporting...</span>
+            ) : (
+              <>
+                <span className="hidden min-[360px]:inline">Word (.docx)</span>
+                <span className="min-[360px]:hidden">DOCX</span>
+              </>
+            )}
           </button>
         </div>
       )}

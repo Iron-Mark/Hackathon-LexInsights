@@ -1163,8 +1163,6 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
   return [
     '# Providerless Local Research Brief',
     '',
-    `Query: ${query}`,
-    '',
     '## Result',
     '',
     'No strong match was found in the bundled local legal corpus.',
@@ -1205,8 +1203,6 @@ function buildResearchSummary(query: string, rankedDocuments: RankedDocument[], 
 
   return [
     '# Providerless Local Research Brief',
-    '',
-    `Query: ${query}`,
     '',
     '## Provider Mode',
     '',
