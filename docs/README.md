@@ -21,6 +21,7 @@ LexInSight is a Next.js app for Philippine legal compliance chat, Markdown/text/
 
 - [Testing](./operations/TESTING.md) - local and CI quality gates.
 - [Deployment](./operations/DEPLOYMENT.md) - Vercel deployment and production checks.
+- [Ship Readiness](./operations/SHIP-READINESS.md) - current release-candidate checklist and hold criteria.
 - [App Root Migration](./operations/APP-ROOT-MIGRATION.md) - migration record and root-layout notes.
 - [Troubleshooting](./operations/TROUBLESHOOTING.md) - common setup, backend, and deployment failures.
 - [Maintainers](./operations/MAINTAINERS.md) - release checklist and ownership notes.
