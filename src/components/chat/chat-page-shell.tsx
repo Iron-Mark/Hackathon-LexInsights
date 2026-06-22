@@ -91,12 +91,12 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
         )}
       >
         {isMobile && (
-          <div className="fixed left-[calc(env(safe-area-inset-left)+1rem)] top-[calc(env(safe-area-inset-top)+1rem)] z-20">
+          <div className="fixed left-[calc(env(safe-area-inset-left)+1rem)] top-[calc(env(safe-area-inset-top)+0.375rem)] z-20">
             <Button
               onClick={open}
               variant="outline"
               size="icon"
-              className="h-10 w-10 bg-white shadow-md transition-all duration-150 hover:bg-slate-50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus-visible:ring-offset-neutral-900"
+              className="h-11 w-11 bg-white shadow-md transition-all duration-150 hover:bg-slate-50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus-visible:ring-offset-neutral-900"
               aria-label="Open sidebar menu"
             >
               <Menu className="h-5 w-5 text-slate-700 dark:text-slate-200" aria-hidden="true" />

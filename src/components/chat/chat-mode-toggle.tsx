@@ -7,9 +7,11 @@ import {
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
+import { cn } from '@/lib/utils'
 
 const chatModes = [
   {
@@ -26,7 +28,11 @@ const chatModes = [
   },
 ] as const
 
-export function ChatModeToggle() {
+interface ChatModeToggleProps {
+  showLabelOnMobile?: boolean
+}
+
+export function ChatModeToggle({ showLabelOnMobile = false }: ChatModeToggleProps) {
   const { mode, setMode } = useChatModeStore()
   const activeMode = chatModes.find((item) => item.value === mode) || chatModes[0]
   const ActiveIcon = activeMode.icon
@@ -43,11 +49,13 @@ export function ChatModeToggle() {
         <Button
           variant="ghost"
           size="sm"
-          className="min-h-11 shrink-0 gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-slate-700 shadow-sm transition-all hover:border-iris-300 hover:bg-iris-50 hover:text-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-slate-200 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
+          className="min-h-11 shrink-0 gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-slate-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-neutral-950/80 dark:text-slate-200 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
           aria-label={`Mode: ${activeMode.label}`}
         >
           <ActiveIcon className="h-4 w-4" aria-hidden="true" />
-          <span className="hidden text-sm font-semibold sm:inline">{activeMode.label}</span>
+          <span className={cn('text-sm font-semibold', showLabelOnMobile ? 'inline' : 'hidden min-[430px]:inline')}>
+            {activeMode.label}
+          </span>
           <ChevronDown className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
@@ -55,22 +63,42 @@ export function ChatModeToggle() {
       <DropdownMenuContent
         side="top"
         align="start"
-        className="w-60 border-slate-200 bg-white p-1.5 shadow-xl dark:border-neutral-700 dark:bg-neutral-900"
+        sideOffset={10}
+        className="w-[min(calc(100vw-2rem),22rem)] rounded-2xl border-slate-200/80 bg-white/95 p-2.5 shadow-2xl shadow-slate-900/15 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/95 dark:shadow-black/40"
       >
+        <div className="px-3 pb-2.5 pt-2">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            Response mode
+          </p>
+          <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
+            Choose how the next message should be handled.
+          </p>
+        </div>
+        <DropdownMenuSeparator className="mb-1 bg-slate-200/80 dark:bg-white/10" />
         <DropdownMenuRadioGroup value={mode} onValueChange={handleModeChange}>
           {chatModes.map((item) => {
             const Icon = item.icon
+            const isActive = mode === item.value
 
             return (
               <DropdownMenuRadioItem
                 key={item.value}
                 value={item.value}
-                className="cursor-pointer items-start gap-3 rounded-lg py-2.5 pr-3 text-slate-700 data-[state=checked]:bg-iris-50 data-[state=checked]:text-iris-800 dark:text-slate-300 dark:data-[state=checked]:bg-iris-400/10 dark:data-[state=checked]:text-iris-100"
+                className="group min-h-16 cursor-pointer items-center gap-3 rounded-xl px-3 py-3 pr-10 text-slate-700 transition-colors focus:bg-slate-100 focus:text-slate-950 data-[state=checked]:bg-iris-50 data-[state=checked]:text-slate-950 dark:text-slate-200 dark:focus:bg-white/10 dark:focus:text-white dark:data-[state=checked]:bg-iris-400/10 dark:data-[state=checked]:text-white [&>span:first-child]:left-auto [&>span:first-child]:right-3 [&>span:first-child]:top-1/2 [&>span:first-child]:-translate-y-1/2 [&>span:first-child]:text-iris-600 dark:[&>span:first-child]:text-iris-300"
               >
-                <Icon className="mt-0.5 h-4 w-4 text-slate-500 dark:text-slate-400" aria-hidden="true" />
-                <span className="min-w-0">
+                <span
+                  className={cn(
+                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition-colors',
+                    isActive
+                      ? 'border-iris-200 bg-white text-iris-700 shadow-sm dark:border-iris-400/30 dark:bg-iris-400/15 dark:text-iris-200'
+                      : 'border-slate-200 bg-slate-50 text-slate-500 group-focus:bg-white dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:group-focus:bg-white/10'
+                  )}
+                >
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
                   <span className="block text-sm font-semibold">{item.label}</span>
-                  <span className="block text-xs leading-5 text-slate-500 dark:text-slate-400">
+                  <span className="mt-0.5 block text-xs leading-5 text-slate-500 dark:text-slate-400">
                     {item.description}
                   </span>
                 </span>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, type MouseEvent } from 'react'
 import { Send, Paperclip, Loader2, Sparkles } from 'lucide-react'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
 import { useRAGStore } from '@/lib/store/rag-store'
@@ -33,6 +33,7 @@ export function ChatInput() {
   const { uploadedFiles, addFiles, clearFiles, canAddMore, uploadToSupabase, uploading } = useFileUploadStore()
   const { activeChat, createChat, addMessage } = useChatStore()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const ensureActiveChat = async (fallbackTitle: string) => {
     if (activeChat?.id) {
@@ -119,6 +120,10 @@ export function ChatInput() {
       
       // Clear textarea after send
       setMessage('')
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto'
+        textareaRef.current.style.overflowY = 'hidden'
+      }
     } catch (error) {
       console.error('Error sending message:', error)
       showToast(error instanceof Error ? error.message : 'Failed to send message', 'error')
@@ -132,6 +137,32 @@ export function ChatInput() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
+    }
+  }
+
+  const resizeTextarea = (element: HTMLTextAreaElement) => {
+    element.style.height = 'auto'
+    element.style.height = `${Math.min(element.scrollHeight, 120)}px`
+    element.style.overflowY = element.scrollHeight > 120 ? 'auto' : 'hidden'
+  }
+
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value)
+    resizeTextarea(e.target)
+  }
+
+  const handleComposerClick = (event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target instanceof HTMLElement ? event.target : null
+
+    if (
+      !target ||
+      target.closest('button, a, input, textarea, select, [role="button"], [role="menuitem"], [role="menuitemradio"]')
+    ) {
+      return
+    }
+
+    if (textareaRef.current && !textareaRef.current.disabled) {
+      textareaRef.current.focus()
     }
   }
 
@@ -248,8 +279,8 @@ export function ChatInput() {
   }
 
   const placeholder = mode === 'general' 
-    ? 'Ask about Philippine compliance laws...'
-    : 'Upload a document and ask about compliance...'
+    ? 'Ask about PH law...'
+    : 'Upload or ask...'
 
   return (
     <div className="border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] dark:border-neutral-700 dark:bg-neutral-900" role="region" aria-label="Message input">
@@ -267,7 +298,7 @@ export function ChatInput() {
         </div>
       )}
       
-      <div className="mx-auto max-w-5xl p-2.5 sm:p-4">
+      <div className="mx-auto max-w-5xl cursor-text p-2.5 sm:p-4" onClick={handleComposerClick}>
         {/* Input Area */}
         <div className="flex items-end gap-1.5 rounded-lg border-2 border-slate-200 bg-white p-2 transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 sm:gap-2 dark:border-neutral-700 dark:bg-neutral-800 dark:focus-within:border-iris-400 dark:focus-within:ring-iris-400/20">
           {/* File Upload Button (Compliance Mode Only) */}
@@ -299,19 +330,21 @@ export function ChatInput() {
             {placeholder}
           </label>
           <textarea
+            ref={textareaRef}
             id="message-input"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={handleMessageChange}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={isSending || loading || uploading}
             rows={1}
             aria-label={placeholder}
             aria-describedby="message-hint"
-            className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm text-slate-900 placeholder-slate-400 transition-opacity focus:outline-none disabled:opacity-50 dark:text-slate-100 dark:placeholder:text-slate-500"
+            className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-2 py-2 text-base leading-6 text-slate-900 placeholder-slate-500 transition-opacity focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
-              minHeight: '44px',
-              maxHeight: '100px',
+              minHeight: '48px',
+              maxHeight: '120px',
+              overflowY: 'hidden',
             }}
           />
           <span id="message-hint" className="sr-only">
