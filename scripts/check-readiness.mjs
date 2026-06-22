@@ -397,26 +397,28 @@ function getRagProviderMode(env) {
   return DEFAULT_RAG_PROVIDER_MODE
 }
 
-async function checkDns(name, host) {
+export async function checkDns(name, host, options = {}) {
   const startedAt = Date.now()
+  const critical = options.critical !== false
+  const lookupFn = options.lookup || lookup
 
   if (!host) {
     return {
       name,
       status: 'skip',
-      critical: true,
-      message: 'Skipped because no valid host is configured',
+      critical,
+      message: options.missingHostMessage || 'Skipped because no valid host is configured',
       durationMs: elapsedSince(startedAt),
     }
   }
 
   try {
-    await lookup(host)
+    await lookupFn(host)
 
     return {
       name,
       status: 'pass',
-      critical: true,
+      critical,
       message: 'DNS resolves',
       durationMs: elapsedSince(startedAt),
       target: host,
@@ -424,9 +426,9 @@ async function checkDns(name, host) {
   } catch (error) {
     return {
       name,
-      status: 'fail',
-      critical: true,
-      message: error instanceof Error ? error.message : 'DNS lookup failed',
+      status: critical ? 'fail' : 'warn',
+      critical,
+      message: options.failureMessage || (error instanceof Error ? error.message : 'DNS lookup failed'),
       durationMs: elapsedSince(startedAt),
       target: host,
     }
@@ -520,7 +522,11 @@ async function run() {
         ...ragAsyncChecks,
       ]
     : [
-        checkDns('supabase.dns', supabaseParsedUrl?.hostname || null),
+        checkDns('supabase.dns', supabaseParsedUrl?.hostname || null, {
+          critical: false,
+          failureMessage:
+            'Supabase DNS did not resolve during this diagnostic check; public providerless chat remains usable, but authenticated persistence may be degraded.',
+        }),
         ...ragAsyncChecks,
       ]
   const immediateChecks = []

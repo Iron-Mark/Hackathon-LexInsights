@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import {
+  checkDns,
   checkSupabaseAnonKey,
   checkSupabaseProjectRef,
   parseEnvFile,
@@ -110,6 +111,22 @@ const unknownChecks = checkSupabaseAnonKey('not-a-valid-key', projectRef)
 assert.equal(getCheck(unknownChecks, 'supabase.anon_key_format').status, 'fail')
 assert.equal(getCheck(unknownChecks, 'supabase.anon_key_format').critical, true)
 assertNoRawKeyLeak(unknownChecks, 'not-a-valid-key')
+
+const simulatedDnsFailure = async () => {
+  throw new Error('simulated DNS failure')
+}
+const optionalDnsCheck = await checkDns('supabase.dns', `${projectRef}.supabase.co`, {
+  critical: false,
+  lookup: simulatedDnsFailure,
+})
+assert.equal(optionalDnsCheck.status, 'warn')
+assert.equal(optionalDnsCheck.critical, false)
+
+const criticalDnsCheck = await checkDns('rag.dns', 'rag.example.test', {
+  lookup: simulatedDnsFailure,
+})
+assert.equal(criticalDnsCheck.status, 'fail')
+assert.equal(criticalDnsCheck.critical, true)
 
 const tempDir = mkdtempSync(join(tmpdir(), 'lexinsight-readiness-env-'))
 const envFile = join(tempDir, 'env.test')
