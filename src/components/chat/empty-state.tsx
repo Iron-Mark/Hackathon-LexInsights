@@ -17,8 +17,11 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
   const { mode } = useChatModeStore()
   const { uploadedFiles } = useFileUploadStore()
   const [greeting, setGreeting] = useState('')
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
+    setIsHydrated(true)
+
     const hour = new Date().getHours()
     if (hour < 12) setGreeting('Good morning')
     else if (hour < 18) setGreeting('Good afternoon')
@@ -109,7 +112,8 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
             transition={{ delay: 0.4 + index * 0.05 }}
             whileHover={{ x: 4 }}
             onClick={() => onPromptSelect(prompt)}
-            className={`group flex min-h-12 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm leading-5 transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900 ${
+            disabled={!isHydrated}
+            className={`group flex min-h-12 w-full items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm leading-5 transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-wait disabled:hover:translate-y-0 disabled:hover:shadow-none dark:focus-visible:ring-offset-neutral-900 ${
               index === 0
                 ? 'border-iris-200 bg-iris-50/70 text-slate-900 shadow-sm dark:border-iris-400/40 dark:bg-iris-400/10 dark:text-slate-100'
                 : 'border-slate-200 bg-white text-slate-700 shadow-xs dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-300 dark:hover:border-iris-400/50'
