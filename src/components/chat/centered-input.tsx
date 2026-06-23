@@ -151,13 +151,14 @@ export function CenteredInput({
 
   return (
     <motion.div
+      onClick={focusTextareaFromShellClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ 
         opacity: isTransitioning ? 0 : 1, 
         y: 0 
       }}
       transition={{ duration: 0.3 }}
-      className="pointer-events-auto mx-auto w-full max-w-3xl px-4 pb-[env(safe-area-inset-bottom)] sm:pb-0"
+      className="pointer-events-auto mx-auto w-full max-w-5xl cursor-text px-4 pb-[env(safe-area-inset-bottom)] sm:px-6 sm:pb-0 lg:px-8"
     >
       <label htmlFor="centered-message-input" className="sr-only">
         {effectivePlaceholder}

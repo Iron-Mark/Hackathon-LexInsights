@@ -788,7 +788,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 ) : (
                   /* Empty State with Centered Input */
                   <motion.div 
-                    className="pointer-events-none flex min-h-full flex-col justify-between gap-8 py-6 sm:justify-start sm:gap-7 sm:py-16"
+                    className="pointer-events-none flex min-h-full flex-col gap-8 pt-6 sm:gap-9 sm:pt-12 md:pt-16"
                     initial={{ opacity: 1 }}
                     animate={{ opacity: isTransitioning ? 0 : 1 }}
                     transition={{ duration: 0.3 }}
@@ -796,12 +796,14 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                     {/* 1. Greeting and assistant text */}
                     <EmptyState onPromptSelect={handlePromptSelect} />
 
-                    {/* 2. Mobile-bottom input with disclaimer */}
-                    <CenteredInput
-                      onSend={handleCenteredSend}
-                      disabled={loading}
-                      isTransitioning={isTransitioning}
-                    />
+                    {/* 2. Bottom composer with disclaimer */}
+                    <div className="pointer-events-none sticky bottom-0 mt-auto w-full pb-[calc(env(safe-area-inset-bottom)+0.875rem)] pt-5">
+                      <CenteredInput
+                        onSend={handleCenteredSend}
+                        disabled={loading}
+                        isTransitioning={isTransitioning}
+                      />
+                    </div>
                   </motion.div>
                 )}
               </div>

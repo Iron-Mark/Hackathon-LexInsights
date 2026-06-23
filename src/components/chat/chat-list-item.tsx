@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Chat } from '@/types'
 import { MessageSquare, Trash2, Loader2, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -21,23 +21,38 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
   const { deleteChat, chats } = useChatStore()
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const deleteConfirmCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => {
-    if (showDeleteConfirm) {
-      const timer = setTimeout(() => {
-        setShowDeleteConfirm(false)
-      }, 3000)
-      return () => clearTimeout(timer)
+  const clearDeleteConfirmCloseTimer = useCallback(() => {
+    if (deleteConfirmCloseTimerRef.current) {
+      clearTimeout(deleteConfirmCloseTimerRef.current)
+      deleteConfirmCloseTimerRef.current = null
     }
-  }, [showDeleteConfirm])
+  }, [])
+
+  const scheduleDeleteConfirmClose = useCallback(() => {
+    if (!showDeleteConfirm || isDeleting) {
+      return
+    }
+
+    clearDeleteConfirmCloseTimer()
+    deleteConfirmCloseTimerRef.current = setTimeout(() => {
+      setShowDeleteConfirm(false)
+      deleteConfirmCloseTimerRef.current = null
+    }, 1500)
+  }, [clearDeleteConfirmCloseTimer, isDeleting, showDeleteConfirm])
+
+  useEffect(() => clearDeleteConfirmCloseTimer, [clearDeleteConfirmCloseTimer])
 
   const handleStartDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
+    clearDeleteConfirmCloseTimer()
     setShowDeleteConfirm(true)
   }
 
   const handleConfirmDelete = async (e?: React.MouseEvent | React.KeyboardEvent) => {
     e?.stopPropagation()
+    clearDeleteConfirmCloseTimer()
     setIsDeleting(true)
 
     try {
@@ -62,6 +77,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
 
   const handleCancelDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
+    clearDeleteConfirmCloseTimer()
     setShowDeleteConfirm(false)
   }
 
@@ -82,6 +98,8 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.2 }}
       className="relative group"
+      onMouseEnter={clearDeleteConfirmCloseTimer}
+      onMouseLeave={scheduleDeleteConfirmClose}
     >
       <div
         onClick={handleRowClick}

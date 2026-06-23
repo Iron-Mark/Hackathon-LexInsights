@@ -49,7 +49,7 @@ export function AppSidebar() {
   const router = useRouter()
   const pathname = usePathname()
   const { user } = useAuthStore()
-  const { toggle } = useSidebarStore()
+  const { isOpen, isMobile, open, toggle } = useSidebarStore()
   const { resolvedTheme, toggleTheme } = useTheme()
   
   // Dialog states
@@ -126,6 +126,18 @@ export function AppSidebar() {
       <ResourcesDialog open={showResourcesDialog} onOpenChange={setShowResourcesDialog} />
       
       <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center border-r border-neutral-300 bg-white pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-[calc(env(safe-area-inset-top)+1rem)] supports-[height:100dvh]:h-dvh dark:border-neutral-700 dark:bg-neutral-900">
+        {!isMobile && !isOpen && (
+          <button
+            onClick={open}
+            className="absolute bottom-0 right-0 top-0 z-20 w-2 cursor-pointer border-r border-transparent bg-transparent transition-colors hover:border-iris-300 hover:bg-iris-100/70 focus-visible:border-iris-500 focus-visible:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:border-iris-400/50 dark:hover:bg-iris-400/15 dark:focus-visible:bg-iris-400/15 dark:focus-visible:ring-offset-neutral-900"
+            aria-label="Expand chat history"
+            title="Expand chat history"
+            type="button"
+          >
+            <span className="sr-only">Expand chat history</span>
+          </button>
+        )}
+
         {/* Top Navigation Items */}
         <nav className="flex flex-1 flex-col items-center gap-2">
           {navItems.map((item, index) => {

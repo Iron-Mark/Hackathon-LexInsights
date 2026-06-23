@@ -18,6 +18,7 @@ let supabaseFallbackToastShown = false
 
 interface ChatMessagePreview {
   id: string
+  role: Message['role']
   content: string
   created_at: string
 }
@@ -311,6 +312,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           user_id,
           messages (
             id,
+            role,
             content,
             created_at
           )
@@ -320,9 +322,19 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
       if (error) throw error
 
+      const messageCache: Record<string, Message[]> = {}
       const transformedChats: Chat[] = ((chats || []) as ChatRow[]).map((chat) => {
-        const messages = chat.messages || []
+        const messages = (chat.messages || [])
+          .map((message) => ({
+            id: message.id,
+            role: message.role,
+            content: message.content,
+            created_at: message.created_at,
+          }))
+          .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
         const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null
+
+        messageCache[chat.id] = messages
 
         return {
           id: chat.id,
@@ -343,7 +355,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       set({
         chats: transformedChats,
         activeChat: nextActiveChat,
-        messages: {},
+        messages: messageCache,
         loading: false,
       })
     } catch (error) {

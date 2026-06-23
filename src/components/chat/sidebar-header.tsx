@@ -18,14 +18,14 @@ interface HeaderTooltipButtonProps {
 
 function HeaderTooltipButton({ label, children }: HeaderTooltipButtonProps) {
   return (
-    <div className="group relative">
+    <div className="group relative z-40">
       {children}
       <div
-        className="pointer-events-none absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-slate-900/10 transition-all duration-150 ease-out group-hover:translate-y-0.5 group-hover:opacity-100 group-focus-within:translate-y-0.5 group-focus-within:opacity-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:shadow-black/30"
+        className="pointer-events-none absolute right-0 top-full z-[70] mt-2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-xl shadow-slate-900/15 transition-all duration-150 ease-out group-hover:translate-y-0.5 group-hover:opacity-100 group-focus-within:translate-y-0.5 group-focus-within:opacity-100 dark:border-white/10 dark:bg-neutral-800 dark:text-slate-100 dark:shadow-black/40"
         role="tooltip"
       >
         {label}
-        <span className="absolute right-3 top-[-5px] h-2.5 w-2.5 rotate-45 border-l border-t border-slate-200 bg-white dark:border-neutral-700 dark:bg-neutral-800" />
+        <span className="absolute right-3 top-[-5px] h-2.5 w-2.5 rotate-45 border-l border-t border-slate-200 bg-white dark:border-white/10 dark:bg-neutral-800" />
       </div>
     </div>
   )
@@ -71,19 +71,19 @@ export function SidebarHeader() {
   }
 
   return (
-    <header className="flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur dark:border-white/10 dark:bg-neutral-950/95">
+    <header className="relative z-40 flex overflow-visible items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur dark:border-iris-300/20 dark:bg-[linear-gradient(135deg,rgba(63,51,189,0.22),rgba(27,24,43,0.98)_46%,rgba(24,30,34,0.96))]">
       {/* App Branding Area */}
       <div
         className="flex min-w-0 items-center gap-2.5"
         aria-label="LexInSight Legal compliance assistant"
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white p-1 shadow-sm shadow-slate-900/5 ring-1 ring-white dark:border-iris-300/25 dark:bg-white dark:shadow-black/30 dark:ring-iris-300/20">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white p-1 shadow-sm shadow-slate-900/5 ring-1 ring-white transition-colors duration-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-none dark:ring-white/[0.06]">
           <Image
             src="/logo/LOGO-0.5-woBG.svg"
             alt=""
             width={32}
             height={32}
-            className="h-7 w-7"
+            className="h-7 w-7 drop-shadow-[0_0_8px_rgba(99,102,241,0.32)]"
             aria-hidden="true"
           />
         </span>
@@ -91,7 +91,7 @@ export function SidebarHeader() {
           <h1 className="truncate text-base font-extrabold leading-tight text-slate-950 dark:text-white">
             LexInSight
           </h1>
-          <p className="truncate text-[10px] font-semibold leading-tight text-slate-600 dark:text-slate-300">
+          <p className="truncate text-[10px] font-semibold leading-tight text-slate-600 dark:text-iris-100/70">
             Legal compliance assistant
           </p>
         </div>
@@ -106,7 +106,7 @@ export function SidebarHeader() {
             disabled={isCreating}
             variant="ghost"
             size="icon"
-            className="h-9 w-9 text-slate-600 transition-all duration-150 hover:scale-105 hover:bg-slate-100 hover:text-slate-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-slate-300 dark:hover:bg-neutral-800 dark:hover:text-white dark:focus-visible:ring-offset-neutral-900"
+            className="h-9 w-9 text-slate-600 transition-all duration-150 hover:scale-105 hover:bg-slate-100 hover:text-slate-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-iris-100/75 dark:hover:bg-iris-300/12 dark:hover:text-white dark:focus-visible:ring-offset-neutral-900"
             aria-label={isCreating ? "Creating new chat..." : "Create new chat"}
           >
             <AnimatePresence mode="wait">
@@ -141,7 +141,7 @@ export function SidebarHeader() {
             onClick={toggle}
             variant="ghost"
             size="icon"
-            className="h-9 w-9 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:text-slate-300 dark:hover:bg-neutral-800 dark:hover:text-white dark:focus-visible:ring-offset-neutral-900"
+            className="h-9 w-9 text-slate-600 transition-colors duration-150 hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:text-iris-100/75 dark:hover:bg-iris-300/12 dark:hover:text-white dark:focus-visible:ring-offset-neutral-900"
             aria-label="Toggle sidebar"
             aria-expanded={isOpen}
           >

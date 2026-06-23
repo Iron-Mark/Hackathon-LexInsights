@@ -9,6 +9,25 @@ import { ChatListItem } from './chat-list-item'
 import { Loader2, MessageSquarePlus, Plus, Search, X } from 'lucide-react'
 import { showToast } from '@/components/ui/toast'
 import { addChatEventListener, CHAT_EVENTS, dispatchChatEvent } from '@/lib/chat/events'
+import type { Chat, Message } from '@/types'
+
+const MIN_SEARCHABLE_CHATS = 4
+
+function getSearchableChatText(chat: Chat, messages: Message[]) {
+  const userMessageText = messages
+    .filter((message) => message.role === 'user')
+    .map((message) => message.content)
+    .join(' ')
+
+  return [
+    chat.title,
+    chat.last_message_preview,
+    userMessageText,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+}
 
 // Loading skeleton for new chat creation
 function ChatListSkeleton() {
@@ -32,10 +51,11 @@ function ChatListSkeleton() {
 
 export function ChatList() {
   const router = useRouter()
-  const { chats, activeChat, createChat, selectChat } = useChatStore()
+  const { chats, activeChat, messages, createChat, selectChat } = useChatStore()
   const { isMobile, close } = useSidebarStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [isCreatingChat, setIsCreatingChat] = useState(false)
+  const shouldShowSearch = chats.length >= MIN_SEARCHABLE_CHATS
 
   // Listen for chat creation events
   useEffect(() => {
@@ -50,6 +70,12 @@ export function ChatList() {
       removeChatCreatedListener()
     }
   }, [])
+
+  useEffect(() => {
+    if (!shouldShowSearch && searchQuery) {
+      setSearchQuery('')
+    }
+  }, [searchQuery, shouldShowSearch])
   
   const handleSelectChat = (id: string) => {
     // Update active chat in store
@@ -66,14 +92,13 @@ export function ChatList() {
 
   // Filter chats based on search query
   const filteredChats = useMemo(() => {
-    if (!searchQuery.trim()) return chats
+    if (!shouldShowSearch || !searchQuery.trim()) return chats
     
-    const query = searchQuery.toLowerCase()
-    return chats.filter(chat => 
-      chat.title.toLowerCase().includes(query) ||
-      chat.last_message_preview?.toLowerCase().includes(query)
+    const query = searchQuery.trim().toLowerCase()
+    return chats.filter((chat) =>
+      getSearchableChatText(chat, messages[chat.id] || []).includes(query)
     )
-  }, [chats, searchQuery])
+  }, [chats, messages, searchQuery, shouldShowSearch])
 
   const handleClearSearch = () => {
     setSearchQuery('')
@@ -147,33 +172,35 @@ export function ChatList() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Search Bar */}
-      <div className="border-b border-slate-200 px-3 py-2 dark:border-neutral-700">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" aria-hidden="true" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search chats..."
-            className="min-h-11 w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-12 text-sm text-slate-900 transition-all placeholder:text-slate-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-iris-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:placeholder:text-slate-500"
-            aria-label="Search chats"
-          />
-          {searchQuery && (
-            <button
-              onClick={handleClearSearch}
-              className="absolute right-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-1 dark:text-slate-500 dark:hover:bg-neutral-700 dark:hover:text-slate-300 dark:focus-visible:ring-offset-neutral-800"
-              aria-label="Clear search"
-              type="button"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
+      {shouldShowSearch && (
+        <div className="border-b border-slate-200 px-3 py-2 dark:border-neutral-700">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" aria-hidden="true" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search chats..."
+              className="min-h-11 w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-12 text-sm text-slate-900 transition-all placeholder:text-slate-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-iris-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+              aria-label="Search chats"
+            />
+            {searchQuery && (
+              <button
+                onClick={handleClearSearch}
+                className="absolute right-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-1 dark:text-slate-500 dark:hover:bg-neutral-700 dark:hover:text-slate-300 dark:focus-visible:ring-offset-neutral-800"
+                aria-label="Clear search"
+                type="button"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Chat List */}
       <div
-        className="flex-1 overflow-y-auto p-4 sm:p-6"
+        className="flex-1 overflow-y-auto px-3 py-4 sm:px-4 sm:py-5"
         role="list"
         aria-label="Chat conversations"
       >

@@ -131,13 +131,13 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="mx-auto max-w-2xl space-y-3"
+        className="mx-auto max-w-2xl space-y-1.5 sm:space-y-2"
       >
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="text-3xl font-bold leading-tight text-slate-950 sm:text-4xl dark:text-slate-100"
+          className="text-3xl font-bold leading-[1.05] text-slate-950 sm:text-4xl dark:text-slate-100"
         >
           {greeting}, {userName}
         </motion.h1>
@@ -146,7 +146,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="mx-auto max-w-md text-sm leading-6 text-slate-500 sm:text-base dark:text-slate-400"
+          className="mx-auto max-w-md text-sm leading-5 text-slate-500 sm:text-base dark:text-slate-400"
         >
           {mode === 'compliance' 
             ? 'Upload documents for compliance analysis'
@@ -241,12 +241,12 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
             </span>
             <span
               className={cn(
-                'ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white/70 opacity-70 ring-1 ring-white/80 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 dark:bg-white/5 dark:ring-white/10',
+                'ml-2 flex h-10 w-10 shrink-0 self-center items-center justify-center opacity-75 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100',
                 styles.arrow
               )}
               aria-hidden="true"
             >
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-6 w-6" strokeWidth={1.9} />
             </span>
           </motion.button>
           )

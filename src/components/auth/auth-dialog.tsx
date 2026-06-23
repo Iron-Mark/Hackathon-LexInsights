@@ -3,6 +3,7 @@
 import { SignIn, SignUp } from '@clerk/nextjs'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { AlertTriangle, X } from 'lucide-react'
+import Image from 'next/image'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { authFormAppearance } from '@/lib/auth/clerk-appearance'
@@ -28,6 +29,8 @@ const authDialogAppearance = {
     card: 'w-full border-0 bg-transparent shadow-none',
     headerTitle: 'sr-only',
     headerSubtitle: 'sr-only',
+    logoBox: 'hidden',
+    logoImage: 'hidden',
     footer: 'text-sm',
   },
 }
@@ -91,6 +94,31 @@ export function AuthDialog({ clerkConfigured, mode, open, onModeChange, onOpenCh
           <DialogPrimitive.Description id="lexinsight-auth-dialog-description" className="sr-only">
             Sign in or create an account without leaving the current chat.
           </DialogPrimitive.Description>
+
+          <div className="mb-4 rounded-xl border border-slate-200 bg-linear-to-br from-white via-slate-50 to-iris-50/60 p-4 shadow-sm shadow-slate-950/5 dark:border-white/10 dark:from-white/[0.07] dark:via-white/[0.04] dark:to-iris-400/10 dark:shadow-none">
+            <div className="flex items-center gap-3">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm shadow-slate-900/10 ring-1 ring-white dark:border-white/10 dark:bg-white/[0.07] dark:shadow-none dark:ring-white/[0.06]">
+                <Image
+                  src="/logo/LOGO-0.5-woBG.svg"
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="h-9 w-9 drop-shadow-[0_0_10px_rgba(99,102,241,0.35)]"
+                  aria-hidden="true"
+                />
+              </span>
+              <div className="min-w-0">
+                <p className="text-lg font-extrabold leading-tight text-slate-950 dark:text-white">
+                  LexInSight
+                </p>
+                <p className="mt-1 text-sm font-medium leading-5 text-slate-600 dark:text-slate-300">
+                  {mode === 'sign-in'
+                    ? 'Continue to your legal compliance workspace.'
+                    : 'Save chats, documents, and compliance work.'}
+                </p>
+              </div>
+            </div>
+          </div>
 
           {clerkConfigured && (
             <div className="mb-3 flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/[0.06]">

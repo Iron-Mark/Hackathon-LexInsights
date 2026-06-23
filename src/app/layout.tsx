@@ -6,6 +6,7 @@ import { SessionProvider } from "@/components/providers/session-provider";
 import { ClerkAuthHeader } from "@/components/auth/clerk-auth-header";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { ToastContainer } from "@/components/ui/toast";
+import { authFormAppearance } from "@/lib/auth/clerk-appearance";
 import { isClerkClientConfigured } from "@/lib/auth/clerk-config";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { themeInitScript } from "@/lib/theme";
@@ -97,7 +98,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         {clerkClientConfigured ? (
-          <ClerkProvider>
+          <ClerkProvider appearance={authFormAppearance}>
             <ThemeProvider>
               <SessionProvider>
                 <ServiceWorkerRegistration />
