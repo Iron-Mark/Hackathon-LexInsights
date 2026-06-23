@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef, type MouseEvent } from 'react'
+import { useEffect, useState, useRef, type ChangeEvent, type KeyboardEvent } from 'react'
 import { Send, Loader2, Paperclip } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
@@ -11,9 +11,12 @@ import { showToast } from '@/components/ui/toast'
 import { ChatModeToggle } from './chat-mode-toggle'
 import { UploadedFilesList } from './uploaded-files-list'
 import {
-  MAX_BROWSER_TEXT_DOCUMENT_BYTES,
-  isSupportedComplianceDocument,
-} from '@/lib/utils/document-text'
+  COMPLIANCE_DOCUMENT_ACCEPT,
+  getComplianceDocumentRejection,
+} from '@/lib/utils/compliance-upload'
+import { announceToAssistiveTechnology } from '@/lib/utils/browser-actions'
+import { useComposerTextarea } from '@/hooks/use-composer-textarea'
+import { CHAT_EVENTS, dispatchChatEvent } from '@/lib/chat/events'
 
 interface CenteredInputProps {
   onSend: (message: string) => void
@@ -32,8 +35,13 @@ export function CenteredInput({
   const [isFocused, setIsFocused] = useState(false)
   const [isSending, setIsSending] = useState(false)
   const [isHydrated, setIsHydrated] = useState(false)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const {
+    textareaRef,
+    resizeTextarea,
+    resetTextarea,
+    focusTextareaFromShellClick,
+  } = useComposerTextarea(150)
   const { mode } = useChatModeStore()
   const { uploadedFiles, addFiles, clearFiles, canAddMore, uploadToSupabase, uploading } = useFileUploadStore()
   const { user } = useAuthStore()
@@ -78,13 +86,10 @@ export function CenteredInput({
         }
 
         uploadedFiles.forEach((uploadedFile) => {
-          const event = new CustomEvent('file-uploaded', {
-            detail: {
-              file: uploadedFile.file,
-              query: query || `Analyze ${uploadedFile.file.name} for compliance`,
-            },
+          dispatchChatEvent(CHAT_EVENTS.fileUploaded, {
+            file: uploadedFile.file,
+            query: query || `Analyze ${uploadedFile.file.name} for compliance`,
           })
-          window.dispatchEvent(event)
         })
       }
 
@@ -100,10 +105,7 @@ export function CenteredInput({
       }
       
       // Reset textarea height
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto'
-        textareaRef.current.style.overflowY = 'hidden'
-      }
+      resetTextarea()
     } catch (error) {
       console.error('Error sending message:', error)
       showToast(error instanceof Error ? error.message : 'Failed to send message', 'error')
@@ -112,62 +114,34 @@ export function CenteredInput({
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
     }
   }
 
-  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value)
-    
-    // Auto-resize textarea
-    e.target.style.height = 'auto'
-    e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px'
-    e.target.style.overflowY = e.target.scrollHeight > 150 ? 'auto' : 'hidden'
+    resizeTextarea(e.target)
   }
 
-  const handleComposerClick = (event: MouseEvent<HTMLDivElement>) => {
-    const target = event.target instanceof HTMLElement ? event.target : null
-
-    if (
-      !target ||
-      target.closest('button, a, input, textarea, select, [role="button"], [role="menuitem"], [role="menuitemradio"]')
-    ) {
-      return
-    }
-
-    if (textareaRef.current && !textareaRef.current.disabled) {
-      textareaRef.current.focus()
-    }
-  }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
 
     if (!file) return
 
-    if (!canAddMore()) {
-      showToast('Maximum 3 documents allowed', 'error')
-      e.target.value = ''
-      return
-    }
+    const rejection = getComplianceDocumentRejection(file, canAddMore())
 
-    if (file.size > MAX_BROWSER_TEXT_DOCUMENT_BYTES) {
-      showToast('Maximum file size is 5MB', 'error')
-      e.target.value = ''
-      return
-    }
-
-    if (!isSupportedComplianceDocument(file)) {
-      showToast('Please upload a valid file: PDF, MD, TXT, or Word document', 'error')
+    if (rejection) {
+      showToast(rejection, 'error')
       e.target.value = ''
       return
     }
 
     addFiles([file])
     showToast(`${file.name} added. Click send to analyze.`, 'success')
+    announceToAssistiveTechnology(`File ${file.name} uploaded successfully`)
     e.target.value = ''
   }
 
@@ -189,7 +163,7 @@ export function CenteredInput({
         {effectivePlaceholder}
       </label>
       <div
-        onClick={handleComposerClick}
+        onClick={focusTextareaFromShellClick}
         className={`relative rounded-xl border bg-white transition-all duration-200 dark:bg-neutral-800 ${
           isFocused
             ? 'border-iris-500 shadow-lg shadow-iris-100 dark:border-iris-400 dark:shadow-black/30'
@@ -204,7 +178,7 @@ export function CenteredInput({
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf,.md,.txt,.doc,.docx"
+                accept={COMPLIANCE_DOCUMENT_ACCEPT}
                 onChange={handleFileSelect}
                 className="sr-only"
                 id="centered-file-upload"

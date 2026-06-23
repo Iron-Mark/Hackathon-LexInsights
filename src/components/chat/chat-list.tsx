@@ -8,6 +8,7 @@ import { useSidebarStore } from '@/lib/store/sidebar-store'
 import { ChatListItem } from './chat-list-item'
 import { Loader2, MessageSquarePlus, Plus, Search, X } from 'lucide-react'
 import { showToast } from '@/components/ui/toast'
+import { addChatEventListener, CHAT_EVENTS, dispatchChatEvent } from '@/lib/chat/events'
 
 // Loading skeleton for new chat creation
 function ChatListSkeleton() {
@@ -40,13 +41,13 @@ export function ChatList() {
   useEffect(() => {
     const handleChatCreating = () => setIsCreatingChat(true)
     const handleChatCreated = () => setIsCreatingChat(false)
-    
-    window.addEventListener('chat-creating', handleChatCreating)
-    window.addEventListener('chat-created', handleChatCreated)
-    
+
+    const removeChatCreatingListener = addChatEventListener(CHAT_EVENTS.chatCreating, handleChatCreating)
+    const removeChatCreatedListener = addChatEventListener(CHAT_EVENTS.chatCreated, handleChatCreated)
+
     return () => {
-      window.removeEventListener('chat-creating', handleChatCreating)
-      window.removeEventListener('chat-created', handleChatCreated)
+      removeChatCreatingListener()
+      removeChatCreatedListener()
     }
   }, [])
   
@@ -82,11 +83,11 @@ export function ChatList() {
     if (isCreatingChat) return
 
     setIsCreatingChat(true)
-    window.dispatchEvent(new CustomEvent('chat-creating'))
+    dispatchChatEvent(CHAT_EVENTS.chatCreating)
 
     try {
       const newChat = await createChat('New Chat')
-      window.dispatchEvent(new CustomEvent('chat-created'))
+      dispatchChatEvent(CHAT_EVENTS.chatCreated)
       router.push(`/chat/${newChat.id}`)
 
       if (isMobile) {
@@ -94,7 +95,7 @@ export function ChatList() {
       }
     } catch (error) {
       console.error('Failed to create new chat:', error)
-      window.dispatchEvent(new CustomEvent('chat-created'))
+      dispatchChatEvent(CHAT_EVENTS.chatCreated)
       showToast('Failed to create new chat. Please try again.', 'error')
     } finally {
       setIsCreatingChat(false)

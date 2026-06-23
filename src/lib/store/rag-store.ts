@@ -17,6 +17,7 @@ import {
   isRagBackendUnavailableError,
 } from '@/lib/services/rag-unavailable'
 import { showToast } from '@/components/ui/toast'
+import { CHAT_EVENTS, dispatchChatEvent } from '@/lib/chat/events'
 
 // Cache utilities
 const CACHE_TTL = 3600000 // 1 hour in milliseconds
@@ -73,12 +74,7 @@ function setCachedResponse(query: string, response: RAGResponse): void {
 }
 
 function dispatchRAGResponse(query: string, response: RAGResponse): void {
-  if (typeof window === 'undefined') return
-
-  const event = new CustomEvent('rag-response', {
-    detail: { query, response },
-  })
-  window.dispatchEvent(event)
+  dispatchChatEvent(CHAT_EVENTS.ragResponse, { query, response })
 }
 
 function buildDemoFallbackResponse(query: string, reason: string): RAGResponse {

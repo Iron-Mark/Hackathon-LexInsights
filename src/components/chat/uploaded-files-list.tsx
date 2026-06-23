@@ -4,25 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FileText, X } from 'lucide-react'
 import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { showToast } from '@/components/ui/toast'
+import { formatFileSize, getDocumentFileType } from '@/lib/utils/browser-actions'
 
 export function UploadedFilesList() {
   const { uploadedFiles, removeFile, maxFiles } = useFileUploadStore()
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' B'
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
-  }
-
-  const getFileType = (fileName: string) => {
-    const lower = fileName.toLowerCase()
-    if (lower.endsWith('.pdf')) return 'PDF'
-    if (lower.endsWith('.docx')) return 'Word'
-    if (lower.endsWith('.doc')) return 'Word'
-    if (lower.endsWith('.md')) return 'MD'
-    if (lower.endsWith('.txt')) return 'TXT'
-    return 'File'
-  }
 
   const handleRemove = (id: string, fileName: string) => {
     removeFile(id)
@@ -64,7 +49,7 @@ export function UploadedFilesList() {
                 </p>
                 <div className="flex items-center gap-1">
                   <span className="rounded bg-iris-50 px-1 py-0.5 text-[10px] font-semibold text-iris-600 dark:bg-iris-400/10 dark:text-iris-200">
-                    {getFileType(uploadedFile.file.name)}
+                    {getDocumentFileType(uploadedFile.file.name, uploadedFile.file.type)}
                   </span>
                   <span className="text-[10px] text-slate-500 dark:text-slate-400">
                     {formatFileSize(uploadedFile.file.size)}

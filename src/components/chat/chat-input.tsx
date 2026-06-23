@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, type MouseEvent } from 'react'
+import { useState, useRef, type ChangeEvent, type KeyboardEvent } from 'react'
 import { Send, Paperclip, Loader2, Sparkles } from 'lucide-react'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
 import { useRAGStore } from '@/lib/store/rag-store'
@@ -13,9 +13,12 @@ import { performDeepSearch } from '@/lib/services/deep-search-api'
 import { UploadedFilesList } from './uploaded-files-list'
 import { showToast } from '@/components/ui/toast'
 import {
-  MAX_BROWSER_TEXT_DOCUMENT_BYTES,
-  isSupportedComplianceDocument,
-} from '@/lib/utils/document-text'
+  COMPLIANCE_DOCUMENT_ACCEPT,
+  getComplianceDocumentRejection,
+} from '@/lib/utils/compliance-upload'
+import { announceToAssistiveTechnology } from '@/lib/utils/browser-actions'
+import { useComposerTextarea } from '@/hooks/use-composer-textarea'
+import { CHAT_EVENTS, dispatchChatEvent } from '@/lib/chat/events'
 import {
   RAG_BACKEND_TOAST_ACTION,
   RAG_BACKEND_UNAVAILABLE_MESSAGE,
@@ -33,7 +36,12 @@ export function ChatInput() {
   const { uploadedFiles, addFiles, clearFiles, canAddMore, uploadToSupabase, uploading } = useFileUploadStore()
   const { activeChat, createChat, addMessage } = useChatStore()
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const {
+    textareaRef,
+    resizeTextarea,
+    resetTextarea,
+    focusTextareaFromShellClick,
+  } = useComposerTextarea(120)
 
   const ensureActiveChat = async (fallbackTitle: string) => {
     if (activeChat?.id) {
@@ -71,10 +79,7 @@ export function ChatInput() {
           const chatId = await ensureActiveChat(message.trim())
           
           // Dispatch event to notify container
-          const event = new CustomEvent('query-submitted', {
-            detail: { query: message.trim(), chatId }
-          })
-          window.dispatchEvent(event)
+          dispatchChatEvent(CHAT_EVENTS.querySubmitted, { query: message.trim(), chatId })
           
           await runRAGQuery(message.trim())
         }
@@ -96,13 +101,10 @@ export function ChatInput() {
           
           // Process each uploaded file
           uploadedFiles.forEach(uploadedFile => {
-            const event = new CustomEvent('file-uploaded', { 
-              detail: { 
-                file: uploadedFile.file,
-                query: message.trim() || `Analyze ${uploadedFile.file.name} for compliance`
-              } 
+            dispatchChatEvent(CHAT_EVENTS.fileUploaded, {
+              file: uploadedFile.file,
+              query: message.trim() || `Analyze ${uploadedFile.file.name} for compliance`,
             })
-            window.dispatchEvent(event)
           })
           
           // Clear uploaded files after processing
@@ -110,20 +112,14 @@ export function ChatInput() {
         } else if (message.trim()) {
           // Text-only query - use RAG API
           const chatId = await ensureActiveChat(message.trim())
-          const event = new CustomEvent('query-submitted', {
-            detail: { query: message.trim(), chatId }
-          })
-          window.dispatchEvent(event)
+          dispatchChatEvent(CHAT_EVENTS.querySubmitted, { query: message.trim(), chatId })
           await runRAGQuery(message.trim())
         }
       }
       
       // Clear textarea after send
       setMessage('')
-      if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto'
-        textareaRef.current.style.overflowY = 'hidden'
-      }
+      resetTextarea()
     } catch (error) {
       console.error('Error sending message:', error)
       showToast(error instanceof Error ? error.message : 'Failed to send message', 'error')
@@ -132,7 +128,7 @@ export function ChatInput() {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Send on Enter (without Shift)
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -140,63 +136,25 @@ export function ChatInput() {
     }
   }
 
-  const resizeTextarea = (element: HTMLTextAreaElement) => {
-    element.style.height = 'auto'
-    element.style.height = `${Math.min(element.scrollHeight, 120)}px`
-    element.style.overflowY = element.scrollHeight > 120 ? 'auto' : 'hidden'
-  }
-
-  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value)
     resizeTextarea(e.target)
   }
 
-  const handleComposerClick = (event: MouseEvent<HTMLDivElement>) => {
-    const target = event.target instanceof HTMLElement ? event.target : null
-
-    if (
-      !target ||
-      target.closest('button, a, input, textarea, select, [role="button"], [role="menuitem"], [role="menuitemradio"]')
-    ) {
-      return
-    }
-
-    if (textareaRef.current && !textareaRef.current.disabled) {
-      textareaRef.current.focus()
-    }
-  }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      if (!canAddMore()) {
-        showToast('Maximum 3 documents allowed', 'error')
+      const rejection = getComplianceDocumentRejection(file, canAddMore())
+
+      if (rejection) {
+        showToast(rejection, 'error')
         e.target.value = ''
         return
       }
 
-      if (file.size > MAX_BROWSER_TEXT_DOCUMENT_BYTES) {
-        showToast('Maximum file size is 5MB', 'error')
-        e.target.value = ''
-        return
-      }
-
-      if (isSupportedComplianceDocument(file)) {
-        addFiles([file])
-        showToast(`${file.name} added. Click send to analyze.`, 'success')
-        // Announce to screen readers
-        const announcement = `File ${file.name} uploaded successfully`
-        const liveRegion = document.createElement('div')
-        liveRegion.setAttribute('role', 'status')
-        liveRegion.setAttribute('aria-live', 'polite')
-        liveRegion.className = 'sr-only'
-        liveRegion.textContent = announcement
-        document.body.appendChild(liveRegion)
-        setTimeout(() => document.body.removeChild(liveRegion), 1000)
-      } else {
-        showToast('Please upload a valid file: PDF, MD, TXT, or Word document', 'error')
-      }
-
+      addFiles([file])
+      showToast(`${file.name} added. Click send to analyze.`, 'success')
+      announceToAssistiveTechnology(`File ${file.name} uploaded successfully`)
       e.target.value = ''
     }
   }
@@ -244,24 +202,11 @@ export function ChatInput() {
       })
 
       // Dispatch event with deep search results
-      const event = new CustomEvent('deep-search-complete', {
-        detail: {
-          query,
-          result,
-        }
-      })
-      window.dispatchEvent(event)
+      dispatchChatEvent(CHAT_EVENTS.deepSearchComplete, { query, result })
       setMessage('')
 
       // Show success message
-      const announcement = 'Deep search completed. Enhanced analysis available.'
-      const liveRegion = document.createElement('div')
-      liveRegion.setAttribute('role', 'status')
-      liveRegion.setAttribute('aria-live', 'polite')
-      liveRegion.className = 'sr-only'
-      liveRegion.textContent = announcement
-      document.body.appendChild(liveRegion)
-      setTimeout(() => document.body.removeChild(liveRegion), 1000)
+      announceToAssistiveTechnology('Deep search completed. Enhanced analysis available.')
 
     } catch (error) {
       console.error('Deep search failed:', error)
@@ -298,7 +243,7 @@ export function ChatInput() {
         </div>
       )}
       
-      <div className="mx-auto max-w-5xl cursor-text p-2.5 sm:p-4" onClick={handleComposerClick}>
+      <div className="mx-auto max-w-5xl cursor-text p-2.5 sm:p-4" onClick={focusTextareaFromShellClick}>
         {/* Input Area */}
         <div className="flex items-end gap-1.5 rounded-lg border-2 border-slate-200 bg-white p-2 transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 sm:gap-2 dark:border-neutral-700 dark:bg-neutral-800 dark:focus-within:border-iris-400 dark:focus-within:ring-iris-400/20">
           {/* File Upload Button (Compliance Mode Only) */}
@@ -307,7 +252,7 @@ export function ChatInput() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf,.md,.txt,.doc,.docx"
+                accept={COMPLIANCE_DOCUMENT_ACCEPT}
                 onChange={handleFileSelect}
                 className="sr-only"
                 id="file-upload"

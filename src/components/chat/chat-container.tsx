@@ -16,7 +16,7 @@ import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { useSidebarStore } from '@/lib/store/sidebar-store'
 import type { Message } from '@/types'
 import type { DeepSearchResponse } from '@/lib/services/deep-search-api'
-import { checkDraft, type DraftCheckerResponse, type Finding, type RAGResponse } from '@/lib/services/rag-api'
+import { checkDraft, type DraftCheckerResponse, type Finding } from '@/lib/services/rag-api'
 import { AlertCircle, ChevronDown, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -30,6 +30,17 @@ import {
   RAG_BACKEND_UNAVAILABLE_MESSAGE,
   isRagBackendUnavailableError,
 } from '@/lib/services/rag-unavailable'
+import { announceToAssistiveTechnology } from '@/lib/utils/browser-actions'
+import { getValidComplianceDocuments } from '@/lib/utils/compliance-upload'
+import {
+  addChatEventListener,
+  CHAT_EVENTS,
+  dispatchChatEvent,
+  type DeepSearchCompleteEventDetail,
+  type FileUploadedEventDetail,
+  type QuerySubmittedEventDetail,
+  type RAGResponseEventDetail,
+} from '@/lib/chat/events'
 
 interface ChatContainerProps {
   messages: Message[]
@@ -203,7 +214,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     checkHealth,
   } = useRAGStore()
   const { activeChat, messages: chatMessages, fetchMessages, loadingMessages, createChat, addRAGMessage, addRAGMessageToChat } = useChatStore()
-  const { addFiles, canAddMore } = useFileUploadStore()
+  const { addFiles, uploadedFiles, maxFiles } = useFileUploadStore()
   
   const [showCanvas, setShowCanvas] = useState(false)
   const [canvasContent, setCanvasContent] = useState('')
@@ -274,24 +285,23 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
   // Handle file drop - only add to list, don't process yet
   const handleFileDrop = (files: File[]) => {
-    if (!canAddMore()) {
+    const availableSlots = maxFiles - uploadedFiles.length
+
+    if (availableSlots <= 0) {
       showToast('Maximum 3 documents allowed', 'error')
       return
     }
 
-    // Validate file sizes (5MB limit)
-    const maxSize = 5 * 1024 * 1024 // 5MB in bytes
-    const oversizedFiles = files.filter(file => file.size > maxSize)
-    
-    if (oversizedFiles.length > 0) {
-      showToast(`Some files exceed 5MB limit and were not added`, 'error')
+    const { acceptedFiles, rejectedFiles } = getValidComplianceDocuments(files, availableSlots)
+
+    if (rejectedFiles.length > 0) {
+      const reasons = Array.from(new Set(rejectedFiles.map((rejection) => rejection.reason)))
+      showToast(reasons.length === 1 ? reasons[0] : `${rejectedFiles.length} document(s) were not added`, 'error')
     }
 
-    const validFiles = files.filter(file => file.size <= maxSize)
-    
-    if (validFiles.length > 0) {
-      addFiles(validFiles)
-      showToast(`${validFiles.length} document(s) added. Click send to analyze.`, 'success')
+    if (acceptedFiles.length > 0) {
+      addFiles(acceptedFiles)
+      showToast(`${acceptedFiles.length} document(s) added. Click send to analyze.`, 'success')
     }
   }
 
@@ -478,10 +488,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     }
 
     // Dispatch event to notify container
-    const event = new CustomEvent('query-submitted', {
-      detail: { query: prompt, chatId: pendingRAGTargetRef.current?.chatId }
+    dispatchChatEvent(CHAT_EVENTS.querySubmitted, {
+      query: prompt,
+      chatId: pendingRAGTargetRef.current?.chatId,
     })
-    window.dispatchEvent(event)
     
     runRAGQuery(prompt)
   }
@@ -511,10 +521,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     sidebarStore.close()
     
     // Dispatch event to notify container
-    const event = new CustomEvent('query-submitted', {
-      detail: { query, chatId: pendingRAGTargetRef.current?.chatId }
+    dispatchChatEvent(CHAT_EVENTS.querySubmitted, {
+      query,
+      chatId: pendingRAGTargetRef.current?.chatId,
     })
-    window.dispatchEvent(event)
     
     runRAGQuery(query)
     
@@ -547,9 +557,8 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
   // Listen for query submissions
   useEffect(() => {
-    const handleQuerySubmit = (event: Event) => {
-      const customEvent = event as CustomEvent<{ query: string; chatId?: string }>
-      const { query, chatId } = customEvent.detail
+    const handleQuerySubmit = (event: CustomEvent<QuerySubmittedEventDetail>) => {
+      const { query, chatId } = event.detail
       setCurrentQuery(query)
 
       if (chatId) {
@@ -558,18 +567,13 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       }
     }
 
-    window.addEventListener('query-submitted', handleQuerySubmit)
-    
-    return () => {
-      window.removeEventListener('query-submitted', handleQuerySubmit)
-    }
+    return addChatEventListener(CHAT_EVENTS.querySubmitted, handleQuerySubmit)
   }, [addPendingTurn])
 
   // Persist RAG responses into the active chat when the RAG store completes a query.
   useEffect(() => {
-    const handleRAGResponse = (event: Event) => {
-      const customEvent = event as CustomEvent<{ query: string; response: RAGResponse }>
-      const { query, response } = customEvent.detail
+    const handleRAGResponse = (event: CustomEvent<RAGResponseEventDetail>) => {
+      const { query, response } = event.detail
       const pendingTarget = pendingRAGTargetRef.current
 
       if (pendingTarget?.query === query) {
@@ -592,18 +596,13 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       })
     }
 
-    window.addEventListener('rag-response', handleRAGResponse)
-
-    return () => {
-      window.removeEventListener('rag-response', handleRAGResponse)
-    }
+    return addChatEventListener(CHAT_EVENTS.ragResponse, handleRAGResponse)
   }, [addRAGMessage, addRAGMessageToChat, removePendingTurn])
 
   // Listen for file upload and deep search events
   useEffect(() => {
-    const handleFileUpload = async (event: Event) => {
-      const customEvent = event as CustomEvent<{ file: File; query: string }>
-      const { file, query } = customEvent.detail
+    const handleFileUpload = async (event: CustomEvent<FileUploadedEventDetail>) => {
+      const { file, query } = event.detail
       
       // Show loading state
       setIsProcessing(true)
@@ -627,15 +626,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
         setCanvasContent(formatDraftCheckerReport(file.name, query, response, extractedDocument))
         showToast(`Compliance analysis complete for ${file.name}`, 'success')
-
-        const announcement = `Compliance analysis complete for ${file.name}`
-        const liveRegion = document.createElement('div')
-        liveRegion.setAttribute('role', 'status')
-        liveRegion.setAttribute('aria-live', 'polite')
-        liveRegion.className = 'sr-only'
-        liveRegion.textContent = announcement
-        document.body.appendChild(liveRegion)
-        setTimeout(() => document.body.removeChild(liveRegion), 1000)
+        announceToAssistiveTechnology(`Compliance analysis complete for ${file.name}`)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown Draft Checker error'
         setCanvasContent(buildComplianceUnavailableReport(file.name, query, errorMessage))
@@ -653,13 +644,8 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     }
 
     // DEEP SEARCH EVENT HANDLER - This is where deep search results are processed
-    const handleDeepSearchComplete = (event: Event) => {
-      const customEvent = event as CustomEvent<{
-        query: string
-        result: DeepSearchResponse
-        file?: File
-      }>
-      const { query, result, file } = customEvent.detail
+    const handleDeepSearchComplete = (event: CustomEvent<DeepSearchCompleteEventDetail>) => {
+      const { query, result, file } = event.detail
       
       // Store deep search result for display
       setDeepSearchResult(result)
@@ -681,12 +667,12 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       }
     }
 
-    window.addEventListener('file-uploaded', handleFileUpload)
-    window.addEventListener('deep-search-complete', handleDeepSearchComplete)
-    
+    const removeFileUploadListener = addChatEventListener(CHAT_EVENTS.fileUploaded, handleFileUpload)
+    const removeDeepSearchListener = addChatEventListener(CHAT_EVENTS.deepSearchComplete, handleDeepSearchComplete)
+
     return () => {
-      window.removeEventListener('file-uploaded', handleFileUpload)
-      window.removeEventListener('deep-search-complete', handleDeepSearchComplete)
+      removeFileUploadListener()
+      removeDeepSearchListener()
     }
   }, [mode, canvasContent, user?.id])
 

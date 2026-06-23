@@ -10,6 +10,7 @@ import { showToast } from '@/components/ui/toast'
 import { exportToDocx } from '@/lib/utils/docx-export'
 import { cn } from '@/lib/utils'
 import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
+import { downloadBlob, formatClockTime } from '@/lib/utils/browser-actions'
 
 interface MessageBubbleProps {
   message: Message
@@ -165,16 +166,6 @@ export function MessageBubble({ message }: MessageBubbleProps) {
     }
   }, [isUser, message.content, message.id, prefersReducedMotion])
   
-  // Format timestamp
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit',
-      hour12: true 
-    })
-  }
-
   // Copy to clipboard
   const handleCopy = async () => {
     try {
@@ -191,14 +182,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   const handleDownloadMarkdown = () => {
     try {
       const blob = new Blob([message.content], { type: 'text/markdown' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `response-${Date.now()}.md`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
+      downloadBlob(blob, `response-${Date.now()}.md`)
       showToast('Downloaded as Markdown', 'success')
     } catch {
       showToast('Failed to download', 'error')
@@ -421,7 +405,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       )}
       
       <p className="mt-3 font-body text-xs font-semibold text-slate-500 dark:text-slate-400">
-        {formatTime(message.created_at)}
+        {formatClockTime(message.created_at)}
       </p>
     </div>
   )

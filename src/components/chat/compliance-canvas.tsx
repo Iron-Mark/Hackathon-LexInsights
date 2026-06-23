@@ -12,6 +12,7 @@ import { exportToDocx } from '@/lib/utils/docx-export'
 import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
 import { type DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { showToast } from '@/components/ui/toast'
+import { announceToAssistiveTechnology, downloadBlob } from '@/lib/utils/browser-actions'
 
 interface ComplianceCanvasProps {
   content: string
@@ -66,14 +67,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   const handleDownloadMarkdown = () => {
     const contentToDownload = currentVersion?.content || content
     const blob = new Blob([contentToDownload], { type: 'text/markdown' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${fileName || 'compliance-report'}.md`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+    downloadBlob(blob, `${fileName || 'compliance-report'}.md`)
     setShowDownloadMenu(false)
   }
 
@@ -101,14 +95,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       addVersion(editContent, versionLabel)
       
       // Announce to screen readers
-      const announcement = 'Changes saved as new version'
-      const liveRegion = document.createElement('div')
-      liveRegion.setAttribute('role', 'status')
-      liveRegion.setAttribute('aria-live', 'polite')
-      liveRegion.className = 'sr-only'
-      liveRegion.textContent = announcement
-      document.body.appendChild(liveRegion)
-      setTimeout(() => document.body.removeChild(liveRegion), 1000)
+      announceToAssistiveTechnology('Changes saved as new version')
     }
   }
 

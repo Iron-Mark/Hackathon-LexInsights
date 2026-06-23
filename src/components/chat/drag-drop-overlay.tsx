@@ -4,10 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, FileText, AlertCircle } from 'lucide-react'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
-import {
-  MAX_BROWSER_TEXT_DOCUMENT_BYTES,
-  isSupportedComplianceDocument,
-} from '@/lib/utils/document-text'
+import { getValidComplianceDocuments } from '@/lib/utils/compliance-upload'
 
 interface DragDropOverlayProps {
   onFileDrop: (files: File[]) => void
@@ -58,21 +55,14 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
 
       const files = Array.from(e.dataTransfer?.files || [])
       
-      // Validate file type and size (5MB limit)
-      const validFiles = files.filter(file => {
-        const validSize = file.size <= MAX_BROWSER_TEXT_DOCUMENT_BYTES
-        return isSupportedComplianceDocument(file) && validSize
-      })
+      const { acceptedFiles } = getValidComplianceDocuments(files, maxFiles)
 
-      if (validFiles.length > 0) {
-        // Limit to max files
-        const filesToProcess = validFiles.slice(0, maxFiles)
-        
+      if (acceptedFiles.length > 0) {
         // Switch to compliance mode
         setMode('compliance')
         
         // Pass files to parent
-        onFileDrop(filesToProcess)
+        onFileDrop(acceptedFiles)
       }
     }
 

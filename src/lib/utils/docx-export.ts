@@ -1,3 +1,5 @@
+import { downloadBlob } from '@/lib/utils/browser-actions'
+
 interface DocxExportOptions {
   content: string
   fileName: string
@@ -223,12 +225,5 @@ export async function exportToDocx({ content, fileName, title }: DocxExportOptio
 
   // Generate and download
   const blob = await Packer.toBlob(doc)
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `${fileName}.docx`
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+  downloadBlob(blob, `${fileName}.docx`)
 }

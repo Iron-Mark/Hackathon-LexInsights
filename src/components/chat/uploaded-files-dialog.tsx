@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { showToast } from '@/components/ui/toast'
+import { downloadBlob, formatFileSize, getDocumentFileType } from '@/lib/utils/browser-actions'
 
 interface UploadedFilesDialogProps {
   open: boolean
@@ -82,24 +83,6 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
     }
   }, [open])
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes'
-    const k = 1024
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
-  }
-
-  const getFileType = (fileName: string, mimeType: string) => {
-    const lower = fileName.toLowerCase()
-    if (lower.endsWith('.pdf') || mimeType.includes('pdf')) return 'PDF'
-    if (lower.endsWith('.docx') || mimeType.includes('wordprocessingml')) return 'Word'
-    if (lower.endsWith('.doc') || mimeType.includes('msword')) return 'Word'
-    if (lower.endsWith('.md') || mimeType.includes('markdown')) return 'MD'
-    if (lower.endsWith('.txt') || mimeType.includes('text/plain')) return 'TXT'
-    return 'File'
-  }
-
   const handleView = async (file: UploadedFile) => {
     try {
       const supabase = createClient()
@@ -125,14 +108,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
 
       if (error) throw error
 
-      const url = URL.createObjectURL(data)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = file.name
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
+      downloadBlob(data, file.name)
 
       showToast('File downloaded', 'success')
     } catch (error) {
@@ -219,7 +195,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                     <h4 className="truncate font-medium text-slate-950 dark:text-slate-100">{file.name}</h4>
                     <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                       <span className="rounded bg-iris-50 px-1.5 py-0.5 text-[10px] font-semibold text-iris-600 dark:bg-iris-400/10 dark:text-iris-200">
-                        {getFileType(file.name, file.type)}
+                        {getDocumentFileType(file.name, file.type)}
                       </span>
                       <span>{formatFileSize(file.size)}</span>
                       <span className="flex items-center gap-1">

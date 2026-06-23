@@ -6,6 +6,7 @@ import { FileText, Download, Trash2, Loader2, X } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { showToast } from '@/components/ui/toast'
+import { downloadBlob, formatFileSize, formatShortDate, getDocumentFileType } from '@/lib/utils/browser-actions'
 
 interface Document {
   id: string
@@ -64,14 +65,7 @@ export function UserDocumentsList() {
 
       if (error) throw error
 
-      const url = URL.createObjectURL(data)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = doc.file_name
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
+      downloadBlob(data, doc.file_name)
 
       showToast('Document downloaded', 'success')
     } catch (error) {
@@ -113,31 +107,6 @@ export function UserDocumentsList() {
     } finally {
       setDeletingId(null)
     }
-  }
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' B'
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
-  }
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    })
-  }
-
-  const getFileType = (fileName: string, mimeType: string) => {
-    const lower = fileName.toLowerCase()
-    if (lower.endsWith('.pdf') || mimeType.includes('pdf')) return 'PDF'
-    if (lower.endsWith('.docx') || mimeType.includes('wordprocessingml')) return 'Word'
-    if (lower.endsWith('.doc') || mimeType.includes('msword')) return 'Word'
-    if (lower.endsWith('.md') || mimeType.includes('markdown')) return 'MD'
-    if (lower.endsWith('.txt') || mimeType.includes('text/plain')) return 'TXT'
-    return 'File'
   }
 
   if (loading) {
@@ -182,11 +151,11 @@ export function UserDocumentsList() {
                 </p>
                 <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                   <span className="rounded bg-iris-50 px-1.5 py-0.5 text-[10px] font-semibold text-iris-600 dark:bg-iris-400/10 dark:text-iris-200">
-                    {getFileType(doc.file_name, doc.file_type)}
+                    {getDocumentFileType(doc.file_name, doc.file_type)}
                   </span>
                   <span>{formatFileSize(doc.file_size)}</span>
                   <span className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" aria-hidden="true" />
-                  <span>{formatDate(doc.created_at)}</span>
+                  <span>{formatShortDate(doc.created_at)}</span>
                 </div>
               </div>
 

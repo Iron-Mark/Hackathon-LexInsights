@@ -9,6 +9,7 @@ import { useSidebarStore } from '@/lib/store/sidebar-store'
 import { useChatStore } from '@/lib/store/chat-store'
 import { Button } from '@/components/ui/button'
 import { showToast } from '@/components/ui/toast'
+import { CHAT_EVENTS, dispatchChatEvent } from '@/lib/chat/events'
 
 interface HeaderTooltipButtonProps {
   label: string
@@ -42,14 +43,14 @@ export function SidebarHeader() {
     setIsCreating(true)
     
     // Dispatch event to show loading skeleton
-    window.dispatchEvent(new CustomEvent('chat-creating'))
+    dispatchChatEvent(CHAT_EVENTS.chatCreating)
     
     try {
       // Create new chat with default title
       const newChat = await createChat('New Chat')
       
       // Dispatch event to hide loading skeleton
-      window.dispatchEvent(new CustomEvent('chat-created'))
+      dispatchChatEvent(CHAT_EVENTS.chatCreated)
       
       // Navigate to the new chat route
       router.push(`/chat/${newChat.id}`)
@@ -61,7 +62,7 @@ export function SidebarHeader() {
     } catch (error) {
       console.error('Failed to create new chat:', error)
       // Dispatch event to hide loading skeleton on error
-      window.dispatchEvent(new CustomEvent('chat-created'))
+      dispatchChatEvent(CHAT_EVENTS.chatCreated)
       // Show error toast notification
       showToast('Failed to create new chat. Please try again.', 'error')
     } finally {

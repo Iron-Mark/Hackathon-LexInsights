@@ -4,20 +4,11 @@ import { useState } from 'react'
 import { Clock, Trash2, X } from 'lucide-react'
 import { useComplianceStore } from '@/lib/store/compliance-store'
 import { cn } from '@/lib/utils'
+import { formatVersionTimestamp } from '@/lib/utils/browser-actions'
 
 export function VersionHistorySidebar() {
   const { versions, currentVersionId, setCurrentVersion, deleteVersion } = useComplianceStore()
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
-
-  const formatTimestamp = (date: Date) => {
-    const d = new Date(date)
-    return d.toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }
 
   if (versions.length === 0) {
     return (
@@ -79,7 +70,7 @@ export function VersionHistorySidebar() {
                       )}
                     </div>
                     <p className="font-body mt-1 text-xs font-medium text-neutral-600 dark:text-slate-400">
-                      {formatTimestamp(version.timestamp)}
+                      {formatVersionTimestamp(version.timestamp)}
                     </p>
                   </div>
 
