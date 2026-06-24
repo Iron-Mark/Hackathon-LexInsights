@@ -111,11 +111,27 @@ Response shape used by the app:
   "processing_time_seconds": 1.2,
   "provider_mode": "remote-rag",
   "fallback_used": false,
-  "confidence_score": 0.91
+  "confidence_score": 0.91,
+  "retrieval_metadata": {
+    "result_limit": 6,
+    "total_candidates": 12,
+    "top_score": 42.5,
+    "score_threshold": 1.25,
+    "citation_numbers": ["9003"],
+    "known_citation_numbers": ["9003"],
+    "unknown_citation_numbers": [],
+    "source_type_counts": {
+      "statute": 6
+    },
+    "local_corpus_limitations": [
+      "Bundled local corpus only; no live web, agency-site crawl, court-decision crawl, or embedding provider was used."
+    ],
+    "processing_ms": 8
+  }
 }
 ```
 
-When local fallback is used, `provider_mode` is `local-providerless`, `fallback_used` is `true`, and `fallback_reason` may describe the remote failure.
+When local fallback is used, `provider_mode` is `local-providerless`, `fallback_used` is `true`, and `fallback_reason` may describe the remote failure. Local responses may include `retrieval_metadata` so diagnostics can show candidate count, result limits, top score, score threshold, normalized citation numbers, known or unknown citation coverage, source type counts, local corpus limits, and local processing time. `matched_documents` may also include local-only trust fields such as `support_level`, `authority_type`, `source_tier`, and `supporting_fields`.
 
 ### Deep Search
 

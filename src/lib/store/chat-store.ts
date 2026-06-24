@@ -853,6 +853,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           provider_mode: response.provider_mode,
           fallback_used: response.fallback_used,
           confidence_score: response.confidence_score,
+          retrieval_metadata: response.retrieval_metadata,
+          matched_documents: response.matched_documents,
         },
         searchQueries: response.search_queries_used,
         documentCount: response.documents_found,

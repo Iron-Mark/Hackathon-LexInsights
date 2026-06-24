@@ -15,6 +15,7 @@ import {
   type DraftCheckerResponse,
   type WebSocketEvent,
 } from '@/lib/services/rag-api'
+import { RAG_PROVIDER_MODE, USE_REMOTE_RAG } from '@/lib/services/rag-config'
 import {
   Loader2,
   CheckCircle,
@@ -53,6 +54,7 @@ export function RAGTestComponent() {
   const [wsConnected, setWsConnected] = useState(false)
   const [wsEvents, setWsEvents] = useState<TestWebSocketEvent[]>([])
   const [ragWs, setRagWs] = useState<RAGWebSocket | null>(null)
+  const websocketDisabled = !USE_REMOTE_RAG
 
   // ============================================================================
   // RAG HANDLERS
@@ -143,6 +145,11 @@ export function RAGTestComponent() {
   // ============================================================================
 
   const handleWebSocketTest = () => {
+    if (websocketDisabled) {
+      setError('WebSocket streaming is only available when remote RAG mode is enabled.')
+      return
+    }
+
     if (ragWs) {
       ragWs.disconnect()
       setRagWs(null)
@@ -177,6 +184,11 @@ export function RAGTestComponent() {
   }
 
   const handleWebSocketQuery = () => {
+    if (websocketDisabled) {
+      setError('WebSocket streaming is only available when remote RAG mode is enabled.')
+      return
+    }
+
     if (ragWs && query.trim()) {
       setWsEvents([])
       setResponse(null)
@@ -336,7 +348,9 @@ export function RAGTestComponent() {
                 <Button
                   onClick={handleWebSocketTest}
                   variant="outline"
+                  disabled={websocketDisabled}
                   className="flex items-center gap-2 border-iris-300 text-iris-700 hover:bg-iris-50"
+                  title={websocketDisabled ? 'WebSocket streaming requires remote RAG mode' : undefined}
                 >
                   {wsConnected ? (
                     <Wifi className="h-4 w-4 text-iris-600" />
@@ -346,10 +360,16 @@ export function RAGTestComponent() {
                   {wsConnected ? 'Disconnect WS' : 'Connect WebSocket'}
                 </Button>
 
+                {websocketDisabled && (
+                  <span className="inline-flex items-center rounded border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800">
+                    Local mode: no WebSocket stream
+                  </span>
+                )}
+
                 {wsConnected && (
                   <Button
                     onClick={handleWebSocketQuery}
-                    disabled={!query.trim()}
+                    disabled={!query.trim() || websocketDisabled}
                     variant="outline"
                     className="border-iris-300 text-iris-700 hover:bg-iris-50"
                   >
@@ -448,13 +468,15 @@ export function RAGTestComponent() {
                     </div>
                   )}
 
-                  {response.processing_time_seconds && (
+                  {response.processing_time_seconds !== undefined && (
                     <div>
                       <h3 className="font-display text-sm font-semibold text-neutral-700 mb-1">
                         Processing Time
                       </h3>
                       <span className="inline-block px-2.5 py-1 rounded text-xs font-medium bg-iris-100 text-iris-800 border border-iris-200">
-                        {response.processing_time_seconds.toFixed(1)}s
+                        {response.retrieval_metadata?.processing_ms !== undefined
+                          ? `${response.retrieval_metadata.processing_ms}ms`
+                          : `${response.processing_time_seconds.toFixed(3)}s`}
                       </span>
                     </div>
                   )}
@@ -473,7 +495,7 @@ export function RAGTestComponent() {
 
                 {response.provider_mode === 'local-providerless' && (
                   <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
-                    Providerless local mode generated this result. It does not call an AI provider or search live government sites.
+                    Providerless local mode generated this result. It does not call an AI provider, search live government sites, or stream WebSocket events. Current provider mode: {RAG_PROVIDER_MODE}.
                   </div>
                 )}
 
@@ -516,6 +538,103 @@ export function RAGTestComponent() {
                     {response.documents_found} documents
                   </span>
                 </div>
+
+                {response.retrieval_metadata && (
+                  <div>
+                    <h3 className="font-display text-sm font-semibold text-neutral-700 mb-2">
+                      Local Ranking Diagnostics
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2 text-xs text-neutral-700 md:grid-cols-5">
+                      <span className="rounded border border-iris-100 bg-iris-50 px-2.5 py-2">
+                        Candidates: <strong>{response.retrieval_metadata.total_candidates}</strong>
+                      </span>
+                      <span className="rounded border border-iris-100 bg-iris-50 px-2.5 py-2">
+                        Limit: <strong>{response.retrieval_metadata.result_limit}</strong>
+                      </span>
+                      <span className="rounded border border-iris-100 bg-iris-50 px-2.5 py-2">
+                        Top score: <strong>{response.retrieval_metadata.top_score.toFixed(2)}</strong>
+                      </span>
+                      <span className="rounded border border-iris-100 bg-iris-50 px-2.5 py-2">
+                        Threshold: <strong>{response.retrieval_metadata.score_threshold.toFixed(2)}</strong>
+                      </span>
+                      <span className="rounded border border-iris-100 bg-iris-50 px-2.5 py-2">
+                        Citations: <strong>{response.retrieval_metadata.citation_numbers.join(', ') || 'none'}</strong>
+                      </span>
+                      {response.retrieval_metadata.known_citation_numbers && (
+                        <span className="rounded border border-emerald-100 bg-emerald-50 px-2.5 py-2">
+                          Known: <strong>{response.retrieval_metadata.known_citation_numbers.join(', ') || 'none'}</strong>
+                        </span>
+                      )}
+                      {response.retrieval_metadata.unknown_citation_numbers && (
+                        <span className="rounded border border-amber-100 bg-amber-50 px-2.5 py-2">
+                          Unknown: <strong>{response.retrieval_metadata.unknown_citation_numbers.join(', ') || 'none'}</strong>
+                        </span>
+                      )}
+                      {response.retrieval_metadata.source_type_counts && (
+                        <span className="rounded border border-iris-100 bg-iris-50 px-2.5 py-2 md:col-span-2">
+                          Source types:{' '}
+                          <strong>
+                            {Object.entries(response.retrieval_metadata.source_type_counts)
+                              .map(([type, count]) => `${type}: ${count}`)
+                              .join(', ') || 'none'}
+                          </strong>
+                        </span>
+                      )}
+                    </div>
+                    {response.retrieval_metadata.local_corpus_limitations && (
+                      <p className="mt-2 text-xs text-neutral-600">
+                        {response.retrieval_metadata.local_corpus_limitations[0]}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {response.matched_documents && response.matched_documents.length > 0 && (
+                  <div>
+                    <h3 className="font-display text-sm font-semibold text-neutral-700 mb-2">
+                      Matched Sources
+                    </h3>
+                    <div className="space-y-2">
+                      {response.matched_documents.map((document, index) => (
+                        <div key={`${document.statute}-${index}`} className="rounded border border-iris-100 bg-white p-3 text-sm">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="font-semibold text-neutral-900">{document.title}</span>
+                            <span className="rounded bg-iris-100 px-2 py-0.5 text-xs font-medium text-iris-700">
+                              {(document.relevance_score * 100).toFixed(0)}%
+                            </span>
+                          </div>
+                          {document.matched_terms.length > 0 && (
+                            <p className="mt-1 text-xs text-neutral-600">
+                              Matched: {document.matched_terms.join(', ')}
+                            </p>
+                          )}
+                          <div className="mt-2 flex flex-wrap gap-1.5 text-xs text-neutral-600">
+                            {document.support_level && (
+                              <span className="rounded border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-emerald-800">
+                                {document.support_level} support
+                              </span>
+                            )}
+                            {document.authority_type && (
+                              <span className="rounded border border-iris-100 bg-iris-50 px-2 py-0.5 text-iris-700">
+                                {document.authority_type}
+                              </span>
+                            )}
+                            {document.source_tier && (
+                              <span className="rounded border border-neutral-200 bg-neutral-50 px-2 py-0.5">
+                                {document.source_tier}
+                              </span>
+                            )}
+                            {document.supporting_fields && document.supporting_fields.length > 0 && (
+                              <span className="rounded border border-neutral-200 bg-white px-2 py-0.5">
+                                Fields: {document.supporting_fields.join(', ')}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div>
                   <h3 className="font-display text-sm font-semibold text-neutral-700 mb-2">
