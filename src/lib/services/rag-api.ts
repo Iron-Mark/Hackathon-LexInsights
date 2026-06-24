@@ -91,6 +91,18 @@ export interface RAGResponse {
   fallback_used?: boolean
   fallback_reason?: string
   confidence_score?: number
+  retrieval_metadata?: {
+    result_limit: number
+    total_candidates: number
+    top_score: number
+    score_threshold: number
+    citation_numbers: string[]
+    known_citation_numbers?: string[]
+    unknown_citation_numbers?: string[]
+    source_type_counts?: Record<string, number>
+    local_corpus_limitations?: string[]
+    processing_ms?: number
+  }
   matched_documents?: Array<{
     title: string
     statute: string
@@ -98,6 +110,10 @@ export interface RAGResponse {
     source_url: string
     relevance_score: number
     matched_terms: string[]
+    support_level?: 'direct' | 'related' | 'framework'
+    authority_type?: string
+    source_tier?: string
+    supporting_fields?: string[]
   }>
 }
 

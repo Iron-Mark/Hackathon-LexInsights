@@ -59,7 +59,7 @@ The browser talks to Supabase through [client.ts](../../src/lib/supabase/client.
 
 By default, browser RAG calls go through `/api/rag-proxy`; direct browser calls should only be used when the upstream backend is configured for CORS.
 
-Remote RAG is optional at runtime and opt-in through `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag`. [rag-api.ts](../../src/lib/services/rag-api.ts) uses [local-legal-research.ts](../../src/lib/services/local-legal-research.ts) by default, and remote mode falls back locally when the provider is unavailable. Local mode provides deterministic research, Deep Search cross-reference expansion, and draft checks without AI providers.
+Remote RAG is optional at runtime and opt-in through `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag`. [rag-api.ts](../../src/lib/services/rag-api.ts) uses [local-legal-research.ts](../../src/lib/services/local-legal-research.ts) by default, with corpus and framework data under [local-research-data](../../src/lib/services/local-research-data). Remote mode falls back locally when the provider is unavailable. Local mode provides deterministic research, Deep Search cross-reference expansion, ranking diagnostics, and draft checks without AI providers.
 
 Compliance document ingestion is split between [document-text.ts](../../src/lib/utils/document-text.ts) for browser-readable text and [server-document-extraction.ts](../../src/lib/utils/server-document-extraction.ts) for PDF and Word extraction behind `/api/document-text`.
 

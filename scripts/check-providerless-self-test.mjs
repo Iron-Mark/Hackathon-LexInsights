@@ -2,14 +2,17 @@
 
 import assert from 'node:assert/strict'
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdir } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { pathToFileURL } from 'node:url'
 
 import ts from 'typescript'
 
 const rootDir = process.cwd()
 const sourcePath = path.join(rootDir, 'src/lib/services/local-legal-research.ts')
+const dataSourceDir = path.join(rootDir, 'src/lib/services/local-research-data')
+const require = createRequire(import.meta.url)
 
 function assertIncludes(source, expected, label) {
   assert.equal(
@@ -69,23 +72,38 @@ function assertMatchedTerm(response, expectedStatute, expectedTerm, label) {
 async function loadProviderlessModule() {
   assert.equal(existsSync(sourcePath), true, 'local-legal-research.ts is missing')
 
-  const source = readFileSync(sourcePath, 'utf8')
-  const transpiled = ts.transpileModule(source, {
-    compilerOptions: {
-      module: ts.ModuleKind.ES2022,
-      target: ts.ScriptTarget.ES2022,
-      strict: true,
-    },
-    fileName: sourcePath,
-  })
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-providerless-'))
-  const tempModulePath = path.join(tempDir, 'local-legal-research.mjs')
+  const tempDataDir = path.join(tempDir, 'local-research-data')
+  await mkdir(tempDataDir, { recursive: true })
 
-  writeFileSync(tempModulePath, transpiled.outputText, 'utf8')
+  const transpileToCommonJs = (inputPath, outputPath) => {
+    const source = readFileSync(inputPath, 'utf8')
+    const transpiled = ts.transpileModule(source, {
+      compilerOptions: {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2022,
+        strict: true,
+      },
+      fileName: inputPath,
+    })
+
+    writeFileSync(outputPath, transpiled.outputText, 'utf8')
+  }
+
+  for (const fileName of ['types.ts', 'corpus.ts', 'topic-expansions.ts', 'compliance-frameworks.ts']) {
+    const inputPath = path.join(dataSourceDir, fileName)
+    const outputPath = path.join(tempDataDir, fileName.replace(/\.ts$/, '.js'))
+
+    assert.equal(existsSync(inputPath), true, `${fileName} is missing`)
+    transpileToCommonJs(inputPath, outputPath)
+  }
+
+  const tempModulePath = path.join(tempDir, 'local-legal-research.js')
+  transpileToCommonJs(sourcePath, tempModulePath)
 
   try {
     return {
-      module: await import(pathToFileURL(tempModulePath).href),
+      module: require(tempModulePath),
       cleanup: () => rmSync(tempDir, { recursive: true, force: true }),
     }
   } catch (error) {
@@ -110,11 +128,19 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 133, 'Local corpus should include at least 133 authorities')
-  assert.ok(frameworks.length >= 20, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 156, 'Local corpus should include at least 156 authorities')
+  assert.ok(frameworks.length >= 23, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'financial-account-scam-response'),
+    'Frameworks should include financial account scam response'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'digital-government-and-public-ict'),
+    'Frameworks should include digital government and public ICT'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'environmental-operations'),
@@ -127,6 +153,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'public-health-disease-reporting-and-sensitive-health-records'),
     'Frameworks should include public health, disease reporting, and sensitive health records'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'banking-lending-insurance-and-financial-institutions'),
+    'Frameworks should include banking, lending, insurance, and financial institutions'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'ip-investment-and-regulated-products'),
@@ -157,6 +187,10 @@ try {
     'Frameworks should include employee benefits and social insurance'
   )
   assert.ok(
+    frameworks.some((framework) => framework.id === 'workplace-pay-flex-work-and-family-support'),
+    'Frameworks should include workplace pay, flexible work, and family support'
+  )
+  assert.ok(
     frameworks.some((framework) => framework.id === 'payments-credit-evidence-and-dispute-resolution'),
     'Frameworks should include payments, credit, evidence, and dispute resolution'
   )
@@ -180,8 +214,20 @@ try {
     frameworks.some((framework) => framework.id === 'elections-civic-participation-and-youth-governance'),
     'Frameworks should include elections, civic participation, campaigns, and youth governance'
   )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'ai-governance-privacy-public-sector-automation'),
+    'Frameworks should include AI governance, privacy, and public-sector automation'
+  )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
+  assert.ok(
+    corpus.some((document) => document.statute === 'NPC Advisory No. 2024-04'),
+    'Corpus should include NPC AI privacy advisory'
+  )
+  assert.ok(
+    corpus.some((document) => document.statute === 'A.M. No. 25-11-28-SC'),
+    'Corpus should include Supreme Court AI governance framework'
+  )
   assert.ok(corpus.some((document) => document.statute === 'RA 11058'), 'Corpus should include RA 11058')
   assert.ok(corpus.some((document) => document.statute === 'RA 12009'), 'Corpus should include RA 12009')
   assert.ok(corpus.some((document) => document.statute === 'RA 11032'), 'Corpus should include RA 11032')
@@ -202,6 +248,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 11055'), 'Corpus should include RA 11055')
   assert.ok(corpus.some((document) => document.statute === 'RA 11038'), 'Corpus should include RA 11038')
   assert.ok(corpus.some((document) => document.statute === 'PD 442'), 'Corpus should include PD 442')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11165'), 'Corpus should include RA 11165')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11360'), 'Corpus should include RA 11360')
+  assert.ok(corpus.some((document) => document.statute === 'RA 6727'), 'Corpus should include RA 6727')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10028'), 'Corpus should include RA 10028')
   assert.ok(corpus.some((document) => document.statute === 'RA 10911'), 'Corpus should include RA 10911')
   assert.ok(corpus.some((document) => document.statute === 'RA 11036'), 'Corpus should include RA 11036')
   assert.ok(corpus.some((document) => document.statute === 'RA 9262'), 'Corpus should include RA 9262')
@@ -243,6 +293,14 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10742'), 'Corpus should include RA 10742')
   assert.ok(corpus.some((document) => document.statute === 'RA 11768'), 'Corpus should include RA 11768')
   assert.ok(corpus.some((document) => document.statute === 'RA 1405'), 'Corpus should include RA 1405')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7653'), 'Corpus should include RA 7653')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11211'), 'Corpus should include RA 11211')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8791'), 'Corpus should include RA 8791')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9474'), 'Corpus should include RA 9474')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8556'), 'Corpus should include RA 8556')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10607'), 'Corpus should include RA 10607')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9829'), 'Corpus should include RA 9829')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10846'), 'Corpus should include RA 10846')
   assert.ok(corpus.some((document) => document.statute === 'RA 7581'), 'Corpus should include RA 7581')
   assert.ok(corpus.some((document) => document.statute === 'RA 9178'), 'Corpus should include RA 9178')
   assert.ok(corpus.some((document) => document.statute === 'RA 9501'), 'Corpus should include RA 9501')
@@ -260,6 +318,13 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 11861'), 'Corpus should include RA 11861')
   assert.ok(corpus.some((document) => document.statute === 'RA 11596'), 'Corpus should include RA 11596')
   assert.ok(corpus.some((document) => document.statute === 'RA 11510'), 'Corpus should include RA 11510')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9710'), 'Corpus should include RA 9710')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11930'), 'Corpus should include RA 11930')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11967'), 'Corpus should include RA 11967')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10844'), 'Corpus should include RA 10844')
+  assert.ok(corpus.some((document) => document.statute === 'RA 12254'), 'Corpus should include RA 12254')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11966'), 'Corpus should include RA 11966')
+  assert.ok(corpus.some((document) => document.statute === 'RA 12010'), 'Corpus should include RA 12010')
   assert.ok(corpus.some((document) => document.statute === 'RA 4136'), 'Corpus should include RA 4136')
   assert.ok(corpus.some((document) => document.statute === 'RA 11659'), 'Corpus should include RA 11659')
   assert.ok(corpus.some((document) => document.statute === 'RA 8371'), 'Corpus should include RA 8371')
@@ -511,6 +576,42 @@ try {
 
   assertResearchMatch(
     runLocalResearch(
+      { query: 'What telecommuting, work from home, remote work, equipment, data security, monitoring privacy, and equal treatment controls apply to hybrid employees?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11165',
+    'telecommuting query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What service charge distribution, covered employee, hotel restaurant payroll, tips, gratuity, and payout records controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11360',
+    'service charge query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What minimum wage, regional wage order, RTWPB, wage board, wage distortion, payroll computation, and DOLE records controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 6727',
+    'wage rationalization query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What breastfeeding, lactation station, nursing mother, lactation period, hygiene, privacy, and workplace accommodation controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10028',
+    'breastfeeding lactation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
       { query: 'What PhilHealth national health insurance premium contribution, employer remittance, dependent coverage, and benefit claim controls apply?', user_id: 'self-test' },
       'simulated remote outage'
     ),
@@ -533,6 +634,24 @@ try {
     employeeBenefitsFrameworkResponse.summary,
     'Employee Benefits, Leave, and Social Insurance Stack',
     'Employee benefits framework title'
+  )
+
+  const workplacePayFlexFrameworkResponse = runLocalResearch(
+    {
+      query: 'What workplace controls apply to telecommuting, work from home, service charge distribution, minimum wage orders, lactation stations, employee privacy, payroll, and safety?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(workplacePayFlexFrameworkResponse, 'RA 11165', 'workplace flexible work framework query')
+  assertResearchMatch(workplacePayFlexFrameworkResponse, 'RA 11360', 'workplace service charge framework query')
+  assertResearchMatch(workplacePayFlexFrameworkResponse, 'RA 6727', 'workplace wage framework query')
+  assertResearchMatch(workplacePayFlexFrameworkResponse, 'RA 10028', 'workplace lactation framework query')
+  assertIncludes(
+    workplacePayFlexFrameworkResponse.summary,
+    'Workplace Pay, Flexible Work, and Family Support Stack',
+    'Workplace pay flexible work framework title'
   )
 
   const publicAccountabilityFrameworkResponse = runLocalResearch(
@@ -603,6 +722,97 @@ try {
     ),
     'RA 11765',
     'financial consumer query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What BSP supervision and Monetary Board controls apply under the New Central Bank Act?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7653',
+    'BSP supervision query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 11211 Bangko Sentral amendments apply to financial stability, payment systems, and regulatory examination?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11211',
+    'BSP amendments query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What General Banking Law controls apply to bank loans, bank directors, related interests, and depositor records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8791',
+    'general banking query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What lending company controls apply to loan apps, microloans, borrower disclosures, loan collection, and borrower data?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9474',
+    'lending company query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What financing company controls apply to lease financing, factoring, receivables financing, installment financing, and collateral records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8556',
+    'financing company query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What insurance controls apply to policyholders, premiums, insurance claims, agents, brokers, underwriting, and complaint records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10607',
+    'insurance code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What pre-need plan controls apply to planholders, education plans, memorial plans, pension plans, trust funds, cancellation, and claims?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9829',
+    'pre-need code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What PDIC deposit insurance controls apply to insured deposits, closed banks, receivership, liquidation, depositor proof, and payout claims?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10846',
+    'PDIC deposit insurance query'
+  )
+
+  const financialInstitutionsFrameworkResponse = runLocalResearch(
+    {
+      query: 'What controls apply to BSP supervision, bank loans, lending companies, financing companies, insurance claims, pre-need plans, PDIC deposit insurance, AML, bank secrecy, credit reports, and borrower privacy?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(financialInstitutionsFrameworkResponse, 'RA 7653', 'financial institutions framework BSP query')
+  assertResearchMatch(financialInstitutionsFrameworkResponse, 'RA 8791', 'financial institutions framework banking query')
+  assertResearchMatch(financialInstitutionsFrameworkResponse, 'RA 9474', 'financial institutions framework lending query')
+  assertResearchMatch(financialInstitutionsFrameworkResponse, 'RA 10607', 'financial institutions framework insurance query')
+  assertResearchMatch(financialInstitutionsFrameworkResponse, 'RA 10846', 'financial institutions framework PDIC query')
+  assertIncludes(
+    financialInstitutionsFrameworkResponse.summary,
+    'Banking, Lending, Insurance, and Financial Institutions Stack',
+    'Financial institutions framework title'
   )
 
   assertResearchMatch(
@@ -1154,6 +1364,15 @@ try {
 
   assertResearchMatch(
     runLocalResearch(
+      { query: 'What GAD, women desk, gender equality, livelihood, health service, complaint, and confidentiality controls should an LGU women protection program include?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9710',
+    'Magna Carta of Women query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
       { query: 'What committee on decorum and investigation steps are required for workplace sexual harassment complaints?', user_id: 'self-test' },
       'simulated remote outage'
     ),
@@ -1168,6 +1387,72 @@ try {
     ),
     'RA 10627',
     'anti-bullying query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What OSAEC and CSAEM reporting, takedown, victim confidentiality, and evidence preservation controls should an online platform use?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11930',
+    'OSAEC and CSAEM query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What seller verification, consumer redress, takedown, and transaction record controls apply to an online marketplace under the Internet Transactions Act?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11967',
+    'internet transactions query'
+  )
+
+  const financialAccountScamFrameworkResponse = runLocalResearch(
+    { query: 'What money mule, phishing, account takeover, transaction hold, evidence preservation, and law-enforcement escalation controls apply to financial account scams?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(
+    financialAccountScamFrameworkResponse,
+    'RA 12010',
+    'financial account scamming query'
+  )
+  assertIncludes(
+    financialAccountScamFrameworkResponse.summary,
+    'Financial Account Scam, Mule Account, and Wallet Fraud Stack',
+    'Financial account scam framework title'
+  )
+
+  const digitalGovernmentFrameworkResponse = runLocalResearch(
+    {
+      query: 'What e-governance, government portal, online public service, interoperability, data exchange, accessibility, cybersecurity, and DICT controls apply to digital permit systems?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(digitalGovernmentFrameworkResponse, 'RA 12254', 'digital government e-governance query')
+  assertResearchMatch(digitalGovernmentFrameworkResponse, 'RA 10844', 'digital government DICT query')
+  assertResearchMatch(digitalGovernmentFrameworkResponse, 'RA 10173', 'digital government privacy query')
+  assertIncludes(
+    digitalGovernmentFrameworkResponse.summary,
+    'Digital Government, E-Governance, and Public ICT Stack',
+    'Digital government framework title'
+  )
+
+  const pppFrameworkResponse = runLocalResearch(
+    {
+      query: 'What PPP concession, unsolicited proposal, infrastructure project, value-for-money, risk allocation, procurement, contract management, and public accountability controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(pppFrameworkResponse, 'RA 11966', 'PPP framework query')
+  assertResearchMatch(pppFrameworkResponse, 'RA 12009', 'PPP procurement query')
+  assertIncludes(
+    pppFrameworkResponse.summary,
+    'Public Accountability, Ethics, Audit, and Government Funds Stack',
+    'PPP public accountability framework title'
   )
 
   const educationBenefitsFrameworkResponse = runLocalResearch(
@@ -1724,6 +2009,36 @@ This ordinance takes effect 30 days after publication.`
   assert.equal(thinProcurementDraftResponse.status, 'success', 'Procurement draft check should succeed locally')
   assertFinding(thinProcurementDraftResponse, 'amber', 'Procurement safeguards')
 
+  const thinPppDraft = `# Municipal PPP Infrastructure Ordinance
+
+## Purpose
+This ordinance creates a public-private partnership and concession program for infrastructure projects.
+
+## Legal Basis
+Pursuant to RA 11966, RA 12009, and RA 7160.
+
+## Scope
+This applies to local PPP, joint venture, concession, and unsolicited proposal projects.
+
+## Responsible Office
+The infrastructure office shall implement this ordinance.
+
+## Requirements
+Private partners may submit project proposals for local facilities.
+
+## Monitoring
+The office shall submit annual project reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinPppDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinPppDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinPppDraftResponse.status, 'success', 'PPP draft check should succeed locally')
+  assertFinding(thinPppDraftResponse, 'amber', 'PPP project controls')
+
   const thinServiceDraft = `# Business Permit Streamlining Ordinance
 
 ## Purpose
@@ -2101,13 +2416,43 @@ This ordinance takes effect 30 days after publication.`
   assert.equal(thinCyberDraftResponse.status, 'success', 'Cyber draft check should succeed locally')
   assertFinding(thinCyberDraftResponse, 'amber', 'Cyber incident controls')
 
+  const thinWomenGenderDraft = `# Women Protection and GAD Services Ordinance
+
+## Purpose
+This ordinance creates a women desk, gender equality program, women livelihood support, and gender and development services.
+
+## Legal Basis
+Pursuant to RA 9710, RA 11313, and RA 9262.
+
+## Scope
+This applies to women beneficiaries and local public services.
+
+## Responsible Office
+The social welfare office shall implement this ordinance.
+
+## Requirements
+Women beneficiaries may request assistance and referral.
+
+## Monitoring
+The social welfare office shall submit annual reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinWomenGenderDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinWomenGenderDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinWomenGenderDraftResponse.status, 'success', 'Women and GAD draft check should succeed locally')
+  assertFinding(thinWomenGenderDraftResponse, 'amber', 'Women and gender-equality controls')
+
   const thinChildSafetyDraft = `# Online Child Safety Reporting Ordinance
 
 ## Purpose
-This ordinance addresses online child safety incidents in internet cafes and local digital platforms.
+This ordinance addresses OSAEC, CSAEM, and online child safety incidents in internet cafes and local digital platforms.
 
 ## Legal Basis
-Pursuant to RA 9775 and RA 10175.
+Pursuant to RA 11930, RA 9775, and RA 10175.
 
 ## Scope
 This applies to covered establishments and online reporting channels.
@@ -2116,7 +2461,7 @@ This applies to covered establishments and online reporting channels.
 The information office shall implement this ordinance.
 
 ## Requirements
-Covered establishments shall report child online safety incidents.
+Covered establishments shall report OSAEC, CSAEM, and child online safety incidents.
 
 ## Monitoring
 The information office shall submit quarterly reports.
@@ -2134,10 +2479,10 @@ This ordinance takes effect 30 days after publication.`
   const partialChildSafetyDraft = `# Online Child Safety Reporting Ordinance
 
 ## Purpose
-This ordinance addresses online child safety incidents in internet cafes.
+This ordinance addresses OSAEC and online child safety incidents in internet cafes.
 
 ## Legal Basis
-Pursuant to RA 9775 and RA 10175.
+Pursuant to RA 11930, RA 9775, and RA 10175.
 
 ## Scope
 This applies to covered establishments and online reporting channels.
@@ -2146,7 +2491,7 @@ This applies to covered establishments and online reporting channels.
 The social welfare office shall implement this ordinance.
 
 ## Requirements
-Covered establishments shall report child online safety incidents.
+Covered establishments shall report OSAEC and child online safety incidents.
 
 ## Monitoring
 The information office shall submit quarterly reports.
@@ -2284,6 +2629,66 @@ This ordinance takes effect 30 days after publication.`
   assert.equal(thinConsumerDraftResponse.status, 'success', 'Consumer draft check should succeed locally')
   assertFinding(thinConsumerDraftResponse, 'amber', 'Consumer protection')
 
+  const thinInternetTransactionsDraft = `# Online Marketplace Seller Policy
+
+## Purpose
+This policy creates an online marketplace for local merchants and social commerce sellers.
+
+## Legal Basis
+Pursuant to RA 11967, RA 7394, and RA 8792.
+
+## Scope
+This applies to digital platform seller onboarding and internet transaction listings.
+
+## Responsible Office
+The e-commerce desk shall implement this policy.
+
+## Requirements
+Online sellers shall publish product descriptions and prices.
+
+## Monitoring
+The e-commerce desk shall submit monthly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinInternetTransactionsDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinInternetTransactionsDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinInternetTransactionsDraftResponse.status, 'success', 'Internet transactions draft check should succeed locally')
+  assertFinding(thinInternetTransactionsDraftResponse, 'amber', 'Internet-transaction controls')
+
+  const thinDigitalGovernmentDraft = `# Digital Permit Portal Ordinance
+
+## Purpose
+This ordinance creates an e-governance portal and online government service for digital permit applications and government data exchange.
+
+## Legal Basis
+Pursuant to RA 12254, RA 10844, RA 10173, and RA 11032.
+
+## Scope
+This applies to online public services, permit filing, digital payments, and shared agency records.
+
+## Responsible Office
+The licensing office shall implement this ordinance.
+
+## Requirements
+Applicants shall use the government portal for submissions.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinDigitalGovernmentDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinDigitalGovernmentDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinDigitalGovernmentDraftResponse.status, 'success', 'Digital government draft check should succeed locally')
+  assertFinding(thinDigitalGovernmentDraftResponse, 'amber', 'Digital government service controls')
+
   const thinFinancialConsumerDraft = `# Wallet Fraud Assistance Policy
 
 ## Purpose
@@ -2313,6 +2718,36 @@ This policy takes effect 30 days after publication.`
   )
   assert.equal(thinFinancialConsumerDraftResponse.status, 'success', 'Financial consumer draft check should succeed locally')
   assertFinding(thinFinancialConsumerDraftResponse, 'amber', 'Financial consumer protection')
+
+  const thinFinancialAccountScamDraft = `# Financial Account Scam Response Policy
+
+## Purpose
+This policy handles money mule, mule account, phishing, social engineering, and account takeover reports.
+
+## Legal Basis
+Pursuant to RA 12010, RA 11765, RA 9160, and RA 10175.
+
+## Scope
+This applies to wallet accounts, payment accounts, and unauthorized transfer complaints.
+
+## Responsible Office
+The fraud desk shall implement this policy.
+
+## Requirements
+Customers shall report suspicious messages and scam proceeds.
+
+## Monitoring
+The fraud desk shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinFinancialAccountScamDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinFinancialAccountScamDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinFinancialAccountScamDraftResponse.status, 'success', 'Financial account scam draft check should succeed locally')
+  assertFinding(thinFinancialAccountScamDraftResponse, 'amber', 'Financial-account scam')
 
   const thinHazardousWasteDraft = `# Chemical Waste Storage Ordinance
 
@@ -2433,6 +2868,126 @@ This policy takes effect 30 days after publication.`
   )
   assert.equal(thinLaborDraftResponse.status, 'success', 'Labor draft check should succeed locally')
   assertFinding(thinLaborDraftResponse, 'amber', 'Employment and labor-standard')
+
+  const thinTelecommutingDraft = `# Hybrid Work Policy
+
+## Purpose
+This policy allows telecommuting, remote work, and work from home arrangements.
+
+## Legal Basis
+Pursuant to RA 11165, PD 442, and RA 10173.
+
+## Scope
+This applies to covered office employees.
+
+## Responsible Office
+The HR office shall implement this policy.
+
+## Requirements
+Employees may work remotely when approved by their supervisor.
+
+## Monitoring
+The HR office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect immediately.`
+
+  const thinTelecommutingDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinTelecommutingDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinTelecommutingDraftResponse.status, 'success', 'Telecommuting draft check should succeed locally')
+  assertFinding(thinTelecommutingDraftResponse, 'amber', 'Telecommuting controls')
+
+  const thinServiceChargeDraft = `# Restaurant Service Charge Policy
+
+## Purpose
+This policy governs service charges, tips, and gratuity collected by the restaurant.
+
+## Legal Basis
+Pursuant to RA 11360 and PD 442.
+
+## Scope
+This applies to dining and event service transactions.
+
+## Responsible Office
+The payroll office shall implement this policy.
+
+## Requirements
+Service charges shall be collected from customers.
+
+## Monitoring
+The office shall submit monthly reports.
+
+## Effectivity
+This policy takes effect immediately.`
+
+  const thinServiceChargeDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinServiceChargeDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinServiceChargeDraftResponse.status, 'success', 'Service charge draft check should succeed locally')
+  assertFinding(thinServiceChargeDraftResponse, 'amber', 'Service-charge distribution')
+
+  const thinWageDraft = `# Regional Wage Policy
+
+## Purpose
+This policy sets pay rates and minimum wage rules for employees.
+
+## Legal Basis
+Pursuant to RA 6727 and PD 442.
+
+## Scope
+This applies to workers in covered branches.
+
+## Responsible Office
+The payroll office shall implement this policy.
+
+## Requirements
+Employees shall be paid according to the approved salary table.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect immediately.`
+
+  const thinWageDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinWageDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinWageDraftResponse.status, 'success', 'Wage draft check should succeed locally')
+  assertFinding(thinWageDraftResponse, 'amber', 'Wage-order controls')
+
+  const thinLactationDraft = `# Workplace Lactation Support Policy
+
+## Purpose
+This policy supports breastfeeding and lactation for nursing mothers.
+
+## Legal Basis
+Pursuant to RA 10028 and RA 11210.
+
+## Scope
+This applies to employees and guests who need lactation support.
+
+## Responsible Office
+The HR office shall implement this policy.
+
+## Requirements
+Nursing mothers may request support.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect immediately.`
+
+  const thinLactationDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinLactationDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinLactationDraftResponse.status, 'success', 'Lactation draft check should succeed locally')
+  assertFinding(thinLactationDraftResponse, 'amber', 'Breastfeeding and lactation controls')
 
   const thinMentalHealthDraft = `# School Mental Health Referral Program
 
@@ -2716,6 +3271,46 @@ This policy takes effect 30 days after publication.`
   assert.equal(thinFinanceMarketDraftResponse.status, 'success', 'Finance market draft check should succeed locally')
   assertFinding(thinFinanceMarketDraftResponse, 'amber', 'Bank-deposit confidentiality')
   assertFinding(thinFinanceMarketDraftResponse, 'amber', 'Price-control measures')
+
+  const thinFinancialInstitutionsDraft = `# Financial Services Intake Policy
+
+## Purpose
+This policy covers BSP supervision, bank loan referrals, bank director review, lending company onboarding, loan app support, financing company lease financing and factoring, insurance policy claims, pre-need planholder assistance, trust fund files, PDIC deposit insurance, closed bank notices, and receivership inquiries.
+
+## Legal Basis
+Pursuant to RA 7653, RA 11211, RA 8791, RA 9474, RA 8556, RA 10607, RA 9829, and RA 10846.
+
+## Scope
+This applies to customers, borrowers, policyholders, planholders, depositors, and local assistance staff.
+
+## Responsible Office
+The finance desk shall process requests.
+
+## Requirements
+Applicants shall submit financial documents when requested.
+
+## Monitoring
+The finance desk shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinFinancialInstitutionsDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinFinancialInstitutionsDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(
+    thinFinancialInstitutionsDraftResponse.status,
+    'success',
+    'Financial institutions draft check should succeed locally'
+  )
+  assertFinding(thinFinancialInstitutionsDraftResponse, 'amber', 'BSP supervision')
+  assertFinding(thinFinancialInstitutionsDraftResponse, 'amber', 'Banking operation')
+  assertFinding(thinFinancialInstitutionsDraftResponse, 'amber', 'Lending-company')
+  assertFinding(thinFinancialInstitutionsDraftResponse, 'amber', 'Financing-company')
+  assertFinding(thinFinancialInstitutionsDraftResponse, 'amber', 'Insurance controls')
+  assertFinding(thinFinancialInstitutionsDraftResponse, 'amber', 'Pre-need plan')
+  assertFinding(thinFinancialInstitutionsDraftResponse, 'amber', 'Deposit-insurance')
 
   const thinResourceDraft = `# Coastal Resource and Quarry Project Ordinance
 

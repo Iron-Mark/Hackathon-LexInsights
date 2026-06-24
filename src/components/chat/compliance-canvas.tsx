@@ -779,7 +779,54 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                   {documentCount !== undefined && (
                     <span>Documents: <span className="font-medium">{documentCount}</span></span>
                   )}
+                  {ragResponse.retrieval_metadata && (
+                    <>
+                      <span>Candidates: <span className="font-medium">{ragResponse.retrieval_metadata.total_candidates}</span></span>
+                      <span>Limit: <span className="font-medium">{ragResponse.retrieval_metadata.result_limit}</span></span>
+                      {ragResponse.retrieval_metadata.processing_ms !== undefined && (
+                        <span>Local time: <span className="font-medium">{ragResponse.retrieval_metadata.processing_ms}ms</span></span>
+                      )}
+                      {ragResponse.retrieval_metadata.citation_numbers.length > 0 && (
+                        <span>Citations: <span className="font-medium">{ragResponse.retrieval_metadata.citation_numbers.join(', ')}</span></span>
+                      )}
+                      {ragResponse.retrieval_metadata.unknown_citation_numbers && ragResponse.retrieval_metadata.unknown_citation_numbers.length > 0 && (
+                        <span>Unknown citations: <span className="font-medium">{ragResponse.retrieval_metadata.unknown_citation_numbers.join(', ')}</span></span>
+                      )}
+                    </>
+                  )}
                 </div>
+
+                {ragResponse.matched_documents && ragResponse.matched_documents.length > 0 && (
+                  <div className="mt-3">
+                    <p className="font-body mb-1 text-xs text-neutral-600 dark:text-slate-400">Top Local Sources:</p>
+                    <div className="space-y-2">
+                      {ragResponse.matched_documents.slice(0, 3).map((document, index) => (
+                        <a
+                          key={`${document.statute}-${index}`}
+                          href={document.source_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block rounded-lg border border-iris-100 bg-iris-50/60 px-3 py-2 text-xs text-slate-700 transition-colors hover:border-iris-300 hover:bg-iris-50 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-200"
+                        >
+                          <span className="font-semibold">{document.title}</span>
+                          <span className="ml-2 text-slate-500 dark:text-slate-400">
+                            {(document.relevance_score * 100).toFixed(0)}%
+                          </span>
+                          {document.matched_terms.length > 0 && (
+                            <span className="mt-1 block text-slate-500 dark:text-slate-400">
+                              Matched: {document.matched_terms.slice(0, 6).join(', ')}
+                            </span>
+                          )}
+                          <span className="mt-1 block text-slate-500 dark:text-slate-400">
+                            {[document.support_level && `${document.support_level} support`, document.authority_type, document.source_tier]
+                              .filter(Boolean)
+                              .join(' | ')}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             

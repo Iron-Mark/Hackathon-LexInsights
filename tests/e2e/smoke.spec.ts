@@ -511,6 +511,11 @@ test.describe('LexInSight smoke checks', () => {
 
     await expect(page.getByText('Providerless local mode generated this result.')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'API Response' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Local Ranking Diagnostics' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Matched Sources' })).toBeVisible()
+    await expect(page.getByText('Candidates:')).toBeVisible()
+    await expect(page.getByText('Source types:')).toBeVisible()
+    await expect(page.getByText('direct support', { exact: true })).toBeVisible()
 
     const summary = page.locator('pre').filter({ hasText: '# Providerless Local Research Brief' })
     await expect(summary).toContainText('RA 9003')

@@ -10,7 +10,7 @@ import {
   type HealthResponse,
   type WebSocketEvent 
 } from '@/lib/services/rag-api'
-import { USE_REMOTE_RAG } from '@/lib/services/rag-config'
+import { RAG_PROVIDER_MODE, USE_REMOTE_RAG } from '@/lib/services/rag-config'
 import {
   RAG_BACKEND_TOAST_ACTION,
   RAG_BACKEND_UNAVAILABLE_MESSAGE,
@@ -38,7 +38,7 @@ function getCachedResponse(query: string): RAGResponse | null {
   if (typeof window === 'undefined') return null
   
   try {
-    const cacheKey = CACHE_PREFIX + hashQuery(query.toLowerCase().trim())
+    const cacheKey = CACHE_PREFIX + hashQuery(`${RAG_PROVIDER_MODE}:${USE_REMOTE_RAG ? 'remote' : 'local'}:${query.toLowerCase().trim()}`)
     const cached = localStorage.getItem(cacheKey)
     
     if (cached) {
@@ -62,7 +62,7 @@ function setCachedResponse(query: string, response: RAGResponse): void {
   if (typeof window === 'undefined') return
   
   try {
-    const cacheKey = CACHE_PREFIX + hashQuery(query.toLowerCase().trim())
+    const cacheKey = CACHE_PREFIX + hashQuery(`${RAG_PROVIDER_MODE}:${USE_REMOTE_RAG ? 'remote' : 'local'}:${query.toLowerCase().trim()}`)
     const cacheData = {
       response,
       timestamp: Date.now()
