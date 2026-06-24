@@ -2185,6 +2185,651 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'Tailings, water, hazardous substances, worker safety, and closure duties are missing.',
     ],
   },
+  {
+    id: 'ra-10533',
+    statute: 'RA 10533',
+    title: 'Republic Act No. 10533',
+    shortTitle: 'Enhanced Basic Education Act of 2013',
+    year: 2013,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2013/ra_10533_2013.html',
+    aliases: ['ra 10533', 'republic act 10533', 'enhanced basic education act', 'k to 12 law', 'k-12 education'],
+    topics: ['education', 'basic education', 'curriculum', 'school operations', 'learner records'],
+    keywords: [
+      'k to 12',
+      'kindergarten',
+      'elementary',
+      'secondary education',
+      'curriculum',
+      'learner',
+      'school year',
+      'deped',
+      'teacher training',
+      'assessment',
+    ],
+    summary:
+      'A basic-education framework covering kindergarten, elementary, junior high, senior high, curriculum development, learning standards, and education-sector implementation.',
+    obligations: [
+      'For school, LGU education, learner support, curriculum, or enrollment workflows, state coverage, responsible school or DepEd-facing office, learner eligibility, records, and implementation timeline.',
+      'Separate curriculum, admission, assessment, learner protection, data handling, facilities, and teacher-training responsibilities.',
+      'Coordinate student records, consent, child protection, accessibility, and grievance channels with privacy and school-safety controls.',
+      'Avoid school requirements or exclusions without objective criteria, notice, appeal, and accommodation pathways.',
+    ],
+    commonGaps: [
+      'Education policies cite school operations but omit learner eligibility, records, and responsible office.',
+      'Curriculum, admission, assessment, facilities, and child protection are mixed without clear ownership.',
+      'Student data and disciplinary records lack privacy, retention, and grievance controls.',
+    ],
+  },
+  {
+    id: 'ra-10931',
+    statute: 'RA 10931',
+    title: 'Republic Act No. 10931',
+    shortTitle: 'Universal Access to Quality Tertiary Education Act',
+    year: 2017,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2017/ra_10931_2017.html',
+    aliases: ['ra 10931', 'republic act 10931', 'universal access to quality tertiary education act', 'free tertiary education law', 'tertiary education subsidy'],
+    topics: ['education', 'tertiary education', 'scholarship', 'subsidy', 'student benefits'],
+    keywords: [
+      'state university',
+      'local university',
+      'college',
+      'tuition',
+      'school fees',
+      'student financial assistance',
+      'tertiary education subsidy',
+      'unifast',
+      'ched',
+      'student loan',
+    ],
+    summary:
+      'A tertiary-education access framework covering free tuition and school fees in covered institutions, tertiary education subsidy, student loans, and related student financial assistance.',
+    obligations: [
+      'For scholarship, tuition, subsidy, student aid, or LGU education-benefit programs, state eligibility, covered institution, benefit limits, application documents, verification, and appeal route.',
+      'Separate free tuition, subsidy, student loans, local scholarship, academic standing, privacy, and grievance handling.',
+      'Protect student identity, income, grades, disability, and household records with clear access and retention controls.',
+      'Avoid promising free fees, grants, or loans without budget, objective criteria, exclusion rules, and accountable office.',
+    ],
+    commonGaps: [
+      'Scholarship or student-aid rules lack eligibility, benefit limits, and appeal procedures.',
+      'Tuition, subsidy, and loan programs are merged without separate controls.',
+      'Student financial and academic records lack privacy and retention safeguards.',
+    ],
+  },
+  {
+    id: 'ra-7279',
+    statute: 'RA 7279',
+    title: 'Republic Act No. 7279',
+    shortTitle: 'Urban Development and Housing Act of 1992',
+    year: 1992,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1992/ra_7279_1992.html',
+    aliases: ['ra 7279', 'republic act 7279', 'urban development and housing act', 'udha', 'socialized housing'],
+    topics: ['housing', 'urban development', 'resettlement', 'informal settlers', 'socialized housing'],
+    keywords: [
+      'urban poor',
+      'informal settler',
+      'socialized housing',
+      'resettlement',
+      'relocation',
+      'demolition',
+      'eviction',
+      'beneficiary selection',
+      'consultation',
+      'basic services',
+    ],
+    summary:
+      'An urban-development and housing framework covering socialized housing, land use, beneficiary selection, resettlement, consultation, and safeguards around eviction or demolition.',
+    obligations: [
+      'For housing, relocation, resettlement, demolition, or urban-poor programs, state beneficiary eligibility, census or validation, consultation, relocation site, services, grievance, and timetable.',
+      'Separate socialized housing, land acquisition, eviction or demolition, resettlement, livelihood, utilities, public order, and child or senior welfare concerns.',
+      'Protect beneficiary identity, household composition, income, land-tenure, and vulnerability records.',
+      'Avoid eviction, relocation, or award decisions without notice, consultation, documentation, and appeal pathway.',
+    ],
+    commonGaps: [
+      'Housing or relocation programs lack beneficiary validation, consultation, and grievance controls.',
+      'Demolition, resettlement, and social-service duties are mixed without timetable and accountable office.',
+      'Household and vulnerability records lack privacy and retention safeguards.',
+    ],
+  },
+  {
+    id: 'ra-11201',
+    statute: 'RA 11201',
+    title: 'Republic Act No. 11201',
+    shortTitle: 'Department of Human Settlements and Urban Development Act',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11201_2019.html',
+    aliases: ['ra 11201', 'republic act 11201', 'department of human settlements and urban development act', 'dhsud law', 'human settlements'],
+    topics: ['housing', 'human settlements', 'urban development', 'land use', 'housing regulation'],
+    keywords: [
+      'dhsud',
+      'human settlements',
+      'housing policy',
+      'urban development',
+      'land use',
+      'subdivision',
+      'homeowners association',
+      'housing regulation',
+      'settlement planning',
+    ],
+    summary:
+      'A housing and human-settlements governance framework establishing DHSUD and consolidating policy, regulation, planning, and coordination for settlements and urban development.',
+    obligations: [
+      'For housing, subdivision, homeowners, land-use, or settlement programs, identify DHSUD-facing regulation, LGU role, permits, consultation, records, and complaint handling.',
+      'Coordinate settlement planning with zoning, building, accessibility, environment, disaster risk, utilities, and socialized-housing controls.',
+      'Separate policy planning, licensing, beneficiary assistance, homeowners association concerns, and enforcement. ',
+      'Avoid treating a local clearance as complete when housing or settlement regulation may require DHSUD coordination.',
+    ],
+    commonGaps: [
+      'Housing or settlement policies omit DHSUD-facing permit, regulation, or complaint channels.',
+      'Land-use, subdivision, housing assistance, and homeowners association issues are merged without role clarity.',
+      'Settlement planning lacks hazard, accessibility, utilities, and environmental coordination.',
+    ],
+  },
+  {
+    id: 'ra-9470',
+    statute: 'RA 9470',
+    title: 'Republic Act No. 9470',
+    shortTitle: 'National Archives of the Philippines Act of 2007',
+    year: 2007,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2007/ra_9470_2007.html',
+    aliases: ['ra 9470', 'republic act 9470', 'national archives act', 'records management law', 'archives law'],
+    topics: ['records management', 'archives', 'public records', 'retention', 'disposal'],
+    keywords: [
+      'public records',
+      'records officer',
+      'archives',
+      'retention schedule',
+      'disposal',
+      'preservation',
+      'records custody',
+      'document management',
+      'government records',
+    ],
+    summary:
+      'A public-records and archives framework covering records creation, custody, preservation, retention, disposal, archives management, and coordination with the National Archives.',
+    obligations: [
+      'For government forms, case files, minutes, permits, registries, or document systems, state records owner, retention schedule, access rules, disposal, preservation, and audit trail.',
+      'Separate active records, permanent archives, confidential records, public access, digital backups, and authorized destruction.',
+      'Coordinate archives duties with privacy, FOI, e-commerce records, audit, and agency-specific retention rules.',
+      'Avoid deleting, altering, or publishing records without authority, retention basis, and access classification.',
+    ],
+    commonGaps: [
+      'Records are collected but no custodian, retention schedule, disposal rule, or archive path is stated.',
+      'Confidential, public, active, and permanent records are not classified.',
+      'Digital copies, audit trails, and authorized destruction are not controlled.',
+    ],
+  },
+  {
+    id: 'eo-2-2016',
+    statute: 'EO 2, s. 2016',
+    title: 'Executive Order No. 2, s. 2016',
+    shortTitle: 'Freedom of Information Executive Order',
+    year: 2016,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/executive/execord/eo2016/eo_2_2016.html',
+    aliases: ['eo 2 2016', 'executive order 2 2016', 'freedom of information', 'foi executive order', 'foi request'],
+    topics: ['freedom of information', 'public records', 'transparency', 'access requests', 'exceptions'],
+    keywords: [
+      'foi',
+      'request for information',
+      'public disclosure',
+      'exceptions',
+      'transparency',
+      'people information',
+      'records access',
+      'privacy',
+      'appeal',
+      'denial',
+    ],
+    summary:
+      'An executive-branch transparency framework for public access to information, request handling, exceptions, denial, appeal, records disclosure, and privacy-sensitive limits.',
+    obligations: [
+      'For public-records portals, request desks, transparency pages, or disclosure workflows, state request intake, receiving office, response time, exception review, denial, and appeal route.',
+      'Separate proactive disclosure, FOI requests, privacy-protected records, security exceptions, archives, and ordinary customer-service inquiries.',
+      'Keep records of requests, decisions, redactions, responsible officers, and response dates.',
+      'Avoid releasing personal, confidential, privileged, security, or law-enforcement-sensitive information without exception review and redaction controls.',
+    ],
+    commonGaps: [
+      'FOI or transparency rules lack receiving office, timeline, exception review, and appeal route.',
+      'Disclosure workflows do not separate public records from personal or confidential records.',
+      'Redaction, request logs, denial notices, and escalation records are missing.',
+    ],
+  },
+  {
+    id: 'ra-11310',
+    statute: 'RA 11310',
+    title: 'Republic Act No. 11310',
+    shortTitle: 'Pantawid Pamilyang Pilipino Program Act',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11310_2019.html',
+    aliases: ['ra 11310', 'republic act 11310', 'pantawid pamilyang pilipino program act', '4ps law', 'conditional cash transfer'],
+    topics: ['social welfare', 'cash assistance', 'poverty reduction', 'benefits', 'household records'],
+    keywords: [
+      'pantawid',
+      '4ps',
+      'conditional cash transfer',
+      'beneficiary',
+      'household',
+      'poverty',
+      'education grant',
+      'health grant',
+      'dswd',
+      'grievance',
+    ],
+    summary:
+      'A conditional cash-transfer and social-protection framework covering poor household eligibility, grants, conditions, monitoring, grievance, and DSWD-centered implementation.',
+    obligations: [
+      'For cash aid, household grants, education or health support, beneficiary validation, or social-protection programs, state eligibility, conditions, verification, payment, monitoring, grievance, and exit rules.',
+      'Separate ordinary financial aid, conditional benefits, emergency assistance, case management, privacy, and fraud controls.',
+      'Protect household, poverty, child, health, school, bank, and payment records.',
+      'Avoid discretionary beneficiary selection or delisting without objective criteria, notice, validation, and appeal or grievance route.',
+    ],
+    commonGaps: [
+      'Social-assistance programs lack eligibility, validation, benefit conditions, and grievance controls.',
+      'Household, child, health, school, and payment records lack privacy and access safeguards.',
+      'Delisting or denial rules are discretionary or lack notice and appeal.',
+    ],
+  },
+  {
+    id: 'ra-11861',
+    statute: 'RA 11861',
+    title: 'Republic Act No. 11861',
+    shortTitle: 'Expanded Solo Parents Welfare Act',
+    year: 2022,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2022/ra_11861_2022.html',
+    aliases: ['ra 11861', 'republic act 11861', 'expanded solo parents welfare act', 'solo parents welfare act', 'solo parent benefit'],
+    topics: ['solo parents', 'social welfare', 'benefits', 'employment support', 'child welfare'],
+    keywords: [
+      'solo parent',
+      'solo parent id',
+      'benefits',
+      'parental leave',
+      'cash subsidy',
+      'employment support',
+      'child care',
+      'social worker',
+      'osca',
+      'dswd',
+    ],
+    summary:
+      'A solo-parent welfare framework covering eligibility, identification, benefits, leave, subsidy, social services, and local/social-welfare coordination.',
+    obligations: [
+      'For solo-parent benefits, IDs, leave, subsidies, or local support programs, state eligibility, documentary proof, verification, benefit scope, renewal, grievance, and records handling.',
+      'Separate employment benefits, social services, education support, health support, child care, and cash assistance.',
+      'Protect family status, child, income, employment, and vulnerability records.',
+      'Avoid blanket exclusions or discretionary denials without criteria, notice, and appeal route.',
+    ],
+    commonGaps: [
+      'Solo-parent benefits lack eligibility, verification, renewal, and appeal controls.',
+      'Employment, subsidy, child-care, and education benefits are mixed without role clarity.',
+      'Sensitive family and child records lack privacy safeguards.',
+    ],
+  },
+  {
+    id: 'ra-11596',
+    statute: 'RA 11596',
+    title: 'Republic Act No. 11596',
+    shortTitle: 'Prohibition of Child Marriage Law',
+    year: 2021,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2021/ra_11596_2021.html',
+    aliases: ['ra 11596', 'republic act 11596', 'prohibition of child marriage law', 'child marriage law'],
+    topics: ['child protection', 'marriage', 'minor protection', 'social welfare', 'community programs'],
+    keywords: [
+      'child marriage',
+      'minor marriage',
+      'solemnization',
+      'cohabitation',
+      'facilitation',
+      'child protection',
+      'reporting',
+      'social welfare',
+      'community education',
+    ],
+    summary:
+      'A child-protection statute prohibiting child marriage and related facilitation, with implications for community education, intake, reporting, and protection workflows.',
+    obligations: [
+      'For marriage, family, barangay, school, social-welfare, or child-protection workflows, include age verification, reporting, referral, confidentiality, and prevention education.',
+      'Separate civil-registration, religious or cultural facilitation, protection intake, social welfare, and law-enforcement referral.',
+      'Protect child identity, family details, school records, and case records from public exposure.',
+      'Avoid mediation, waiver, or custom-based exemptions that bypass child-protection review.',
+    ],
+    commonGaps: [
+      'Child-marriage or family-support programs lack age verification, reporting, and referral controls.',
+      'Civil, social-welfare, school, and community roles are not separated.',
+      'Child identity and family records are not protected.',
+    ],
+  },
+  {
+    id: 'ra-11510',
+    statute: 'RA 11510',
+    title: 'Republic Act No. 11510',
+    shortTitle: 'Alternative Learning System Act',
+    year: 2020,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2020/ra_11510_2020.html',
+    aliases: ['ra 11510', 'republic act 11510', 'alternative learning system act', 'als law', 'alternative learning system'],
+    topics: ['education', 'alternative learning', 'out of school youth', 'adult education', 'learner support'],
+    keywords: [
+      'alternative learning system',
+      'als',
+      'out of school youth',
+      'adult learners',
+      'basic literacy',
+      'learning facilitator',
+      'community learning center',
+      'accreditation',
+      'equivalency',
+      'deped',
+    ],
+    summary:
+      'An alternative-learning framework for out-of-school youth and adult learners, community learning centers, basic literacy, accreditation, equivalency, and DepEd coordination.',
+    obligations: [
+      'For alternative learning, youth, adult literacy, or community learning programs, state target learners, intake, learning plan, facilitator, assessment, accessibility, records, and referral controls.',
+      'Separate ALS from formal enrollment, scholarship, livelihood, child protection, privacy, and social-welfare assistance.',
+      'Protect learner age, education history, disability, family, income, and assessment records.',
+      'Avoid excluding learners without objective criteria, accommodation review, and grievance route.',
+    ],
+    commonGaps: [
+      'ALS or community learning programs lack intake, learning plan, assessment, and facilitator controls.',
+      'Out-of-school youth, adult learners, and social-welfare referrals are mixed without role clarity.',
+      'Learner records lack privacy and retention safeguards.',
+    ],
+  },
+  {
+    id: 'ra-4136',
+    statute: 'RA 4136',
+    title: 'Republic Act No. 4136',
+    shortTitle: 'Land Transportation and Traffic Code',
+    year: 1964,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1964/ra_4136_1964.html',
+    aliases: ['ra 4136', 'republic act 4136', 'land transportation and traffic code', 'traffic code', 'driver license law'],
+    topics: ['transportation', 'traffic', 'driver licensing', 'vehicle registration', 'road safety'],
+    keywords: [
+      'motor vehicle',
+      'driver license',
+      'traffic regulation',
+      'vehicle registration',
+      'franchise',
+      'road safety',
+      'operator',
+      'traffic enforcement',
+      'accident',
+      'public utility vehicle',
+    ],
+    summary:
+      'A road-transport framework for motor vehicle registration, driver licensing, traffic rules, operators, road-safety enforcement, and transport records.',
+    obligations: [
+      'For traffic, parking, transport-terminal, driver, vehicle, or road-safety policies, state regulated vehicles, driver or operator duties, enforcement office, evidence, penalties, and appeal route.',
+      'Separate driver licensing, vehicle registration, route or terminal management, road safety, data collection, accident response, and traffic enforcement.',
+      'Coordinate transport enforcement with LGU authority, public-service regulation, privacy, due process, and public-safety controls.',
+      'Avoid vehicle or driver data collection, impoundment, penalties, or route restrictions without authority, notice, recordkeeping, and complaint handling.',
+    ],
+    commonGaps: [
+      'Traffic or transport policies lack vehicle scope, driver/operator duties, enforcement records, or appeal route.',
+      'Driver, vehicle, accident, and violation records lack retention and privacy controls.',
+      'LGU traffic rules are not coordinated with national transport and public-service regulation.',
+    ],
+  },
+  {
+    id: 'ra-11659',
+    statute: 'RA 11659',
+    title: 'Republic Act No. 11659',
+    shortTitle: 'Public Service Act Amendments',
+    year: 2022,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2022/ra_11659_2022.html',
+    aliases: ['ra 11659', 'republic act 11659', 'public service act amendments', 'public service law', 'public utility regulation'],
+    topics: ['public service', 'public utility', 'franchise', 'transport', 'telecommunications', 'foreign investment'],
+    keywords: [
+      'public service',
+      'public utility',
+      'franchise',
+      'certificate',
+      'transportation',
+      'telecommunications',
+      'critical infrastructure',
+      'regulator',
+      'operator',
+      'foreign ownership',
+    ],
+    summary:
+      'A public-service regulation framework distinguishing public services and public utilities, with implications for operators, franchises, certificates, critical infrastructure, and regulator oversight.',
+    obligations: [
+      'For transport, telecom, logistics, infrastructure, or utility-like services, classify the service, operator, public-utility status, franchise or certificate need, regulator, and consumer-facing duties.',
+      'Separate ordinary business permits from public-service certificates, franchises, rate or route regulation, critical-infrastructure limits, competition, and data handling.',
+      'Coordinate service continuity, complaints, records, consumer disclosures, privacy, safety, and regulator reporting.',
+      'Avoid treating local permits or private contracts as enough when a regulated public service may need national regulator review.',
+    ],
+    commonGaps: [
+      'Public-service workflows do not classify the service or identify the regulator and certificate path.',
+      'Consumer complaints, continuity, rates or charges, and operational records are missing.',
+      'Critical-infrastructure, foreign-investment, privacy, and competition issues are not separated.',
+    ],
+  },
+  {
+    id: 'ra-8371',
+    statute: 'RA 8371',
+    title: 'Republic Act No. 8371',
+    shortTitle: 'Indigenous Peoples Rights Act of 1997',
+    year: 1997,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1997/ra_8371_1997.html',
+    aliases: ['ra 8371', 'republic act 8371', 'indigenous peoples rights act', 'ipra', 'free prior and informed consent', 'fpic'],
+    topics: ['indigenous peoples', 'ancestral domain', 'fpic', 'cultural rights', 'community consent'],
+    keywords: [
+      'indigenous cultural communities',
+      'indigenous peoples',
+      'ancestral domain',
+      'ancestral lands',
+      'fpic',
+      'free prior informed consent',
+      'ncip',
+      'customary law',
+      'cultural integrity',
+      'community consultation',
+    ],
+    summary:
+      'An indigenous-rights framework covering ancestral domains and lands, self-governance, cultural integrity, NCIP coordination, and free, prior, and informed consent for affected projects.',
+    obligations: [
+      'For land, mining, energy, tourism, housing, infrastructure, research, or resource projects affecting indigenous communities, screen for ancestral-domain or ancestral-land issues and FPIC requirements.',
+      'State NCIP coordination, affected community, consent process, cultural safeguards, benefit-sharing, grievance, recordkeeping, and protection of sensitive community information.',
+      'Separate ordinary public consultation from FPIC, customary decision-making, environmental permits, land title, and project procurement.',
+      'Avoid project approvals, data collection, relocation, or resource access without community identification, consent pathway, and cultural safeguards.',
+    ],
+    commonGaps: [
+      'Projects affecting ancestral domains mention consultation but not FPIC, NCIP coordination, or customary decision process.',
+      'Community records, maps, sacred sites, and cultural information lack confidentiality controls.',
+      'Benefit-sharing, grievance, monitoring, and withdrawal or non-consent scenarios are not addressed.',
+    ],
+  },
+  {
+    id: 'pd-1529',
+    statute: 'PD 1529',
+    title: 'Presidential Decree No. 1529',
+    shortTitle: 'Property Registration Decree',
+    year: 1978,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/presdecs/pd1978/pd_1529_1978.html',
+    aliases: ['pd 1529', 'presidential decree 1529', 'property registration decree', 'land registration', 'torrens title'],
+    topics: ['property', 'land title', 'land registration', 'real estate records', 'survey'],
+    keywords: [
+      'land title',
+      'certificate of title',
+      'torrens',
+      'register of deeds',
+      'survey plan',
+      'annotation',
+      'encumbrance',
+      'subdivision',
+      'consolidation',
+      'deed',
+    ],
+    summary:
+      'A land-registration framework for Torrens titles, certificates of title, register of deeds processes, survey plans, annotations, encumbrances, and property-record custody.',
+    obligations: [
+      'For land, housing, subdivision, public works, acquisition, easement, or property-document workflows, verify title, survey, owner, encumbrances, annotations, and register-of-deeds records.',
+      'Separate title verification, tax declaration, possession, zoning, subdivision, expropriation, ancestral-domain, and housing-beneficiary issues.',
+      'Protect property documents, owner identity, survey records, and transaction evidence with access and retention controls.',
+      'Avoid relying on informal possession, tax declarations, or unverified deeds as substitutes for title and registry review.',
+    ],
+    commonGaps: [
+      'Land or housing workflows rely on tax declarations or applicant claims without title and registry verification.',
+      'Encumbrances, annotations, survey issues, and owner authority are not checked.',
+      'Property and owner records lack custody, access, redaction, and retention controls.',
+    ],
+  },
+  {
+    id: 'ra-8435',
+    statute: 'RA 8435',
+    title: 'Republic Act No. 8435',
+    shortTitle: 'Agriculture and Fisheries Modernization Act of 1997',
+    year: 1997,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1997/ra_8435_1997.html',
+    aliases: ['ra 8435', 'republic act 8435', 'agriculture and fisheries modernization act', 'afma', 'agri fisheries modernization'],
+    topics: ['agriculture', 'fisheries', 'food security', 'farm support', 'rural development'],
+    keywords: [
+      'agriculture',
+      'fisheries',
+      'modernization',
+      'food security',
+      'farmers',
+      'fisherfolk',
+      'irrigation',
+      'post harvest',
+      'market access',
+      'rural credit',
+    ],
+    summary:
+      'An agriculture and fisheries modernization framework covering food security, support services, infrastructure, credit, research, market access, and farmer or fisherfolk development.',
+    obligations: [
+      'For farm, fisheries, food-security, livelihood, irrigation, post-harvest, or rural support programs, state eligible beneficiaries, support type, delivery office, monitoring, procurement, and market-access controls.',
+      'Separate production support, credit, post-harvest facilities, fisheries controls, food safety, organic claims, price controls, and social assistance.',
+      'Protect farmer, fisherfolk, cooperative, land, production, and subsidy records.',
+      'Avoid discretionary grants or farm inputs without eligibility, inventory, distribution, audit, and grievance controls.',
+    ],
+    commonGaps: [
+      'Agriculture or fisheries support lacks beneficiary criteria, inventory controls, monitoring, or grievance path.',
+      'Input distribution, credit, procurement, and market-access support are mixed without audit records.',
+      'Farm and fisherfolk records lack privacy, retention, and conflict-of-interest safeguards.',
+    ],
+  },
+  {
+    id: 'ra-10068',
+    statute: 'RA 10068',
+    title: 'Republic Act No. 10068',
+    shortTitle: 'Organic Agriculture Act of 2010',
+    year: 2010,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2010/ra_10068_2010.html',
+    aliases: ['ra 10068', 'republic act 10068', 'organic agriculture act', 'organic farming law', 'organic certification'],
+    topics: ['organic agriculture', 'food production', 'certification', 'labeling', 'farm standards'],
+    keywords: [
+      'organic agriculture',
+      'organic farming',
+      'certification',
+      'organic label',
+      'farm inputs',
+      'soil fertility',
+      'organic products',
+      'accreditation',
+      'traceability',
+      'market development',
+    ],
+    summary:
+      'An organic-agriculture framework for organic production, certification, labeling, accreditation, promotion, traceability, and market support.',
+    obligations: [
+      'For organic farming, local food, market, procurement, labeling, or farm-support programs, state certification, permitted inputs, traceability, inspection, labeling, and complaint controls.',
+      'Separate organic claims from ordinary farm support, food safety, consumer labeling, procurement preference, and market promotion.',
+      'Coordinate with food safety, consumer protection, agriculture modernization, and records-management controls.',
+      'Avoid using organic labels, claims, or incentives without certification, verification, and traceability evidence.',
+    ],
+    commonGaps: [
+      'Organic claims lack certification, permitted input, traceability, and inspection controls.',
+      'Farm support and market promotion are treated as proof of organic status.',
+      'Consumer labeling, complaints, and corrective action are missing.',
+    ],
+  },
+  {
+    id: 'ra-10611',
+    statute: 'RA 10611',
+    title: 'Republic Act No. 10611',
+    shortTitle: 'Food Safety Act of 2013',
+    year: 2013,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2013/ra_10611_2013.html',
+    aliases: ['ra 10611', 'republic act 10611', 'food safety act', 'food safety law', 'food safety standards'],
+    topics: ['food safety', 'agriculture', 'markets', 'food establishments', 'traceability'],
+    keywords: [
+      'food safety',
+      'food business operator',
+      'food chain',
+      'traceability',
+      'risk analysis',
+      'recall',
+      'contamination',
+      'sanitary',
+      'inspection',
+      'labeling',
+    ],
+    summary:
+      'A food-safety framework covering responsibilities across the food chain, food business operators, risk analysis, inspection, traceability, recall, and regulator coordination.',
+    obligations: [
+      'For markets, feeding programs, food vendors, farm-to-market programs, processing, storage, or distribution, state food-chain role, safety standards, inspection, traceability, complaints, and recall steps.',
+      'Separate food safety from sanitation permits, FDA-regulated products, consumer labeling, organic claims, and agricultural subsidy programs.',
+      'Protect supplier, vendor, inspection, complaint, and recall records with retention and access controls.',
+      'Avoid distributing or selling food without inspection, contamination response, traceability, and corrective-action procedures.',
+    ],
+    commonGaps: [
+      'Food programs lack inspection, traceability, recall, and contamination response controls.',
+      'Sanitary permits, food safety, labeling, and FDA issues are blended without role clarity.',
+      'Supplier and inspection records are incomplete or not retained.',
+    ],
+  },
+  {
+    id: 'ra-11321',
+    statute: 'RA 11321',
+    title: 'Republic Act No. 11321',
+    shortTitle: 'Sagip Saka Act',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11321_2019.html',
+    aliases: ['ra 11321', 'republic act 11321', 'sagip saka act', 'farmers and fisherfolk enterprise development', 'agri enterprise support'],
+    topics: ['agriculture', 'farmers', 'fisherfolk', 'enterprise development', 'market access'],
+    keywords: [
+      'sagip saka',
+      'farmers',
+      'fisherfolk',
+      'enterprise development',
+      'farmers organization',
+      'market access',
+      'direct purchase',
+      'credit',
+      'capacity building',
+      'agri enterprise',
+    ],
+    summary:
+      'An agriculture-enterprise support framework promoting farmers and fisherfolk enterprise development, market linkage, direct purchase, credit, capacity building, and support services.',
+    obligations: [
+      'For farmer or fisherfolk enterprise, direct purchase, market linkage, livelihood, or local food procurement programs, state eligible organizations, selection criteria, support package, procurement path, monitoring, and grievance controls.',
+      'Separate enterprise support, grants, credit, procurement, price support, food safety, and cooperative governance.',
+      'Protect farmer or fisherfolk organization records, production data, bank details, and beneficiary selection evidence.',
+      'Avoid preferred suppliers, discretionary market access, or direct purchase without objective criteria, conflict checks, audit trail, and performance monitoring.',
+    ],
+    commonGaps: [
+      'Farmers and fisherfolk support lacks organization eligibility, objective selection, and conflict checks.',
+      'Market linkage, direct purchase, credit, and capacity building are merged without audit trail.',
+      'Beneficiary organization and financial records lack privacy and retention safeguards.',
+    ],
+  },
 ]
 
 const TOPIC_EXPANSIONS = [
@@ -2289,6 +2934,18 @@ const TOPIC_EXPANSIONS = [
     expansions: ['anti bullying act', 'school bullying policy', 'reporting intervention'],
   },
   {
+    triggers: ['basic education', 'k to 12', 'k-12', 'curriculum', 'learner', 'enrollment', 'school operations'],
+    expansions: ['enhanced basic education act', 'k to 12', 'learner records', 'deped implementation'],
+  },
+  {
+    triggers: ['scholarship', 'tuition', 'college', 'tertiary education', 'student aid', 'student loan', 'unifast'],
+    expansions: ['universal access to quality tertiary education', 'student financial assistance', 'benefit eligibility', 'ched'],
+  },
+  {
+    triggers: ['alternative learning', 'als', 'out of school youth', 'adult learner', 'literacy', 'community learning center'],
+    expansions: ['alternative learning system', 'out of school youth', 'learning facilitator', 'accreditation equivalency'],
+  },
+  {
     triggers: ['customs', 'import', 'export', 'tariff', 'duties', 'valuation', 'broker'],
     expansions: ['customs modernization and tariff act', 'customs declaration', 'valuation classification'],
   },
@@ -2299,6 +2956,22 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['philsys', 'philid', 'national id', 'psn', 'pcn', 'identity verification'],
     expansions: ['philippine identification system', 'national id', 'authentication', 'biometric data'],
+  },
+  {
+    triggers: ['traffic', 'transport', 'driver license', 'vehicle registration', 'road safety', 'parking', 'traffic violation'],
+    expansions: ['land transportation and traffic code', 'driver licensing', 'vehicle registration', 'traffic enforcement'],
+  },
+  {
+    triggers: ['public service', 'public utility', 'franchise', 'transport operator', 'telecom operator', 'critical infrastructure'],
+    expansions: ['public service act', 'public utility', 'franchise certificate', 'regulator oversight'],
+  },
+  {
+    triggers: ['land title', 'property registration', 'torrens', 'register of deeds', 'certificate of title', 'survey plan'],
+    expansions: ['property registration decree', 'certificate of title', 'register of deeds', 'survey verification'],
+  },
+  {
+    triggers: ['indigenous peoples', 'ancestral domain', 'ancestral land', 'fpic', 'ncip', 'customary law'],
+    expansions: ['indigenous peoples rights act', 'free prior and informed consent', 'ancestral domain', 'ncip'],
   },
   {
     triggers: ['protected area', 'buffer zone', 'biodiversity', 'pamb', 'nipas', 'enipas', 'ecotourism'],
@@ -2345,6 +3018,14 @@ const TOPIC_EXPANSIONS = [
     expansions: ['national cultural heritage act', 'cultural property', 'conservation', 'ncca nhcp national museum'],
   },
   {
+    triggers: ['public records', 'records management', 'records retention', 'archives', 'document disposal', 'retention schedule'],
+    expansions: ['national archives act', 'records custodian', 'retention schedule', 'authorized disposal'],
+  },
+  {
+    triggers: ['foi', 'freedom of information', 'information request', 'public disclosure', 'transparency', 'redaction'],
+    expansions: ['freedom of information executive order', 'request intake', 'exceptions', 'denial appeal'],
+  },
+  {
     triggers: ['senior citizen', 'elderly', 'osca', 'senior discount', 'social pension'],
     expansions: ['expanded senior citizens act', 'senior citizen benefits', 'osca', 'discount vat exemption'],
   },
@@ -2387,6 +3068,42 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['msme', 'small business', 'enterprise development', 'business support', 'market access'],
     expansions: ['magna carta for msmes', 'enterprise development', 'credit assistance', 'business support'],
+  },
+  {
+    triggers: ['agriculture', 'farmers', 'fisherfolk', 'irrigation', 'post harvest', 'food security', 'rural credit'],
+    expansions: ['agriculture and fisheries modernization', 'farm support', 'food security', 'market access'],
+  },
+  {
+    triggers: ['organic agriculture', 'organic farming', 'organic label', 'organic certification', 'organic products'],
+    expansions: ['organic agriculture act', 'organic certification', 'traceability', 'organic labeling'],
+  },
+  {
+    triggers: ['food safety', 'food business', 'food chain', 'traceability', 'contamination', 'food recall'],
+    expansions: ['food safety act', 'food chain', 'traceability', 'recall', 'inspection'],
+  },
+  {
+    triggers: ['sagip saka', 'farmers organization', 'fisherfolk organization', 'direct purchase', 'agri enterprise'],
+    expansions: ['sagip saka act', 'farmers and fisherfolk enterprise development', 'market linkage', 'direct purchase'],
+  },
+  {
+    triggers: ['housing', 'socialized housing', 'resettlement', 'relocation', 'informal settler', 'urban poor', 'demolition'],
+    expansions: ['urban development and housing act', 'socialized housing', 'beneficiary selection', 'consultation grievance'],
+  },
+  {
+    triggers: ['dhsud', 'human settlements', 'homeowners association', 'subdivision', 'settlement planning', 'land use'],
+    expansions: ['department of human settlements and urban development', 'housing regulation', 'settlement planning', 'complaint handling'],
+  },
+  {
+    triggers: ['4ps', 'pantawid', 'cash assistance', 'conditional cash transfer', 'household grant', 'social assistance'],
+    expansions: ['pantawid pamilyang pilipino program', 'conditional cash transfer', 'beneficiary validation', 'grievance'],
+  },
+  {
+    triggers: ['solo parent', 'solo parents', 'parental leave', 'solo parent id', 'child care benefit'],
+    expansions: ['expanded solo parents welfare act', 'solo parent eligibility', 'benefit verification', 'social welfare'],
+  },
+  {
+    triggers: ['child marriage', 'minor marriage', 'underage marriage', 'solemnization of child marriage'],
+    expansions: ['prohibition of child marriage', 'age verification', 'child protection referral', 'confidentiality'],
   },
   {
     triggers: ['renewable energy', 'solar', 'wind', 'biomass', 'net metering', 'green energy'],
@@ -2564,6 +3281,51 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
     ],
   },
   {
+    id: 'mobility-land-agriculture-and-community-rights',
+    title: 'Mobility, Land, Agriculture, and Community Rights Stack',
+    triggers: [
+      'traffic ordinance',
+      'transport operator',
+      'public utility',
+      'land title',
+      'property registration',
+      'ancestral domain',
+      'fpic',
+      'agriculture support',
+      'food safety',
+      'organic agriculture',
+      'farmers organization',
+      'direct purchase',
+      'sagip saka',
+    ],
+    lawIds: [
+      'ra-4136',
+      'ra-11659',
+      'pd-1529',
+      'ra-8371',
+      'ra-8435',
+      'ra-10068',
+      'ra-10611',
+      'ra-11321',
+      'ra-7160',
+      'ra-10173',
+    ],
+    summary:
+      'Use this when a workflow touches road transport, public-service operation, land title or registry records, ancestral domains or FPIC, agricultural support, food safety, organic claims, or farmer and fisherfolk enterprise programs.',
+    sequence: [
+      'Classify the activity first: traffic enforcement, public-service operation, land or title transaction, ancestral-domain impact, farm support, food chain, organic claim, or farmer/fisherfolk enterprise.',
+      'Map the public authority, regulator, registry, affected community, beneficiary group, inspection owner, records custodian, and appeal or grievance route.',
+      'Separate LGU permits from national transport, public-service, land-registration, NCIP, agriculture, food-safety, and procurement controls.',
+      'Track evidence such as licenses, titles, survey plans, FPIC records, beneficiary lists, inspection reports, traceability logs, purchase records, and complaints.',
+    ],
+    checkpoints: [
+      'Vehicle, operator, public-service, land-title, beneficiary, food-chain, and community-consent scopes are not collapsed into generic permit language.',
+      'Land and resource projects check title or registry records, ancestral-domain or FPIC issues, environmental impacts, and affected-community safeguards where relevant.',
+      'Agriculture, food-safety, organic, and direct-purchase programs include eligibility, certification, traceability, inspection, conflict checks, and audit trail.',
+      'Transport, land, farm, and community records have privacy, retention, redaction, and authorized-disclosure controls.',
+    ],
+  },
+  {
     id: 'consumer-finance-and-commerce',
     title: 'Consumer, Financial, Commerce, AML, and Tax Stack',
     triggers: [
@@ -2668,6 +3430,54 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'Benefits or support services include accessible channels and reasonable accommodation where needed.',
       'Victim, child, health, senior, PWD, and welfare records receive stricter privacy and disclosure controls.',
       'Emergency or protection actions do not expose complainants, patients, or beneficiaries to retaliation or public disclosure.',
+    ],
+  },
+  {
+    id: 'education-housing-records-and-benefits',
+    title: 'Education, Housing, Records, and Social Benefits Stack',
+    triggers: [
+      'school records',
+      'learner records',
+      'scholarship',
+      'student aid',
+      'alternative learning',
+      'foi request',
+      'public records',
+      'records retention',
+      'socialized housing',
+      'resettlement',
+      '4ps',
+      'solo parent',
+      'child marriage',
+      'cash assistance',
+    ],
+    lawIds: [
+      'ra-10533',
+      'ra-11510',
+      'ra-10931',
+      'ra-9470',
+      'eo-2-2016',
+      'ra-7279',
+      'ra-11201',
+      'ra-11310',
+      'ra-11861',
+      'ra-11596',
+      'ra-10173',
+      'ra-11032',
+    ],
+    summary:
+      'Use this when a public-facing workflow handles education access, scholarships, learner records, FOI or archives, housing and resettlement, social assistance, solo-parent benefits, or child-protection-sensitive community services.',
+    sequence: [
+      'Classify the service first: learner support, tertiary subsidy, alternative learning, records access, housing or relocation, cash assistance, solo-parent benefit, or child-protection intake.',
+      'Map eligibility, documentary proof, responsible office, timeline, benefit limits, privacy, records retention, grievance, appeal, and audit evidence.',
+      'Separate benefit administration from public-record disclosure, child protection, school discipline, resettlement, payment handling, and ordinary customer service.',
+      'Route sensitive learner, household, child, family, financial, health, and housing records through privacy and records-management controls.',
+    ],
+    checkpoints: [
+      'Eligibility, documentary proof, receiving office, decision maker, timeline, denial reason, appeal or grievance path, and record owner are stated.',
+      'School, scholarship, ALS, housing, 4Ps, solo-parent, and child-protection records have access, redaction, retention, and authorized-disclosure controls.',
+      'FOI and archives workflows separate proactive disclosure, request handling, exceptions, redactions, denial notices, and preservation or disposal.',
+      'Housing, relocation, and benefit decisions include consultation or validation where relevant and avoid discretionary selection without evidence.',
     ],
   },
   {
@@ -3978,6 +4788,66 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(basic education|k to 12|k-12|curriculum|enrollment|learner record|school operation|student record)\b/.test(normalizedDraft)) {
+    const hasEducationEligibility = /\b(eligibility|enrollment|admission|covered learner|coverage|criteria)\b/.test(normalizedDraft)
+    const hasEducationRecords = /\b(learner record|student record|privacy|retention|access control|confidential)\b/.test(normalizedDraft)
+    const hasEducationGrievance = /\b(grievance|appeal|complaint|parent|guardian|accommodation|reasonable accommodation)\b/.test(normalizedDraft)
+
+    if (!(hasEducationEligibility && hasEducationRecords && hasEducationGrievance)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Basic-education controls need more detail',
+          'Basic-education, curriculum, enrollment, or learner-record language was detected without enough eligibility, records, accommodation, parent or guardian, grievance, or privacy controls.',
+          'Add covered learners, enrollment or admission criteria, responsible school office, learner-record access and retention, parent or guardian notification, accommodation review, and grievance or appeal route.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10533') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(scholarship|tuition|tertiary education|college grant|student aid|student loan|unifast|free tuition)\b/.test(normalizedDraft)) {
+    const hasStudentAidEligibility = /\b(eligibility|qualified|criteria|covered institution|academic standing|selection)\b/.test(normalizedDraft)
+    const hasStudentAidBenefitControls = /\b(benefit limit|tuition|school fees|subsidy|grant|loan|budget|funding)\b/.test(normalizedDraft)
+    const hasStudentAidReview = /\b(verification|appeal|grievance|denial|renewal|records|privacy)\b/.test(normalizedDraft)
+
+    if (!(hasStudentAidEligibility && hasStudentAidBenefitControls && hasStudentAidReview)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Student-aid controls are incomplete',
+          'Scholarship, tuition, student-aid, or tertiary-subsidy language was detected without enough eligibility, covered-institution, benefit-limit, verification, appeal, or record-handling controls.',
+          'Add objective eligibility, covered institutions, benefit scope and limits, documentary proof, academic or renewal rules, denial notice, appeal route, budget owner, and privacy safeguards for student records.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10931') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(alternative learning|als|out of school youth|adult learner|literacy|community learning center|learning facilitator)\b/.test(normalizedDraft)) {
+    const hasAlsIntake = /\b(intake|target learner|out of school youth|adult learner|eligibility|admission)\b/.test(normalizedDraft)
+    const hasAlsDelivery = /\b(learning plan|facilitator|community learning center|assessment|accreditation|equivalency)\b/.test(normalizedDraft)
+    const hasAlsSafeguards = /\b(referral|accessibility|grievance|records|privacy|retention)\b/.test(normalizedDraft)
+
+    if (!(hasAlsIntake && hasAlsDelivery && hasAlsSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Alternative-learning controls are incomplete',
+          'Alternative-learning, out-of-school-youth, adult-learning, or community-learning-center language was detected without clear intake, learning-plan, facilitator, assessment, referral, accessibility, or record safeguards.',
+          'Add learner intake, learning plan, facilitator role, assessment or equivalency path, referral to support services, accessibility accommodations, and learner-record privacy.',
+          5,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11510') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
   if (/\b(customs|import|export|tariff|duties|valuation|classification|broker|bonded warehouse|declaration)\b/.test(normalizedDraft)) {
     if (!/\b(customs declaration|valuation|classification|duties|taxes|permit|broker|recordkeeping|clearance|inspection|appeal)\b/.test(normalizedDraft)) {
       findings.amber.push(
@@ -4021,6 +4891,86 @@ function applyTopicSpecificDraftChecks(
           'Add purpose limitation, minimum identity fields, authentication method, alternative proof route, correction process, access controls, retention, audit logs, and privacy safeguards.',
           7,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11055') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(traffic|transport|driver license|vehicle registration|road safety|parking|traffic violation|terminal|route)\b/.test(normalizedDraft)) {
+    const hasTransportScope = /\b(vehicle|driver|operator|route|terminal|parking|road safety|regulated area)\b/.test(normalizedDraft)
+    const hasTransportEnforcement = /\b(enforcement|citation|apprehension|impound|evidence|notice|appeal|hearing)\b/.test(normalizedDraft)
+    const hasTransportRecords = /\b(record|registry|privacy|retention|access control|accident report|violation log)\b/.test(normalizedDraft)
+
+    if (!(hasTransportScope && hasTransportEnforcement && hasTransportRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Transport and traffic controls are incomplete',
+          'Traffic, transport, driver, vehicle, parking, route, terminal, or road-safety language was detected without enough scope, enforcement, evidence, appeal, record, or privacy controls.',
+          'Add covered vehicles or drivers, operator duties, enforcement authority, citation or impoundment evidence, notice and appeal, accident or violation records, privacy, and retention rules.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-4136') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(public service|public utility|franchise|certificate of public convenience|transport operator|telecom operator|critical infrastructure)\b/.test(normalizedDraft)) {
+    const hasPublicServiceAuthorization = /\b(franchise|certificate|regulator|ltfrb|ntc|authorization|license)\b/.test(normalizedDraft)
+    const hasPublicServiceUserControls = /\b(complaint|service continuity|rate|charge|disclosure|consumer|public notice)\b/.test(normalizedDraft)
+    const hasPublicServiceRecords = /\b(record|reporting|audit|privacy|retention|incident|regulatory filing)\b/.test(normalizedDraft)
+
+    if (!(hasPublicServiceAuthorization && hasPublicServiceUserControls && hasPublicServiceRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Public-service operation controls need regulator detail',
+          'Public-service, public-utility, franchise, operator, telecom, transport, or critical-infrastructure language was detected without enough regulator, certificate, continuity, complaint, reporting, or records controls.',
+          'Add service classification, franchise or certificate path, regulator coordination, user complaints, continuity, rates or charges where relevant, incident reporting, records retention, and privacy safeguards.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11659') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(land title|property registration|torrens|certificate of title|register of deeds|survey plan|encumbrance|annotation)\b/.test(normalizedDraft)) {
+    const hasTitleVerification = /\b(title verification|certificate of title|register of deeds|registry|owner|deed|survey plan)\b/.test(normalizedDraft)
+    const hasTitleRiskChecks = /\b(encumbrance|annotation|lien|adverse claim|subdivision|consolidation|easement)\b/.test(normalizedDraft)
+    const hasTitleRecords = /\b(custody|redaction|access control|retention|privacy|certified copy|audit trail)\b/.test(normalizedDraft)
+
+    if (!(hasTitleVerification && hasTitleRiskChecks && hasTitleRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Land-title verification controls are incomplete',
+          'Land-title, property-registration, Torrens, register-of-deeds, survey, annotation, or encumbrance language was detected without enough registry verification, risk checks, custody, access, or retention controls.',
+          'Add title and owner verification, survey review, register-of-deeds records, encumbrance and annotation checks, deed authority, certified copies, custody, redaction, retention, and privacy safeguards.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-1529') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(indigenous peoples|indigenous cultural communities|ancestral domain|ancestral land|fpic|free prior informed consent|ncip|customary law)\b/.test(normalizedDraft)) {
+    const hasCommunityIdentification = /\b(affected community|ancestral domain|ancestral land|community map|customary law|indigenous cultural)\b/.test(normalizedDraft)
+    const hasFpicProcess = /\b(fpic|free prior informed consent|ncip|consent process|community assembly|consultation)\b/.test(normalizedDraft)
+    const hasCulturalSafeguards = /\b(cultural|sacred|benefit sharing|grievance|confidential|records|monitoring)\b/.test(normalizedDraft)
+
+    if (!(hasCommunityIdentification && hasFpicProcess && hasCulturalSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'FPIC and indigenous-community safeguards are incomplete',
+          'Indigenous peoples, ancestral domain, ancestral land, FPIC, NCIP, or customary-law language was detected without enough community identification, consent process, cultural safeguards, grievance, or records controls.',
+          'Add ancestral-domain screening, affected-community identification, NCIP coordination, FPIC process, customary decision path, cultural and sacred-site safeguards, benefit-sharing, grievance, confidentiality, and monitoring records.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8371') || LEGAL_CORPUS[0])]
         )
       )
     }
@@ -4210,6 +5160,46 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(public records|records management|records retention|retention schedule|archives|document disposal|records custodian|government records)\b/.test(normalizedDraft)) {
+    const hasRecordsOwner = /\b(records officer|records custodian|responsible office|record owner|archives)\b/.test(normalizedDraft)
+    const hasRecordsLifecycle = /\b(retention schedule|retention period|disposal|preservation|archive|authorized destruction)\b/.test(normalizedDraft)
+    const hasRecordsAccess = /\b(access control|confidential|classification|audit trail|redaction|public access)\b/.test(normalizedDraft)
+
+    if (!(hasRecordsOwner && hasRecordsLifecycle && hasRecordsAccess)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Records-management controls are incomplete',
+          'Public-records, archives, retention, or document-disposal language was detected without enough custodian, lifecycle, access-classification, preservation, disposal, or audit controls.',
+          'Add records officer or custodian, retention schedule, active and archival classification, access controls, preservation, authorized disposal, audit trail, and privacy or FOI coordination.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9470') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(foi|freedom of information|information request|public disclosure|transparency portal|request for information|redaction)\b/.test(normalizedDraft)) {
+    const hasFoiIntake = /\b(request intake|receiving office|response time|tracking|request form)\b/.test(normalizedDraft)
+    const hasFoiExceptions = /\b(exception|exemption|redaction|privacy|confidential|security|privileged)\b/.test(normalizedDraft)
+    const hasFoiDecision = /\b(denial|appeal|reconsideration|decision|written response|release)\b/.test(normalizedDraft)
+
+    if (!(hasFoiIntake && hasFoiExceptions && hasFoiDecision)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'FOI request controls need more detail',
+          'FOI, transparency, public-disclosure, or information-request language was detected without enough intake, timeline, exception review, redaction, denial, appeal, or request-log controls.',
+          'Add receiving office, request tracking, response timeline, exception and privacy review, redaction workflow, written denial, appeal route, release record, and archives coordination.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'eo-2-2016') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
   if (/\b(senior citizen|elderly|osca|senior discount|social pension|vat exemption|senior id)\b/.test(normalizedDraft)) {
     const hasSeniorEligibility = /\b(eligibility|qualified|identification card|senior id|verification)\b/.test(normalizedDraft)
     const hasSeniorBenefitControls = /\b(discount|vat exemption|social pension|benefit|privilege)\b/.test(normalizedDraft)
@@ -4241,6 +5231,102 @@ function applyTopicSpecificDraftChecks(
           'Add accessibility standards, reasonable accommodation, alternative channels or formats, eligibility and verification, complaint process, non-discrimination, and privacy safeguards.',
           6,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7277') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(socialized housing|resettlement|relocation|informal settler|urban poor|demolition|eviction|housing beneficiary)\b/.test(normalizedDraft)) {
+    const hasHousingEligibility = /\b(eligibility|beneficiary|census|validation|qualification|household)\b/.test(normalizedDraft)
+    const hasHousingProcess = /\b(consultation|notice|relocation site|resettlement|basic services|livelihood|timetable)\b/.test(normalizedDraft)
+    const hasHousingGrievance = /\b(grievance|appeal|complaint|documentation|records|privacy)\b/.test(normalizedDraft)
+
+    if (!(hasHousingEligibility && hasHousingProcess && hasHousingGrievance)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Housing or resettlement controls are incomplete',
+          'Socialized-housing, relocation, resettlement, eviction, demolition, informal-settler, or urban-poor language was detected without enough beneficiary validation, consultation, relocation, services, grievance, or record safeguards.',
+          'Add beneficiary eligibility and census or validation, consultation, notice, relocation-site and basic-service commitments, livelihood or transition support, grievance or appeal route, and household-record privacy.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7279') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(dhsud|human settlements|subdivision|homeowners association|settlement planning|housing regulation|land use plan)\b/.test(normalizedDraft)) {
+    const hasSettlementRegulator = /\b(dhsud|housing regulator|permit|registration|responsible office)\b/.test(normalizedDraft)
+    const hasSettlementPlanning = /\b(zoning|hazard|utilities|environmental|accessibility|land use|settlement plan)\b/.test(normalizedDraft)
+    const hasSettlementRemedy = /\b(complaint|consultation|grievance|records|monitoring|appeal)\b/.test(normalizedDraft)
+
+    if (!(hasSettlementRegulator && hasSettlementPlanning && hasSettlementRemedy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Human-settlements governance needs coordination detail',
+          'DHSUD, subdivision, homeowners, settlement-planning, housing-regulation, or land-use language was detected without clear regulator, permit, complaint, hazard, utilities, environmental, or accessibility coordination.',
+          'Add DHSUD or housing-regulator coordination, LGU role, permits or registration, complaint path, hazard and utilities checks, accessibility, environmental safeguards, and records ownership.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11201') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(4ps|pantawid|conditional cash transfer|cash assistance|household grant|education grant|health grant|social assistance)\b/.test(normalizedDraft)) {
+    const hasAssistanceEligibility = /\b(eligibility|qualified|beneficiary|household|validation|criteria)\b/.test(normalizedDraft)
+    const hasAssistanceBenefit = /\b(condition|grant|payment|benefit|education|health|monitoring)\b/.test(normalizedDraft)
+    const hasAssistanceReview = /\b(grievance|appeal|delisting|denial|privacy|records|fraud)\b/.test(normalizedDraft)
+
+    if (!(hasAssistanceEligibility && hasAssistanceBenefit && hasAssistanceReview)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Social-assistance controls need eligibility and grievance detail',
+          '4Ps, cash-assistance, household-grant, or social-benefit language was detected without enough eligibility, validation, conditions, payment, monitoring, delisting, grievance, or privacy controls.',
+          'Add objective eligibility and household validation, benefit conditions and limits, payment controls, monitoring, fraud checks, delisting notice, grievance or appeal route, and privacy safeguards for household records.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11310') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(solo parent|solo parents|solo parent id|parental leave|child care benefit|solo-parent benefit)\b/.test(normalizedDraft)) {
+    if (!/\b(eligibility|documentary proof|verification|renewal|benefit|leave|subsidy|grievance|appeal|privacy)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Solo-parent benefit controls are incomplete',
+          'Solo-parent, solo-parent ID, parental-leave, child-care, subsidy, or welfare-benefit language was detected without enough eligibility, proof, verification, renewal, grievance, or privacy controls.',
+          'Add solo-parent eligibility, documentary proof, verification and renewal process, benefit scope, responsible office, grievance or appeal route, and confidentiality for family and child records.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11861') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(child marriage|minor marriage|underage marriage|solemnization|marriage facilitation|cohabitation with a minor)\b/.test(normalizedDraft)) {
+    const hasChildMarriageAgeControls = /\b(age verification|minor verification|birth certificate|age record)\b/.test(normalizedDraft)
+    const hasChildMarriageReferral = /\b(reporting|referral|social welfare|child protection|case management|law enforcement)\b/.test(normalizedDraft)
+    const hasChildMarriageConfidentiality = /\b(confidential|child identity|case record|prevention education|restricted access)\b/.test(normalizedDraft)
+
+    if (!(hasChildMarriageAgeControls && hasChildMarriageReferral && hasChildMarriageConfidentiality)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Child-marriage prevention controls are incomplete',
+          'Child-marriage, minor-marriage, solemnization, facilitation, or cohabitation language was detected without enough age-verification, prevention, reporting, referral, confidentiality, or case-management controls.',
+          'Add age verification, prevention education, reporting channel, social-welfare and child-protection referral, confidentiality, civil-registration coordination, and case records.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11596') || LEGAL_CORPUS[0])]
         )
       )
     }

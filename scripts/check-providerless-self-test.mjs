@@ -110,8 +110,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 15, 'Local corpus should include at least 15 authorities')
-  assert.ok(frameworks.length >= 10, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 60, 'Local corpus should include at least 60 authorities')
+  assert.ok(frameworks.length >= 11, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -135,6 +135,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'land-climate-coastal-and-resource-governance'),
     'Frameworks should include land, climate, coastal, and resource governance'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'education-housing-records-and-benefits'),
+    'Frameworks should include education, housing, records, and benefits'
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
@@ -182,6 +186,16 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 9729'), 'Corpus should include RA 9729')
   assert.ok(corpus.some((document) => document.statute === 'RA 8550'), 'Corpus should include RA 8550')
   assert.ok(corpus.some((document) => document.statute === 'RA 7942'), 'Corpus should include RA 7942')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10533'), 'Corpus should include RA 10533')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10931'), 'Corpus should include RA 10931')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7279'), 'Corpus should include RA 7279')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11201'), 'Corpus should include RA 11201')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9470'), 'Corpus should include RA 9470')
+  assert.ok(corpus.some((document) => document.statute === 'EO 2, s. 2016'), 'Corpus should include EO 2, s. 2016')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11310'), 'Corpus should include RA 11310')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11861'), 'Corpus should include RA 11861')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11596'), 'Corpus should include RA 11596')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11510'), 'Corpus should include RA 11510')
 
   assertResearchMatch(
     runLocalResearch(
@@ -391,6 +405,69 @@ try {
     ),
     'RA 10627',
     'anti-bullying query'
+  )
+
+  const educationBenefitsFrameworkResponse = runLocalResearch(
+    {
+      query: 'What learner records, scholarship, alternative learning, FOI, housing, 4Ps, and solo parent safeguards should an LGU service desk check?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(educationBenefitsFrameworkResponse, 'RA 10533', 'education benefits framework basic education query')
+  assertResearchMatch(educationBenefitsFrameworkResponse, 'RA 10931', 'education benefits framework tertiary query')
+  assertResearchMatch(educationBenefitsFrameworkResponse, 'RA 11510', 'education benefits framework ALS query')
+  assertResearchMatch(educationBenefitsFrameworkResponse, 'RA 11310', 'education benefits framework 4Ps query')
+  assertIncludes(
+    educationBenefitsFrameworkResponse.summary,
+    'Education, Housing, Records, and Social Benefits Stack',
+    'Education benefits framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 9470 require for records management, archives, retention schedules, and document disposal?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9470',
+    'records management query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What should an FOI request and records retention policy include for public records and redaction?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'EO 2, s. 2016',
+    'FOI request query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What controls apply to socialized housing, resettlement, relocation, and informal settler beneficiary validation?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7279',
+    'urban housing query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What DHSUD and homeowners association safeguards apply to subdivision and human settlements planning?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11201',
+    'DHSUD housing query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What age verification and child protection referral controls apply to child marriage prevention?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11596',
+    'child marriage query'
   )
 
   assertResearchMatch(
@@ -1385,6 +1462,45 @@ This ordinance takes effect 30 days after publication.`
   assertFinding(thinResourceDraftResponse, 'amber', 'Renewable-energy project')
   assertFinding(thinResourceDraftResponse, 'amber', 'Fisheries controls')
   assertFinding(thinResourceDraftResponse, 'amber', 'Mining or quarry controls')
+
+  const thinCivicServicesDraft = `# Civic Services Desk Policy
+
+## Purpose
+This policy handles basic education enrollment, scholarship assistance, alternative learning, public records, FOI requests, socialized housing, DHSUD coordination, 4Ps cash assistance, solo parent benefits, and child marriage prevention.
+
+## Legal Basis
+Pursuant to RA 10533, RA 10931, RA 11510, RA 9470, EO 2 s. 2016, RA 7279, RA 11201, RA 11310, RA 11861, and RA 11596.
+
+## Scope
+This applies to residents seeking public assistance.
+
+## Responsible Office
+The civic services desk shall implement this policy.
+
+## Requirements
+Residents shall submit documents when requested.
+
+## Monitoring
+The desk shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinCivicServicesDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinCivicServicesDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinCivicServicesDraftResponse.status, 'success', 'Civic services draft check should succeed locally')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Basic-education controls')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Student-aid controls')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Alternative-learning controls')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Records-management controls')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'FOI request controls')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Housing or resettlement controls')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Human-settlements governance')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Social-assistance controls')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Solo-parent benefit controls')
+  assertFinding(thinCivicServicesDraftResponse, 'amber', 'Child-marriage prevention')
 
   const strongerDraft = `# Solid Waste Segregation Ordinance
 
