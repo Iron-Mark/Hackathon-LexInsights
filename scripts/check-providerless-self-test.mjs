@@ -110,8 +110,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 74, 'Local corpus should include at least 74 authorities')
-  assert.ok(frameworks.length >= 12, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 87, 'Local corpus should include at least 87 authorities')
+  assert.ok(frameworks.length >= 14, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -147,6 +147,14 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'public-accountability-and-government-funds'),
     'Frameworks should include public accountability and government funds'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'employee-benefits-and-social-insurance'),
+    'Frameworks should include employee benefits and social insurance'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'payments-credit-evidence-and-dispute-resolution'),
+    'Frameworks should include payments, credit, evidence, and dispute resolution'
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
@@ -218,6 +226,19 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 7080'), 'Corpus should include RA 7080')
   assert.ok(corpus.some((document) => document.statute === 'RA 10149'), 'Corpus should include RA 10149')
   assert.ok(corpus.some((document) => document.statute === 'RA 6758'), 'Corpus should include RA 6758')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11199'), 'Corpus should include RA 11199')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8291'), 'Corpus should include RA 8291')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9679'), 'Corpus should include RA 9679')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11210'), 'Corpus should include RA 11210')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8187'), 'Corpus should include RA 8187')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10361'), 'Corpus should include RA 10361')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10606'), 'Corpus should include RA 10606')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8484'), 'Corpus should include RA 8484')
+  assert.ok(corpus.some((document) => document.statute === 'RA 4200'), 'Corpus should include RA 4200')
+  assert.ok(corpus.some((document) => document.statute === 'BP 22'), 'Corpus should include BP 22')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9285'), 'Corpus should include RA 9285')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10142'), 'Corpus should include RA 10142')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9510'), 'Corpus should include RA 9510')
 
   assertResearchMatch(
     runLocalResearch(
@@ -364,6 +385,86 @@ try {
     'public compensation query'
   )
 
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What SSS employer contribution, member registration, sickness benefit, and retirement benefit controls should private payroll include?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11199',
+    'SSS social security query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What GSIS service record, government employee retirement, separation benefit, and survivorship controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8291',
+    'GSIS benefits query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Pag-IBIG HDMF contribution, member savings, remittance, and housing loan eligibility controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9679',
+    'Pag-IBIG query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What 105-day maternity leave, miscarriage, solo parent extension, and non-discrimination controls apply to women workers?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11210',
+    'maternity leave query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What paternity leave controls apply for spouse childbirth, miscarriage, seven days of leave, notice, and paid leave?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8187',
+    'paternity leave query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What kasambahay domestic worker contract, minimum wage, rest day, SSS, PhilHealth, and Pag-IBIG controls apply to household employers?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10361',
+    'kasambahay query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What PhilHealth national health insurance premium contribution, employer remittance, dependent coverage, and benefit claim controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10606',
+    'PhilHealth insurance query'
+  )
+
+  const employeeBenefitsFrameworkResponse = runLocalResearch(
+    {
+      query: 'What employee benefits, SSS, GSIS, Pag-IBIG, PhilHealth, maternity leave, paternity leave, and kasambahay controls should payroll and HR check?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(employeeBenefitsFrameworkResponse, 'RA 11199', 'employee benefits framework SSS query')
+  assertResearchMatch(employeeBenefitsFrameworkResponse, 'RA 10606', 'employee benefits framework PhilHealth query')
+  assertResearchMatch(employeeBenefitsFrameworkResponse, 'RA 10361', 'employee benefits framework kasambahay query')
+  assertIncludes(
+    employeeBenefitsFrameworkResponse.summary,
+    'Employee Benefits, Leave, and Social Insurance Stack',
+    'Employee benefits framework title'
+  )
+
   const publicAccountabilityFrameworkResponse = runLocalResearch(
     {
       query: 'What public accountability checks apply to a local cash aid program with supplier selection, conflict of interest, COA liquidation, public funds, gifts, and honoraria?',
@@ -432,6 +533,77 @@ try {
     ),
     'RA 11765',
     'financial consumer query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What access device and credit card fraud controls apply to unauthorized transactions, cardholder data, and skimming evidence?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8484',
+    'access device fraud query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What anti-wiretapping safeguards apply to recorded conversations, phone call recording, interception, consent, and evidence custody?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 4200',
+    'anti-wiretapping query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What BP 22 controls apply to bouncing checks, dishonored checks, insufficient funds, notice of dishonor, and payment demand?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'BP 22',
+    'bouncing checks query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What ADR arbitration, mediation, neutral selection, confidentiality, and settlement agreement controls apply to supplier disputes?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9285',
+    'ADR query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What financial rehabilitation, insolvency, liquidation, creditor claims, stay order, and restructuring controls apply to a distressed business?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10142',
+    'financial rehabilitation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What credit information, credit report, credit score, borrower data, CIC, correction, and authorized access controls apply to lending?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9510',
+    'credit information query'
+  )
+
+  const paymentsCreditEvidenceFrameworkResponse = runLocalResearch(
+    {
+      query: 'What controls apply to payment fraud, access devices, recorded conversations, bouncing checks, credit reports, insolvency, mediation, and arbitration evidence?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(paymentsCreditEvidenceFrameworkResponse, 'RA 8484', 'payments framework access device query')
+  assertResearchMatch(paymentsCreditEvidenceFrameworkResponse, 'RA 4200', 'payments framework recording query')
+  assertResearchMatch(paymentsCreditEvidenceFrameworkResponse, 'RA 9285', 'payments framework ADR query')
+  assertIncludes(
+    paymentsCreditEvidenceFrameworkResponse.summary,
+    'Payments, Credit, Evidence, and Dispute Resolution Stack',
+    'Payments credit evidence framework title'
   )
 
   assertResearchMatch(
@@ -1027,6 +1199,77 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'High-value corruption risk')
   assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'GOCC governance')
   assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'Public-sector compensation')
+
+  const thinEmployeeBenefitsDraft = `# Employee Benefits and Household Worker Policy
+
+## Purpose
+This policy covers SSS, social security, employer contribution, GSIS service record, Pag-IBIG housing loan, PhilHealth premium contribution, maternity leave, paternity leave, kasambahay, domestic workers, household employers, and benefit claims.
+
+## Legal Basis
+Pursuant to RA 11199, RA 8291, RA 9679, RA 10606, RA 11210, RA 8187, and RA 10361.
+
+## Scope
+This applies to private employees, government employees, household workers, and benefit claimants.
+
+## Responsible Office
+The human resources office shall implement this policy.
+
+## Requirements
+Workers shall submit employment, payroll, leave, health, and household work records when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinEmployeeBenefitsDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinEmployeeBenefitsDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinEmployeeBenefitsDraftResponse.status, 'success', 'Employee benefits draft check should succeed locally')
+  assertFinding(thinEmployeeBenefitsDraftResponse, 'amber', 'SSS social-security')
+  assertFinding(thinEmployeeBenefitsDraftResponse, 'amber', 'GSIS benefit')
+  assertFinding(thinEmployeeBenefitsDraftResponse, 'amber', 'Pag-IBIG contribution')
+  assertFinding(thinEmployeeBenefitsDraftResponse, 'amber', 'Maternity leave')
+  assertFinding(thinEmployeeBenefitsDraftResponse, 'amber', 'Paternity leave')
+  assertFinding(thinEmployeeBenefitsDraftResponse, 'amber', 'Kasambahay employment')
+  assertFinding(thinEmployeeBenefitsDraftResponse, 'amber', 'PhilHealth insurance')
+
+  const thinPaymentsCreditEvidenceDraft = `# Payment, Credit, Recording, and Dispute Policy
+
+## Purpose
+This policy covers access device fraud, credit card and debit card unauthorized transactions, cardholder account number handling, wiretapping and recorded conversation evidence, bouncing check and dishonored check collection, ADR mediation and arbitration, insolvency and financial rehabilitation, credit report and credit score use, borrower data, and credit information correction.
+
+## Legal Basis
+Pursuant to RA 8484, RA 4200, BP 22, RA 9285, RA 10142, and RA 9510.
+
+## Scope
+This applies to customers, borrowers, merchants, cardholders, creditors, debtors, and dispute parties.
+
+## Responsible Office
+The compliance office shall implement this policy.
+
+## Requirements
+Covered persons shall submit payment, recording, check, dispute, credit, and financial records when requested.
+
+## Monitoring
+The compliance office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinPaymentsCreditEvidenceDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinPaymentsCreditEvidenceDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinPaymentsCreditEvidenceDraftResponse.status, 'success', 'Payments credit evidence draft check should succeed locally')
+  assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'Access-device fraud')
+  assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'Recording and wiretapping')
+  assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'Bouncing-check collection')
+  assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'ADR process')
+  assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'Rehabilitation and insolvency')
+  assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'Credit-information')
 
   const thinMobilityLandAgriDraft = `# Mobility, Land, and Farm Support Program
 

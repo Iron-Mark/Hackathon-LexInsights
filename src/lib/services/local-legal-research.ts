@@ -3046,6 +3046,494 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'Compensation, contractor payments, and beneficiary grants are mixed without classification.',
     ],
   },
+  {
+    id: 'ra-11199',
+    statute: 'RA 11199',
+    title: 'Republic Act No. 11199',
+    shortTitle: 'Social Security Act of 2018',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11199_2019.html',
+    aliases: ['ra 11199', 'republic act 11199', 'social security act of 2018', 'social security law', 'sss law'],
+    topics: ['social security', 'sss', 'employee benefits', 'employer contributions', 'retirement benefits'],
+    keywords: [
+      'sss',
+      'social security',
+      'employer contribution',
+      'employee contribution',
+      'member registration',
+      'premium remittance',
+      'sickness benefit',
+      'disability benefit',
+      'retirement benefit',
+      'death benefit',
+      'self employed',
+      'household employer',
+      'delinquent contribution',
+    ],
+    summary:
+      'A social-security framework for private-sector and covered members, including compulsory coverage, employer and employee contributions, remittance, member records, benefits, claims, and enforcement for delinquency.',
+    obligations: [
+      'For private employment, contractor-heavy staffing, household employer, payroll, benefits, or member-service workflows, identify covered members, employer duties, contribution and remittance timing, benefit claim path, and record owner.',
+      'Separate SSS registration, contribution collection, payroll deduction, benefit eligibility, claims, dispute handling, and privacy of member records.',
+      'Protect payroll, employment, contribution, claim, medical, disability, retirement, death-benefit, and dependent records with access, retention, and disclosure controls.',
+      'Avoid vague benefit promises without member classification, contribution basis, remittance accountability, proof requirements, and escalation route for unpaid or disputed contributions.',
+    ],
+    commonGaps: [
+      'Policies mention employee benefits but omit SSS registration, contribution basis, remittance deadline, or delinquency handling.',
+      'Sickness, disability, retirement, or death-benefit claims are not tied to documentary proof and accountable office ownership.',
+      'Payroll and member records lack privacy, retention, and audit controls.',
+    ],
+  },
+  {
+    id: 'ra-8291',
+    statute: 'RA 8291',
+    title: 'Republic Act No. 8291',
+    shortTitle: 'Government Service Insurance System Act of 1997',
+    year: 1997,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1997/ra_8291_1997.html',
+    aliases: ['ra 8291', 'republic act 8291', 'gsis act', 'government service insurance system act', 'gsis law'],
+    topics: ['gsis', 'government employee insurance', 'retirement', 'separation benefits', 'public personnel benefits'],
+    keywords: [
+      'gsis',
+      'government service insurance',
+      'government employee',
+      'compulsory life insurance',
+      'service record',
+      'retirement',
+      'separation benefit',
+      'disability benefit',
+      'survivorship benefit',
+      'premium contribution',
+      'member record',
+    ],
+    summary:
+      'A government-employee insurance framework covering GSIS membership, premium contributions, life insurance, retirement, separation, disability, survivorship, service records, and benefit claims.',
+    obligations: [
+      'For government personnel, appointment, payroll, retirement, separation, disability, survivorship, or service-record workflows, state GSIS membership, contribution, service-credit, claim, and records custody controls.',
+      'Separate GSIS benefits from SSS, public compensation, payroll, HR discipline, retirement processing, and privacy controls.',
+      'Protect service records, payroll, contribution, insurance, medical, disability, retirement, and survivor-claim files with access, retention, and authorized-disclosure rules.',
+      'Avoid processing benefit or separation claims without service-record verification, accountable HR office, documentary proof, timeline, and appeal or correction path.',
+    ],
+    commonGaps: [
+      'Government employee benefit policies omit GSIS membership, premium, service-record, and claim-verification controls.',
+      'Retirement, separation, disability, and survivorship claims lack documentary proof and correction process.',
+      'Sensitive HR, payroll, and beneficiary records are not assigned to a custodian with retention and access rules.',
+    ],
+  },
+  {
+    id: 'ra-9679',
+    statute: 'RA 9679',
+    title: 'Republic Act No. 9679',
+    shortTitle: 'Home Development Mutual Fund Law of 2009',
+    year: 2009,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2009/ra_9679_2009.html',
+    aliases: ['ra 9679', 'republic act 9679', 'home development mutual fund law', 'pag ibig law', 'hdmf law'],
+    topics: ['pag-ibig', 'housing savings', 'employee benefits', 'employer contributions', 'housing loans'],
+    keywords: [
+      'pag ibig',
+      'pag-ibig',
+      'home development mutual fund',
+      'hdmf',
+      'housing loan',
+      'member savings',
+      'employee contribution',
+      'employer contribution',
+      'membership',
+      'remittance',
+      'provident benefit',
+    ],
+    summary:
+      'A mandatory savings and housing-finance framework for Pag-IBIG/HDMF membership, employer and employee contributions, member savings, housing loans, provident benefits, and remittance records.',
+    obligations: [
+      'For payroll, housing-loan assistance, employee benefits, or member savings workflows, identify covered members, contribution basis, employer remittance, loan or benefit criteria, and documentary proof.',
+      'Separate Pag-IBIG membership and savings from SSS, PhilHealth, GSIS, payroll, housing program selection, and privacy controls.',
+      'Protect payroll, contribution, housing-loan, savings, employer remittance, dependent, and financial records with access, retention, and authorized disclosure.',
+      'Avoid housing or savings benefit workflows without eligibility, contribution history, loan criteria, proof requirements, records custody, and complaint or correction path.',
+    ],
+    commonGaps: [
+      'Payroll policies list Pag-IBIG but omit membership, contribution, remittance, or records ownership.',
+      'Housing assistance or loan references lack eligibility, contribution history, documentary proof, and complaint route.',
+      'Member savings and housing-loan records lack privacy and retention controls.',
+    ],
+  },
+  {
+    id: 'ra-11210',
+    statute: 'RA 11210',
+    title: 'Republic Act No. 11210',
+    shortTitle: '105-Day Expanded Maternity Leave Law',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11210_2019.html',
+    aliases: ['ra 11210', 'republic act 11210', 'expanded maternity leave law', '105-day maternity leave', 'maternity leave law'],
+    topics: ['maternity leave', 'employee benefits', 'women workers', 'parental leave', 'workplace benefits'],
+    keywords: [
+      'maternity leave',
+      '105 day',
+      'expanded maternity',
+      'women worker',
+      'childbirth',
+      'miscarriage',
+      'emergency termination of pregnancy',
+      'solo parent extension',
+      'leave allocation',
+      'non discrimination',
+      'postnatal care',
+    ],
+    summary:
+      'A maternity-leave framework for covered women workers, including 105-day leave benefits, additional leave options, solo-parent extension, allocation, benefit processing, and non-discrimination safeguards.',
+    obligations: [
+      'For HR, payroll, leave, pregnancy, childbirth, miscarriage, or return-to-work workflows, state eligibility, notice, benefit computation, leave period, optional allocation, extension, and non-discrimination controls.',
+      'Separate maternity leave from sick leave, paternity leave, solo-parent benefits, SSS benefit processing, workplace accommodation, and privacy of health records.',
+      'Protect pregnancy, childbirth, medical, benefit, payroll, and leave records with confidentiality, minimum access, retention, and authorized-disclosure rules.',
+      'Avoid leave policies that require excessive proof, penalize pregnancy, ignore benefit payment, or omit return-to-work and grievance safeguards.',
+    ],
+    commonGaps: [
+      'Leave policies mention maternity but omit 105-day entitlement, extension, allocation, benefit payment, or return-to-work protection.',
+      'Miscarriage or emergency termination cases are not covered in the leave workflow.',
+      'Pregnancy and medical records lack confidentiality, retention, and restricted-access rules.',
+    ],
+  },
+  {
+    id: 'ra-8187',
+    statute: 'RA 8187',
+    title: 'Republic Act No. 8187',
+    shortTitle: 'Paternity Leave Act of 1996',
+    year: 1996,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1996/ra_8187_1996.html',
+    aliases: ['ra 8187', 'republic act 8187', 'paternity leave act', 'paternity leave law'],
+    topics: ['paternity leave', 'employee benefits', 'family leave', 'workplace benefits'],
+    keywords: [
+      'paternity leave',
+      'seven days',
+      'married male employee',
+      'lawful spouse',
+      'childbirth',
+      'miscarriage',
+      'leave benefit',
+      'notice',
+      'family support',
+    ],
+    summary:
+      'A paternity-leave framework for eligible married male employees, covering leave entitlement around childbirth or miscarriage, notice, documentation, benefit processing, and records.',
+    obligations: [
+      'For HR, payroll, leave, childbirth, or miscarriage workflows, state eligibility, notice timing, proof requirements, leave period, pay or benefit treatment, and record owner.',
+      'Separate paternity leave from maternity leave, solo-parent benefits, sick leave, family emergency leave, and privacy of family or medical records.',
+      'Protect spouse, childbirth, miscarriage, leave, payroll, and benefit records with confidentiality, retention, and access controls.',
+      'Avoid discretionary approval rules without eligibility, notice, documentation, decision timeline, denial reason, and grievance path.',
+    ],
+    commonGaps: [
+      'Paternity leave is listed but eligibility, notice, proof, paid-leave treatment, and records are not specified.',
+      'Childbirth and miscarriage cases are not both handled.',
+      'Family and medical leave records lack confidentiality and retention controls.',
+    ],
+  },
+  {
+    id: 'ra-10361',
+    statute: 'RA 10361',
+    title: 'Republic Act No. 10361',
+    shortTitle: 'Domestic Workers Act or Batas Kasambahay',
+    year: 2013,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2013/ra_10361_2013.html',
+    aliases: ['ra 10361', 'republic act 10361', 'domestic workers act', 'batas kasambahay', 'kasambahay law'],
+    topics: ['kasambahay', 'domestic workers', 'household employment', 'labor standards', 'social benefits'],
+    keywords: [
+      'kasambahay',
+      'domestic worker',
+      'household helper',
+      'household employer',
+      'employment contract',
+      'minimum wage',
+      'rest day',
+      'service incentive leave',
+      'sss',
+      'philhealth',
+      'pag ibig',
+      'board lodging',
+      'termination',
+    ],
+    summary:
+      'A domestic-work framework covering written employment terms, minimum wage, rest periods, benefits, social protection, household employer duties, termination, and complaint handling for kasambahay arrangements.',
+    obligations: [
+      'For household employment, domestic worker, caretaker, driver, cook, helper, or live-in service workflows, state written contract terms, wage, rest day, leave, social benefits, humane treatment, and complaint route.',
+      'Separate kasambahay protections from ordinary private employment, contractor service, family support, SSS, PhilHealth, Pag-IBIG, child protection, and privacy controls.',
+      'Protect contract, wage, social-benefit, identity, residence, health, complaint, and termination records with privacy, retention, and authorized-disclosure rules.',
+      'Avoid informal household-worker arrangements without written terms, wage and rest safeguards, social-benefit registration, termination standards, and local dispute or complaint support.',
+    ],
+    commonGaps: [
+      'Household worker policies omit written contract, wage, rest day, benefit registration, or termination rules.',
+      'Kasambahay arrangements are misclassified as casual help without social protection and complaint channels.',
+      'Identity, residence, health, and wage records lack confidentiality and retention safeguards.',
+    ],
+  },
+  {
+    id: 'ra-10606',
+    statute: 'RA 10606',
+    title: 'Republic Act No. 10606',
+    shortTitle: 'National Health Insurance Act of 2013',
+    year: 2013,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2013/ra_10606_2013.html',
+    aliases: ['ra 10606', 'republic act 10606', 'national health insurance act of 2013', 'philhealth law', 'national health insurance law'],
+    topics: ['philhealth', 'national health insurance', 'employee benefits', 'premium contributions', 'health benefits'],
+    keywords: [
+      'philhealth',
+      'national health insurance',
+      'premium contribution',
+      'employer remittance',
+      'member registration',
+      'dependent',
+      'health insurance',
+      'benefit claim',
+      'health care provider',
+      'indigent member',
+      'sponsored member',
+    ],
+    summary:
+      'A national health-insurance framework covering PhilHealth membership, premium contributions, employer remittance, dependent coverage, benefit claims, provider coordination, and member records.',
+    obligations: [
+      'For payroll, employee benefits, health-benefit, member registration, dependent coverage, or provider-referral workflows, state membership, premium contribution, remittance, eligibility, claim, and record controls.',
+      'Separate PhilHealth premium and benefit processes from SSS, GSIS, Pag-IBIG, universal health service delivery, payroll, and privacy controls.',
+      'Protect health insurance, contribution, dependent, claim, diagnosis, provider, and benefit records with confidentiality, access, retention, and authorized-disclosure rules.',
+      'Avoid health-benefit workflows without member classification, premium responsibility, remittance records, claim documentation, complaint path, and privacy safeguards.',
+    ],
+    commonGaps: [
+      'PhilHealth is mentioned but membership, premium contribution, employer remittance, and claim responsibilities are not assigned.',
+      'Dependent or benefit claims lack documentary proof, privacy controls, and correction process.',
+      'Health insurance records are mixed with ordinary HR files without access and retention safeguards.',
+    ],
+  },
+  {
+    id: 'ra-8484',
+    statute: 'RA 8484',
+    title: 'Republic Act No. 8484',
+    shortTitle: 'Access Devices Regulation Act of 1998',
+    year: 1998,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1998/ra_8484_1998.html',
+    aliases: ['ra 8484', 'republic act 8484', 'access devices regulation act', 'access device law', 'credit card fraud law'],
+    topics: ['access devices', 'payment fraud', 'credit cards', 'electronic transactions', 'financial evidence'],
+    keywords: [
+      'access device',
+      'credit card',
+      'debit card',
+      'atm card',
+      'cardholder',
+      'account number',
+      'unauthorized transaction',
+      'counterfeit card',
+      'skimming',
+      'payment fraud',
+      'transaction record',
+      'issuer',
+    ],
+    summary:
+      'A payment-access-device framework covering credit cards, debit cards, account numbers, cardholder data, counterfeit or unauthorized access devices, fraudulent transactions, issuer records, and payment-fraud evidence.',
+    obligations: [
+      'For card payments, online checkout, wallet-linked cards, merchant processing, account-number handling, or fraud reports, state authorization, authentication, transaction logging, dispute intake, evidence preservation, and issuer or provider coordination.',
+      'Separate access-device fraud from cybercrime, AML, financial consumer protection, data privacy, bank secrecy, and ordinary payment collection.',
+      'Protect cardholder, account-number, transaction, dispute, device, identity, and evidence records with restricted access, retention, redaction, and authorized-disclosure controls.',
+      'Avoid storing or exposing payment credentials without purpose limitation, security controls, fraud monitoring, complaint route, and evidence custody.',
+    ],
+    commonGaps: [
+      'Payment policies mention fraud but omit access-device scope, issuer coordination, transaction logs, and evidence preservation.',
+      'Cardholder and account-number records are handled like ordinary customer data without stricter access and redaction.',
+      'Unauthorized transaction disputes lack intake, investigation, recordkeeping, and escalation timelines.',
+    ],
+  },
+  {
+    id: 'ra-4200',
+    statute: 'RA 4200',
+    title: 'Republic Act No. 4200',
+    shortTitle: 'Anti-Wiretapping Law',
+    year: 1965,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1965/ra_4200_1965.html',
+    aliases: ['ra 4200', 'republic act 4200', 'anti wiretapping law', 'anti-wiretapping act', 'wiretapping law'],
+    topics: ['wiretapping', 'communications privacy', 'recordings', 'surveillance', 'evidence handling'],
+    keywords: [
+      'wiretapping',
+      'wire tap',
+      'recorded conversation',
+      'phone call recording',
+      'oral communication',
+      'interception',
+      'secret recording',
+      'surveillance',
+      'consent',
+      'communications privacy',
+      'recording device',
+      'evidence custody',
+    ],
+    summary:
+      'A communications-privacy framework addressing interception or recording of private communications, consent or lawful authority, restricted use, evidence custody, and protection against unauthorized wiretapping.',
+    obligations: [
+      'For call recording, meeting recording, surveillance, complaint evidence, monitoring, or hotline workflows, state consent or lawful authority, covered communications, recording purpose, access limits, custody, retention, and deletion.',
+      'Separate wiretapping and communications interception from CCTV, private-image abuse, cybercrime, data privacy, labor monitoring, and ordinary minutes-taking.',
+      'Protect recordings, transcripts, call metadata, complainant files, witness records, and device logs with confidentiality, role-based access, chain-of-custody, and authorized-disclosure rules.',
+      'Avoid covert recording or monitoring without legal review, consent or authority, minimization, notice where required, and evidence-handling controls.',
+    ],
+    commonGaps: [
+      'Hotline or investigation policies allow recording without consent, legal basis, retention, or access limits.',
+      'Audio, call logs, or transcripts are shared broadly without chain-of-custody and confidentiality rules.',
+      'Surveillance, CCTV, wiretapping, and evidence collection are mixed together without different safeguards.',
+    ],
+  },
+  {
+    id: 'bp-22',
+    statute: 'BP 22',
+    title: 'Batas Pambansa Blg. 22',
+    shortTitle: 'Bouncing Checks Law',
+    year: 1979,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/bataspam/bp1979/bp_22_1979.html',
+    aliases: ['bp 22', 'batas pambansa blg 22', 'bouncing checks law', 'bouncing check law', 'dishonored check law'],
+    topics: ['bouncing checks', 'payment collection', 'commercial transactions', 'financial evidence', 'debt disputes'],
+    keywords: [
+      'bouncing check',
+      'dishonored check',
+      'insufficient funds',
+      'closed account',
+      'postdated check',
+      'notice of dishonor',
+      'drawer',
+      'payee',
+      'bank notice',
+      'payment demand',
+      'check evidence',
+      'settlement',
+    ],
+    summary:
+      'A commercial-payment framework for checks dishonored due to insufficient funds or account issues, with emphasis on drawer/payee records, notice of dishonor, payment demand, evidence, and dispute handling.',
+    obligations: [
+      'For check payments, deposits, guarantees, collections, settlement, or payment-default workflows, state check custody, bank notice, notice of dishonor, payment or cure route, dispute intake, and evidence preservation.',
+      'Separate BP 22 concerns from ordinary debt collection, estafa, consumer complaints, AML, bank secrecy, and civil settlement.',
+      'Protect checks, bank notices, demand letters, receipts, settlement records, debtor or payee data, and dispute files with access, retention, and authorized-disclosure rules.',
+      'Avoid punitive or public-shaming collection steps without notice, documentation, lawful escalation, settlement option, and privacy safeguards.',
+    ],
+    commonGaps: [
+      'Collection workflows mention bounced checks but omit bank notice, notice of dishonor, evidence custody, or payment/cure route.',
+      'Check, bank, and debtor records are not protected from unnecessary disclosure.',
+      'Debt collection, criminal escalation, and settlement are mixed without clear owner or due-process safeguards.',
+    ],
+  },
+  {
+    id: 'ra-9285',
+    statute: 'RA 9285',
+    title: 'Republic Act No. 9285',
+    shortTitle: 'Alternative Dispute Resolution Act of 2004',
+    year: 2004,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2004/ra_9285_2004.html',
+    aliases: ['ra 9285', 'republic act 9285', 'alternative dispute resolution act', 'adr act', 'arbitration law', 'mediation law'],
+    topics: ['alternative dispute resolution', 'arbitration', 'mediation', 'conciliation', 'commercial disputes'],
+    keywords: [
+      'alternative dispute resolution',
+      'adr',
+      'arbitration',
+      'mediation',
+      'conciliation',
+      'neutral',
+      'arbitral award',
+      'settlement agreement',
+      'confidentiality',
+      'dispute resolution',
+      'commercial dispute',
+    ],
+    summary:
+      'A dispute-resolution framework supporting arbitration, mediation, conciliation, confidentiality, neutral selection, settlement agreements, arbitral awards, and coordination with court or administrative remedies where needed.',
+    obligations: [
+      'For contract, consumer, employment-adjacent, supplier, community, platform, or commercial dispute workflows, state whether ADR is voluntary or required by agreement, neutral selection, confidentiality, timelines, records, and escalation.',
+      'Separate ADR from court litigation, administrative complaints, criminal referral, labor cases, VAWC/child-protection risks, and ordinary customer support.',
+      'Protect mediation statements, settlement offers, documents, party identities, awards, and dispute records with confidentiality, role-based access, and retention controls.',
+      'Avoid mediation where safety, coercion, criminal conduct, child protection, VAWC, or non-waivable rights require direct referral or formal process.',
+    ],
+    commonGaps: [
+      'Dispute policies mention mediation but omit consent, neutral selection, confidentiality, timeline, and enforceability.',
+      'ADR is used for sensitive cases where safety or legal referral should override informal settlement.',
+      'Settlement records and mediation communications lack confidentiality and retention controls.',
+    ],
+  },
+  {
+    id: 'ra-10142',
+    statute: 'RA 10142',
+    title: 'Republic Act No. 10142',
+    shortTitle: 'Financial Rehabilitation and Insolvency Act of 2010',
+    year: 2010,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2010/ra_10142_2010.html',
+    aliases: ['ra 10142', 'republic act 10142', 'financial rehabilitation and insolvency act', 'fria', 'insolvency law'],
+    topics: ['insolvency', 'financial rehabilitation', 'creditor claims', 'liquidation', 'business distress'],
+    keywords: [
+      'financial rehabilitation',
+      'insolvency',
+      'liquidation',
+      'debtor',
+      'creditor',
+      'stay order',
+      'rehabilitation plan',
+      'claims',
+      'assets',
+      'receiver',
+      'restructuring',
+      'corporate debtor',
+    ],
+    summary:
+      'A financial-distress framework for rehabilitation, insolvency, liquidation, creditor claims, stay orders, asset inventories, receivership, restructuring plans, and court-supervised debtor-creditor processes.',
+    obligations: [
+      'For distressed businesses, unpaid creditors, restructuring, liquidation, asset disposal, or claims handling, state process owner, court or legal route, creditor notice, asset inventory, claim verification, records custody, and privacy.',
+      'Separate FRIA rehabilitation and insolvency from ordinary collections, BP 22, AML, consumer disputes, procurement blacklisting, and corporate governance.',
+      'Protect creditor lists, debtor records, financial statements, claim proofs, asset inventories, employee records, and restructuring plans with confidentiality, retention, and authorized disclosure.',
+      'Avoid ad hoc asset transfers, selective creditor payments, or informal restructuring without legal review, notice, claim registry, and audit trail.',
+    ],
+    commonGaps: [
+      'Restructuring policies omit creditor notice, claim verification, asset inventory, and court/legal process route.',
+      'Liquidation or asset disposal can proceed without audit trail and authority checks.',
+      'Financial distress records are not protected despite containing creditor, employee, bank, and commercial data.',
+    ],
+  },
+  {
+    id: 'ra-9510',
+    statute: 'RA 9510',
+    title: 'Republic Act No. 9510',
+    shortTitle: 'Credit Information System Act',
+    year: 2008,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2008/ra_9510_2008.html',
+    aliases: ['ra 9510', 'republic act 9510', 'credit information system act', 'credit information law', 'credit reporting law'],
+    topics: ['credit information', 'credit reporting', 'borrower data', 'financial records', 'data privacy'],
+    keywords: [
+      'credit information',
+      'credit report',
+      'credit bureau',
+      'credit score',
+      'credit information corporation',
+      'cic',
+      'borrower data',
+      'basic credit data',
+      'positive credit information',
+      'negative credit information',
+      'correction',
+      'authorized access',
+    ],
+    summary:
+      'A credit-information framework covering submission, access, use, correction, confidentiality, and security of borrower and credit records handled by credit information systems and authorized users.',
+    obligations: [
+      'For lending, credit scoring, borrower screening, credit reports, risk scoring, or financial onboarding, state legal basis, notice, authorized users, data fields, correction process, security, retention, and disclosure limits.',
+      'Separate credit-information processing from bank secrecy, data privacy, financial consumer protection, AML KYC, and ordinary customer profiling.',
+      'Protect borrower identity, credit history, repayment, score, adverse action, correction, and access logs with security, privacy, retention, and audit controls.',
+      'Avoid using credit data for unrelated purposes, informal sharing, opaque denial decisions, or scoring without correction and complaint routes.',
+    ],
+    commonGaps: [
+      'Credit workflows collect or share borrower data without notice, authorized-user rules, correction path, or access logging.',
+      'Credit reports or scores are used for decisions without explanation, dispute handling, and retention controls.',
+      'Credit information is mixed with ordinary marketing or profiling data without purpose limitation.',
+    ],
+  },
 ]
 
 const TOPIC_EXPANSIONS = [
@@ -3124,6 +3612,58 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['salary grade', 'position classification', 'honorarium', 'allowance', 'public sector compensation', 'dbm'],
     expansions: ['compensation and position classification', 'salary grade', 'public sector compensation', 'allowance controls'],
+  },
+  {
+    triggers: ['sss', 'social security', 'employer contribution', 'employee contribution', 'sickness benefit', 'retirement benefit'],
+    expansions: ['social security act', 'sss contribution', 'member registration', 'benefit claims'],
+  },
+  {
+    triggers: ['gsis', 'government service insurance', 'service record', 'government employee retirement', 'separation benefit'],
+    expansions: ['government service insurance system', 'service record', 'retirement benefit', 'survivorship benefit'],
+  },
+  {
+    triggers: ['pag ibig', 'pag-ibig', 'hdmf', 'home development mutual fund', 'housing loan', 'member savings'],
+    expansions: ['home development mutual fund', 'pag ibig contribution', 'member savings', 'housing loan eligibility'],
+  },
+  {
+    triggers: ['maternity leave', '105 day', 'childbirth', 'miscarriage', 'solo parent extension', 'pregnancy leave'],
+    expansions: ['expanded maternity leave', '105 day maternity leave', 'benefit payment', 'non discrimination'],
+  },
+  {
+    triggers: ['paternity leave', 'spouse childbirth', 'seven days', 'family leave'],
+    expansions: ['paternity leave act', 'leave eligibility', 'childbirth notice', 'paid leave benefit'],
+  },
+  {
+    triggers: ['kasambahay', 'domestic worker', 'household helper', 'household employer', 'live in helper'],
+    expansions: ['batas kasambahay', 'domestic worker contract', 'minimum wage', 'social benefits'],
+  },
+  {
+    triggers: ['philhealth', 'national health insurance', 'premium contribution', 'health insurance premium', 'employer remittance'],
+    expansions: ['national health insurance', 'philhealth membership', 'premium remittance', 'benefit claim'],
+  },
+  {
+    triggers: ['access device', 'credit card fraud', 'debit card fraud', 'atm card', 'skimming', 'unauthorized transaction'],
+    expansions: ['access devices regulation', 'cardholder data', 'payment fraud', 'transaction evidence'],
+  },
+  {
+    triggers: ['wiretap', 'wiretapping', 'recorded conversation', 'phone call recording', 'secret recording', 'interception'],
+    expansions: ['anti wiretapping', 'communications privacy', 'recording consent', 'evidence custody'],
+  },
+  {
+    triggers: ['bouncing check', 'dishonored check', 'insufficient funds', 'postdated check', 'notice of dishonor'],
+    expansions: ['bouncing checks law', 'notice of dishonor', 'payment demand', 'check evidence'],
+  },
+  {
+    triggers: ['adr', 'alternative dispute', 'arbitration', 'mediation', 'conciliation', 'settlement agreement'],
+    expansions: ['alternative dispute resolution', 'neutral selection', 'confidentiality', 'arbitral award'],
+  },
+  {
+    triggers: ['insolvency', 'financial rehabilitation', 'liquidation', 'creditor claims', 'stay order', 'restructuring'],
+    expansions: ['financial rehabilitation and insolvency', 'creditor notice', 'asset inventory', 'claims registry'],
+  },
+  {
+    triggers: ['credit report', 'credit score', 'credit bureau', 'credit information', 'borrower data', 'cic'],
+    expansions: ['credit information system', 'authorized access', 'correction process', 'borrower data security'],
   },
   {
     triggers: ['cyber', 'computer', 'online fraud', 'account', 'platform', 'hacking', 'phishing'],
@@ -3464,6 +4004,43 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
     ],
   },
   {
+    id: 'employee-benefits-and-social-insurance',
+    title: 'Employee Benefits, Leave, and Social Insurance Stack',
+    triggers: [
+      'employee benefits',
+      'payroll benefits',
+      'sss',
+      'social security',
+      'gsis',
+      'pag ibig',
+      'pag-ibig',
+      'philhealth',
+      'employer contribution',
+      'premium contribution',
+      'maternity leave',
+      'paternity leave',
+      'kasambahay',
+      'domestic worker',
+      'household helper',
+      'retirement benefit',
+    ],
+    lawIds: ['ra-11199', 'ra-8291', 'ra-9679', 'ra-10606', 'ra-11210', 'ra-8187', 'ra-10361', 'pd-442', 'ra-10173'],
+    summary:
+      'Use this when a workflow touches private or government employment benefits, payroll contributions, SSS, GSIS, Pag-IBIG, PhilHealth, maternity or paternity leave, household employment, or benefit records.',
+    sequence: [
+      'Classify the worker or member first: private employee, government employee, household worker, self-employed member, dependent, or leave claimant.',
+      'Map mandatory membership, contribution or premium basis, remittance owner, benefit eligibility, documentary proof, claim route, and correction process.',
+      'Separate payroll, SSS, GSIS, Pag-IBIG, PhilHealth, maternity leave, paternity leave, kasambahay, labor-standard, and privacy controls.',
+      'Protect payroll, contribution, health, pregnancy, family, service-record, household-employment, dependent, and benefit-claim records with role-based access and retention.',
+    ],
+    checkpoints: [
+      'Covered workers, employers, household employers, dependents, contribution basis, remittance deadlines, and records owners are identified.',
+      'Leave and benefit workflows state eligibility, notice, documentary proof, benefit/payment treatment, decision timeline, denial reason, and grievance or correction path.',
+      'SSS, GSIS, Pag-IBIG, PhilHealth, maternity, paternity, and kasambahay requirements are not collapsed into a generic benefits clause.',
+      'Health, pregnancy, payroll, service, family, and benefit records have confidentiality, privacy, retention, and authorized-disclosure safeguards.',
+    ],
+  },
+  {
     id: 'environmental-operations',
     title: 'Environmental Operations and Facility Controls Stack',
     triggers: [
@@ -3638,6 +4215,42 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'Bank deposit, price monitoring, BMBE, and MSME records are handled with eligibility, confidentiality, and audit safeguards.',
       'Invoices, receipts, VAT, withholding, and tax records are accounted for where payment collection is involved.',
       'Financial and consumer records are protected with privacy, confidentiality, and audit safeguards.',
+    ],
+  },
+  {
+    id: 'payments-credit-evidence-and-dispute-resolution',
+    title: 'Payments, Credit, Evidence, and Dispute Resolution Stack',
+    triggers: [
+      'payment fraud',
+      'access device',
+      'credit card fraud',
+      'unauthorized transaction',
+      'wiretapping',
+      'recorded conversation',
+      'bouncing check',
+      'dishonored check',
+      'credit report',
+      'credit score',
+      'insolvency',
+      'rehabilitation',
+      'arbitration',
+      'mediation',
+      'dispute resolution',
+    ],
+    lawIds: ['ra-8484', 'ra-4200', 'bp-22', 'ra-9510', 'ra-10142', 'ra-9285', 'ra-11765', 'ra-10173', 'ra-8792'],
+    summary:
+      'Use this when a workflow touches card or access-device fraud, unauthorized payments, recorded communications, bounced checks, credit reports, distressed debt, insolvency, mediation, arbitration, or dispute evidence.',
+    sequence: [
+      'Classify the issue first: access-device fraud, communication recording, check dishonor, credit reporting, financial distress, or ADR/dispute handling.',
+      'Map authority, consent or authorization, notice, documentary proof, evidence custody, dispute intake, correction or cure path, and escalation route.',
+      'Separate payment fraud, privacy, bank or credit information, consumer remediation, criminal referral, civil collection, insolvency, and ADR safeguards.',
+      'Preserve transaction logs, checks, notices, recordings, credit files, creditor claims, settlement communications, and decisions with retention and confidentiality controls.',
+    ],
+    checkpoints: [
+      'Payment, recording, credit, insolvency, and dispute workflows state who may collect, review, share, correct, retain, or escalate evidence.',
+      'Unauthorized transactions, access-device issues, bounced checks, and credit-report disputes include intake, proof, investigation, timelines, and correction or cure routes.',
+      'Recording or communication-monitoring workflows include consent or lawful authority, minimization, restricted access, retention, and chain-of-custody safeguards.',
+      'ADR and insolvency paths do not bypass safety, criminal, labor, consumer, creditor, court, or regulator escalation when formal process is required.',
     ],
   },
   {
@@ -4969,6 +5582,146 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(sss|social security|employer contribution|employee contribution|sickness benefit|disability benefit|retirement benefit|death benefit)\b/.test(normalizedDraft)) {
+    const hasSssCoverage = /\b(covered member|member registration|employee classification|self employed|household employer|coverage)\b/.test(normalizedDraft)
+    const hasSssRemittance = /\b(contribution|remittance|premium|deduction|payment deadline|delinquen)\b/.test(normalizedDraft)
+    const hasSssClaimsRecords = /\b(benefit claim|documentary proof|records|retention|privacy|confidential|correction|grievance)\b/.test(normalizedDraft)
+
+    if (!(hasSssCoverage && hasSssRemittance && hasSssClaimsRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'SSS social-security controls are incomplete',
+          'SSS, social-security, employer-contribution, sickness, disability, retirement, or death-benefit language was detected without enough member coverage, contribution, remittance, claim, or records controls.',
+          'Add covered-member classification, employer and employee contribution basis, remittance owner and deadline, benefit-claim proof, correction or dispute route, payroll privacy, retention, and audit trail.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11199') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(gsis|government service insurance|service record|government employee retirement|separation benefit|survivorship benefit)\b/.test(normalizedDraft)) {
+    const hasGsisCoverage = /\b(member|government employee|coverage|service record|service credit|appointment)\b/.test(normalizedDraft)
+    const hasGsisPremiums = /\b(gsis contribution|gsis premium|gsis remittance|government service insurance contribution|government service insurance premium|compulsory life insurance)\b/.test(normalizedDraft)
+    const hasGsisClaimsRecords = /\b(claim|retirement|separation|disability|survivorship|documentary proof|records|privacy|correction)\b/.test(normalizedDraft)
+
+    if (!(hasGsisCoverage && hasGsisPremiums && hasGsisClaimsRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'GSIS benefit controls need service-record detail',
+          'GSIS, government-service-insurance, service-record, retirement, separation, disability, or survivorship language was detected without enough coverage, premium, claim, service-record, or correction controls.',
+          'Add government-employee coverage, service-record verification, premium responsibility, benefit-claim proof, HR records custody, correction route, confidentiality, and retention rules.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8291') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(pag ibig|pag-ibig|hdmf|home development mutual fund|housing loan|member savings|provident benefit)\b/.test(normalizedDraft)) {
+    const hasPagibigMembership = /\b(member|membership|covered employee|eligibility|contribution history)\b/.test(normalizedDraft)
+    const hasPagibigRemittance = /\b(contribution|remittance|employer|employee|payroll|savings)\b/.test(normalizedDraft)
+    const hasPagibigLoanRecords = /\b(housing loan|provident benefit|documentary proof|records|privacy|retention|complaint|correction)\b/.test(normalizedDraft)
+
+    if (!(hasPagibigMembership && hasPagibigRemittance && hasPagibigLoanRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Pag-IBIG contribution and housing-benefit controls are incomplete',
+          'Pag-IBIG, HDMF, housing-loan, member-savings, or provident-benefit language was detected without enough membership, contribution, remittance, eligibility, proof, or records controls.',
+          'Add covered-member criteria, contribution and remittance responsibilities, member-savings and housing-loan eligibility, proof requirements, complaint or correction path, privacy, retention, and audit trail.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9679') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(maternity leave|105 day|expanded maternity|childbirth|miscarriage|emergency termination of pregnancy|pregnancy leave|postnatal)\b/.test(normalizedDraft)) {
+    const hasMaternityEligibility = /\b(eligible|eligibility|covered worker|women worker|notice|application)\b/.test(normalizedDraft)
+    const hasMaternityBenefit = /\b(105 day|leave period|benefit|pay|payment|allocation|extension|solo parent)\b/.test(normalizedDraft)
+    const hasMaternitySafeguards = /\b(non discrimination|return to work|confidential|privacy|medical record|grievance|denial)\b/.test(normalizedDraft)
+
+    if (!(hasMaternityEligibility && hasMaternityBenefit && hasMaternitySafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Maternity leave controls are incomplete',
+          'Maternity leave, pregnancy, childbirth, miscarriage, emergency termination, or 105-day leave language was detected without enough eligibility, benefit, allocation, non-discrimination, privacy, or grievance controls.',
+          'Add eligibility and notice rules, leave period and benefit payment, allocation or extension handling, miscarriage and emergency-termination coverage, non-discrimination, return-to-work, confidential records, and grievance route.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11210') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(paternity leave|spouse childbirth|married male employee|lawful spouse|seven days)\b/.test(normalizedDraft)) {
+    const hasPaternityEligibility = /\b(eligible|eligibility|married male employee|lawful spouse|notice|application)\b/.test(normalizedDraft)
+    const hasPaternityBenefit = /\b(seven days|7 days|leave period|pay|paid leave|benefit|childbirth|miscarriage)\b/.test(normalizedDraft)
+    const hasPaternityRecords = /\b(documentary proof|records|privacy|confidential|retention|denial|grievance)\b/.test(normalizedDraft)
+
+    if (!(hasPaternityEligibility && hasPaternityBenefit && hasPaternityRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Paternity leave controls are incomplete',
+          'Paternity leave, spouse-childbirth, miscarriage, or seven-day leave language was detected without enough eligibility, notice, paid-leave, proof, records, or grievance controls.',
+          'Add eligibility, notice timing, childbirth or miscarriage proof, leave period and pay treatment, approval timeline, denial reason, confidential records, retention, and grievance route.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8187') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(kasambahay|domestic worker|household helper|household employer|live in helper|batas kasambahay)\b/.test(normalizedDraft)) {
+    const hasKasambahayContract = /\b(written contract|employment contract|duties|wage|minimum wage)\b/.test(normalizedDraft)
+    const hasKasambahayBenefits = /\b(rest day|service incentive leave|sss|philhealth|pag ibig|pag-ibig|social benefit)\b/.test(normalizedDraft)
+    const hasKasambahayRemedies = /\b(termination|complaint|grievance|privacy|records|retention|humane treatment|dispute)\b/.test(normalizedDraft)
+
+    if (!(hasKasambahayContract && hasKasambahayBenefits && hasKasambahayRemedies)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Kasambahay employment controls are incomplete',
+          'Kasambahay, domestic-worker, household-helper, or household-employer language was detected without enough written-contract, wage, rest, social-benefit, termination, complaint, or records controls.',
+          'Add written contract terms, wage and payment rules, rest day and leave, SSS/PhilHealth/Pag-IBIG registration where required, humane treatment, termination standards, complaint handling, privacy, and record retention.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10361') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(philhealth|national health insurance|premium contribution|health insurance premium|employer remittance|dependent coverage)\b/.test(normalizedDraft)) {
+    const hasPhilhealthCoverage = /\b(member|membership|dependent|coverage|classification|eligibility)\b/.test(normalizedDraft)
+    const hasPhilhealthPremium = /\b(premium|contribution|remittance|employer|payroll|payment)\b/.test(normalizedDraft)
+    const hasPhilhealthClaimsPrivacy = /\b(claim|benefit|provider|documentary proof|health record|privacy|confidential|complaint|correction)\b/.test(normalizedDraft)
+
+    if (!(hasPhilhealthCoverage && hasPhilhealthPremium && hasPhilhealthClaimsPrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'PhilHealth insurance controls are incomplete',
+          'PhilHealth, national-health-insurance, premium-contribution, employer-remittance, dependent-coverage, or health-insurance language was detected without enough membership, premium, claim, complaint, or privacy controls.',
+          'Add membership and dependent classification, premium basis, employer remittance owner, benefit-claim proof, provider coordination, correction or complaint path, health-record confidentiality, retention, and authorized disclosure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10606') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
   if (/\b(cyber|computer|online fraud|phishing|hacking|account compromise|system access|platform|electronic evidence)\b/.test(normalizedDraft)) {
     if (!/\b(incident report|evidence preservation|access control|authorized officer|law enforcement|data breach|audit log|retention|referral)\b/.test(normalizedDraft)) {
       findings.amber.push(
@@ -5026,6 +5779,126 @@ function applyTopicSpecificDraftChecks(
           'Add covered-person scope, customer due diligence, beneficial ownership, transaction monitoring, covered and suspicious transaction reporting, confidentiality, recordkeeping, and AMLC escalation.',
           7,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9160') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(access device|credit card|debit card|atm card|cardholder|account number|unauthorized transaction|skimming|counterfeit card|payment fraud)\b/.test(normalizedDraft)) {
+    const hasAccessAuthorization = /\b(authentication|authorization|cardholder consent|identity verification|issuer coordination)\b/.test(normalizedDraft)
+    const hasAccessEvidence = /\b(transaction log|audit log|evidence preservation|dispute|investigation|chargeback|complaint)\b/.test(normalizedDraft)
+    const hasAccessDataControls = /\b(cardholder data|account number|redaction|privacy|access control|retention|confidential)\b/.test(normalizedDraft)
+
+    if (!(hasAccessAuthorization && hasAccessEvidence && hasAccessDataControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Access-device fraud controls are incomplete',
+          'Access-device, credit-card, debit-card, ATM-card, cardholder, account-number, skimming, or unauthorized-transaction language was detected without enough authorization, evidence, dispute, or cardholder-data controls.',
+          'Add authentication and authorization checks, issuer or provider coordination, transaction logs, dispute and investigation timelines, evidence preservation, cardholder-data redaction, access controls, retention, and escalation.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8484') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(wiretapping|wiretap|recorded conversation|phone call recording|secret recording|interception|oral communication|recording device)\b/.test(normalizedDraft)) {
+    const hasRecordingAuthority = /\b(consent|lawful authority|legal basis|court order|authorized recording|notice)\b/.test(normalizedDraft)
+    const hasRecordingLimits = /\b(purpose|minimization|limited access|access control|retention|deletion|confidential)\b/.test(normalizedDraft)
+    const hasRecordingCustody = /\b(chain of custody|evidence custody|transcript|audit log|authorized disclosure|legal review)\b/.test(normalizedDraft)
+
+    if (!(hasRecordingAuthority && hasRecordingLimits && hasRecordingCustody)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Recording and wiretapping safeguards are incomplete',
+          'Wiretapping, call recording, recorded-conversation, interception, surveillance, or secret-recording language was detected without enough consent or authority, minimization, custody, retention, or disclosure controls.',
+          'Add consent or lawful-authority review, recording purpose, notice where required, minimization, restricted access, chain of custody, transcript controls, retention and deletion rules, legal review, and authorized disclosure.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-4200') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(bouncing check|dishonored check|insufficient funds|closed account|postdated check|notice of dishonor|payment demand)\b/.test(normalizedDraft)) {
+    const hasCheckParties = /\b(drawer|payee|bank|check number|account|custody)\b/.test(normalizedDraft)
+    const hasCheckNotice = /\b(notice of dishonor|demand letter|payment demand|cure period|settlement|receipt)\b/.test(normalizedDraft)
+    const hasCheckRecords = /\b(evidence|records|retention|privacy|dispute|complaint|authorized escalation)\b/.test(normalizedDraft)
+
+    if (!(hasCheckParties && hasCheckNotice && hasCheckRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Bouncing-check collection controls are incomplete',
+          'Bouncing-check, dishonored-check, insufficient-funds, closed-account, postdated-check, notice-of-dishonor, or payment-demand language was detected without enough party, notice, payment, evidence, privacy, or dispute controls.',
+          'Add drawer and payee records, bank notice, notice of dishonor or demand process, payment or cure route, settlement receipts, evidence custody, privacy limits, retention, and authorized escalation.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'bp-22') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(adr|alternative dispute resolution|arbitration|mediation|conciliation|neutral|settlement agreement|arbitral award|dispute resolution)\b/.test(normalizedDraft)) {
+    const hasAdrConsent = /\b(consent|agreement|voluntary|arbitration clause|mediation agreement|party approval)\b/.test(normalizedDraft)
+    const hasAdrProcess = /\b(neutral|mediator|arbitrator|timeline|venue|procedure|award|settlement agreement)\b/.test(normalizedDraft)
+    const hasAdrSafeguards = /\b(confidential|without prejudice|records|retention|escalation|exception|safety|legal review)\b/.test(normalizedDraft)
+
+    if (!(hasAdrConsent && hasAdrProcess && hasAdrSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'ADR process controls are incomplete',
+          'ADR, arbitration, mediation, conciliation, settlement-agreement, neutral, or dispute-resolution language was detected without enough consent, neutral-selection, confidentiality, timeline, award, or escalation safeguards.',
+          'Add ADR agreement or consent basis, neutral selection, procedure and timeline, confidentiality, settlement or award handling, records retention, safety and non-waivable-rights exceptions, and formal escalation path.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9285') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(insolvency|financial rehabilitation|liquidation|creditor claim|creditor claims|stay order|rehabilitation plan|receiver|restructuring|distressed business)\b/.test(normalizedDraft)) {
+    const hasInsolvencyProcess = /\b(court|petition|receiver|rehabilitation plan|liquidation plan|stay order|legal review)\b/.test(normalizedDraft)
+    const hasInsolvencyCreditors = /\b(creditor notice|claims registry|claim verification|creditor list|debtor|creditor)\b/.test(normalizedDraft)
+    const hasInsolvencyAssets = /\b(asset inventory|financial statement|record|retention|confidential|audit trail|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasInsolvencyProcess && hasInsolvencyCreditors && hasInsolvencyAssets)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Rehabilitation and insolvency controls are incomplete',
+          'Insolvency, financial-rehabilitation, liquidation, creditor-claim, stay-order, receiver, restructuring, or distressed-business language was detected without enough process, creditor, asset, record, or confidentiality controls.',
+          'Add court or legal process route, receiver or responsible office, creditor notice, claims registry, claim verification, asset inventory, financial records custody, audit trail, confidentiality, retention, and authorized disclosure.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10142') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(credit information|credit report|credit score|credit bureau|borrower data|credit information corporation|basic credit data|negative credit information)\b/.test(normalizedDraft)) {
+    const hasCreditAccessBasis = /\b(legal basis|consent|notice|authorized user|permitted purpose|borrower notice)\b/.test(normalizedDraft)
+    const hasCreditCorrection = /\b(correction|dispute|complaint|adverse action|denial reason|rectification)\b/.test(normalizedDraft)
+    const hasCreditSecurity = /\b(security|access control|audit log|retention|privacy|confidential|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasCreditAccessBasis && hasCreditCorrection && hasCreditSecurity)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Credit-information controls are incomplete',
+          'Credit-information, credit-report, credit-score, credit-bureau, borrower-data, CIC, or negative-credit language was detected without enough notice, authorized-use, correction, security, or retention controls.',
+          'Add notice or legal basis, authorized-user and permitted-purpose rules, minimum credit data, correction and dispute process, adverse-action explanation where relevant, access logs, security, retention, and authorized disclosure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9510') || LEGAL_CORPUS[0])]
         )
       )
     }
