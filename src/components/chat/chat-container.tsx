@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, useEffect, useRef, type MouseEvent } from 'react'
+import { useCallback, useState, useEffect, useRef, type CSSProperties, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChatHeader } from '@/components/layout/chat-header'
 import { ChatMessages, type PendingChatTurn } from './chat-messages'
@@ -48,6 +48,9 @@ interface ChatContainerProps {
 
 const MIN_THINKING_DURATION_MS = 700
 const AUTO_SCROLL_BOTTOM_THRESHOLD_PX = 160
+const DEFAULT_CANVAS_WIDTH_PERCENT = 60
+const MIN_CANVAS_WIDTH_PERCENT = 38
+const MAX_CANVAS_WIDTH_PERCENT = 72
 const CHAT_SURFACE_FOCUS_BLOCK_SELECTOR = [
   'button',
   'a',
@@ -76,6 +79,10 @@ function formatAnalysisDate() {
     month: 'long',
     day: 'numeric',
   })
+}
+
+function clampCanvasWidthPercent(value: number) {
+  return Math.min(MAX_CANVAS_WIDTH_PERCENT, Math.max(MIN_CANVAS_WIDTH_PERCENT, value))
 }
 
 function formatFindings(title: string, findings: Finding[]) {
@@ -237,10 +244,15 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const [currentQuery, setCurrentQuery] = useState<string>('')
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [showScrollToBottom, setShowScrollToBottom] = useState(false)
+  const [canvasWidthPercent, setCanvasWidthPercent] = useState(DEFAULT_CANVAS_WIDTH_PERCENT)
+  const [isResizingCanvas, setIsResizingCanvas] = useState(false)
   const [pendingTurns, setPendingTurns] = useState<Array<PendingChatTurn & { chatId: string }>>([])
+  const [revealingMessageIds, setRevealingMessageIds] = useState<Set<string>>(() => new Set())
   const pendingRAGTargetRef = useRef<{ query: string; chatId: string; startedAt: number } | null>(null)
   const checkedRAGHealthRef = useRef(false)
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+  const splitContainerRef = useRef<HTMLDivElement | null>(null)
+  const canvasResizeCleanupRef = useRef<(() => void) | null>(null)
   const isNearBottomRef = useRef(true)
   const shouldFollowLatestRef = useRef(false)
   const scrollStateRef = useRef({
@@ -295,6 +307,41 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       currentTurns.filter((turn) => !(turn.chatId === chatId && turn.query === query))
     )
   }, [])
+
+  const removeRevealingMessage = useCallback((messageId: string) => {
+    setRevealingMessageIds((currentIds) => {
+      if (!currentIds.has(messageId)) {
+        return currentIds
+      }
+
+      const nextIds = new Set(currentIds)
+      nextIds.delete(messageId)
+      return nextIds
+    })
+  }, [])
+
+  const markLatestAssistantMessageForReveal = useCallback((chatId: string) => {
+    const chatMessagesForId = useChatStore.getState().messages[chatId] || []
+    const latestAssistantMessage = [...chatMessagesForId].reverse().find((message) => message.role === 'assistant')
+
+    if (!latestAssistantMessage) {
+      return
+    }
+
+    setRevealingMessageIds((currentIds) => {
+      if (currentIds.has(latestAssistantMessage.id)) {
+        return currentIds
+      }
+
+      const nextIds = new Set(currentIds)
+      nextIds.add(latestAssistantMessage.id)
+      return nextIds
+    })
+
+    window.setTimeout(() => {
+      removeRevealingMessage(latestAssistantMessage.id)
+    }, 60_000)
+  }, [removeRevealingMessage])
 
   // Handle file drop - only add to list, don't process yet
   const handleFileDrop = (files: File[]) => {
@@ -378,6 +425,108 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
     focusVisibleComposer()
   }, [focusVisibleComposer])
+
+  const beginCanvasResize = useCallback((clientX: number) => {
+    const container = splitContainerRef.current
+
+    if (!container) {
+      return
+    }
+
+    const containerWidth = container.getBoundingClientRect().width
+    const startClientX = clientX
+    const startWidthPercent = canvasWidthPercent
+
+    setIsResizingCanvas(true)
+
+    canvasResizeCleanupRef.current?.()
+
+    const previousCursor = document.body.style.cursor
+    const previousUserSelect = document.body.style.userSelect
+
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+
+    const handlePointerMove = (moveEvent: globalThis.PointerEvent) => {
+      moveEvent.preventDefault()
+      const deltaPercent = ((moveEvent.clientX - startClientX) / containerWidth) * 100
+      setCanvasWidthPercent(clampCanvasWidthPercent(startWidthPercent - deltaPercent))
+    }
+
+    const handleMouseMove = (moveEvent: globalThis.MouseEvent) => {
+      moveEvent.preventDefault()
+      const deltaPercent = ((moveEvent.clientX - startClientX) / containerWidth) * 100
+      setCanvasWidthPercent(clampCanvasWidthPercent(startWidthPercent - deltaPercent))
+    }
+
+    const stopResizing = () => {
+      setIsResizingCanvas(false)
+      document.body.style.cursor = previousCursor
+      document.body.style.userSelect = previousUserSelect
+      window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('pointerup', stopResizing)
+      window.removeEventListener('pointercancel', stopResizing)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', stopResizing)
+      canvasResizeCleanupRef.current = null
+    }
+
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', stopResizing)
+    window.addEventListener('pointercancel', stopResizing)
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', stopResizing)
+
+    canvasResizeCleanupRef.current = stopResizing
+  }, [canvasWidthPercent])
+
+  const startCanvasResize = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    event.currentTarget.setPointerCapture(event.pointerId)
+    beginCanvasResize(event.clientX)
+  }, [beginCanvasResize])
+
+  const startCanvasMouseResize = useCallback((event: MouseEvent<HTMLDivElement>) => {
+    if (event.button !== 0 || canvasResizeCleanupRef.current) {
+      return
+    }
+
+    event.preventDefault()
+    beginCanvasResize(event.clientX)
+  }, [beginCanvasResize])
+
+  const handleCanvasResizeKeyDown = useCallback((event: KeyboardEvent<HTMLDivElement>) => {
+    const step = event.shiftKey ? 10 : 4
+
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault()
+      setCanvasWidthPercent((currentWidth) => clampCanvasWidthPercent(currentWidth + step))
+    }
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault()
+      setCanvasWidthPercent((currentWidth) => clampCanvasWidthPercent(currentWidth - step))
+    }
+
+    if (event.key === 'Home') {
+      event.preventDefault()
+      setCanvasWidthPercent(MAX_CANVAS_WIDTH_PERCENT)
+    }
+
+    if (event.key === 'End') {
+      event.preventDefault()
+      setCanvasWidthPercent(MIN_CANVAS_WIDTH_PERCENT)
+    }
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      setCanvasWidthPercent(DEFAULT_CANVAS_WIDTH_PERCENT)
+    }
+  }, [])
+
+  useEffect(() => () => {
+    canvasResizeCleanupRef.current?.()
+  }, [])
 
   // Fetch messages when active chat changes
   useEffect(() => {
@@ -619,13 +768,20 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
         void (async () => {
           await waitForThinkingWindow(pendingTarget.startedAt)
           await addRAGMessageToChat(pendingTarget.chatId, query, response)
+          markLatestAssistantMessageForReveal(pendingTarget.chatId)
         })().finally(() => {
           removePendingTurn(pendingTarget.chatId, query)
         })
         return
       }
 
-      void addRAGMessage(query, response).finally(() => {
+      void addRAGMessage(query, response).then(() => {
+        const currentChatId = useChatStore.getState().activeChat?.id
+
+        if (currentChatId) {
+          markLatestAssistantMessageForReveal(currentChatId)
+        }
+      }).finally(() => {
         const currentChatId = useChatStore.getState().activeChat?.id
 
         if (currentChatId) {
@@ -635,7 +791,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     }
 
     return addChatEventListener(CHAT_EVENTS.ragResponse, handleRAGResponse)
-  }, [addRAGMessage, addRAGMessageToChat, removePendingTurn])
+  }, [addRAGMessage, addRAGMessageToChat, markLatestAssistantMessageForReveal, removePendingTurn])
 
   // Listen for file upload and deep search events
   useEffect(() => {
@@ -738,6 +894,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
   // In compliance mode with canvas, show split view
   const isComplianceWithCanvas = mode === 'compliance' && showCanvas && canvasContent
+  const splitPaneStyle = {
+    '--chat-pane-width': `${100 - canvasWidthPercent}%`,
+    '--canvas-pane-width': `${canvasWidthPercent}%`,
+  } as CSSProperties
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-slate-50 text-slate-900 dark:bg-transparent dark:text-slate-100">
@@ -746,12 +906,14 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       
       <ChatHeader />
       
-      <div className="flex flex-1 overflow-hidden">
+      <div ref={splitContainerRef} className="flex flex-1 overflow-hidden" style={splitPaneStyle}>
         {/* Chat Area - 40% width in compliance mode with canvas, full width otherwise */}
         <div 
-          className={`relative flex flex-col ${
-            isComplianceWithCanvas ? 'w-full lg:w-[40%]' : 'w-full'
-          } transition-all duration-300 overflow-hidden`}
+          className={cn(
+            'relative flex flex-col overflow-hidden',
+            isComplianceWithCanvas ? 'w-full lg:w-[var(--chat-pane-width)] lg:flex-none' : 'w-full',
+            !isResizingCanvas && 'transition-all duration-300'
+          )}
         >
           <div className="flex w-full flex-1 flex-col overflow-hidden">
             <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 flex-shrink-0">
@@ -817,7 +979,12 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
               >
                 {hasMessages ? (
                   <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
-                    <ChatMessages messages={messages} pendingTurns={visiblePendingTurns} />
+                    <ChatMessages
+                      messages={messages}
+                      pendingTurns={visiblePendingTurns}
+                      revealingMessageIds={revealingMessageIds}
+                      onMessageRevealComplete={removeRevealingMessage}
+                    />
                     
                     <AnimatePresence>
                       {isProcessing && (
@@ -885,10 +1052,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
               onClick={toggleCanvas}
-              className={cn(
-                'fixed right-4 top-20 z-30 rounded-full bg-iris-600 p-2.5 text-white shadow-md transition-all hover:bg-iris-700 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2',
-                showCanvas && 'lg:right-[calc(60%+1rem)]'
-              )}
+              className="fixed right-4 top-20 z-30 rounded-full bg-iris-600 p-2.5 text-white shadow-md transition-all hover:bg-iris-700 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2"
               aria-label={showCanvas ? 'Close compliance analysis' : 'Open compliance analysis'}
               title={showCanvas ? 'Close Analysis' : 'View Analysis'}
             >
@@ -931,16 +1095,43 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="hidden lg:block lg:w-[60%] relative"
+              className="relative hidden shrink-0 lg:flex lg:w-[var(--canvas-pane-width)]"
             >
-              <ComplianceCanvas 
-                content={canvasContent}
-                fileName={canvasFileName}
-                ragResponse={currentResponse || undefined}
-                searchQueries={currentResponse?.search_queries_used}
-                documentCount={currentResponse?.documents_found}
-                deepSearchResult={deepSearchResult}
-              />
+              <div
+                role="separator"
+                aria-label="Resize compliance report panel"
+                aria-orientation="vertical"
+                aria-valuemin={MIN_CANVAS_WIDTH_PERCENT}
+                aria-valuemax={MAX_CANVAS_WIDTH_PERCENT}
+                aria-valuenow={Math.round(canvasWidthPercent)}
+                tabIndex={0}
+                onPointerDown={startCanvasResize}
+                onMouseDown={startCanvasMouseResize}
+                onKeyDown={handleCanvasResizeKeyDown}
+                data-chat-no-background-focus
+                className={cn(
+                  'group relative z-50 flex w-3 shrink-0 cursor-col-resize touch-none items-center justify-center bg-iris-500/[0.03] outline-none transition-colors hover:bg-iris-500/10 dark:bg-iris-300/[0.04] dark:hover:bg-iris-300/10',
+                  'focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#171322]'
+                )}
+              >
+                <span
+                  className={cn(
+                    'pointer-events-none h-20 w-1 rounded-full bg-slate-300/80 transition-all duration-150 group-hover:h-28 group-hover:bg-iris-500 group-focus-visible:h-28 group-focus-visible:bg-iris-500 dark:bg-iris-300/30 dark:group-hover:bg-iris-300 dark:group-focus-visible:bg-iris-300',
+                    isResizingCanvas && 'h-32 bg-iris-500 dark:bg-iris-300'
+                  )}
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <ComplianceCanvas
+                  content={canvasContent}
+                  fileName={canvasFileName}
+                  ragResponse={currentResponse || undefined}
+                  searchQueries={currentResponse?.search_queries_used}
+                  documentCount={currentResponse?.documents_found}
+                  deepSearchResult={deepSearchResult}
+                />
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

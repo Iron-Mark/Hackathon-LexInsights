@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { AuthDialog, type AuthDialogMode } from '@/components/auth/auth-dialog'
+import { useAuthSetup } from '@/components/providers/auth-setup-provider'
 import { Button } from '@/components/ui/button'
-import { isClerkClientConfigured } from '@/lib/auth/clerk-config'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { UserMenu } from './user-menu'
 
@@ -16,7 +16,7 @@ const authSignUpButtonClassName =
 
 export function ChatHeader() {
   const { user } = useAuthStore()
-  const clerkClientConfigured = isClerkClientConfigured()
+  const { clerkConfigured, missingClerkKeys } = useAuthSetup()
   const [authDialogMode, setAuthDialogMode] = useState<AuthDialogMode>('sign-in')
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
 
@@ -72,7 +72,8 @@ export function ChatHeader() {
                 Sign up
               </Button>
               <AuthDialog
-                clerkConfigured={clerkClientConfigured}
+                clerkConfigured={clerkConfigured}
+                missingClerkKeys={missingClerkKeys}
                 mode={authDialogMode}
                 open={authDialogOpen}
                 onModeChange={setAuthDialogMode}

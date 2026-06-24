@@ -14,9 +14,16 @@ export interface PendingChatTurn {
 interface ChatMessagesProps {
   messages: Message[]
   pendingTurns?: PendingChatTurn[]
+  revealingMessageIds?: Set<string>
+  onMessageRevealComplete?: (messageId: string) => void
 }
 
-export function ChatMessages({ messages, pendingTurns = [] }: ChatMessagesProps) {
+export function ChatMessages({
+  messages,
+  pendingTurns = [],
+  revealingMessageIds,
+  onMessageRevealComplete,
+}: ChatMessagesProps) {
   const hasVisibleMessages = messages.length > 0 || pendingTurns.length > 0
 
   return (
@@ -28,7 +35,12 @@ export function ChatMessages({ messages, pendingTurns = [] }: ChatMessagesProps)
       ) : (
         <>
           {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
+            <MessageBubble
+              key={message.id}
+              message={message}
+              revealOnMount={message.role === 'assistant' && Boolean(revealingMessageIds?.has(message.id))}
+              onRevealComplete={() => onMessageRevealComplete?.(message.id)}
+            />
           ))}
           {pendingTurns.map((turn) => (
             <Fragment key={turn.id}>

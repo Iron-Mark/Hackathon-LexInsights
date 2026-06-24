@@ -33,11 +33,11 @@ export function LoadingIndicator({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={cn('flex items-center gap-2 text-slate-600', className)}
+      className={cn('flex items-center gap-2 text-slate-600 dark:text-iris-100/75', className)}
       role="status"
       aria-live="polite"
     >
-      <Loader2 className={cn(sizeClasses[size], 'animate-spin text-iris-600')} aria-hidden="true" />
+      <Loader2 className={cn(sizeClasses[size], 'animate-spin text-iris-600 dark:text-iris-200')} aria-hidden="true" />
       <motion.span 
         animate={{ opacity: [0.5, 1, 0.5] }}
         transition={{ duration: 1.5, repeat: Infinity }}
@@ -87,7 +87,11 @@ export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: Typ
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className={cn('flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-iris-50 to-purple-50 rounded-xl border-2 border-iris-200 w-fit shadow-sm', className)}
+      className={cn(
+        'flex w-fit items-center gap-3 rounded-xl border-2 border-iris-200 bg-gradient-to-r from-iris-50 to-purple-50 px-5 py-4 shadow-sm',
+        'dark:border-iris-300/18 dark:bg-[linear-gradient(135deg,rgba(63,51,189,0.16),rgba(36,31,50,0.92)_52%,rgba(24,18,39,0.96))] dark:from-transparent dark:to-transparent dark:text-iris-100/80 dark:shadow-[0_16px_42px_rgba(9,6,22,0.34)]',
+        className
+      )}
       role="status"
       aria-live="polite"
       aria-label={currentStep}
@@ -106,7 +110,7 @@ export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: Typ
               repeatType: "reverse",
               delay: index * 0.15
             }}
-            className="h-2.5 w-2.5 bg-gradient-to-br from-iris-500 to-purple-500 rounded-full shadow-sm"
+            className="h-2.5 w-2.5 rounded-full bg-gradient-to-br from-iris-500 to-purple-500 shadow-sm dark:from-iris-300 dark:to-violet-300 dark:shadow-[0_0_12px_rgba(158,151,227,0.32)]"
           />
         ))}
       </div>
@@ -115,7 +119,7 @@ export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: Typ
       <motion.span 
         animate={{ opacity: [0.5, 1, 0.5] }}
         transition={{ duration: 1.5, repeat: Infinity }}
-        className="text-sm font-medium text-iris-700"
+        className="text-sm font-medium text-iris-700 dark:text-iris-100/82"
       >
         {currentStep}
       </motion.span>
@@ -162,7 +166,13 @@ export function EnhancedLoading({ stage = 'searching', progress, className }: En
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.3 }}
-      className={cn('flex flex-col gap-3 px-5 py-4 bg-gradient-to-r', current.bgColor, 'rounded-xl border-2', current.borderColor, 'w-full max-w-md shadow-md', className)}
+      className={cn(
+        'flex w-full max-w-md flex-col gap-3 rounded-xl border-2 bg-gradient-to-r px-5 py-4 shadow-md',
+        current.bgColor,
+        current.borderColor,
+        'dark:border-iris-300/20 dark:from-transparent dark:to-transparent dark:bg-[linear-gradient(135deg,rgba(124,115,217,0.14),rgba(36,31,50,0.92)_52%,rgba(24,18,39,0.96))] dark:text-iris-100/80 dark:shadow-[0_16px_42px_rgba(9,6,22,0.34)]',
+        className
+      )}
       role="status"
       aria-live="polite"
       aria-label={current.text}
@@ -176,23 +186,23 @@ export function EnhancedLoading({ stage = 'searching', progress, className }: En
         >
           {current.icon}
         </motion.span>
-        <span className="text-sm font-semibold text-slate-700">{current.text}</span>
+        <span className="text-sm font-semibold text-slate-700 dark:text-iris-100/86">{current.text}</span>
       </div>
 
       {/* Progress bar */}
       {progress !== undefined && (
-        <div className="w-full h-2 bg-white/50 rounded-full overflow-hidden">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-white/50 dark:bg-iris-950/45">
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className={cn('h-full bg-gradient-to-r', current.color, 'rounded-full')}
+            className={cn('h-full rounded-full bg-gradient-to-r', current.color, 'dark:from-iris-300 dark:to-violet-200')}
           />
         </div>
       )}
 
       {/* Animated wave effect */}
-      <div className="flex gap-1 justify-center">
+      <div className="flex justify-center gap-1">
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
@@ -205,7 +215,7 @@ export function EnhancedLoading({ stage = 'searching', progress, className }: En
               ease: "easeInOut",
               delay: i * 0.1
             }}
-            className={cn('w-1 bg-gradient-to-t', current.color, 'rounded-full')}
+            className={cn('w-1 rounded-full bg-gradient-to-t', current.color, 'dark:from-iris-300 dark:to-violet-200')}
           />
         ))}
       </div>

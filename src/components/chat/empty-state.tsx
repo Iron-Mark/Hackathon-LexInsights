@@ -203,7 +203,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
           >
             <span
               className={cn(
-                'flex h-10 w-10 shrink-0 items-center justify-center rounded-md ring-1 transition-all duration-200 group-hover:scale-105',
+                'flex h-10 w-10 shrink-0 items-center justify-center rounded-md ring-1 transition-all duration-200 group-hover:scale-105 max-[430px]:hidden',
                 styles.icon
               )}
             aria-hidden="true"
@@ -211,9 +211,18 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
               <Icon className="h-[18px] w-[18px]" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="flex min-w-0 items-center gap-2">
-                <span className="truncate text-[11px] font-bold uppercase leading-4 text-slate-500 dark:text-slate-400">
+              <span className="flex min-w-0 items-center gap-2 max-[430px]:flex-wrap max-[430px]:gap-x-1.5 max-[430px]:gap-y-1">
+                <span className="truncate text-[11px] font-bold uppercase leading-4 text-slate-500 max-[430px]:basis-full dark:text-slate-400">
                   {eyebrow}
+                </span>
+                <span
+                  className={cn(
+                    'hidden h-7 w-7 shrink-0 items-center justify-center rounded-md ring-1 max-[430px]:flex',
+                    styles.icon
+                  )}
+                  aria-hidden="true"
+                >
+                  <Icon className="h-3.5 w-3.5" />
                 </span>
                 <span
                   className={cn(
@@ -230,7 +239,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
             </span>
             <span
               className={cn(
-                'ml-2 flex h-10 w-10 shrink-0 self-center items-center justify-center opacity-75 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100',
+                'ml-2 flex h-10 w-10 shrink-0 self-center items-center justify-center opacity-75 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 max-[430px]:ml-1 max-[430px]:h-8 max-[430px]:w-8',
                 styles.arrow
               )}
               aria-hidden="true"

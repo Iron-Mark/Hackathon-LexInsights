@@ -17,7 +17,12 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setSignOutHandler(async () => {
-      await clerk.signOut()
+      try {
+        await clerk.signOut()
+      } catch (error) {
+        console.error('[auth] Clerk sign-out failed.', error)
+        throw new Error('Could not sign out. Please try again.')
+      }
     })
 
     return () => {
@@ -31,7 +36,14 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       return
     }
 
-    setSupabaseAccessTokenGetter(async () => session.getToken())
+    setSupabaseAccessTokenGetter(async () => {
+      try {
+        return await session.getToken()
+      } catch (error) {
+        console.error('[auth] Failed to get Clerk session token.', error)
+        return null
+      }
+    })
 
     return () => {
       setSupabaseAccessTokenGetter(null)

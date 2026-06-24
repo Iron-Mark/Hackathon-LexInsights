@@ -7,7 +7,8 @@ import { ClerkAuthHeader } from "@/components/auth/clerk-auth-header";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { ToastContainer } from "@/components/ui/toast";
 import { authFormAppearance } from "@/lib/auth/clerk-appearance";
-import { isClerkClientConfigured } from "@/lib/auth/clerk-config";
+import { getClerkSetupStatus } from "@/lib/auth/clerk-config";
+import { AuthSetupProvider } from "@/components/providers/auth-setup-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { themeInitScript } from "@/lib/theme";
 
@@ -89,7 +90,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const clerkClientConfigured = isClerkClientConfigured();
+  const clerkSetup = getClerkSetupStatus();
 
   return (
     <html lang="en" className={`${manrope.variable} ${outfit.variable}`} suppressHydrationWarning>
@@ -97,24 +98,32 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="antialiased">
-        {clerkClientConfigured ? (
-          <ClerkProvider appearance={authFormAppearance}>
+        <AuthSetupProvider
+          value={{
+            clerkConfigured: clerkSetup.configured,
+            clerkClientConfigured: clerkSetup.clientConfigured,
+            missingClerkKeys: clerkSetup.missingKeys,
+          }}
+        >
+          {clerkSetup.configured ? (
+            <ClerkProvider appearance={authFormAppearance}>
+              <ThemeProvider>
+                <SessionProvider>
+                  <ServiceWorkerRegistration />
+                  <ClerkAuthHeader />
+                  {children}
+                  <ToastContainer />
+                </SessionProvider>
+              </ThemeProvider>
+            </ClerkProvider>
+          ) : (
             <ThemeProvider>
-              <SessionProvider>
-                <ServiceWorkerRegistration />
-                <ClerkAuthHeader />
-                {children}
-                <ToastContainer />
-              </SessionProvider>
+              <ServiceWorkerRegistration />
+              {children}
+              <ToastContainer />
             </ThemeProvider>
-          </ClerkProvider>
-        ) : (
-          <ThemeProvider>
-            <ServiceWorkerRegistration />
-            {children}
-            <ToastContainer />
-          </ThemeProvider>
-        )}
+          )}
+        </AuthSetupProvider>
       </body>
     </html>
   );

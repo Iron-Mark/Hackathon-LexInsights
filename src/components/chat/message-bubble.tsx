@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type ComponentProps } from 'react'
+import { useEffect, useRef, useState, type ComponentProps } from 'react'
 import { Message } from '@/types'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -14,6 +14,8 @@ import { downloadBlob, formatClockTime } from '@/lib/utils/browser-actions'
 
 interface MessageBubbleProps {
   message: Message
+  revealOnMount?: boolean
+  onRevealComplete?: () => void
 }
 
 type MarkdownCodeProps = ComponentProps<'code'> & {
@@ -95,13 +97,15 @@ function getCurrentReducedMotionPreference() {
     Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)
 }
 
-export function MessageBubble({ message }: MessageBubbleProps) {
+export function MessageBubble({ message, revealOnMount = false, onRevealComplete }: MessageBubbleProps) {
   const isUser = message.role === 'user'
   const [copied, setCopied] = useState(false)
   const [isExportingWord, setIsExportingWord] = useState(false)
+  const [checkedChecklistItems, setCheckedChecklistItems] = useState<Record<string, boolean>>({})
   const prefersReducedMotion = usePrefersReducedMotion()
+  const onRevealCompleteRef = useRef(onRevealComplete)
   const [visibleContent, setVisibleContent] = useState(() => {
-    if (message.role === 'user' || getCurrentReducedMotionPreference()) {
+    if (message.role === 'user' || !revealOnMount || getCurrentReducedMotionPreference()) {
       return message.content
     }
 
@@ -109,12 +113,17 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   })
   const [isRevealing, setIsRevealing] = useState(() => (
     message.role === 'assistant' &&
+    revealOnMount &&
     !getCurrentReducedMotionPreference() &&
     message.content.length > getRevealStep(message.content.length)
   ))
 
   useEffect(() => {
-    if (isUser || prefersReducedMotion || message.content.length === 0) {
+    onRevealCompleteRef.current = onRevealComplete
+  }, [onRevealComplete])
+
+  useEffect(() => {
+    if (isUser || !revealOnMount || prefersReducedMotion || message.content.length === 0) {
       setVisibleContent(message.content)
       setIsRevealing(false)
       return
@@ -143,6 +152,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
       if (currentIndex >= message.content.length) {
         setIsRevealing(false)
+        onRevealCompleteRef.current?.()
         return
       }
 
@@ -164,7 +174,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
         window.clearTimeout(timeoutId)
       }
     }
-  }, [isUser, message.content, message.id, prefersReducedMotion])
+  }, [isUser, message.content, message.id, prefersReducedMotion, revealOnMount])
   
   // Copy to clipboard
   const handleCopy = async () => {
@@ -212,42 +222,48 @@ export function MessageBubble({ message }: MessageBubbleProps) {
   }
 
   const renderedAssistantContent = formatReportMarkdownForPreview(visibleContent)
+  let checklistInputIndex = 0
 
   return (
     <div
       data-chat-content
       data-revealing={isRevealing ? 'true' : 'false'}
       aria-busy={isRevealing}
-      className={`mb-4 min-w-0 rounded-xl p-4 transition-all sm:p-5 ${
+      className={cn(
+        'mb-4 min-w-0 rounded-xl p-4 transition-all sm:p-5',
         isUser
-          ? 'ml-auto max-w-[90%] border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/20 dark:from-iris-400/12 dark:via-[#241f32] dark:to-[#201a2d] dark:text-slate-100 dark:shadow-iris-950/20'
-          : 'mr-auto w-full max-w-full border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/30'
-      }`}
+          ? 'ml-auto max-w-[90%] border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/20 dark:from-iris-400/12 dark:via-[#241f32] dark:to-[#201a2d] dark:text-iris-100/90 dark:shadow-iris-950/20'
+          : cn(
+              'mr-auto w-full max-w-full border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/15 dark:bg-[#241f32] dark:text-iris-100/84 dark:shadow-iris-950/30',
+              isRevealing &&
+                'border-iris-200 bg-iris-50/80 shadow-iris-950/10 dark:border-iris-300/22 dark:bg-[linear-gradient(135deg,rgba(63,51,189,0.14),rgba(35,27,51,0.94)_48%,rgba(24,18,39,0.98))] dark:text-iris-100/78 dark:shadow-[0_16px_42px_rgba(9,6,22,0.34)]'
+            )
+      )}
     >
       {isUser ? (
         // User message - simple text with better contrast
-        <p className="font-body whitespace-pre-wrap text-base leading-relaxed break-word font-medium text-slate-900 dark:text-slate-100">
+        <p className="font-body whitespace-pre-wrap break-words text-base font-medium leading-relaxed text-slate-900 [overflow-wrap:anywhere] dark:text-slate-100">
           {message.content}
         </p>
       ) : (
         // AI message - formatted markdown
-        <div className="prose prose-slate max-w-none break-words">
+        <div className="prose prose-slate min-w-0 max-w-none break-words [overflow-wrap:anywhere]">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
               // Headings
               h1: (props) => (
-                <h1 className="mb-4 mt-6 border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 dark:border-iris-300/15 dark:text-slate-100" {...stripMarkdownNode(props)} />
+                <h1 className="mb-4 mt-6 break-words border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:text-iris-100/90" {...stripMarkdownNode(props)} />
               ),
               h2: (props) => (
-                <h2 className="mb-3 mt-5 text-xl font-bold text-slate-800 dark:text-slate-100" {...stripMarkdownNode(props)} />
+                <h2 className="mb-3 mt-5 break-words text-xl font-bold text-slate-800 [overflow-wrap:anywhere] dark:text-iris-100/88" {...stripMarkdownNode(props)} />
               ),
               h3: (props) => (
-                <h3 className="mb-2 mt-4 text-lg font-semibold text-slate-700 dark:text-slate-200" {...stripMarkdownNode(props)} />
+                <h3 className="mb-2 mt-4 break-words text-lg font-semibold text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/82" {...stripMarkdownNode(props)} />
               ),
               // Paragraphs
               p: (props) => (
-                <p className="my-3 text-base leading-relaxed text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
+                <p className="my-3 break-words text-base leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/72" {...stripMarkdownNode(props)} />
               ),
               // Lists
               ul: (props) => {
@@ -257,7 +273,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                 return (
                   <ul
                     className={cn(
-                      'my-3 space-y-2 text-slate-700 dark:text-slate-300',
+                      'my-3 min-w-0 space-y-2 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/72',
                       isTaskList ? 'list-none pl-0' : 'list-inside list-disc',
                       className
                     )}
@@ -266,31 +282,70 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                 )
               },
               ol: (props) => (
-                <ol className="my-3 list-inside list-decimal space-y-2 text-slate-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
+                <ol className="my-3 min-w-0 list-inside list-decimal space-y-2 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/72" {...stripMarkdownNode(props)} />
               ),
               li: (props) => {
-                const { className, ...domProps } = stripMarkdownNode(props)
+                const { className, children, ...domProps } = stripMarkdownNode(props)
                 const isTaskItem = typeof className === 'string' && className.includes('task-list-item')
+
+                if (isTaskItem) {
+                  return (
+                    <li
+                      className={cn('min-w-0 list-none p-0 text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/80', className)}
+                      {...domProps}
+                    >
+                      <label className="flex min-h-11 w-full cursor-pointer gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed shadow-sm transition-all duration-150 hover:border-iris-300 hover:bg-iris-50/80 active:scale-[0.99] dark:border-iris-300/15 dark:bg-[#171322]/60 dark:text-iris-100/80 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10">
+                        {children}
+                      </label>
+                    </li>
+                  )
+                }
 
                 return (
                   <li
                     className={cn(
-                      'leading-relaxed text-slate-700 dark:text-slate-300',
-                      isTaskItem &&
-                        'flex gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed shadow-sm dark:border-iris-300/15 dark:bg-[#171322]/60 dark:text-slate-200',
+                      'min-w-0 break-words leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/72',
                       className
                     )}
                     {...domProps}
-                  />
+                  >
+                    {children}
+                  </li>
                 )
               },
               input: (props) => {
-                const { className, ...domProps } = stripMarkdownNode(props)
+                const { checked, className, disabled, readOnly, type, ...domProps } = stripMarkdownNode(props)
+
+                if (type !== 'checkbox') {
+                  return (
+                    <input
+                      className={className}
+                      disabled={disabled}
+                      readOnly={readOnly}
+                      type={type}
+                      {...domProps}
+                    />
+                  )
+                }
+
+                const itemKey = `${message.id}-checklist-${checklistInputIndex}`
+                const itemChecked = checkedChecklistItems[itemKey] ?? Boolean(checked)
+                checklistInputIndex += 1
 
                 return (
                   <input
+                    type="checkbox"
+                    checked={itemChecked}
+                    onChange={(event) => {
+                      const nextChecked = event.currentTarget.checked
+
+                      setCheckedChecklistItems((currentItems) => ({
+                        ...currentItems,
+                        [itemKey]: nextChecked,
+                      }))
+                    }}
                     className={cn(
-                      'mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-iris-300/30 dark:bg-[#171322] dark:accent-iris-300',
+                      'mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border-slate-300 bg-white accent-iris-600 transition-transform active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/30 dark:bg-[#171322] dark:accent-iris-300 dark:focus-visible:ring-offset-[#171322]',
                       className
                     )}
                     {...domProps}
@@ -299,24 +354,24 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               },
               // Strong/Bold
               strong: (props) => (
-                <strong className="font-bold text-slate-900 dark:text-slate-100" {...stripMarkdownNode(props)} />
+                <strong className="break-words font-bold text-slate-900 [overflow-wrap:anywhere] dark:text-iris-50/95" {...stripMarkdownNode(props)} />
               ),
               // Code
               code: (props: MarkdownCodeProps) => {
                 const { inline, ...codeProps } = stripMarkdownNode(props)
                 return inline ? (
-                  <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-iris-700 dark:bg-[#171322] dark:text-iris-200" {...codeProps} />
+                  <code className="break-words rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-iris-700 [overflow-wrap:anywhere] dark:bg-[#171322] dark:text-iris-200" {...codeProps} />
                 ) : (
                   <code className="my-3 block overflow-x-auto rounded-lg bg-slate-900 p-4 font-mono text-sm text-slate-100 dark:bg-[#171322]/80" {...codeProps} />
                 )
               },
               // Links
               a: (props) => (
-                <a className="font-medium text-iris-600 underline hover:text-iris-700 dark:text-iris-300 dark:hover:text-iris-200" {...stripMarkdownNode(props)} />
+                <a className="break-words font-medium text-iris-600 underline [overflow-wrap:anywhere] hover:text-iris-700 dark:text-iris-300 dark:hover:text-iris-200" {...stripMarkdownNode(props)} />
               ),
               // Blockquotes
               blockquote: (props) => (
-                <blockquote className="my-3 rounded-r border-l-4 border-iris-500 bg-slate-50 py-2 pl-4 italic text-slate-600 dark:bg-[#171322]/70 dark:text-slate-300" {...stripMarkdownNode(props)} />
+                <blockquote className="my-3 break-words rounded-r border-l-4 border-iris-500 bg-slate-50 py-2 pl-4 italic text-slate-600 [overflow-wrap:anywhere] dark:bg-[#171322]/70 dark:text-iris-100/72" {...stripMarkdownNode(props)} />
               ),
               // Horizontal rule
               hr: (props) => (
@@ -324,15 +379,15 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               ),
               // Tables
               table: (props) => (
-                <div className="overflow-x-auto my-4">
-                  <table className="min-w-full border-collapse border border-slate-300 dark:border-iris-300/15" {...stripMarkdownNode(props)} />
+                <div className="my-4 max-w-full overflow-x-auto">
+                  <table className="min-w-full table-fixed border-collapse border border-slate-300 dark:border-iris-300/15" {...stripMarkdownNode(props)} />
                 </div>
               ),
               th: (props) => (
-                <th className="border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-100" {...stripMarkdownNode(props)} />
+                <th className="break-words border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-100" {...stripMarkdownNode(props)} />
               ),
               td: (props) => (
-                <td className="border border-slate-300 px-4 py-2 text-slate-700 dark:border-iris-300/15 dark:text-slate-300" {...stripMarkdownNode(props)} />
+                <td className="break-words border border-slate-300 px-4 py-2 text-slate-700 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:text-iris-100/72" {...stripMarkdownNode(props)} />
               ),
             }}
           >

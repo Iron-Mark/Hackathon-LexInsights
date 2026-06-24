@@ -1,12 +1,10 @@
 import { NextResponse, type NextFetchEvent, type NextRequest } from 'next/server'
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { getClerkSetupStatus } from './lib/auth/clerk-config'
 
 const isProtectedRoute = createRouteMatcher(['/documents(.*)'])
 const isClerkProxyRoute = createRouteMatcher(['/__clerk(.*)'])
-const hasClerkKeys = Boolean(
-  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-    process.env.CLERK_SECRET_KEY
-)
+const hasClerkKeys = getClerkSetupStatus().configured
 
 function missingClerkProxy() {
   return NextResponse.next()
@@ -44,13 +42,22 @@ function redirectToSignIn(req: NextRequest) {
   return NextResponse.redirect(signInUrl)
 }
 
-export default function proxy(req: NextRequest, event: NextFetchEvent) {
+async function runProtectedClerkProxy(req: NextRequest, event: NextFetchEvent) {
+  try {
+    return await protectedClerkProxy(req, event)
+  } catch (error) {
+    console.error('[auth] Clerk proxy failed.', error)
+    return NextResponse.next()
+  }
+}
+
+export default async function proxy(req: NextRequest, event: NextFetchEvent) {
   if (!hasClerkKeys) {
     return missingClerkProxy()
   }
 
   if (isClerkProxyRoute(req)) {
-    return protectedClerkProxy(req, event)
+    return runProtectedClerkProxy(req, event)
   }
 
   if (!isProtectedRoute(req)) {
@@ -61,7 +68,7 @@ export default function proxy(req: NextRequest, event: NextFetchEvent) {
     return redirectToSignIn(req)
   }
 
-  return protectedClerkProxy(req, event)
+  return runProtectedClerkProxy(req, event)
 }
 
 export const config = {

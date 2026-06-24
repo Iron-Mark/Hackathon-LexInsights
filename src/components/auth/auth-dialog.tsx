@@ -2,18 +2,21 @@
 
 import { SignIn, SignUp } from '@clerk/nextjs'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { AlertTriangle, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { AuthErrorBoundary } from '@/components/auth/auth-error-boundary'
+import { AuthSetupNotice } from '@/components/auth/auth-setup-notice'
 import { authFormAppearance } from '@/lib/auth/clerk-appearance'
-import { CLERK_SETUP_MESSAGE, CLERK_SETUP_TITLE } from '@/lib/auth/clerk-config'
+import type { ClerkSetupKey } from '@/lib/auth/clerk-config'
 import { cn } from '@/lib/utils'
 
 export type AuthDialogMode = 'sign-in' | 'sign-up'
 
 interface AuthDialogProps {
   clerkConfigured: boolean
+  missingClerkKeys?: readonly ClerkSetupKey[]
   mode: AuthDialogMode
   open: boolean
   onModeChange: (mode: AuthDialogMode) => void
@@ -48,7 +51,14 @@ function clearAuthHash() {
   }
 }
 
-export function AuthDialog({ clerkConfigured, mode, open, onModeChange, onOpenChange }: AuthDialogProps) {
+export function AuthDialog({
+  clerkConfigured,
+  missingClerkKeys = [],
+  mode,
+  open,
+  onModeChange,
+  onOpenChange,
+}: AuthDialogProps) {
   const pathname = usePathname()
   const fallbackRedirectUrl = pathname?.startsWith('/chat') ? pathname : '/chat'
 
@@ -147,39 +157,53 @@ export function AuthDialog({ clerkConfigured, mode, open, onModeChange, onOpenCh
 
           <div className="flex justify-center overflow-hidden">
             {!clerkConfigured ? (
-              <section className="w-full border-t border-amber-300/45 bg-amber-50/45 pt-4 text-amber-950 dark:border-amber-300/25 dark:bg-amber-300/[0.06] dark:text-amber-100">
-                <div className="flex items-start gap-3">
-                  <AlertTriangle className="mt-0.5 h-6 w-6 shrink-0 text-amber-700 dark:text-amber-200" aria-hidden="true" />
-                  <div className="min-w-0">
-                    <h2 className="text-base font-bold leading-6">{CLERK_SETUP_TITLE}</h2>
-                    <p className="mt-2 text-sm leading-6 text-amber-900 dark:text-amber-100/85">
-                      {CLERK_SETUP_MESSAGE}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4 border-l border-amber-400/60 pl-3 font-mono text-xs leading-5 text-amber-950 dark:border-amber-300/35 dark:text-amber-100">
-                  <div>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=</div>
-                  <div>CLERK_SECRET_KEY=</div>
-                </div>
-              </section>
+              <AuthSetupNotice
+                compact
+                missingKeys={missingClerkKeys}
+                onContinue={() => handleOpenChange(false)}
+              />
             ) : mode === 'sign-in' ? (
-              <SignIn
-                key="sign-in"
-                routing="hash"
-                signUpUrl="#lexinsight-sign-up"
-                fallbackRedirectUrl={fallbackRedirectUrl}
-                signUpFallbackRedirectUrl={fallbackRedirectUrl}
-                appearance={authDialogAppearance}
-              />
+              <AuthErrorBoundary
+                fallback={
+                  <AuthSetupNotice
+                    compact
+                    message="The sign-in service could not load. You can keep using LexInSight in guest mode while the auth provider is checked."
+                    onContinue={() => handleOpenChange(false)}
+                    showDeveloperDetails={false}
+                    title="Sign-in could not load"
+                  />
+                }
+              >
+                <SignIn
+                  key="sign-in"
+                  routing="hash"
+                  signUpUrl="#lexinsight-sign-up"
+                  fallbackRedirectUrl={fallbackRedirectUrl}
+                  signUpFallbackRedirectUrl={fallbackRedirectUrl}
+                  appearance={authDialogAppearance}
+                />
+              </AuthErrorBoundary>
             ) : (
-              <SignUp
-                key="sign-up"
-                routing="hash"
-                signInUrl="#lexinsight-sign-in"
-                fallbackRedirectUrl={fallbackRedirectUrl}
-                signInFallbackRedirectUrl={fallbackRedirectUrl}
-                appearance={authDialogAppearance}
-              />
+              <AuthErrorBoundary
+                fallback={
+                  <AuthSetupNotice
+                    compact
+                    message="The sign-up service could not load. You can keep using LexInSight in guest mode while the auth provider is checked."
+                    onContinue={() => handleOpenChange(false)}
+                    showDeveloperDetails={false}
+                    title="Sign-up could not load"
+                  />
+                }
+              >
+                <SignUp
+                  key="sign-up"
+                  routing="hash"
+                  signInUrl="#lexinsight-sign-in"
+                  fallbackRedirectUrl={fallbackRedirectUrl}
+                  signInFallbackRedirectUrl={fallbackRedirectUrl}
+                  appearance={authDialogAppearance}
+                />
+              </AuthErrorBoundary>
             )}
           </div>
 

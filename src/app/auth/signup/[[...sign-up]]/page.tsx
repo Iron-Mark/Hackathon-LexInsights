@@ -1,6 +1,8 @@
 import { SignUp } from '@clerk/nextjs'
 import Image from 'next/image'
+import { AuthErrorBoundary } from '@/components/auth/auth-error-boundary'
 import { AuthSetupBlocker } from '@/components/auth/auth-setup-blocker'
+import { AuthSetupNotice } from '@/components/auth/auth-setup-notice'
 import { authFormAppearance } from '@/lib/auth/clerk-appearance'
 import { isClerkConfigured } from '@/lib/auth/clerk-config'
 
@@ -28,13 +30,23 @@ export default function SignupPage() {
             Sign up to save chats, documents, and compliance work.
           </p>
         </div>
-        <SignUp
-          routing="path"
-          path="/auth/signup"
-          signInUrl="/auth/login"
-          fallbackRedirectUrl="/chat"
-          appearance={authFormAppearance}
-        />
+        <AuthErrorBoundary
+          fallback={
+            <AuthSetupNotice
+              message="The sign-up service could not load. You can keep using LexInSight in guest mode while the auth provider is checked."
+              showDeveloperDetails={false}
+              title="Sign-up could not load"
+            />
+          }
+        >
+          <SignUp
+            routing="path"
+            path="/auth/signup"
+            signInUrl="/auth/login"
+            fallbackRedirectUrl="/chat"
+            appearance={authFormAppearance}
+          />
+        </AuthErrorBoundary>
       </div>
     </main>
   )

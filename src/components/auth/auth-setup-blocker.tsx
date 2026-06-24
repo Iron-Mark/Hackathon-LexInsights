@@ -1,24 +1,15 @@
-import Link from 'next/link'
-import { CLERK_SETUP_MESSAGE, CLERK_SETUP_TITLE } from '@/lib/auth/clerk-config'
+import { AuthSetupNotice } from '@/components/auth/auth-setup-notice'
+import { getClerkSetupStatus } from '@/lib/auth/clerk-config'
 
 export function AuthSetupBlocker() {
+  const clerkSetup = getClerkSetupStatus()
+
   return (
-    <section className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-xl flex-col justify-center px-6 py-12 text-center">
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-6 text-amber-950 shadow-sm">
-        <h1 className="text-2xl font-semibold text-amber-950">{CLERK_SETUP_TITLE}</h1>
-        <p className="mt-3 text-sm leading-6">{CLERK_SETUP_MESSAGE}</p>
-        <div className="mt-5 rounded-md bg-white p-4 text-left font-mono text-xs text-amber-950">
-          <div>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=</div>
-          <div>CLERK_SECRET_KEY=</div>
-        </div>
-        <Link
-          href="/"
-          className="mt-5 inline-flex min-h-11 items-center justify-center rounded-md bg-amber-900 px-4 text-sm font-medium text-white hover:bg-amber-800"
-        >
-          Back to home
-        </Link>
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 bg-[radial-gradient(circle_at_top_right,rgba(79,70,229,0.14),transparent_34%),linear-gradient(135deg,#f8fafc_0%,#eef2ff_100%)] px-4 py-8 dark:bg-[#171322] dark:bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.16),transparent_34%),linear-gradient(135deg,#171322_0%,#211a35_45%,#120d1f_100%)]">
+      <div className="w-full max-w-xl">
+        <AuthSetupNotice missingKeys={clerkSetup.missingKeys} />
       </div>
-    </section>
+    </main>
   )
 }
 

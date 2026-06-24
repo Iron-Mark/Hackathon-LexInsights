@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useMemo, useState } from 'react'
 import { Globe, ExternalLink, BookOpen } from 'lucide-react'
 import {
   Dialog,
@@ -95,15 +96,60 @@ const GOVERNMENT_RESOURCES: GovernmentResource[] = [
   },
 ]
 
+const ALL_CATEGORIES = 'All'
+
 export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
+  const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES)
+
   const handleResourceClick = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
-  const resourceGroups = Array.from(new Set(GOVERNMENT_RESOURCES.map(r => r.category))).map((category) => ({
-    category,
-    resources: GOVERNMENT_RESOURCES.filter((resource) => resource.category === category),
-  }))
+  const resourceGroups = useMemo(
+    () => Array.from(new Set(GOVERNMENT_RESOURCES.map(r => r.category))).map((category) => ({
+      category,
+      resources: GOVERNMENT_RESOURCES.filter((resource) => resource.category === category),
+    })),
+    []
+  )
+
+  const visibleResourceGroups = useMemo(() => {
+    if (selectedCategory === ALL_CATEGORIES) {
+      return resourceGroups
+    }
+
+    return resourceGroups.filter(({ category }) => category === selectedCategory)
+  }, [resourceGroups, selectedCategory])
+
+  const visibleResourceCount = visibleResourceGroups.reduce((total, group) => total + group.resources.length, 0)
+  const categoryFilters = [
+    { category: ALL_CATEGORIES, count: GOVERNMENT_RESOURCES.length },
+    ...resourceGroups.map(({ category, resources }) => ({
+      category,
+      count: resources.length,
+    })),
+  ]
+
+  useEffect(() => {
+    if (open) {
+      setSelectedCategory(ALL_CATEGORIES)
+    }
+  }, [open])
+
+  const filterButtonClassName = (isSelected: boolean) => [
+    'flex min-h-10 w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2.5 py-2 text-left text-sm transition-colors',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
+    isSelected
+      ? 'bg-iris-50 text-iris-800 dark:bg-iris-300/16 dark:text-iris-100'
+      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
+  ].join(' ')
+
+  const filterCountClassName = (isSelected: boolean) => [
+    'rounded-full px-2 py-0.5 text-xs font-semibold transition-colors',
+    isSelected
+      ? 'bg-iris-100 text-iris-700 dark:bg-iris-300/22 dark:text-iris-100'
+      : 'bg-slate-100 text-slate-500 dark:bg-iris-300/12 dark:text-slate-300',
+  ].join(' ')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -132,24 +178,79 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
             <aside className="hidden lg:block">
               <div className="sticky top-0 rounded-xl border border-slate-200 bg-white p-4 dark:border-iris-300/15 dark:bg-[#241f32]">
                 <p className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Categories</p>
-                <div className="mt-3 space-y-2">
-                  {resourceGroups.map(({ category, resources }) => (
-                    <div
-                      key={category}
-                      className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm text-slate-600 dark:text-slate-300"
-                    >
-                      <span>{category}</span>
-                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500 dark:bg-iris-300/12 dark:text-slate-300">
-                        {resources.length}
-                      </span>
-                    </div>
-                  ))}
+                <div className="mt-3 space-y-1.5" role="group" aria-label="Filter government resources by category">
+                  {categoryFilters.map(({ category, count }) => {
+                    const isSelected = selectedCategory === category
+
+                    return (
+                      <button
+                        key={category}
+                        type="button"
+                        aria-pressed={isSelected}
+                        className={filterButtonClassName(isSelected)}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        <span className="min-w-0 truncate">{category}</span>
+                        <span className={filterCountClassName(isSelected)}>
+                          {count}
+                        </span>
+                      </button>
+                    )
+                  })}
                 </div>
               </div>
             </aside>
 
-            <div className="space-y-7">
-              {resourceGroups.map(({ category, resources }) => (
+            <div className="min-w-0 space-y-7">
+              <div className="space-y-3 lg:hidden">
+                <p className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Categories</p>
+                <div
+                  className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1"
+                  role="group"
+                  aria-label="Filter government resources by category"
+                >
+                  {categoryFilters.map(({ category, count }) => {
+                    const isSelected = selectedCategory === category
+
+                    return (
+                      <button
+                        key={category}
+                        type="button"
+                        aria-pressed={isSelected}
+                        className={[
+                          'inline-flex min-h-10 shrink-0 cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-sm transition-colors',
+                          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
+                          isSelected
+                            ? 'border-iris-300 bg-iris-50 text-iris-800 dark:border-iris-300/35 dark:bg-iris-300/16 dark:text-iris-100'
+                            : 'border-slate-200 bg-white text-slate-600 hover:border-iris-200 hover:text-slate-950 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-300 dark:hover:border-iris-300/30 dark:hover:text-slate-100',
+                        ].join(' ')}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        <span>{category}</span>
+                        <span className={filterCountClassName(isSelected)}>{count}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                  Showing <span className="font-bold text-slate-950 dark:text-slate-100">{visibleResourceCount}</span>{' '}
+                  {selectedCategory === ALL_CATEGORIES ? 'official sources' : `${selectedCategory.toLowerCase()} source${visibleResourceCount === 1 ? '' : 's'}`}
+                </p>
+                {selectedCategory !== ALL_CATEGORIES && (
+                  <button
+                    type="button"
+                    className="min-h-10 cursor-pointer rounded-lg px-3 text-sm font-semibold text-iris-700 transition-colors hover:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:text-iris-200 dark:hover:bg-iris-300/10 dark:focus-visible:ring-offset-[#171322]"
+                    onClick={() => setSelectedCategory(ALL_CATEGORIES)}
+                  >
+                    Clear filter
+                  </button>
+                )}
+              </div>
+
+              {visibleResourceGroups.map(({ category, resources }) => (
                 <section key={category} aria-labelledby={`resource-category-${category}`}>
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <h3

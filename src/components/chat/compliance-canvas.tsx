@@ -118,6 +118,8 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         heading: 'text-green-800 border-green-600 dark:border-green-300 dark:text-green-100',
         text: 'text-green-800 dark:text-green-100',
         badge: 'text-green-700 bg-green-50 dark:bg-green-400/10 dark:text-green-100',
+        field: 'border-green-200 bg-white/70 dark:border-green-400/20 dark:bg-green-950/20',
+        accent: 'text-green-700 dark:text-green-200',
         icon: 'text-green-600 dark:text-green-300',
       },
       yellow: {
@@ -125,6 +127,8 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         heading: 'text-amber-800 border-amber-600 dark:border-amber-300 dark:text-amber-100',
         text: 'text-amber-800 dark:text-amber-100',
         badge: 'text-amber-700 bg-amber-50 dark:bg-amber-400/10 dark:text-amber-100',
+        field: 'border-amber-200 bg-white/70 dark:border-amber-400/20 dark:bg-amber-950/20',
+        accent: 'text-amber-700 dark:text-amber-200',
         icon: 'text-amber-600 dark:text-amber-300',
       },
       red: {
@@ -132,6 +136,8 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         heading: 'text-red-800 border-red-600 dark:border-red-300 dark:text-red-100',
         text: 'text-red-800 dark:text-red-100',
         badge: 'text-red-700 bg-red-50 dark:bg-red-400/10 dark:text-red-100',
+        field: 'border-red-200 bg-white/70 dark:border-red-400/20 dark:bg-red-950/20',
+        accent: 'text-red-700 dark:text-red-200',
         icon: 'text-red-600 dark:text-red-300',
       },
       neutral: {
@@ -180,13 +186,77 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       const style = color ? toneStyles[color].section : toneStyles.neutral.section
 
       return (
-        <div key={'section-' + startIndex} className={'my-4 rounded-lg border p-4 ' + style}>
-          {content.map((line, idx) => renderLine(line, startIndex + idx))}
+        <div
+          key={'section-' + startIndex}
+          className={cn(
+            'my-4 min-w-0 overflow-hidden rounded-lg border p-4 break-words [overflow-wrap:anywhere]',
+            style
+          )}
+        >
+          <div className="space-y-2">
+            {content.map((line, idx) => renderLine(line, startIndex + idx, color))}
+          </div>
         </div>
       )
     }
 
-    const renderLine = (line: string, index: number) => {
+    const renderFindingField = (rawText: string, index: number, contextTone: ComplianceTone | null) => {
+      const fieldMatch = rawText.match(/^(Status|Category|Severity Score|Description|References|Recommendation):\s*(.*)$/i)
+
+      if (!fieldMatch) {
+        return null
+      }
+
+      const label = fieldMatch[1]
+      const value = fieldMatch[2]
+      const normalizedLabel = label.toLowerCase()
+      const fieldTone = getComplianceTone(value) || contextTone
+      const toneClass = fieldTone ? toneStyles[fieldTone] : null
+
+      if (normalizedLabel === 'status' || normalizedLabel === 'category' || normalizedLabel === 'severity score') {
+        const compactLabel = normalizedLabel === 'severity score' ? 'Severity' : label
+
+        return (
+          <div
+            key={index}
+            className={cn(
+              'mr-2 mt-1 inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-normal break-words [overflow-wrap:anywhere]',
+              toneClass ? `${toneClass.badge} ${toneClass.field}` : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-iris-300/15 dark:bg-[#171322]/70 dark:text-slate-300'
+            )}
+          >
+            {fieldTone && normalizedLabel === 'status' ? renderToneIcon(fieldTone, 'h-3.5 w-3.5') : null}
+            <span className="text-[0.68rem] opacity-75">{compactLabel}</span>
+            <span className="min-w-0 normal-case">{value}</span>
+          </div>
+        )
+      }
+
+      const fieldLabel = normalizedLabel === 'references' ? 'Sources' : label
+
+      return (
+        <div
+          key={index}
+          className={cn(
+            'my-2 min-w-0 rounded-lg border px-3 py-2.5 break-words [overflow-wrap:anywhere]',
+            toneClass ? toneClass.field : 'border-slate-200 bg-slate-50 dark:border-iris-300/15 dark:bg-[#171322]/70'
+          )}
+        >
+          <p
+            className={cn(
+              'text-[0.7rem] font-bold uppercase tracking-normal',
+              toneClass ? toneClass.accent : 'text-slate-500 dark:text-slate-400'
+            )}
+          >
+            {fieldLabel}
+          </p>
+          <p className="mt-1 text-sm leading-6 text-slate-700 break-words [overflow-wrap:anywhere] dark:text-slate-200">
+            {value || 'Not provided'}
+          </p>
+        </div>
+      )
+    }
+
+    const renderLine = (line: string, index: number, contextTone: ComplianceTone | null = null) => {
       const trimmed = line.trim()
       const headingTone = getComplianceTone(line)
 
@@ -194,7 +264,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return (
           <h2 key={index} className={'mb-2 flex items-center gap-2 border-l-4 py-2 pl-4 text-xl font-bold ' + toneStyles[headingTone].heading}>
             {renderToneIcon(headingTone, 'h-5 w-5')}
-            <span>{line.slice(3)}</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">{line.slice(3)}</span>
           </h2>
         )
       }
@@ -203,28 +273,49 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return (
           <h3 key={index} className={'mb-2 mt-3 flex items-center gap-2 border-l-2 px-3 py-2 text-lg font-bold ' + toneStyles[headingTone].heading}>
             {renderToneIcon(headingTone)}
-            <span>{line.slice(4)}</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">{line.slice(4)}</span>
           </h3>
         )
       }
 
       if (line.startsWith('# ')) {
-        return <h1 key={index} className="mb-4 mt-6 text-2xl font-bold text-slate-950 dark:text-slate-100">{line.slice(2)}</h1>
+        return <h1 key={index} className="mb-4 mt-6 break-words text-2xl font-bold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{line.slice(2)}</h1>
       }
       if (line.startsWith('## ')) {
-        return <h2 key={index} className="mb-3 mt-5 text-xl font-semibold text-slate-950 dark:text-slate-100">{line.slice(3)}</h2>
+        return <h2 key={index} className="mb-3 mt-5 break-words text-xl font-semibold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{line.slice(3)}</h2>
       }
       if (line.startsWith('### ')) {
-        return <h3 key={index} className="mb-2 mt-4 text-lg font-semibold text-slate-800 dark:text-slate-200">{line.slice(4)}</h3>
+        const headingText = line.slice(4)
+        const findingMatch = headingText.match(/^(\d+)\.\s*(.+)$/)
+
+        if (contextTone && findingMatch) {
+          return (
+            <div key={index} className="mt-5 flex min-w-0 items-start gap-3 border-t border-current/15 pt-4 first:mt-0 first:border-t-0 first:pt-0">
+              <span
+                className={cn(
+                  'mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold',
+                  toneStyles[contextTone].badge
+                )}
+              >
+                {findingMatch[1]}
+              </span>
+              <h3 className="min-w-0 break-words font-display text-base font-bold leading-6 text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">
+                {findingMatch[2]}
+              </h3>
+            </div>
+          )
+        }
+
+        return <h3 key={index} className="mb-2 mt-4 break-words text-lg font-semibold text-slate-800 [overflow-wrap:anywhere] dark:text-slate-200">{headingText}</h3>
       }
 
       if (line.includes('**Status:**') || /^status:/i.test(trimmed)) {
         const statusTone = getComplianceTone(line)
         if (statusTone) {
           return (
-            <p key={index} className={'my-2 inline-flex items-center gap-2 rounded px-2 py-1 font-semibold ' + toneStyles[statusTone].badge}>
+            <p key={index} className={'my-2 inline-flex max-w-full items-center gap-2 rounded px-2 py-1 font-semibold break-words [overflow-wrap:anywhere] ' + toneStyles[statusTone].badge}>
               {renderToneIcon(statusTone)}
-              <span>{line}</span>
+              <span className="min-w-0 break-words [overflow-wrap:anywhere]">{line}</span>
             </p>
           )
         }
@@ -237,11 +328,11 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         if (scoreNum >= 80) colorClass = 'text-green-700 bg-green-50 border-green-200 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-100'
         else if (scoreNum >= 60) colorClass = 'text-amber-700 bg-amber-50 border-amber-200 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-100'
 
-        return <div key={index} className={'my-4 rounded-lg border-2 p-4 text-2xl font-bold ' + colorClass}>{line}</div>
+        return <div key={index} className={'my-4 rounded-lg border-2 p-4 text-2xl font-bold break-words [overflow-wrap:anywhere] ' + colorClass}>{line}</div>
       }
 
       if (line.startsWith('**') && line.endsWith('**')) {
-        return <p key={index} className="my-2 font-semibold text-slate-950 dark:text-slate-100">{line.slice(2, -2)}</p>
+        return <p key={index} className="my-2 break-words font-semibold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{line.slice(2, -2)}</p>
       }
 
       const checklistMatch = trimmed.match(/^-\s+\[([ xX])\]\s+(.+)$/)
@@ -264,13 +355,19 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               aria-label={`Checklist item: ${checklistText}`}
               className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-iris-300/30 dark:bg-[#171322] dark:accent-iris-300"
             />
-            <span>{checklistText}</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">{checklistText}</span>
           </div>
         )
       }
 
       if (trimmed.startsWith('- ')) {
         const listText = trimmed.slice(2)
+        const findingField = renderFindingField(listText, index, contextTone)
+
+        if (findingField) {
+          return findingField
+        }
+
         const listTone = getComplianceTone(listText)
         const statusListPattern = /^(green|amber|yellow|red|compliant|non[-\s]?compliant|warning|critical|blocked|failed|missing|passed|needs review)\b/i
         const iconList = listText.startsWith('\u2705') || listText.startsWith('\u26a0') || listText.startsWith('\ud83d\udeab')
@@ -282,22 +379,22 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             .trim()
 
           return (
-            <li key={index} className={'ml-4 my-1 flex items-start gap-2 rounded px-2 py-1.5 font-medium ' + toneStyles[listTone].text}>
+            <li key={index} className={'ml-4 my-1 flex min-w-0 items-start gap-2 rounded px-2 py-1.5 font-medium break-words [overflow-wrap:anywhere] ' + toneStyles[listTone].text}>
               {renderToneIcon(listTone)}
-              <span>{cleanedText || listText}</span>
+              <span className="min-w-0 break-words [overflow-wrap:anywhere]">{cleanedText || listText}</span>
             </li>
           )
         }
 
-        return <li key={index} className="ml-4 my-1 text-slate-700 dark:text-slate-300">{listText}</li>
+        return <li key={index} className="ml-4 my-1 min-w-0 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{listText}</li>
       }
 
       if (/^\d+\./.test(trimmed)) {
-        return <li key={index} className="ml-4 my-1 text-slate-700 dark:text-slate-300">{trimmed.replace(/^\d+\.\s*/, '')}</li>
+        return <li key={index} className="ml-4 my-1 min-w-0 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{trimmed.replace(/^\d+\.\s*/, '')}</li>
       }
 
       if (/^(action|deadline|target|owner):/i.test(trimmed)) {
-        return <p key={index} className="my-2 pl-6 leading-relaxed text-slate-700 dark:text-slate-300">{line}</p>
+        return <p key={index} className="my-2 break-words pl-6 leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{line}</p>
       }
 
       if (trimmed === '---') {
@@ -307,9 +404,9 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       if (line.includes('|')) {
         const cells = line.split('|').filter(cell => cell.trim())
         return (
-          <div key={index} className="flex gap-2 border-b border-slate-200 py-2 dark:border-iris-300/15">
+          <div key={index} className="flex min-w-0 gap-2 border-b border-slate-200 py-2 dark:border-iris-300/15">
             {cells.map((cell, i) => (
-              <div key={i} className="flex-1 text-sm text-slate-700 dark:text-slate-300">{cell.trim()}</div>
+              <div key={i} className="min-w-0 flex-1 break-words text-sm text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{cell.trim()}</div>
             ))}
           </div>
         )
@@ -319,7 +416,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return <div key={index} className="h-2" />
       }
 
-      return <p key={index} className="my-2 leading-relaxed text-slate-700 dark:text-slate-300">{line}</p>
+      return <p key={index} className="my-2 break-words leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{line}</p>
     }
 
     for (let i = 0; i < lines.length; i++) {
@@ -687,7 +784,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             )}
             
             {displayContent && (
-              <div className="max-w-none space-y-1">
+              <div className="max-w-none space-y-1 break-words [overflow-wrap:anywhere]">
                 {renderContent(previewContent)}
               </div>
             )}

@@ -15,16 +15,16 @@ interface AttributionDialogProps {
 }
 
 const AUTHORS = [
-  { name: 'Jam', role: 'Hackathon contributor' },
-  { name: 'Ken', role: 'Hackathon contributor' },
-  { name: 'Mark Siazon', role: 'Hackathon contributor and active maintainer' },
-  { name: 'Ashlyn', role: 'Hackathon contributor' },
+  { name: 'Jam Emmanuel Villarosa', role: 'AI Engineer & Lead Developer' },
+  { name: 'Ken Patrick Garcia', role: 'Backend & API Developer' },
+  { name: 'Mark Siazon', role: 'UI/UX Product Design & Front-end Developer' },
+  { name: 'Ashlyn Torres', role: 'QA & Project Assistant Manager' },
 ]
 
 const PROJECT_FACTS = [
   { label: 'Built for', value: 'Devkada Codekada 2025' },
-  { label: 'Product focus', value: 'AI legal compliance chat for Philippine legal research workflows' },
-  { label: 'Public proof', value: 'Portfolio case study, live app, and Iron-Mark repository' },
+  { label: 'Product focus', value: 'Philippine legal research and compliance review workflows' },
+  { label: 'Public proof', value: 'Live app, portfolio case study, and Iron-Mark repository' },
 ]
 
 const MAINTAINER_FACTS = [
@@ -65,7 +65,7 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
             </h3>
             <div className="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
               {AUTHORS.map((author) => (
-                <div key={author.name} className="border-b border-slate-100 pb-3 dark:border-iris-300/10">
+                <div key={author.name} className="min-w-0 border-b border-slate-100 pb-3 dark:border-iris-300/10">
                   <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">{author.name}</p>
                   <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{author.role}</p>
                 </div>
@@ -73,20 +73,25 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
             </div>
           </section>
 
-          <section className="mt-5 border-t border-slate-200 pt-5 dark:border-iris-300/15" aria-labelledby="attribution-project">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-iris-600 dark:text-iris-200" aria-hidden="true" />
-              <h3 id="attribution-project" className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                Project Context
-              </h3>
+          <section className="mt-5 border-y border-slate-200 py-5 dark:border-iris-300/15" aria-labelledby="attribution-project">
+            <div className="flex items-start gap-3">
+              <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-iris-600 dark:text-iris-200" aria-hidden="true" />
+              <div className="min-w-0">
+                <h3 id="attribution-project" className="text-sm font-bold uppercase tracking-wide text-slate-700 dark:text-iris-100">
+                  Project Context
+                </h3>
+                <p className="mt-1 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  A hackathon-origin legal assistant shaped into a public, proof-backed product demo.
+                </p>
+              </div>
             </div>
-            <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-3">
+            <dl className="mt-4 divide-y divide-slate-200 border-y border-slate-100 text-sm dark:divide-iris-300/10 dark:border-iris-300/10 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
               {PROJECT_FACTS.map((fact) => (
-                <div key={fact.label} className="border-l border-slate-200 pl-3 dark:border-iris-300/15">
-                  <dt className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                <div key={fact.label} className="min-w-0 py-3 sm:px-4 sm:first:pl-0 sm:last:pr-0">
+                  <dt className="text-[11px] font-bold uppercase tracking-wide text-iris-700 dark:text-iris-200">
                     {fact.label}
                   </dt>
-                  <dd className="mt-1 leading-6 text-slate-800 dark:text-slate-200">{fact.value}</dd>
+                  <dd className="mt-1 text-[15px] font-medium leading-6 text-slate-900 dark:text-slate-100">{fact.value}</dd>
                 </div>
               ))}
             </dl>
