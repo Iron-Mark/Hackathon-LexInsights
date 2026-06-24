@@ -111,7 +111,7 @@ try {
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
   assert.ok(corpus.length >= 15, 'Local corpus should include at least 15 authorities')
-  assert.ok(frameworks.length >= 8, 'Local corpus should include compliance framework bundles')
+  assert.ok(frameworks.length >= 10, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -127,6 +127,14 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'ip-investment-and-regulated-products'),
     'Frameworks should include IP, investment, and regulated products'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'built-environment-and-public-facilities'),
+    'Frameworks should include built environment and public facilities'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'land-climate-coastal-and-resource-governance'),
+    'Frameworks should include land, climate, coastal, and resource governance'
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
@@ -161,6 +169,19 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10066'), 'Corpus should include RA 10066')
   assert.ok(corpus.some((document) => document.statute === 'RA 9994'), 'Corpus should include RA 9994')
   assert.ok(corpus.some((document) => document.statute === 'RA 7277'), 'Corpus should include RA 7277')
+  assert.ok(corpus.some((document) => document.statute === 'PD 1096'), 'Corpus should include PD 1096')
+  assert.ok(corpus.some((document) => document.statute === 'PD 856'), 'Corpus should include PD 856')
+  assert.ok(corpus.some((document) => document.statute === 'BP 344'), 'Corpus should include BP 344')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7610'), 'Corpus should include RA 7610')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8042'), 'Corpus should include RA 8042')
+  assert.ok(corpus.some((document) => document.statute === 'RA 1405'), 'Corpus should include RA 1405')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7581'), 'Corpus should include RA 7581')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9178'), 'Corpus should include RA 9178')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9501'), 'Corpus should include RA 9501')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9513'), 'Corpus should include RA 9513')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9729'), 'Corpus should include RA 9729')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8550'), 'Corpus should include RA 8550')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7942'), 'Corpus should include RA 7942')
 
   assertResearchMatch(
     runLocalResearch(
@@ -511,6 +532,92 @@ try {
     ),
     'RA 9994',
     'senior citizen query'
+  )
+
+  const builtEnvironmentFrameworkResponse = runLocalResearch(
+    { query: 'What building permit, sanitary permit, accessibility, and occupancy controls should a public market renovation check?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(builtEnvironmentFrameworkResponse, 'PD 1096', 'built environment building query')
+  assertResearchMatch(builtEnvironmentFrameworkResponse, 'PD 856', 'built environment sanitation query')
+  assertIncludes(
+    builtEnvironmentFrameworkResponse.summary,
+    'Built Environment, Sanitation, Accessibility, and Public Facilities Stack',
+    'Built environment framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What BP 344 ramp, accessible toilet, parking, and barrier-free controls apply to a public office?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'BP 344',
+    'accessibility law query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What child abuse reporting and confidentiality safeguards apply to minor-facing youth programs?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7610',
+    'child protection query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What OFW illegal recruitment and placement agency controls apply to overseas job referrals?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8042',
+    'migrant worker query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What bank secrecy controls apply when collecting bank statements and deposit account details?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 1405',
+    'bank secrecy query'
+  )
+
+  const marketControlsResponse = runLocalResearch(
+    { query: 'What price freeze, basic necessities, BMBE, and MSME controls apply during a local market assistance program?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(marketControlsResponse, 'RA 7581', 'price act query')
+  assertResearchMatch(marketControlsResponse, 'RA 9178', 'BMBE query')
+  assertResearchMatch(marketControlsResponse, 'RA 9501', 'MSME query')
+
+  const resourceGovernanceResponse = runLocalResearch(
+    { query: 'What climate action, renewable energy, fishery permit, quarry, and mining controls apply to coastal resource projects?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(resourceGovernanceResponse, 'RA 9513', 'renewable energy query')
+  assertResearchMatch(resourceGovernanceResponse, 'RA 8550', 'fisheries query')
+  assertIncludes(
+    resourceGovernanceResponse.summary,
+    'Land, Climate, Coastal, and Natural Resource Governance Stack',
+    'Resource governance framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What climate action plan, LCCAP, adaptation, mitigation, and vulnerable-sector indicators should an LGU include?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9729',
+    'climate query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What quarry permit, tailings, mine safety, and rehabilitation controls apply to mineral extraction?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7942',
+    'mining query'
   )
 
   const noResultsResponse = runLocalResearch(
@@ -1151,6 +1258,133 @@ This policy takes effect 30 days after publication.`
   assert.equal(thinAccessibilityDraftResponse.status, 'success', 'Accessibility draft check should succeed locally')
   assertFinding(thinAccessibilityDraftResponse, 'amber', 'Senior-citizen benefit')
   assertFinding(thinAccessibilityDraftResponse, 'amber', 'PWD accessibility')
+
+  const thinFacilityDraft = `# Public Market Renovation Policy
+
+## Purpose
+This policy covers construction, occupancy permit, sanitary permit, and accessibility improvements for a public market.
+
+## Legal Basis
+Pursuant to PD 1096, PD 856, and BP 344.
+
+## Scope
+This applies to vendors and public market facilities.
+
+## Responsible Office
+The engineering office shall implement this policy.
+
+## Requirements
+Vendors shall cooperate with renovation schedules.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinFacilityDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinFacilityDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinFacilityDraftResponse.status, 'success', 'Facility draft check should succeed locally')
+  assertFinding(thinFacilityDraftResponse, 'amber', 'Building and occupancy controls')
+  assertFinding(thinFacilityDraftResponse, 'amber', 'Sanitation controls')
+  assertFinding(thinFacilityDraftResponse, 'amber', 'Physical accessibility features')
+
+  const thinChildMigrantDraft = `# Youth and OFW Referral Desk Protocol
+
+## Purpose
+This protocol handles child protection reports and OFW illegal recruitment complaints.
+
+## Legal Basis
+Pursuant to RA 7610 and RA 8042.
+
+## Scope
+This applies to residents seeking assistance.
+
+## Responsible Office
+The public assistance desk shall implement this protocol.
+
+## Requirements
+Residents shall submit reports to the desk.
+
+## Monitoring
+The desk shall submit quarterly reports.
+
+## Effectivity
+This protocol takes effect 30 days after publication.`
+
+  const thinChildMigrantDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinChildMigrantDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinChildMigrantDraftResponse.status, 'success', 'Child migrant draft check should succeed locally')
+  assertFinding(thinChildMigrantDraftResponse, 'amber', 'Child-protection controls')
+  assertFinding(thinChildMigrantDraftResponse, 'amber', 'Migrant-worker protection')
+
+  const thinFinanceMarketDraft = `# Emergency Market Assistance Policy
+
+## Purpose
+This policy collects bank statements for local aid and handles price freeze monitoring for basic necessities.
+
+## Legal Basis
+Pursuant to RA 1405 and RA 7581.
+
+## Scope
+This applies to aid applicants and market vendors.
+
+## Responsible Office
+The market office shall implement this policy.
+
+## Requirements
+Applicants and vendors shall submit documents when requested.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinFinanceMarketDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinFinanceMarketDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinFinanceMarketDraftResponse.status, 'success', 'Finance market draft check should succeed locally')
+  assertFinding(thinFinanceMarketDraftResponse, 'amber', 'Bank-deposit confidentiality')
+  assertFinding(thinFinanceMarketDraftResponse, 'amber', 'Price-control measures')
+
+  const thinResourceDraft = `# Coastal Resource and Quarry Project Ordinance
+
+## Purpose
+This ordinance covers climate action, renewable energy, fishery permit, and quarry activities.
+
+## Legal Basis
+Pursuant to RA 9729, RA 9513, RA 8550, and RA 7942.
+
+## Scope
+This applies to coastal resource projects.
+
+## Responsible Office
+The environment office shall implement this ordinance.
+
+## Requirements
+Project proponents shall submit project details.
+
+## Monitoring
+The environment office shall submit quarterly reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinResourceDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinResourceDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinResourceDraftResponse.status, 'success', 'Resource draft check should succeed locally')
+  assertFinding(thinResourceDraftResponse, 'amber', 'Climate action controls')
+  assertFinding(thinResourceDraftResponse, 'amber', 'Renewable-energy project')
+  assertFinding(thinResourceDraftResponse, 'amber', 'Fisheries controls')
+  assertFinding(thinResourceDraftResponse, 'amber', 'Mining or quarry controls')
 
   const strongerDraft = `# Solid Waste Segregation Ordinance
 

@@ -54,6 +54,8 @@ const LOCAL_PROVIDER_SERVICE = 'providerless-local-legal-research'
 const MINIMUM_SCORE = 1.25
 const BM25_K1 = 1.2
 const BM25_B = 0.75
+const STANDARD_RESULT_LIMIT = 6
+const DEEP_RESULT_LIMIT = 10
 
 const STOP_WORDS = new Set([
   'a',
@@ -1695,6 +1697,494 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'Facilities, forms, or online workflows are created without accessible alternatives.',
     ],
   },
+  {
+    id: 'pd-1096',
+    statute: 'PD 1096',
+    title: 'Presidential Decree No. 1096',
+    shortTitle: 'National Building Code of the Philippines',
+    year: 1977,
+    sourceName: 'Supreme Court E-Library',
+    sourceUrl: 'https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/11/53320',
+    aliases: [
+      'pd 1096',
+      'presidential decree 1096',
+      'national building code',
+      'building code of the philippines',
+      'building permit',
+      'occupancy permit',
+    ],
+    topics: ['building', 'construction', 'occupancy', 'permits', 'structural safety', 'zoning'],
+    keywords: [
+      'building permit',
+      'occupancy permit',
+      'construction',
+      'renovation',
+      'structural',
+      'architectural',
+      'electrical',
+      'mechanical',
+      'sanitary',
+      'fire safety',
+      'zoning',
+      'building official',
+    ],
+    summary:
+      'A national building-control framework for construction, alteration, repair, occupancy, building permits, inspections, and minimum safety standards for buildings and structures.',
+    obligations: [
+      'For construction, fit-out, renovation, occupancy, or facility-use policies, identify permit, plan review, inspection, occupancy, and building-official responsibilities.',
+      'Coordinate building, fire, accessibility, sanitation, zoning, environmental, and occupational-safety requirements before authorizing use.',
+      'Separate design approval, construction monitoring, final inspection, occupancy, maintenance, and violation response.',
+      'Avoid allowing public use of facilities without occupancy, safety, accessibility, and emergency controls.',
+    ],
+    commonGaps: [
+      'Construction or facility-use rules lack building permit, inspection, or occupancy controls.',
+      'Fire, accessibility, sanitation, and structural requirements are treated as optional add-ons.',
+      'The responsible building official, inspection record, or stop-use process is not named.',
+    ],
+  },
+  {
+    id: 'pd-856',
+    statute: 'PD 856',
+    title: 'Presidential Decree No. 856',
+    shortTitle: 'Code on Sanitation of the Philippines',
+    year: 1975,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/presdecs/pd1975/pd_856_1975.html',
+    aliases: [
+      'pd 856',
+      'presidential decree 856',
+      'code on sanitation',
+      'sanitation code',
+      'sanitary permit',
+      'health certificate',
+      'food establishment sanitation',
+    ],
+    topics: ['sanitation', 'public health', 'food establishments', 'water supply', 'wastewater', 'public facilities'],
+    keywords: [
+      'sanitary permit',
+      'health certificate',
+      'food establishment',
+      'water supply',
+      'sewage',
+      'septage',
+      'vermin control',
+      'public toilet',
+      'market sanitation',
+      'health officer',
+      'inspection',
+    ],
+    summary:
+      'A public-health sanitation framework covering sanitary permits, food establishments, markets, water supply, sewage, refuse, public facilities, health certificates, and sanitation inspections.',
+    obligations: [
+      'For food, market, school, lodging, workplace, event, or public-facility operations, identify sanitary permits, health certificates, inspection cadence, and health-office roles.',
+      'Separate potable water, food handling, toilet, sewage, refuse, pest-control, disease-prevention, and closure or correction workflows.',
+      'Coordinate sanitation controls with consumer protection, FDA, clean water, solid waste, building, and occupational-safety requirements.',
+      'Avoid opening facilities or events without sanitation inspection, correction orders, records, and complaint handling.',
+    ],
+    commonGaps: [
+      'Food or public-facility policies lack sanitary permit, health certificate, or inspection details.',
+      'Water, toilet, sewage, refuse, and pest controls are not separated.',
+      'Closure, correction, and appeal procedures are missing for sanitation violations.',
+    ],
+  },
+  {
+    id: 'bp-344',
+    statute: 'BP 344',
+    title: 'Batas Pambansa Blg. 344',
+    shortTitle: 'Accessibility Law',
+    year: 1983,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/bataspam/bp1983/bp_344_1983.html',
+    aliases: ['bp 344', 'batas pambansa 344', 'accessibility law', 'accessibility for disabled persons'],
+    topics: ['accessibility', 'buildings', 'transport', 'persons with disability', 'public facilities'],
+    keywords: [
+      'accessibility',
+      'ramps',
+      'parking',
+      'public building',
+      'transportation',
+      'disabled persons',
+      'barrier free',
+      'architectural facilities',
+      'signage',
+      'accessible route',
+    ],
+    summary:
+      'A barrier-free accessibility framework requiring buildings, institutions, establishments, and public utilities to provide facilities and features for persons with disabilities.',
+    obligations: [
+      'For buildings, service desks, transport, schools, clinics, halls, and public facilities, identify accessible routes, ramps, signs, parking, counters, toilets, and assistance features.',
+      'Coordinate accessibility with PWD rights, building permits, fire safety, sanitation, public service, and digital-channel alternatives.',
+      'Separate permanent accessibility features from temporary assistance or ad hoc staff discretion.',
+      'Avoid launching public-facing facilities without an accessibility check and complaint path.',
+    ],
+    commonGaps: [
+      'Facility rules mention PWD access but omit concrete ramps, routes, toilets, parking, signs, or service counters.',
+      'Accessibility is handled as staff assistance instead of built-in design and process controls.',
+      'Building, event, and service plans lack accessibility inspection and correction ownership.',
+    ],
+  },
+  {
+    id: 'ra-7610',
+    statute: 'RA 7610',
+    title: 'Republic Act No. 7610',
+    shortTitle: 'Special Protection of Children Against Abuse, Exploitation and Discrimination Act',
+    year: 1992,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1992/ra_7610_1992.html',
+    aliases: ['ra 7610', 'republic act 7610', 'special protection of children', 'child abuse law'],
+    topics: ['child protection', 'abuse', 'exploitation', 'discrimination', 'schools', 'social welfare'],
+    keywords: [
+      'child abuse',
+      'exploitation',
+      'discrimination',
+      'child protection',
+      'neglect',
+      'working child',
+      'child trafficking',
+      'reporting',
+      'confidentiality',
+      'social welfare',
+      'mandatory reporting',
+    ],
+    summary:
+      'A child-protection statute covering abuse, exploitation, discrimination, child labor risks, protective custody, reporting, and coordination with social-welfare and law-enforcement mechanisms.',
+    obligations: [
+      'For programs involving minors, state consent, supervision, abuse-reporting, referral, confidentiality, safe recruitment, child-labor, and victim-support safeguards.',
+      'Separate school discipline, social welfare, law-enforcement referral, medical support, and child-protection record handling.',
+      'Coordinate with online child safety, anti-trafficking, privacy, bullying, and VAWC controls when child data or complaints are involved.',
+      'Avoid exposing child identity, requiring repeated disclosure, or handling abuse complaints through ordinary customer-service channels.',
+    ],
+    commonGaps: [
+      'Minor-facing programs lack child-protection reporting, referral, and confidentiality controls.',
+      'Child records, photos, or complaints are handled without restricted access.',
+      'School, event, or platform policies do not distinguish discipline from abuse or exploitation response.',
+    ],
+  },
+  {
+    id: 'ra-8042',
+    statute: 'RA 8042',
+    title: 'Republic Act No. 8042',
+    shortTitle: 'Migrant Workers and Overseas Filipinos Act of 1995',
+    year: 1995,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1995/ra_8042_1995.html',
+    aliases: ['ra 8042', 'republic act 8042', 'migrant workers act', 'overseas filipinos act', 'ofw law'],
+    topics: ['migrant workers', 'overseas employment', 'recruitment', 'placement', 'worker protection'],
+    keywords: [
+      'migrant worker',
+      'overseas filipino',
+      'ofw',
+      'recruitment',
+      'placement agency',
+      'illegal recruitment',
+      'employment contract',
+      'repatriation',
+      'welfare assistance',
+      'deployment',
+    ],
+    summary:
+      'A migrant-worker protection framework covering overseas employment, recruitment, placement, illegal recruitment, worker welfare, repatriation, legal assistance, and agency coordination.',
+    obligations: [
+      'For recruitment, referral, training, placement, or OFW assistance programs, state licensing, contract, fee, verification, complaint, and welfare-referral controls.',
+      'Separate local job matching, overseas placement, illegal recruitment reporting, trafficking risk, repatriation, and legal assistance workflows.',
+      'Protect worker identity, passport, contract, family, financial, and complaint records.',
+      'Avoid collecting placement fees, promising overseas jobs, or publishing recruitment offers without verification and lawful agency coordination.',
+    ],
+    commonGaps: [
+      'Overseas job or training offers lack agency licensing, contract verification, and fee controls.',
+      'Illegal recruitment and trafficking risks are not screened separately.',
+      'Worker welfare, complaint, repatriation, and record-confidentiality workflows are missing.',
+    ],
+  },
+  {
+    id: 'ra-1405',
+    statute: 'RA 1405',
+    title: 'Republic Act No. 1405',
+    shortTitle: 'Law on Secrecy of Bank Deposits',
+    year: 1955,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1955/ra_1405_1955.html',
+    aliases: ['ra 1405', 'republic act 1405', 'bank secrecy law', 'secrecy of bank deposits'],
+    topics: ['banking', 'confidentiality', 'financial privacy', 'deposits', 'disclosure'],
+    keywords: [
+      'bank deposit',
+      'bank secrecy',
+      'confidential',
+      'financial record',
+      'deposit account',
+      'waiver',
+      'court order',
+      'disclosure',
+      'bank information',
+      'financial privacy',
+    ],
+    summary:
+      'A banking confidentiality statute protecting bank deposits and limiting disclosure except through recognized exceptions, consent, or lawful process.',
+    obligations: [
+      'For bank-account, deposit, financial-assistance, loan, audit, or payment workflows, state what financial records are collected, who may access them, and what lawful basis or consent applies.',
+      'Separate ordinary financial data, bank-deposit details, AML reporting, tax records, court orders, waivers, and privacy handling.',
+      'Keep audit trails for authorized disclosure, redaction, retention, and complaint handling.',
+      'Avoid asking for bank statements or account details unless purpose, authority, access limits, and alternatives are clear.',
+    ],
+    commonGaps: [
+      'Bank-account or deposit details are requested without legal basis, consent, or access restrictions.',
+      'AML, tax, audit, and ordinary verification workflows are mixed without confidentiality controls.',
+      'Disclosure exceptions, redaction, retention, and complaint handling are not stated.',
+    ],
+  },
+  {
+    id: 'ra-7581',
+    statute: 'RA 7581',
+    title: 'Republic Act No. 7581',
+    shortTitle: 'Price Act',
+    year: 1992,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1992/ra_7581_1992.html',
+    aliases: ['ra 7581', 'republic act 7581', 'price act', 'price control law'],
+    topics: ['price control', 'basic necessities', 'prime commodities', 'consumer protection', 'emergency'],
+    keywords: [
+      'basic necessities',
+      'prime commodities',
+      'price ceiling',
+      'price freeze',
+      'profiteering',
+      'hoarding',
+      'cartel',
+      'calamity',
+      'emergency',
+      'consumer protection',
+      'price monitoring',
+    ],
+    summary:
+      'A consumer price-control framework for basic necessities and prime commodities, including price monitoring, price freezes or ceilings, profiteering, hoarding, and emergency controls.',
+    obligations: [
+      'For calamity, emergency, market, retail, aid, or commodity-price policies, identify covered goods, trigger condition, price rule, monitoring office, evidence, and complaint channel.',
+      'Separate price monitoring, consumer complaint intake, enforcement, supply coordination, competition risks, and emergency procurement.',
+      'Coordinate with consumer protection, competition, LGU authority, disaster response, and procurement controls.',
+      'Avoid vague price orders without commodity scope, duration, authority, publication, evidence, and due process.',
+    ],
+    commonGaps: [
+      'Price-freeze or price-monitoring rules do not identify covered goods, duration, trigger, or responsible office.',
+      'Hoarding, profiteering, and cartel risks are not separated.',
+      'Enforcement lacks evidence, publication, complaint, notice, and appeal controls.',
+    ],
+  },
+  {
+    id: 'ra-9178',
+    statute: 'RA 9178',
+    title: 'Republic Act No. 9178',
+    shortTitle: 'Barangay Micro Business Enterprises Act of 2002',
+    year: 2002,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2002/ra_9178_2002.html',
+    aliases: ['ra 9178', 'republic act 9178', 'barangay micro business enterprises act', 'bmbe law', 'bmbe certificate', 'micro business incentive'],
+    topics: ['micro business', 'bmbe', 'local business', 'incentives', 'registration', 'msme'],
+    keywords: [
+      'barangay micro business enterprise',
+      'bmbe',
+      'micro business',
+      'certificate of authority',
+      'business registration',
+      'tax incentive',
+      'credit assistance',
+      'livelihood',
+      'local enterprise',
+    ],
+    summary:
+      'A micro-enterprise support framework for registering barangay micro business enterprises and providing incentives, credit support, and local enterprise assistance.',
+    obligations: [
+      'For livelihood, micro-enterprise, sari-sari store, market vendor, or local incentive programs, state eligibility, registration, certificate, benefit, renewal, and monitoring controls.',
+      'Separate BMBE incentives from ordinary business permits, tax registration, consumer protection, sanitation, and product regulation.',
+      'Protect applicant identity, financial, tax, and livelihood data.',
+      'Avoid promising exemptions or incentives without registration criteria, verification, and responsible office.',
+    ],
+    commonGaps: [
+      'Micro-business benefits are offered without BMBE eligibility and certificate controls.',
+      'Business permits, tax incentives, credit support, and training are mixed without role clarity.',
+      'Applicant financial and livelihood records lack privacy and retention safeguards.',
+    ],
+  },
+  {
+    id: 'ra-9501',
+    statute: 'RA 9501',
+    title: 'Republic Act No. 9501',
+    shortTitle: 'Magna Carta for Micro, Small and Medium Enterprises',
+    year: 2008,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2008/ra_9501_2008.html',
+    aliases: ['ra 9501', 'republic act 9501', 'magna carta for msmes', 'msme law', 'msme assistance', 'small business support'],
+    topics: ['msme', 'enterprise development', 'credit', 'business support', 'dtI', 'livelihood'],
+    keywords: [
+      'micro small and medium enterprises',
+      'msme',
+      'enterprise development',
+      'credit',
+      'financing',
+      'business support',
+      'training',
+      'technology transfer',
+      'market access',
+      'small business',
+    ],
+    summary:
+      'An MSME development framework supporting enterprise finance, training, technology, market access, institutional coordination, and small-business development programs.',
+    obligations: [
+      'For MSME grants, credit, market access, training, or incubation programs, state eligibility, selection criteria, benefit limits, reporting, conflict checks, and monitoring.',
+      'Separate grants, loans, procurement preference, market access, business permits, and training support.',
+      'Coordinate MSME support with competition, procurement, consumer, tax, privacy, and anti-red-tape controls.',
+      'Avoid discretionary beneficiary selection without objective criteria and appeal route.',
+    ],
+    commonGaps: [
+      'MSME assistance lacks eligibility, scoring, conflict, reporting, and appeals.',
+      'Credit, subsidy, training, and procurement preference are mixed without separate controls.',
+      'Beneficiary business and financial records lack privacy and audit safeguards.',
+    ],
+  },
+  {
+    id: 'ra-9513',
+    statute: 'RA 9513',
+    title: 'Republic Act No. 9513',
+    shortTitle: 'Renewable Energy Act of 2008',
+    year: 2008,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2008/ra_9513_2008.html',
+    aliases: ['ra 9513', 'republic act 9513', 'renewable energy act', 'renewable energy law', 'net metering', 'green energy project'],
+    topics: ['renewable energy', 'solar', 'wind', 'biomass', 'energy', 'incentives', 'net metering'],
+    keywords: [
+      'renewable energy',
+      'solar',
+      'wind',
+      'biomass',
+      'hydropower',
+      'net metering',
+      'green energy',
+      'renewable portfolio',
+      'energy developer',
+      'incentive',
+      'doe',
+    ],
+    summary:
+      'A renewable-energy framework promoting renewable energy resources, development incentives, standards, market mechanisms, and DOE-centered coordination.',
+    obligations: [
+      'For solar, wind, biomass, hydro, green-energy, or net-metering policies, identify project type, permits, grid or facility connection, incentives, monitoring, and DOE coordination.',
+      'Separate renewable-energy promotion from energy-efficiency, building, procurement, environmental, land-use, and consumer claims.',
+      'State performance metrics, maintenance, safety, environmental, ownership, and consumer disclosure controls.',
+      'Avoid green claims or incentive promises without eligibility, registration, and verification.',
+    ],
+    commonGaps: [
+      'Renewable-energy projects lack permit, interconnection, ownership, or maintenance controls.',
+      'Green-energy claims are made without verification, performance metrics, or consumer disclosure.',
+      'Incentives are promised without eligibility and responsible agency coordination.',
+    ],
+  },
+  {
+    id: 'ra-9729',
+    statute: 'RA 9729',
+    title: 'Republic Act No. 9729',
+    shortTitle: 'Climate Change Act of 2009',
+    year: 2009,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2009/ra_9729_2009.html',
+    aliases: ['ra 9729', 'republic act 9729', 'climate change act', 'climate law', 'climate action plan', 'local climate change action plan', 'lccap'],
+    topics: ['climate change', 'adaptation', 'mitigation', 'resilience', 'lgu planning', 'risk assessment'],
+    keywords: [
+      'climate change',
+      'adaptation',
+      'mitigation',
+      'climate risk',
+      'greenhouse gas',
+      'resilience',
+      'local climate change action plan',
+      'lccap',
+      'climate commission',
+      'disaster risk reduction',
+    ],
+    summary:
+      'A climate governance framework mainstreaming climate adaptation, mitigation, resilience, risk assessment, local climate action planning, and coordination with disaster-risk reduction.',
+    obligations: [
+      'For climate, resilience, infrastructure, DRRM, land-use, or environmental plans, state hazard and climate-risk basis, adaptation measures, mitigation actions, vulnerable groups, and monitoring.',
+      'Coordinate local climate action plans with DRRM, land use, energy, environmental permits, procurement, and public consultation.',
+      'Separate climate adaptation, disaster response, emissions mitigation, budget, and reporting.',
+      'Avoid generic climate promises without baseline, responsible office, timeline, and measurable indicators.',
+    ],
+    commonGaps: [
+      'Climate action plans lack risk baseline, vulnerable-group mapping, budget, or indicators.',
+      'Adaptation, mitigation, disaster response, and land-use controls are mixed together.',
+      'Monitoring and reporting do not identify owner, frequency, or evidence source.',
+    ],
+  },
+  {
+    id: 'ra-8550',
+    statute: 'RA 8550',
+    title: 'Republic Act No. 8550',
+    shortTitle: 'Philippine Fisheries Code of 1998',
+    year: 1998,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1998/ra_8550_1998.html',
+    aliases: ['ra 8550', 'republic act 8550', 'philippine fisheries code', 'fisheries code', 'fishery permit', 'municipal waters'],
+    topics: ['fisheries', 'coastal resources', 'aquaculture', 'municipal waters', 'fishing permits', 'marine protection'],
+    keywords: [
+      'fisheries',
+      'municipal waters',
+      'fishing permit',
+      'aquaculture',
+      'fishery refuge',
+      'marine protected area',
+      'coastal resource',
+      'illegal fishing',
+      'fisherfolk',
+      'bf ar',
+    ],
+    summary:
+      'A fisheries and aquatic-resource framework covering municipal waters, fishing permits, aquaculture, fisherfolk rights, conservation, illegal fishing, and coastal-resource management.',
+    obligations: [
+      'For fishing, aquaculture, coastal tourism, market, livelihood, or marine protection rules, identify municipal-water jurisdiction, permits, gear, closed areas, enforcement, and fisherfolk participation.',
+      'Coordinate fisheries controls with LGU powers, environmental laws, protected areas, tourism, livelihood, and food safety.',
+      'Separate licensing, conservation, market hygiene, illegal-fishing enforcement, and social support.',
+      'Avoid authorizing coastal or aquatic-resource activities without jurisdiction, permit, and conservation controls.',
+    ],
+    commonGaps: [
+      'Fishing or aquaculture rules lack municipal-water, permit, gear, or closed-season controls.',
+      'Fisherfolk consultation, enforcement, and conservation measures are missing.',
+      'Coastal livelihood programs are not coordinated with protected-area or environmental safeguards.',
+    ],
+  },
+  {
+    id: 'ra-7942',
+    statute: 'RA 7942',
+    title: 'Republic Act No. 7942',
+    shortTitle: 'Philippine Mining Act of 1995',
+    year: 1995,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1995/ra_7942_1995.html',
+    aliases: ['ra 7942', 'republic act 7942', 'philippine mining act', 'mining act', 'quarry permit', 'mineral extraction'],
+    topics: ['mining', 'quarrying', 'minerals', 'environment', 'permits', 'rehabilitation'],
+    keywords: [
+      'mining',
+      'quarry',
+      'mineral agreement',
+      'exploration permit',
+      'environmental protection',
+      'rehabilitation',
+      'tailings',
+      'small scale mining',
+      'mgb',
+      'mine safety',
+    ],
+    summary:
+      'A mineral-resource framework covering exploration, mining agreements, quarrying, permits, environmental protection, rehabilitation, safety, and regulator coordination.',
+    obligations: [
+      'For quarry, mineral extraction, excavation, construction materials, or mine-site policies, identify permit type, regulator, environmental safeguards, rehabilitation, safety, and community consultation.',
+      'Coordinate mining or quarrying with LGU authority, environmental impact, hazardous waste, water, air, protected areas, indigenous peoples, and occupational safety.',
+      'Separate exploration, extraction, transport, processing, rehabilitation, closure, royalties or fees, and enforcement.',
+      'Avoid local permits that authorize extraction without national mineral, environmental, safety, and rehabilitation controls.',
+    ],
+    commonGaps: [
+      'Quarry or extraction rules lack permit, environmental, rehabilitation, or safety controls.',
+      'LGU clearance is treated as enough without mining, environmental, or protected-area checks.',
+      'Tailings, water, hazardous substances, worker safety, and closure duties are missing.',
+    ],
+  },
 ]
 
 const TOPIC_EXPANSIONS = [
@@ -1862,6 +2352,58 @@ const TOPIC_EXPANSIONS = [
     triggers: ['pwd', 'person with disability', 'disabled person', 'accessibility', 'reasonable accommodation'],
     expansions: ['magna carta for disabled persons', 'persons with disability', 'accessibility', 'reasonable accommodation'],
   },
+  {
+    triggers: ['building permit', 'occupancy permit', 'construction', 'renovation', 'structural', 'building official'],
+    expansions: ['national building code', 'building permit', 'occupancy permit', 'inspection', 'building official'],
+  },
+  {
+    triggers: ['sanitary permit', 'sanitation', 'food establishment', 'health certificate', 'sewage', 'public toilet'],
+    expansions: ['code on sanitation', 'sanitary permit', 'health certificate', 'sanitation inspection'],
+  },
+  {
+    triggers: ['accessibility law', 'ramp', 'accessible route', 'barrier free', 'public building accessibility'],
+    expansions: ['bp 344 accessibility', 'ramps', 'accessible facilities', 'barrier free design'],
+  },
+  {
+    triggers: ['child abuse', 'child protection', 'working child', 'child exploitation', 'minor abuse'],
+    expansions: ['special protection of children', 'child abuse reporting', 'social welfare', 'confidentiality'],
+  },
+  {
+    triggers: ['ofw', 'migrant worker', 'overseas employment', 'illegal recruitment', 'placement agency'],
+    expansions: ['migrant workers act', 'overseas employment', 'illegal recruitment', 'worker welfare'],
+  },
+  {
+    triggers: ['bank secrecy', 'bank deposit', 'bank statement', 'deposit account', 'financial record'],
+    expansions: ['bank secrecy law', 'bank deposits', 'financial confidentiality', 'authorized disclosure'],
+  },
+  {
+    triggers: ['price freeze', 'price ceiling', 'hoarding', 'profiteering', 'basic necessities', 'prime commodities'],
+    expansions: ['price act', 'basic necessities', 'prime commodities', 'price monitoring'],
+  },
+  {
+    triggers: ['bmbe', 'barangay micro business', 'micro business', 'micro enterprise'],
+    expansions: ['barangay micro business enterprises', 'certificate of authority', 'micro business incentives'],
+  },
+  {
+    triggers: ['msme', 'small business', 'enterprise development', 'business support', 'market access'],
+    expansions: ['magna carta for msmes', 'enterprise development', 'credit assistance', 'business support'],
+  },
+  {
+    triggers: ['renewable energy', 'solar', 'wind', 'biomass', 'net metering', 'green energy'],
+    expansions: ['renewable energy act', 'renewable energy project', 'doe', 'net metering'],
+  },
+  {
+    triggers: ['climate change', 'climate risk', 'adaptation', 'mitigation', 'lccap', 'resilience'],
+    expansions: ['climate change act', 'climate adaptation', 'mitigation', 'local climate action plan'],
+  },
+  {
+    triggers: ['fisheries', 'fishing permit', 'municipal waters', 'aquaculture', 'illegal fishing', 'fisherfolk'],
+    expansions: ['philippine fisheries code', 'municipal waters', 'fishery permit', 'coastal resource management'],
+  },
+  {
+    triggers: ['mining', 'quarry', 'mineral', 'tailings', 'mine safety', 'exploration permit'],
+    expansions: ['philippine mining act', 'quarry permit', 'environmental protection', 'rehabilitation'],
+  },
 ]
 
 const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
@@ -1960,6 +2502,68 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
     ],
   },
   {
+    id: 'built-environment-and-public-facilities',
+    title: 'Built Environment, Sanitation, Accessibility, and Public Facilities Stack',
+    triggers: [
+      'building permit',
+      'occupancy permit',
+      'renovation',
+      'public facility',
+      'sanitary permit',
+      'food establishment',
+      'market sanitation',
+      'accessibility',
+      'public toilet',
+      'event venue',
+    ],
+    lawIds: ['pd-1096', 'pd-856', 'bp-344', 'ra-7277', 'ra-9514', 'ra-11058', 'ra-11032'],
+    summary:
+      'Use this when a building, public facility, food establishment, event venue, school, market, clinic, transport point, or service desk needs physical safety and public-health controls.',
+    sequence: [
+      'Classify the facility: construction, occupancy, food handling, public service, event, transport, workplace, or accessible public space.',
+      'Map building permits, occupancy, fire safety, sanitation, accessibility, OSH, service delivery, and complaint controls before use.',
+      'Separate design approval, inspections, staff certificates, facility maintenance, correction orders, and closure or stop-use procedures.',
+      'Document responsible officials, inspection evidence, compliance deadlines, and public-facing assistance channels.',
+    ],
+    checkpoints: [
+      'Building permit, occupancy, fire, sanitation, accessibility, and safety responsibilities are assigned.',
+      'Food, water, toilet, sewage, refuse, pest-control, and public-facility sanitation controls are not collapsed into generic cleanliness rules.',
+      'PWD access is built into the facility and workflow, not handled only by ad hoc staff assistance.',
+      'Correction, closure, appeal, and reopening rules are stated for failed inspections or unsafe facilities.',
+    ],
+  },
+  {
+    id: 'land-climate-coastal-and-resource-governance',
+    title: 'Land, Climate, Coastal, and Natural Resource Governance Stack',
+    triggers: [
+      'climate action plan',
+      'coastal resource',
+      'municipal waters',
+      'fishing permit',
+      'quarry',
+      'mining',
+      'protected area',
+      'renewable energy project',
+      'land use',
+      'environmental permit',
+    ],
+    lawIds: ['ra-9729', 'ra-8550', 'ra-7942', 'ra-11038', 'ra-9513', 'ra-9275', 'ra-8749', 'ra-6969', 'ra-7160'],
+    summary:
+      'Use this when land use, climate planning, coastal livelihoods, fisheries, quarrying, mining, protected areas, renewable-energy projects, or environmental permitting overlap.',
+    sequence: [
+      'Classify the resource and jurisdiction: land, coastal water, protected area, mineral, energy resource, climate risk, or pollution source.',
+      'Map LGU authority, national regulator, environmental permits, consultation, affected communities, monitoring, and rehabilitation or restoration duties.',
+      'Separate resource access, livelihood support, conservation, enforcement, climate adaptation, extraction, and revenue or fee controls.',
+      'Track evidence such as maps, permits, sampling, consultations, inspection reports, closure plans, and corrective actions.',
+    ],
+    checkpoints: [
+      'Jurisdiction, resource boundary, permit type, regulator, consultation, and monitoring cadence are stated.',
+      'Climate, DRRM, environmental, protected-area, fisheries, mining, and energy duties are not treated as one generic environmental clause.',
+      'Community, fisherfolk, vulnerable-group, or affected-sector participation is documented where relevant.',
+      'Rehabilitation, restoration, emergency response, penalties, and appeals are included for resource-impact activities.',
+    ],
+  },
+  {
     id: 'consumer-finance-and-commerce',
     title: 'Consumer, Financial, Commerce, AML, and Tax Stack',
     triggers: [
@@ -1975,19 +2579,25 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'receipt',
       'vat',
       'online sale',
+      'price freeze',
+      'basic necessities',
+      'bmbe',
+      'msme',
+      'bank secrecy',
     ],
-    lawIds: ['ra-7394', 'ra-11765', 'ra-9160', 'ra-8792', 'ra-10173', 'ra-11976'],
+    lawIds: ['ra-7394', 'ra-11765', 'ra-9160', 'ra-1405', 'ra-7581', 'ra-9178', 'ra-9501', 'ra-8792', 'ra-10173', 'ra-11976'],
     summary:
-      'Use this when a workflow involves consumer sales, financial products, payments, remittance, AML controls, e-commerce records, invoicing, or taxpayer-facing collections.',
+      'Use this when a workflow involves consumer sales, financial products, payments, remittance, AML controls, bank records, price controls, MSME support, e-commerce records, invoicing, or taxpayer-facing collections.',
     sequence: [
       'Identify whether the issue is consumer product/service quality, financial consumer protection, AML monitoring, e-commerce evidence, tax, or privacy.',
-      'Map disclosures, fees, complaints, refunds, fraud reports, KYC, transaction reports, invoices, receipts, and record retention.',
+      'Map disclosures, fees, complaints, refunds, fraud reports, KYC, transaction reports, bank-record access, price controls, incentives, invoices, receipts, and record retention.',
       'Separate customer service handling from regulator escalation, suspicious transaction reporting, and tax documentation.',
       'Avoid collecting financial or identity data without clear purpose, access controls, and retention period.',
     ],
     checkpoints: [
       'Terms, fees, risks, warranties, price, complaint route, and remedy are clear before the transaction.',
       'Unauthorized transactions, fraud reports, and suspicious transaction workflows have timelines and responsible officers.',
+      'Bank deposit, price monitoring, BMBE, and MSME records are handled with eligibility, confidentiality, and audit safeguards.',
       'Invoices, receipts, VAT, withholding, and tax records are accounted for where payment collection is involved.',
       'Financial and consumer records are protected with privacy, confidentiality, and audit safeguards.',
     ],
@@ -2038,12 +2648,13 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'pwd',
       'disability',
       'accessibility',
+      'child protection',
       'protection order',
       'vawc',
       'trafficking',
       'social welfare',
     ],
-    lawIds: ['ra-11223', 'ra-11036', 'ra-9994', 'ra-7277', 'ra-9262', 'ra-10364', 'ra-10173'],
+    lawIds: ['ra-11223', 'ra-11036', 'ra-9994', 'ra-7277', 'bp-344', 'ra-7610', 'ra-9262', 'ra-10364', 'ra-10173'],
     summary:
       'Use this when a policy handles health services, vulnerable-person support, benefits, accessibility, protection orders, victim referral, or sensitive welfare records.',
     sequence: [
@@ -2516,7 +3127,8 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
 }
 
 function buildResearchSummary(query: string, rankedDocuments: RankedDocument[], deepSearchUsed?: boolean, fallbackReason?: string) {
-  const topMatches = rankedDocuments.slice(0, deepSearchUsed ? 5 : 3)
+  const resultLimit = deepSearchUsed ? DEEP_RESULT_LIMIT : STANDARD_RESULT_LIMIT
+  const topMatches = rankedDocuments.slice(0, resultLimit)
   const checklist = uniqueByNormalized(topMatches.flatMap((match) => match.document.obligations)).slice(
     0,
     deepSearchUsed ? 10 : 7
@@ -2564,7 +3176,7 @@ export function runLocalResearch(params: RAGQuery, fallbackReason?: string): RAG
   const query = params.query.trim()
   const rankedDocuments = rankLegalCorpus(query)
   const searchQueries = generateLocalSearchQueries(query, rankedDocuments)
-  const matchedDocuments = rankedDocuments.slice(0, params.use_deep_search ? 5 : 3)
+  const matchedDocuments = rankedDocuments.slice(0, params.use_deep_search ? DEEP_RESULT_LIMIT : STANDARD_RESULT_LIMIT)
   const topRelevance = matchedDocuments[0]?.relevance || 0
 
   if (!query) {
@@ -3629,6 +4241,250 @@ function applyTopicSpecificDraftChecks(
           'Add accessibility standards, reasonable accommodation, alternative channels or formats, eligibility and verification, complaint process, non-discrimination, and privacy safeguards.',
           6,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7277') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(building permit|occupancy permit|construction|renovation|structural|building official|fit out|facility use)\b/.test(normalizedDraft)) {
+    const hasBuildingPermitControls = /\b(building permit|plan review|building official|zoning)\b/.test(normalizedDraft)
+    const hasOccupancyOrInspectionControls = /\b(occupancy permit|inspection|final inspection|certificate of occupancy)\b/.test(normalizedDraft)
+    const hasBuildingSafetyControls = /\b(structural|fire safety|accessibility|stop use|correction order|appeal)\b/.test(normalizedDraft)
+
+    if (!(hasBuildingPermitControls && hasOccupancyOrInspectionControls && hasBuildingSafetyControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Building and occupancy controls are incomplete',
+          'Construction, renovation, facility-use, or occupancy language was detected without enough building permit, plan review, inspection, occupancy, zoning, accessibility, or safety controls.',
+          'Add building permit and plan-review requirements, inspection cadence, occupancy approval, building official role, fire and accessibility checks, correction orders, and stop-use or appeal process.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-1096') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(sanitary permit|sanitation|food establishment|health certificate|public toilet|sewage|septage|market sanitation|vermin|pest control)\b/.test(normalizedDraft)) {
+    const hasSanitaryPermitControls = /\b(sanitary permit|health certificate|health officer)\b/.test(normalizedDraft)
+    const hasSanitaryFacilityControls = /\b(potable water|toilet|sewage|septage|refuse|pest|vermin|food handling)\b/.test(normalizedDraft)
+    const hasSanitaryInspectionControls = /\b(inspection|correction order|closure|reopening|complaint)\b/.test(normalizedDraft)
+
+    if (!(hasSanitaryPermitControls && hasSanitaryFacilityControls && hasSanitaryInspectionControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Sanitation controls need inspection detail',
+          'Sanitation, food-establishment, public-facility, toilet, sewage, or health-certificate language was detected without enough permit, inspection, water, toilet, refuse, pest-control, or correction controls.',
+          'Add sanitary permit and health-certificate handling, water and toilet standards, refuse and pest controls, health-office inspection, correction orders, closure or reopening rules, and complaint route.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-856') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(accessibility|ramp|accessible route|barrier free|public building accessibility|accessibility law|accessible toilet|accessible parking)\b/.test(normalizedDraft)) {
+    if (!/\b(ramp|accessible route|parking|toilet|signage|counter|barrier free|inspection|correction|alternative access)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Physical accessibility features need detail',
+          'Barrier-free, public-building accessibility, ramp, route, toilet, parking, or signage language was detected without enough concrete accessibility features, inspection, or correction controls.',
+          'Add accessible routes, ramps, parking, toilets, signage, service counters, inspection owner, correction timeline, and complaint or accommodation route.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'bp-344') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(child abuse|child protection|working child|child exploitation|minor abuse|neglect|child discrimination)\b/.test(normalizedDraft)) {
+    const hasChildReportingControls = /\b(reporting|report channel|mandatory report|case intake)\b/.test(normalizedDraft)
+    const hasChildReferralControls = /\b(referral|social welfare|protective custody|case management|law enforcement)\b/.test(normalizedDraft)
+    const hasChildConfidentialityControls = /\b(confidential|child identity|restricted access|parent|guardian|supervision|privacy)\b/.test(normalizedDraft)
+
+    if (!(hasChildReportingControls && hasChildReferralControls && hasChildConfidentialityControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Child-protection controls need more detail',
+          'Child abuse, exploitation, working-child, minor-safety, or child-protection language was detected without enough reporting, referral, confidentiality, supervision, or case-management controls.',
+          'Add child-protection reporting, social welfare referral, confidentiality, parent or guardian handling where appropriate, supervision standards, case records, and authorized escalation.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7610') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(ofw|migrant worker|overseas employment|illegal recruitment|placement agency|deployment|repatriation)\b/.test(normalizedDraft)) {
+    const hasMigrantVerificationControls = /\b(license|verification|employment contract|fee|placement agency|contract review)\b/.test(normalizedDraft)
+    const hasMigrantComplaintControls = /\b(complaint|illegal recruitment|reporting|legal assistance|referral)\b/.test(normalizedDraft)
+    const hasMigrantWelfareControls = /\b(welfare|repatriation|worker support|confidential|case record)\b/.test(normalizedDraft)
+
+    if (!(hasMigrantVerificationControls && hasMigrantComplaintControls && hasMigrantWelfareControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Migrant-worker protection controls are incomplete',
+          'OFW, migrant-worker, overseas-employment, recruitment, placement, or deployment language was detected without enough licensing, contract verification, fee, complaint, welfare, or repatriation controls.',
+          'Add agency or offer verification, employment-contract review, fee restrictions, illegal-recruitment reporting, worker welfare referral, repatriation or legal-assistance route, and confidentiality safeguards.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8042') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(bank secrecy|bank deposit|bank statement|bank statements|deposit account|financial record|account number)\b/.test(normalizedDraft)) {
+    if (!/\b(consent|waiver|court order|lawful process|authorized disclosure|redaction|confidential|access control|retention)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Bank-deposit confidentiality controls are missing',
+          'Bank-deposit, bank-statement, account, or financial-record language was detected without enough consent, lawful process, access control, redaction, or retention safeguards.',
+          'Add purpose, consent or lawful-process basis, authorized users, redaction, access logs, retention, disclosure exceptions, and complaint handling.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-1405') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/(price freeze|price ceiling|hoarding|profiteering|basic necessities|prime commodities|price monitoring)/.test(normalizedDraft)) {
+    const hasPriceScopeControls = /\b(covered goods|covered commodities|basic necessities|prime commodities|duration|trigger|calamity)\b/.test(normalizedDraft)
+    const hasPriceMonitoringControls = /\b(price monitoring|monitoring office|evidence|inspection|market survey)\b/.test(normalizedDraft)
+    const hasPriceDueProcessControls = /\b(complaint|notice|appeal|correction|hearing)\b/.test(normalizedDraft)
+
+    if (!(hasPriceScopeControls && hasPriceMonitoringControls && hasPriceDueProcessControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Price-control measures need scope and due process',
+          'Price-freeze, price-ceiling, hoarding, profiteering, basic-necessity, or prime-commodity language was detected without enough covered-goods, trigger, duration, evidence, notice, or appeal controls.',
+          'Add covered commodities, emergency or calamity trigger, duration, monitoring office, evidence requirements, publication, complaint intake, notice, correction, and appeal route.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7581') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(bmbe|barangay micro business|micro business|micro enterprise|certificate of authority)\b/.test(normalizedDraft)) {
+    if (!/\b(eligibility|certificate of authority|registration|renewal|verification|benefit|incentive|monitoring|records)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'BMBE support needs eligibility and certificate controls',
+          'BMBE, barangay micro business, micro-enterprise, incentive, or local-business support language was detected without enough eligibility, registration, certificate, benefit, or monitoring controls.',
+          'Add BMBE eligibility, certificate-of-authority process, renewal, benefit limits, verification, monitoring, records, privacy, and responsible office.',
+          5,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9178') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(msme|small business|enterprise development|business support|market access|credit assistance|business incubation)\b/.test(normalizedDraft)) {
+    if (!/\b(eligibility|selection criteria|scoring|conflict|reporting|appeal|credit|training|market access|monitoring)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'MSME assistance needs objective selection controls',
+          'MSME, small-business, enterprise-development, credit, market-access, or business-support language was detected without enough eligibility, scoring, conflict, monitoring, or appeal controls.',
+          'Add objective eligibility, scoring or selection criteria, conflict checks, benefit limits, reporting, appeal route, privacy safeguards, and audit trail.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9501') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(renewable energy|solar|wind|biomass|net metering|green energy|renewable project)\b/.test(normalizedDraft)) {
+    const hasRenewableAuthorization = /\b(permit|doe|registration|eligibility|interconnection|net metering)\b/.test(normalizedDraft)
+    const hasRenewablePerformance = /\b(performance|maintenance|safety|metering|inspection)\b/.test(normalizedDraft)
+    const hasRenewableSafeguards = /\b(environmental|consumer disclosure|green claim|ownership|complaint)\b/.test(normalizedDraft)
+
+    if (!(hasRenewableAuthorization && hasRenewablePerformance && hasRenewableSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Renewable-energy project controls need detail',
+          'Renewable-energy, solar, wind, biomass, green-energy, or net-metering language was detected without enough permit, DOE coordination, interconnection, safety, performance, or consumer-disclosure controls.',
+          'Add project classification, permit and DOE coordination, interconnection or facility controls, safety and maintenance, performance metrics, environmental safeguards, and green-claim verification.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9513') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(climate action|climate change|climate risk|adaptation|mitigation|lccap|resilience|greenhouse gas|local climate)\b/.test(normalizedDraft)) {
+    const hasClimateRiskControls = /\b(risk baseline|climate risk|hazard|vulnerable|exposure)\b/.test(normalizedDraft)
+    const hasClimateActionControls = /\b(adaptation|mitigation|lccap|local climate action|measure)\b/.test(normalizedDraft)
+    const hasClimateImplementationControls = /\b(indicator|budget|timeline|monitoring cadence|responsible office|reporting)\b/.test(normalizedDraft)
+
+    if (!(hasClimateRiskControls && hasClimateActionControls && hasClimateImplementationControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Climate action controls need measurable indicators',
+          'Climate, resilience, adaptation, mitigation, LCCAP, or greenhouse-gas language was detected without enough risk baseline, vulnerable-group mapping, indicators, budget, timeline, or monitoring controls.',
+          'Add climate-risk baseline, vulnerable sectors, adaptation and mitigation measures, budget, responsible office, indicators, reporting cadence, and linkage to DRRM and land-use plans.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9729') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(fisheries|fishing permit|municipal waters|aquaculture|illegal fishing|fisherfolk|coastal resource)\b/.test(normalizedDraft)) {
+    const hasFisheryJurisdictionControls = /\b(municipal waters|permit|license|fishery permit|jurisdiction|boundary)\b/.test(normalizedDraft)
+    const hasFisheryConservationControls = /\b(gear|closed season|conservation|marine protected|refuge|illegal fishing)\b/.test(normalizedDraft)
+    const hasFisheryParticipationControls = /\b(consultation|fisherfolk|enforcement|bfar|monitoring|reporting)\b/.test(normalizedDraft)
+
+    if (!(hasFisheryJurisdictionControls && hasFisheryConservationControls && hasFisheryParticipationControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Fisheries controls need jurisdiction and conservation detail',
+          'Fisheries, fishing permit, municipal-water, aquaculture, illegal-fishing, fisherfolk, or coastal-resource language was detected without enough jurisdiction, permit, gear, conservation, consultation, or enforcement controls.',
+          'Add municipal-water boundary, permit or license process, gear restrictions, closed areas or seasons, fisherfolk consultation, enforcement, conservation, and monitoring.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8550') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(mining|quarry|mineral|tailings|mine safety|exploration permit|mineral agreement|extraction)\b/.test(normalizedDraft)) {
+    const hasMiningAuthorizationControls = /\b(permit|mgb|mineral agreement|exploration permit|quarry permit)\b/.test(normalizedDraft)
+    const hasMiningEnvironmentalControls = /\b(environmental|rehabilitation|closure|tailings|water|hazardous)\b/.test(normalizedDraft)
+    const hasMiningSafetyCommunityControls = /\b(safety|consultation|community|monitoring|inspection|appeal)\b/.test(normalizedDraft)
+
+    if (!(hasMiningAuthorizationControls && hasMiningEnvironmentalControls && hasMiningSafetyCommunityControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Mining or quarry controls are incomplete',
+          'Mining, quarry, mineral, extraction, tailings, or mine-safety language was detected without enough permit, regulator, environmental, rehabilitation, safety, consultation, or closure controls.',
+          'Add permit type, MGB or regulator coordination, environmental safeguards, water and hazardous-substance controls, worker safety, community consultation, rehabilitation, closure, monitoring, and appeal route.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7942') || LEGAL_CORPUS[0])]
         )
       )
     }
