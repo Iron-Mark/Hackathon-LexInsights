@@ -1588,6 +1588,314 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
     ],
   },
   {
+    id: 'ra-11332',
+    statute: 'RA 11332',
+    title: 'Republic Act No. 11332',
+    shortTitle: 'Mandatory Reporting of Notifiable Diseases and Health Events of Public Health Concern Act',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11332_2019.html',
+    aliases: ['ra 11332', 'republic act 11332', 'mandatory reporting of notifiable diseases', 'notifiable diseases act'],
+    topics: ['public health', 'disease reporting', 'health surveillance', 'notifiable disease', 'outbreak response'],
+    keywords: [
+      'notifiable disease',
+      'public health concern',
+      'mandatory reporting',
+      'health event',
+      'surveillance',
+      'outbreak',
+      'epidemic',
+      'case investigation',
+      'contact tracing',
+      'quarantine',
+      'health data',
+      'doh',
+      'local epidemiology',
+    ],
+    summary:
+      'A public-health surveillance framework requiring mandatory reporting of notifiable diseases and health events of public health concern, with confidentiality, coordination, and outbreak-response implications.',
+    obligations: [
+      'For disease, outbreak, school, workplace, transport, facility, or community health-event workflows, state reportable event criteria, reporting office, timeline, data fields, case investigation, and referral path.',
+      'Separate surveillance reporting from clinical care, quarantine, privacy, employment discipline, school attendance, public announcements, and emergency procurement.',
+      'Protect patient identity, health status, contact-tracing data, location, exposure history, laboratory records, and outbreak reports with confidentiality and authorized-disclosure controls.',
+      'Avoid public naming, informal lists, or delayed reporting when a notifiable disease or public-health event requires official coordination.',
+    ],
+    commonGaps: [
+      'Disease-reporting policies mention outbreak alerts but omit reportable event criteria, timeline, responsible office, or DOH/LGU coordination.',
+      'Contact-tracing and patient records are handled without confidentiality, retention, or disclosure limits.',
+      'Public announcements, workplace rules, and school notices reveal health status without authority and safeguards.',
+    ],
+  },
+  {
+    id: 'ra-9211',
+    statute: 'RA 9211',
+    title: 'Republic Act No. 9211',
+    shortTitle: 'Tobacco Regulation Act of 2003',
+    year: 2003,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2003/ra_9211_2003.html',
+    aliases: ['ra 9211', 'republic act 9211', 'tobacco regulation act', 'tobacco law'],
+    topics: ['public health', 'tobacco', 'smoking', 'advertising', 'sales restrictions', 'public places'],
+    keywords: [
+      'tobacco',
+      'smoking',
+      'cigarette',
+      'public place',
+      'smoke free',
+      'warning label',
+      'advertising',
+      'promotion',
+      'sponsorship',
+      'minor',
+      'sale to minors',
+      'designated smoking area',
+      'health warning',
+    ],
+    summary:
+      'A tobacco-control statute covering smoking restrictions, sales to minors, advertising and promotion controls, health warnings, public-place rules, and enforcement.',
+    obligations: [
+      'For tobacco sales, venues, events, advertisements, school or workplace rules, and public facilities, state age restrictions, smoking areas, signage, warnings, ad limits, complaint intake, and enforcement owner.',
+      'Separate tobacco controls from vape products, sanitation, building safety, consumer protection, labor discipline, event permits, and public-health messaging.',
+      'Keep inspection, complaint, warning, advertising, sale, and enforcement records with due-process and privacy safeguards.',
+      'Avoid tobacco promotion or venue policies that omit minors, public-place restrictions, signage, and enforcement documentation.',
+    ],
+    commonGaps: [
+      'Smoking policies omit age restrictions, signage, designated areas, complaint handling, or enforcement process.',
+      'Tobacco advertising and sponsorship are approved without material review and recordkeeping.',
+      'School, event, workplace, and venue rules do not distinguish tobacco from vape or other public-health restrictions.',
+    ],
+  },
+  {
+    id: 'ra-11900',
+    statute: 'RA 11900',
+    title: 'Republic Act No. 11900',
+    shortTitle: 'Vaporized Nicotine and Non-Nicotine Products Regulation Act',
+    year: 2022,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2022/ra_11900_2022.html',
+    aliases: ['ra 11900', 'republic act 11900', 'vape law', 'vaporized nicotine law', 'vapor products regulation act'],
+    topics: ['public health', 'vape', 'vapor products', 'nicotine', 'sales restrictions', 'advertising'],
+    keywords: [
+      'vape',
+      'vapor product',
+      'vaporized nicotine',
+      'non nicotine product',
+      'heated tobacco product',
+      'e cigarette',
+      'nicotine',
+      'age verification',
+      'online sale',
+      'flavor',
+      'packaging',
+      'health warning',
+      'advertising',
+      'promotion',
+    ],
+    summary:
+      'A regulatory framework for vaporized nicotine, non-nicotine, and heated tobacco products, including age restrictions, product standards, packaging, warnings, online sales, advertising, and enforcement.',
+    obligations: [
+      'For vape or heated-tobacco sales, online marketplaces, stores, marketing, events, and school/workplace policies, state product classification, age verification, packaging and warning checks, permitted sales channel, advertising limits, and complaint route.',
+      'Separate vape controls from tobacco, FDA health products, consumer protection, e-commerce, school discipline, and local public-health enforcement.',
+      'Protect customer age-verification records, complaint records, product listings, advertising approvals, takedown requests, and enforcement records with privacy and retention controls.',
+      'Avoid selling or advertising vape products without age-gating, product review, warning, platform, and recordkeeping controls.',
+    ],
+    commonGaps: [
+      'Vape policies mention age limits but omit product classification, packaging, warnings, online sales, or advertising controls.',
+      'Online sales collect IDs without access, retention, or deletion rules.',
+      'Vape and tobacco rules are merged without product-specific restrictions and enforcement records.',
+    ],
+  },
+  {
+    id: 'ra-11166',
+    statute: 'RA 11166',
+    title: 'Republic Act No. 11166',
+    shortTitle: 'Philippine HIV and AIDS Policy Act',
+    year: 2018,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2018/ra_11166_2018.html',
+    aliases: ['ra 11166', 'republic act 11166', 'philippine hiv and aids policy act', 'hiv aids law'],
+    topics: ['public health', 'hiv', 'aids', 'testing', 'counseling', 'confidentiality'],
+    keywords: [
+      'hiv',
+      'aids',
+      'hiv testing',
+      'counseling',
+      'confidentiality',
+      'informed consent',
+      'anti discrimination',
+      'treatment',
+      'referral',
+      'partner notification',
+      'health record',
+      'minors',
+    ],
+    summary:
+      'A rights-sensitive HIV and AIDS framework covering education, testing, counseling, consent, treatment referral, confidentiality, anti-discrimination, and health-record safeguards.',
+    obligations: [
+      'For HIV education, screening, testing, workplace, school, clinic, or community programs, state voluntary testing, counseling, consent, referral, confidentiality, anti-discrimination, and record-access controls.',
+      'Separate HIV health handling from general medical records, employment fitness, insurance, school discipline, contact tracing, and public-health reporting.',
+      'Protect HIV status, test results, counseling notes, referrals, partner notification records, and treatment records with strict confidentiality and disclosure rules.',
+      'Avoid mandatory testing, public disclosure, exclusion, or employment/school decisions without the specific legal safeguards required for HIV-related information.',
+    ],
+    commonGaps: [
+      'HIV policies mention testing but omit consent, counseling, referral, confidentiality, or anti-discrimination controls.',
+      'HIV status is handled as ordinary health data without stricter access and disclosure limits.',
+      'Workplace or school rules create exclusion or reporting risks without rights-sensitive safeguards.',
+    ],
+  },
+  {
+    id: 'ra-10152',
+    statute: 'RA 10152',
+    title: 'Republic Act No. 10152',
+    shortTitle: 'Mandatory Infants and Children Health Immunization Act of 2011',
+    year: 2011,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2011/ra_10152_2011.html',
+    aliases: ['ra 10152', 'republic act 10152', 'mandatory infants and children health immunization act', 'immunization law'],
+    topics: ['public health', 'immunization', 'children', 'vaccination', 'health records'],
+    keywords: [
+      'immunization',
+      'vaccination',
+      'infants',
+      'children',
+      'child health',
+      'vaccine',
+      'health center',
+      'parent',
+      'guardian',
+      'immunization card',
+      'school entry',
+      'health record',
+    ],
+    summary:
+      'A child-health immunization framework covering infants and children, vaccination access, parent or guardian coordination, health-center records, and immunization documentation.',
+    obligations: [
+      'For child immunization, school-entry, daycare, clinic, barangay health, or outreach workflows, state eligible child, parent or guardian role, vaccine record, referral, missed-dose follow-up, and record custodian.',
+      'Separate immunization records from general school records, child-protection files, medical treatment, public-health reporting, and benefit eligibility.',
+      'Protect child identity, parent/guardian records, vaccine history, immunization cards, refusal notes, referral records, and clinic logs with access and retention safeguards.',
+      'Avoid denying unrelated services or exposing child health status without authority, referral path, and privacy controls.',
+    ],
+    commonGaps: [
+      'Child vaccination policies omit parent/guardian handling, record owner, missed-dose follow-up, or referral route.',
+      'Immunization records are collected by schools or barangays without privacy and retention rules.',
+      'Vaccine status is used for eligibility decisions without clear legal basis and due process.',
+    ],
+  },
+  {
+    id: 'ra-7719',
+    statute: 'RA 7719',
+    title: 'Republic Act No. 7719',
+    shortTitle: 'National Blood Services Act of 1994',
+    year: 1994,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1994/ra_7719_1994.html',
+    aliases: ['ra 7719', 'republic act 7719', 'national blood services act', 'blood services law'],
+    topics: ['public health', 'blood services', 'blood donation', 'blood bank', 'health facilities'],
+    keywords: [
+      'blood services',
+      'blood donation',
+      'blood donor',
+      'blood bank',
+      'blood collection',
+      'blood screening',
+      'transfusion',
+      'voluntary blood donation',
+      'health facility',
+      'donor record',
+      'testing',
+      'confidentiality',
+    ],
+    summary:
+      'A blood-services framework covering voluntary blood donation, blood collection, screening, blood banks, transfusion safety, donor records, and health-facility coordination.',
+    obligations: [
+      'For blood donation drives, clinics, emergency response, health facilities, or donor databases, state donor eligibility, consent, screening, collection site, referral, blood-bank coordination, and records custodian.',
+      'Separate blood-donation records from ordinary volunteer lists, employee wellness, emergency contact, laboratory, HIV, privacy, and public-event records.',
+      'Protect donor identity, screening results, test results, medical history, donation logs, referral records, and adverse reaction reports with confidentiality and retention controls.',
+      'Avoid informal blood drives without licensed or authorized health-facility coordination, screening, consent, and record safeguards.',
+    ],
+    commonGaps: [
+      'Blood donation programs omit donor eligibility, consent, screening, facility coordination, or adverse-reaction handling.',
+      'Donor and test records are handled like ordinary volunteer records.',
+      'Emergency blood assistance lacks referral, custody, and confidentiality controls.',
+    ],
+  },
+  {
+    id: 'ra-11215',
+    statute: 'RA 11215',
+    title: 'Republic Act No. 11215',
+    shortTitle: 'National Integrated Cancer Control Act',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11215_2019.html',
+    aliases: ['ra 11215', 'republic act 11215', 'national integrated cancer control act', 'cancer control law'],
+    topics: ['public health', 'cancer control', 'patient navigation', 'health services', 'registry'],
+    keywords: [
+      'cancer control',
+      'cancer patient',
+      'screening',
+      'early detection',
+      'diagnosis',
+      'treatment',
+      'palliative care',
+      'patient navigation',
+      'cancer registry',
+      'survivorship',
+      'referral',
+      'health record',
+    ],
+    summary:
+      'A cancer-control framework covering prevention, screening, early detection, diagnosis, treatment, palliative care, patient navigation, registries, and health-service coordination.',
+    obligations: [
+      'For cancer screening, patient assistance, registry, referral, navigation, or awareness programs, state eligibility, screening limits, referral pathway, patient navigator, data fields, consent, and records custodian.',
+      'Separate cancer registries from general health records, PhilHealth or benefit administration, workplace wellness, charity assistance, public announcements, and research datasets.',
+      'Protect diagnosis, screening results, treatment status, registry data, referral records, financial assistance files, and patient-navigation notes with confidentiality and retention controls.',
+      'Avoid promising diagnosis, treatment access, or benefits without provider referral, eligibility, funding, consent, and complaint route.',
+    ],
+    commonGaps: [
+      'Cancer programs mention screening or assistance but omit eligibility, referral, patient navigation, and records custody.',
+      'Registry and diagnosis records are handled without consent, confidentiality, or retention controls.',
+      'Awareness campaigns make health claims without referral or provider coordination safeguards.',
+    ],
+  },
+  {
+    id: 'ra-10354',
+    statute: 'RA 10354',
+    title: 'Republic Act No. 10354',
+    shortTitle: 'Responsible Parenthood and Reproductive Health Act of 2012',
+    year: 2012,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2012/ra_10354_2012.html',
+    aliases: ['ra 10354', 'republic act 10354', 'responsible parenthood and reproductive health act', 'rh law'],
+    topics: ['public health', 'reproductive health', 'family planning', 'maternal health', 'health services'],
+    keywords: [
+      'reproductive health',
+      'responsible parenthood',
+      'family planning',
+      'maternal health',
+      'prenatal',
+      'postnatal',
+      'informed choice',
+      'counseling',
+      'adolescent health',
+      'privacy',
+      'referral',
+      'health service',
+    ],
+    summary:
+      'A reproductive-health framework covering responsible parenthood, family planning, maternal health, informed choice, counseling, referral, access to services, and sensitive health records.',
+    obligations: [
+      'For reproductive-health, family-planning, maternal-health, school, workplace, or barangay health programs, state service scope, counseling, informed choice, referral, provider role, privacy, and complaint route.',
+      'Separate reproductive-health counseling from general benefits, school discipline, employment decisions, religious or values education, medical treatment, and public-health reporting.',
+      'Protect reproductive-health records, counseling notes, referrals, pregnancy or maternal health data, adolescent records, and service-access records with confidentiality and retention controls.',
+      'Avoid coercive, discriminatory, or disclosure-heavy reproductive-health workflows without consent, provider referral, and rights-sensitive safeguards.',
+    ],
+    commonGaps: [
+      'Family-planning or reproductive-health programs omit counseling, informed choice, referral, privacy, and complaint handling.',
+      'Maternal or adolescent health records are handled without confidentiality and restricted access.',
+      'Program materials promise services or benefits without provider coordination and eligibility controls.',
+    ],
+  },
+  {
     id: 'ra-10066',
     statute: 'RA 10066',
     title: 'Republic Act No. 10066',
@@ -1894,6 +2202,613 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'Overseas job or training offers lack agency licensing, contract verification, and fee controls.',
       'Illegal recruitment and trafficking risks are not screened separately.',
       'Worker welfare, complaint, repatriation, and record-confidentiality workflows are missing.',
+    ],
+  },
+  {
+    id: 'ra-10022',
+    statute: 'RA 10022',
+    title: 'Republic Act No. 10022',
+    shortTitle: 'Amendments to the Migrant Workers and Overseas Filipinos Act',
+    year: 2010,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2010/ra_10022_2010.html',
+    aliases: ['ra 10022', 'republic act 10022', 'migrant workers amendment', 'amended ofw law'],
+    topics: ['migrant workers', 'overseas employment', 'recruitment', 'worker protection', 'repatriation'],
+    keywords: [
+      'migrant worker',
+      'ofw',
+      'overseas employment',
+      'recruitment agency',
+      'illegal recruitment',
+      'deployment',
+      'repatriation',
+      'legal assistance',
+      'employment contract',
+      'welfare fund',
+      'overseas filipino',
+    ],
+    summary:
+      'A major amendment to the Migrant Workers and Overseas Filipinos Act, relevant to overseas employment protections, illegal recruitment controls, repatriation, legal assistance, and agency accountability.',
+    obligations: [
+      'For OFW deployment, recruitment, referral, training, or assistance programs, align license verification, contract review, fee restrictions, repatriation, welfare, and complaint routing with the amended migrant-worker framework.',
+      'Separate recruitment compliance from trafficking, immigration, labor, welfare, embassy or consular assistance, and local complaint workflows.',
+      'Protect passport, contract, contact, remittance, family, complaint, and repatriation records with access, confidentiality, retention, and authorized-disclosure rules.',
+      'Avoid stale OFW checklists that cite RA 8042 but omit amended deployment, illegal-recruitment, welfare, and repatriation safeguards.',
+    ],
+    commonGaps: [
+      'OFW workflows cite the Migrant Workers Act but omit amended complaint, repatriation, legal-assistance, or welfare controls.',
+      'Recruitment records and passports are collected without confidentiality, retention, or handoff safeguards.',
+      'Illegal recruitment risk is not screened separately from ordinary job matching or training.',
+    ],
+  },
+  {
+    id: 'ra-11641',
+    statute: 'RA 11641',
+    title: 'Republic Act No. 11641',
+    shortTitle: 'Department of Migrant Workers Act',
+    year: 2021,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2021/ra_11641_2021.html',
+    aliases: ['ra 11641', 'republic act 11641', 'department of migrant workers act', 'dmw act', 'dmw law'],
+    topics: ['migrant workers', 'department of migrant workers', 'ofw assistance', 'overseas employment', 'worker protection'],
+    keywords: [
+      'department of migrant workers',
+      'dmw',
+      'ofw',
+      'migrant worker',
+      'overseas employment',
+      'one reintegration center',
+      'repatriation',
+      'legal assistance',
+      'welfare',
+      'case management',
+      'employment contract',
+      'licensed recruitment',
+    ],
+    summary:
+      'A statute creating the Department of Migrant Workers, relevant to overseas Filipino worker assistance, case management, recruitment coordination, repatriation, welfare, and agency handoffs.',
+    obligations: [
+      'For OFW-facing services, identify DMW or related agency coordination, case intake, referral, repatriation, welfare, legal-assistance, and data-sharing boundaries.',
+      'Separate DMW assistance from immigration, passport, labor, trafficking, embassy or consular, local government, and private recruitment workflows.',
+      'Protect OFW identity, passport, contract, employer, family, financial, complaint, and welfare case records with access and retention controls.',
+      'Avoid promising agency action, deployment clearance, repatriation, or assistance without naming the responsible office and referral process.',
+    ],
+    commonGaps: [
+      'OFW assistance workflows mention help or referral but omit DMW coordination, case owner, and escalation path.',
+      'Worker case files are shared across offices without access, confidentiality, or retention rules.',
+      'Recruitment, repatriation, legal assistance, and welfare support are collapsed into one informal help desk.',
+    ],
+  },
+  {
+    id: 'ca-613',
+    statute: 'CA 613',
+    title: 'Commonwealth Act No. 613',
+    shortTitle: 'Philippine Immigration Act of 1940',
+    year: 1940,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/comacts/ca1940/ca_613_1940.html',
+    aliases: ['ca 613', 'commonwealth act 613', 'philippine immigration act', 'immigration act of 1940'],
+    topics: ['immigration', 'visa', 'alien registration', 'entry', 'exclusion', 'deportation'],
+    keywords: [
+      'immigration',
+      'visa',
+      'alien',
+      'foreign national',
+      'entry',
+      'admission',
+      'exclusion',
+      'deportation',
+      'stay',
+      'overstay',
+      'permit',
+      'bureau of immigration',
+      'registration',
+      'arrival',
+      'departure',
+    ],
+    summary:
+      'The core immigration statute governing admission, exclusion, deportation, alien registration, visa or stay issues, and Bureau of Immigration-facing records.',
+    obligations: [
+      'For foreign-national, visa, entry, stay, overstay, exclusion, deportation, or alien-registration workflows, state the immigration status, responsible office, proof, notice, hearing or appeal route, and records custodian.',
+      'Separate immigration status checks from employment, school, tourism, investment, passport, trafficking, criminal, privacy, and local permit workflows.',
+      'Protect passports, visas, travel history, biometrics, immigration records, employer or sponsor files, and case evidence with strict access, retention, and authorized-disclosure rules.',
+      'Avoid making admission, deportation, blacklist, or status conclusions without official verification and due-process safeguards.',
+    ],
+    commonGaps: [
+      'Visa or foreign-national workflows ask for immigration papers but omit official verification, notice, hearing, appeal, or record custody.',
+      'Immigration status checks are mixed with employment, housing, school, or local service eligibility without privacy safeguards.',
+      'Passport, visa, arrival, departure, and alien-registration records are retained without purpose or access limits.',
+    ],
+  },
+  {
+    id: 'ca-473',
+    statute: 'CA 473',
+    title: 'Commonwealth Act No. 473',
+    shortTitle: 'Revised Naturalization Law',
+    year: 1939,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/comacts/ca1939/ca_473_1939.html',
+    aliases: ['ca 473', 'commonwealth act 473', 'revised naturalization law', 'judicial naturalization'],
+    topics: ['citizenship', 'naturalization', 'foreign national', 'petition', 'court records'],
+    keywords: [
+      'naturalization',
+      'citizenship',
+      'foreign national',
+      'alien',
+      'petition',
+      'declaration of intention',
+      'certificate of naturalization',
+      'residence',
+      'character',
+      'court',
+      'publication',
+      'oath',
+    ],
+    summary:
+      'A judicial naturalization framework covering citizenship petitions, qualifications, disqualifications, residence, proof, publication, hearing, oath, and certificate records.',
+    obligations: [
+      'For naturalization or citizenship-petition workflows, state the petition route, qualifications, disqualifications, residence proof, publication, hearing, oath, decision, and certificate handling.',
+      'Separate judicial naturalization from administrative naturalization, dual citizenship, immigration status, passport issuance, civil registry, and identity verification.',
+      'Protect applicant identity, family, residence, immigration, court, publication, oath, and certificate records with confidentiality and retention controls.',
+      'Avoid treating naturalization as a simple ID update without proof, hearing, decision, oath, and record annotation safeguards.',
+    ],
+    commonGaps: [
+      'Naturalization workflows omit qualification, disqualification, residence, publication, hearing, oath, or certificate steps.',
+      'Citizenship records are processed without distinguishing judicial naturalization from administrative naturalization or reacquisition.',
+      'Applicant identity, family, immigration, and court records lack access or retention rules.',
+    ],
+  },
+  {
+    id: 'ra-9139',
+    statute: 'RA 9139',
+    title: 'Republic Act No. 9139',
+    shortTitle: 'Administrative Naturalization Law of 2000',
+    year: 2001,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2001/ra_9139_2001.html',
+    aliases: ['ra 9139', 'republic act 9139', 'administrative naturalization law', 'administrative naturalization'],
+    topics: ['citizenship', 'administrative naturalization', 'foreign national', 'petition', 'naturalization'],
+    keywords: [
+      'administrative naturalization',
+      'naturalization',
+      'citizenship',
+      'special committee',
+      'petition',
+      'publication',
+      'hearing',
+      'oath',
+      'certificate of naturalization',
+      'alien',
+      'foreign national',
+      'residence',
+    ],
+    summary:
+      'An administrative naturalization framework for qualified foreign nationals born and residing in the Philippines, with petition, publication, hearing, oath, and certificate controls.',
+    obligations: [
+      'For administrative naturalization workflows, identify eligibility, filing body, petition documents, publication, notice, hearing, opposition, oath, certificate, and record update steps.',
+      'Separate administrative naturalization from judicial naturalization, reacquired citizenship, immigration status, civil registry corrections, and passport issuance.',
+      'Protect petition files, identity records, residence proof, family records, hearing records, opposition records, oath documents, and certificate data.',
+      'Avoid issuing citizenship-status conclusions without tracking the correct naturalization route and official decision evidence.',
+    ],
+    commonGaps: [
+      'Administrative naturalization workflows omit eligibility, publication, hearing, opposition, oath, or certificate handling.',
+      'Naturalization and immigration status are treated as the same process.',
+      'Petition and identity records are shared without confidentiality, retention, or correction safeguards.',
+    ],
+  },
+  {
+    id: 'ra-9225',
+    statute: 'RA 9225',
+    title: 'Republic Act No. 9225',
+    shortTitle: 'Citizenship Retention and Re-acquisition Act of 2003',
+    year: 2003,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2003/ra_9225_2003.html',
+    aliases: ['ra 9225', 'republic act 9225', 'dual citizenship law', 'citizenship reacquisition act'],
+    topics: ['citizenship', 'dual citizenship', 're-acquisition', 'retention', 'oath'],
+    keywords: [
+      'dual citizenship',
+      'citizenship retention',
+      'citizenship reacquisition',
+      're-acquisition',
+      'natural born filipino',
+      'oath of allegiance',
+      'derivative citizenship',
+      'civil registry',
+      'passport',
+      'certificate',
+      'consular',
+    ],
+    summary:
+      'A citizenship retention and re-acquisition statute for natural-born Filipinos who became citizens of another country, with oath, derivative citizenship, consular, and record-handling implications.',
+    obligations: [
+      'For dual-citizenship or reacquisition workflows, state natural-born proof, foreign citizenship event, oath, certificate, derivative-child handling, consular or local filing route, and record update steps.',
+      'Separate citizenship reacquisition from naturalization, immigration visa status, passport issuance, civil registry correction, tax, property, election, and benefits eligibility.',
+      'Protect birth, naturalization, oath, foreign-citizenship, passport, certificate, derivative-child, and civil registry records with access and retention safeguards.',
+      'Avoid assuming passport eligibility, voting, property, or benefit rights without checking the specific citizenship and record status involved.',
+    ],
+    commonGaps: [
+      'Dual-citizenship workflows mention oath but omit natural-born proof, certificate, derivative-child records, or filing office.',
+      'Citizenship status is used for passport, property, voting, or benefits without documenting record basis.',
+      'Foreign citizenship, birth, and oath records are retained without access controls.',
+    ],
+  },
+  {
+    id: 'ra-11983',
+    statute: 'RA 11983',
+    title: 'Republic Act No. 11983',
+    shortTitle: 'New Philippine Passport Act',
+    year: 2024,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2024/ra_11983_2024.html',
+    aliases: ['ra 11983', 'republic act 11983', 'new philippine passport act', 'passport law', 'philippine passport'],
+    topics: ['passport', 'travel document', 'identity', 'dfa', 'citizenship', 'consular'],
+    keywords: [
+      'passport',
+      'travel document',
+      'dfa',
+      'foreign affairs',
+      'consular',
+      'identity',
+      'citizenship proof',
+      'application',
+      'renewal',
+      'cancellation',
+      'lost passport',
+      'biometric',
+      'personal data',
+      'minor passport',
+    ],
+    summary:
+      'The current Philippine passport framework covering passport applications, renewals, travel documents, citizenship proof, identity verification, cancellations, consular handling, and passport record safeguards.',
+    obligations: [
+      'For passport or travel-document workflows, identify applicant authority, citizenship proof, identity proof, minor or representative handling, DFA or consular route, issuance, renewal, cancellation, loss, and records custodian.',
+      'Separate passport issuance from immigration visa, civil registry correction, dual citizenship, naturalization, overseas employment, and ordinary ID verification.',
+      'Protect passport numbers, biometrics, photos, signatures, citizenship evidence, appointment records, minor records, travel documents, and consular records with strict access and retention safeguards.',
+      'Avoid relying only on older passport-law templates when current passport issuance, renewal, cancellation, and record-protection rules matter.',
+    ],
+    commonGaps: [
+      'Passport workflows request IDs and birth records but omit citizenship proof, applicant authority, minor safeguards, DFA route, cancellation, loss, or renewal handling.',
+      'Passport and visa requirements are merged without distinguishing DFA and immigration processes.',
+      'Passport numbers, biometrics, photos, and travel-document records are retained without access and retention limits.',
+    ],
+  },
+  {
+    id: 'ra-8239',
+    statute: 'RA 8239',
+    title: 'Republic Act No. 8239',
+    shortTitle: 'Philippine Passport Act of 1996',
+    year: 1996,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1996/ra_8239_1996.html',
+    aliases: ['ra 8239', 'republic act 8239', 'philippine passport act of 1996', 'old passport law'],
+    topics: ['passport', 'travel document', 'identity', 'dfa', 'citizenship'],
+    keywords: [
+      'passport',
+      'travel document',
+      'dfa',
+      'foreign affairs',
+      'citizenship',
+      'identity',
+      'application',
+      'renewal',
+      'lost passport',
+      'travel document',
+      'minor',
+      'biometric',
+    ],
+    summary:
+      'The prior Philippine Passport Act, useful for legacy document references and RA 8239 queries, but current passport workflows should be checked against the New Philippine Passport Act.',
+    obligations: [
+      'For legacy references to RA 8239, identify the passport issue, application or renewal record, DFA route, citizenship proof, identity proof, and whether current RA 11983 controls now apply.',
+      'Separate historical passport-law citations from current passport issuance, immigration visa, citizenship, naturalization, and civil registry workflows.',
+      'Protect passport application, identity, citizenship, photo, minor, and travel-document records with access and retention safeguards.',
+      'Avoid using RA 8239 alone as the only authority for a current passport workflow without checking the newer passport framework.',
+    ],
+    commonGaps: [
+      'Policies cite RA 8239 but omit a current-law check against RA 11983.',
+      'Passport records are treated as ordinary ID copies without stricter privacy controls.',
+      'Passport, visa, citizenship, and civil registry requirements are mixed together.',
+    ],
+  },
+  {
+    id: 'bp-881',
+    statute: 'BP 881',
+    title: 'Batas Pambansa Blg. 881',
+    shortTitle: 'Omnibus Election Code of the Philippines',
+    year: 1985,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/bataspam/bp1985/bp_881_1985.html',
+    aliases: ['bp 881', 'batas pambansa 881', 'omnibus election code', 'election code'],
+    topics: ['elections', 'comelec', 'campaign', 'voting', 'candidates', 'election offenses'],
+    keywords: [
+      'election',
+      'comelec',
+      'candidate',
+      'campaign',
+      'campaign period',
+      'election offense',
+      'vote buying',
+      'polling place',
+      'ballot',
+      'watcher',
+      'canvass',
+      'election return',
+      'proclamation',
+      'public office',
+    ],
+    summary:
+      'The core election code covering candidates, campaigns, voting, canvassing, election offenses, election-day procedures, and COMELEC-facing records.',
+    obligations: [
+      'For election-related workflows, state the election type, candidate or party role, COMELEC process, campaign period, voting or canvassing stage, prohibited acts, complaint route, and records custodian.',
+      'Separate campaign activity, voter registration, automated election system records, public funds, government personnel, procurement, privacy, and public-service neutrality issues.',
+      'Protect voter lists, ballots, election returns, canvass records, watcher records, complaint evidence, and candidate records with access, retention, and authorized-disclosure safeguards.',
+      'Avoid treating election-period restrictions, campaign materials, public resources, and voter records as ordinary communications or events.',
+    ],
+    commonGaps: [
+      'Election policies mention campaigns or voting but omit COMELEC process, election-period limits, prohibited acts, complaint route, and record custody.',
+      'Public resources, personnel, venues, and communications are used near elections without neutrality and audit controls.',
+      'Voter, ballot, canvass, watcher, and complaint records lack retention and access rules.',
+    ],
+  },
+  {
+    id: 'ra-8189',
+    statute: 'RA 8189',
+    title: 'Republic Act No. 8189',
+    shortTitle: "Voter's Registration Act of 1996",
+    year: 1996,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1996/ra_8189_1996.html',
+    aliases: ['ra 8189', 'republic act 8189', "voter's registration act", 'voter registration law'],
+    topics: ['elections', 'voter registration', 'comelec', 'voter records', 'registration board'],
+    keywords: [
+      'voter registration',
+      'voter record',
+      'registered voter',
+      'comelec',
+      'election registration board',
+      'application for registration',
+      'deactivation',
+      'reactivation',
+      'precinct',
+      'biometrics',
+      'voter list',
+      'objection',
+    ],
+    summary:
+      'A voter-registration framework covering registration applications, election registration boards, precinct records, voter lists, deactivation, reactivation, objections, and voter-record handling.',
+    obligations: [
+      'For voter registration or voter-record workflows, state eligibility, application route, proof, registration board role, precinct or locality, deactivation/reactivation route, objection process, and record custodian.',
+      'Separate voter registration from campaign activities, ID verification, barangay residency, social benefits, privacy, election-day voting, and public records disclosure.',
+      'Protect voter identity, address, biometrics, registration status, precinct assignment, objection files, and registration-board records with access and retention safeguards.',
+      'Avoid using voter lists or registration status for non-election purposes without authority, purpose, redaction, and privacy controls.',
+    ],
+    commonGaps: [
+      'Voter registration forms collect personal data but omit eligibility, board action, objection, deactivation, or appeal route.',
+      'Voter lists are reused for assistance, outreach, or verification without purpose and access limits.',
+      'Precinct, biometrics, and address records lack retention and authorized-disclosure rules.',
+    ],
+  },
+  {
+    id: 'ra-7166',
+    statute: 'RA 7166',
+    title: 'Republic Act No. 7166',
+    shortTitle: 'Synchronized National and Local Elections Act',
+    year: 1991,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1991/ra_7166_1991.html',
+    aliases: ['ra 7166', 'republic act 7166', 'synchronized elections act', 'national and local elections act'],
+    topics: ['elections', 'campaign finance', 'election returns', 'canvassing', 'campaign period'],
+    keywords: [
+      'synchronized elections',
+      'national election',
+      'local election',
+      'campaign period',
+      'election return',
+      'canvass',
+      'statement of contributions and expenditures',
+      'soce',
+      'campaign expenditure',
+      'candidate',
+      'watcher',
+    ],
+    summary:
+      'A national and local election framework relevant to synchronized elections, campaign periods, election returns, canvassing, and statement of contributions and expenditures handling.',
+    obligations: [
+      'For national or local election workflows, map election period, candidate role, campaign expenses, SOCE records, election returns, canvass route, watcher access, and accountable custodian.',
+      'Separate campaign finance, election-day operations, canvassing records, public funds, procurement, personnel neutrality, and ordinary event logistics.',
+      'Protect contribution, expenditure, election-return, canvass, watcher, and candidate records with retention and authorized-disclosure controls.',
+      'Avoid accepting campaign donations, expenses, materials, or logistics without recordkeeping, approval, and reporting ownership.',
+    ],
+    commonGaps: [
+      'Campaign finance workflows omit contributions, expenses, SOCE owner, documentation, and retention.',
+      'Election returns and canvass records are handled without custody and access rules.',
+      'Campaign period, election-day, and ordinary public-event controls are mixed together.',
+    ],
+  },
+  {
+    id: 'ra-9006',
+    statute: 'RA 9006',
+    title: 'Republic Act No. 9006',
+    shortTitle: 'Fair Election Act',
+    year: 2001,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2001/ra_9006_2001.html',
+    aliases: ['ra 9006', 'republic act 9006', 'fair election act', 'election propaganda law'],
+    topics: ['elections', 'campaign materials', 'media', 'political advertising', 'election propaganda'],
+    keywords: [
+      'fair election',
+      'campaign material',
+      'election propaganda',
+      'political advertisement',
+      'poster',
+      'print advertisement',
+      'broadcast advertisement',
+      'media time',
+      'social media',
+      'rally',
+      'common poster area',
+      'campaign disclosure',
+    ],
+    summary:
+      'A campaign-material and political-advertising framework covering election propaganda, posters, print, broadcast, media time, and disclosure rules.',
+    obligations: [
+      'For campaign communications, state the candidate or party, material type, size or placement controls, media purchase, sponsorship disclosure, approval owner, publication period, and record retention.',
+      'Separate campaign speech from government announcements, public-service advisories, procurement, platform content moderation, privacy, and ordinary marketing.',
+      'Track posters, advertisements, social media assets, media contracts, invoices, approvals, takedown requests, and complaint evidence.',
+      'Avoid publishing campaign content without sponsor disclosure, material classification, size/placement review, spending records, and election-period controls.',
+    ],
+    commonGaps: [
+      'Campaign content policies omit sponsor disclosure, material limits, placement, media contract, and takedown controls.',
+      'Government or organizational announcements are published during election periods without neutrality review.',
+      'Digital campaign assets are not retained with approvals, invoices, and complaint records.',
+    ],
+  },
+  {
+    id: 'ra-8436',
+    statute: 'RA 8436',
+    title: 'Republic Act No. 8436',
+    shortTitle: 'Automated Election System Act',
+    year: 1997,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1997/ra_8436_1997.html',
+    aliases: ['ra 8436', 'republic act 8436', 'automated election system act', 'automated elections law'],
+    topics: ['elections', 'automated election system', 'vote counting', 'election technology', 'ballot data'],
+    keywords: [
+      'automated election',
+      'automated election system',
+      'vote counting',
+      'counting machine',
+      'election technology',
+      'ballot data',
+      'election returns',
+      'transmission',
+      'source code',
+      'audit',
+      'security',
+    ],
+    summary:
+      'An automated election system framework covering election technology, counting, transmission, election returns, system security, and audit-sensitive election records.',
+    obligations: [
+      'For election technology or vote-counting workflows, state system scope, ballot or result data, access, custody, testing, audit, transmission, security, incident handling, and accountable office.',
+      'Separate automated election system records from ordinary IT logs, voter registration, campaign materials, procurement, cybersecurity, privacy, and canvassing records.',
+      'Protect source code, machine logs, ballot data, transmission records, result files, audit logs, and incident reports with strict custody and access controls.',
+      'Avoid treating election technology as a normal software deployment without election-specific testing, audit, custody, and transparency safeguards.',
+    ],
+    commonGaps: [
+      'Election technology plans omit testing, audit logs, custody, transmission, access control, and incident response.',
+      'Automated election data is mixed with ordinary IT operations records.',
+      'Ballot, result, source-code, and machine records lack security and retention controls.',
+    ],
+  },
+  {
+    id: 'ra-9369',
+    statute: 'RA 9369',
+    title: 'Republic Act No. 9369',
+    shortTitle: 'Amendments to the Automated Election System Act',
+    year: 2007,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2007/ra_9369_2007.html',
+    aliases: ['ra 9369', 'republic act 9369', 'automated election system amendments', 'amended automated elections law'],
+    topics: ['elections', 'automated election system', 'audit', 'election technology', 'electronic results'],
+    keywords: [
+      'automated election',
+      'source code review',
+      'random manual audit',
+      'voter verified paper audit trail',
+      'election returns',
+      'transmission',
+      'canvassing',
+      'system audit',
+      'election technology',
+      'security',
+      'comelec',
+    ],
+    summary:
+      'An amendment to the automated election framework, relevant to updated election technology, audit, source code, transmission, canvassing, and security controls.',
+    obligations: [
+      'For automated election deployments or reviews, check current audit, source-code, transmission, canvassing, access, transparency, and security controls alongside the original AES law.',
+      'Document system testing, audit owners, result transmission, machine custody, exception handling, and post-election records retention.',
+      'Separate updated AES safeguards from general IT security, procurement, election propaganda, voter registration, and manual canvassing procedures.',
+      'Avoid stale automated-election checklists that omit source-code review, audit, transparency, or updated result-transmission safeguards.',
+    ],
+    commonGaps: [
+      'Automated election workflows cite the original law but omit amended audit, source-code, and transparency controls.',
+      'Transmission and canvassing records lack exception handling and custody rules.',
+      'Election technology incidents are handled without election-specific escalation and record preservation.',
+    ],
+  },
+  {
+    id: 'ra-10742',
+    statute: 'RA 10742',
+    title: 'Republic Act No. 10742',
+    shortTitle: 'Sangguniang Kabataan Reform Act of 2015',
+    year: 2016,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2016/ra_10742_2016.html',
+    aliases: ['ra 10742', 'republic act 10742', 'sangguniang kabataan reform act', 'sk reform act'],
+    topics: ['sangguniang kabataan', 'youth governance', 'barangay', 'sk elections', 'youth council'],
+    keywords: [
+      'sangguniang kabataan',
+      'sk',
+      'katipunan ng kabataan',
+      'youth council',
+      'youth development',
+      'barangay',
+      'sk election',
+      'sk funds',
+      'youth program',
+      'training',
+      'age qualification',
+    ],
+    summary:
+      'A youth-governance framework for Sangguniang Kabataan and Katipunan ng Kabataan, covering qualifications, youth development planning, SK funds, training, and accountability.',
+    obligations: [
+      'For SK or youth-governance workflows, identify age or residency qualification, council role, youth development plan, fund use, training, procurement, records, and accountability owner.',
+      'Separate SK governance from barangay council operations, youth benefits, school programs, elections, public funds, procurement, privacy, and child-protection issues.',
+      'Protect youth participant records, SK funds, resolutions, meeting minutes, procurement files, training records, and program beneficiary data.',
+      'Avoid treating youth programs as informal activities without plan, budget, approval, documentation, and grievance controls.',
+    ],
+    commonGaps: [
+      'SK programs lack youth development plan, budget authority, training, procurement, or reporting controls.',
+      'Age, residency, and youth-participant records are collected without privacy safeguards.',
+      'SK funds and barangay funds are mixed without audit and accountability boundaries.',
+    ],
+  },
+  {
+    id: 'ra-11768',
+    statute: 'RA 11768',
+    title: 'Republic Act No. 11768',
+    shortTitle: 'Strengthening the Sangguniang Kabataan Reform Act',
+    year: 2022,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2022/ra_11768_2022.html',
+    aliases: ['ra 11768', 'republic act 11768', 'strengthening sk reform act', 'sk reform amendment'],
+    topics: ['sangguniang kabataan', 'youth governance', 'barangay', 'sk funds', 'youth development'],
+    keywords: [
+      'sangguniang kabataan',
+      'sk reform',
+      'youth development',
+      'sk funds',
+      'local youth development council',
+      'katipunan ng kabataan',
+      'training',
+      'governance',
+      'budget',
+      'accountability',
+    ],
+    summary:
+      'A statute strengthening the SK reform framework, relevant to updated youth governance, youth development planning, SK fund handling, training, and accountability controls.',
+    obligations: [
+      'For SK programs, check updated governance, planning, budgeting, training, fund-use, reporting, and accountability controls alongside RA 10742.',
+      'Separate SK planning and funds from ordinary barangay projects, school youth activities, elections, procurement, and social-benefit programs.',
+      'Keep youth development, budget, procurement, meeting, training, and beneficiary records with privacy and audit safeguards.',
+      'Avoid relying on older SK templates without reviewing strengthened planning, finance, and accountability duties.',
+    ],
+    commonGaps: [
+      'SK workflows cite RA 10742 but omit newer strengthened governance, planning, and fund controls.',
+      'Youth project records do not show budget authority, training, procurement route, and monitoring owner.',
+      'SK beneficiary and participant data lacks access, retention, and consent safeguards.',
     ],
   },
   {
@@ -4716,6 +5631,38 @@ const TOPIC_EXPANSIONS = [
     expansions: ['universal health care act', 'primary care', 'health care provider network', 'referral system'],
   },
   {
+    triggers: ['notifiable disease', 'outbreak', 'epidemic', 'contact tracing', 'quarantine', 'public health concern'],
+    expansions: ['mandatory reporting of notifiable diseases', 'health surveillance', 'case investigation', 'public health event'],
+  },
+  {
+    triggers: ['tobacco', 'smoking', 'cigarette', 'smoke free', 'designated smoking area', 'sale to minors'],
+    expansions: ['tobacco regulation act', 'public place smoking restrictions', 'health warning', 'advertising limits'],
+  },
+  {
+    triggers: ['vape', 'vapor product', 'e cigarette', 'heated tobacco', 'nicotine', 'online vape sale'],
+    expansions: ['vaporized nicotine products regulation', 'age verification', 'packaging warning', 'online sale controls'],
+  },
+  {
+    triggers: ['hiv', 'aids', 'hiv testing', 'counseling', 'partner notification', 'hiv status'],
+    expansions: ['philippine hiv and aids policy', 'informed consent', 'confidentiality', 'anti discrimination'],
+  },
+  {
+    triggers: ['immunization', 'vaccination', 'vaccine', 'immunization card', 'child vaccine', 'school entry vaccine'],
+    expansions: ['mandatory infants and children immunization', 'parent guardian records', 'health center referral'],
+  },
+  {
+    triggers: ['blood donation', 'blood donor', 'blood bank', 'blood drive', 'blood screening', 'transfusion'],
+    expansions: ['national blood services', 'voluntary blood donation', 'donor screening', 'blood bank coordination'],
+  },
+  {
+    triggers: ['cancer', 'cancer screening', 'cancer registry', 'patient navigation', 'palliative care', 'survivorship'],
+    expansions: ['national integrated cancer control', 'cancer registry', 'screening referral', 'patient navigation'],
+  },
+  {
+    triggers: ['reproductive health', 'family planning', 'responsible parenthood', 'maternal health', 'adolescent health'],
+    expansions: ['responsible parenthood and reproductive health', 'informed choice', 'counseling', 'maternal referral'],
+  },
+  {
     triggers: ['heritage', 'cultural property', 'historic site', 'museum', 'archive', 'conservation', 'restoration'],
     expansions: ['national cultural heritage act', 'cultural property', 'conservation', 'ncca nhcp national museum'],
   },
@@ -4753,7 +5700,43 @@ const TOPIC_EXPANSIONS = [
   },
   {
     triggers: ['ofw', 'migrant worker', 'overseas employment', 'illegal recruitment', 'placement agency'],
-    expansions: ['migrant workers act', 'overseas employment', 'illegal recruitment', 'worker welfare'],
+    expansions: ['migrant workers act', 'department of migrant workers', 'overseas employment', 'illegal recruitment', 'worker welfare'],
+  },
+  {
+    triggers: ['immigration', 'visa', 'foreign national', 'alien', 'overstay', 'deportation', 'blacklist'],
+    expansions: ['philippine immigration act', 'bureau of immigration', 'alien registration', 'visa status', 'deportation due process'],
+  },
+  {
+    triggers: ['passport', 'travel document', 'dfa passport', 'lost passport', 'passport renewal', 'minor passport'],
+    expansions: ['new philippine passport act', 'passport application', 'citizenship proof', 'dfa consular records'],
+  },
+  {
+    triggers: ['dual citizenship', 'citizenship reacquisition', 're-acquisition', 'oath of allegiance', 'natural born filipino'],
+    expansions: ['citizenship retention and re-acquisition', 'dual citizenship', 'oath of allegiance', 'certificate handling'],
+  },
+  {
+    triggers: ['naturalization', 'administrative naturalization', 'judicial naturalization', 'citizenship petition'],
+    expansions: ['revised naturalization law', 'administrative naturalization law', 'petition publication hearing oath'],
+  },
+  {
+    triggers: ['election', 'candidate', 'comelec', 'campaign period', 'vote buying', 'polling place', 'canvassing'],
+    expansions: ['omnibus election code', 'candidate campaign', 'election offense', 'canvass records'],
+  },
+  {
+    triggers: ['voter registration', 'voter list', 'registered voter', 'precinct', 'voter record', 'deactivation'],
+    expansions: ['voters registration act', 'election registration board', 'voter records', 'precinct assignment'],
+  },
+  {
+    triggers: ['campaign material', 'campaign poster', 'political advertisement', 'election propaganda', 'soce', 'campaign finance'],
+    expansions: ['fair election act', 'campaign materials', 'statement of contributions and expenditures', 'sponsor disclosure'],
+  },
+  {
+    triggers: ['automated election', 'vote counting', 'source code review', 'random manual audit', 'election transmission'],
+    expansions: ['automated election system', 'source code review', 'random manual audit', 'election returns transmission'],
+  },
+  {
+    triggers: ['sangguniang kabataan', 'sk', 'katipunan ng kabataan', 'youth council', 'sk funds', 'youth development'],
+    expansions: ['sangguniang kabataan reform', 'youth development plan', 'sk funds', 'local youth development council'],
   },
   {
     triggers: ['bank secrecy', 'bank deposit', 'bank statement', 'deposit account', 'financial record'],
@@ -5324,6 +6307,107 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'Foreign investment and retail workflows document activity classification, ownership, capital, registration, regulator filing, and updated rule review.',
       'Cooperative workflows include member governance, bylaws, board/committee roles, audit, capital, surplus handling, dispute route, and CDA records.',
       'Secured finance workflows include collateral description, security agreement, registry/perfection, priority, enforcement, release, debtor privacy, and audit trail.',
+    ],
+  },
+  {
+    id: 'immigration-citizenship-passports-and-overseas-filipino-records',
+    title: 'Immigration, Citizenship, Passports, and Overseas Filipino Records Stack',
+    triggers: [
+      'immigration',
+      'visa',
+      'foreign national',
+      'alien',
+      'overstay',
+      'deportation',
+      'passport',
+      'travel document',
+      'dual citizenship',
+      'citizenship reacquisition',
+      'naturalization',
+      'administrative naturalization',
+      'ofw',
+      'migrant worker',
+      'department of migrant workers',
+      'overseas employment',
+    ],
+    lawIds: [
+      'ca-613',
+      'ra-11983',
+      'ra-8239',
+      'ra-9225',
+      'ca-473',
+      'ra-9139',
+      'ra-11641',
+      'ra-8042',
+      'ra-10022',
+      'ra-10173',
+      'act-3753',
+      'ra-8792',
+    ],
+    summary:
+      'Use this when a workflow touches foreign nationals, immigration status, visas, admission, deportation, passport or travel-document handling, dual citizenship, naturalization, overseas Filipino workers, or DMW-facing records.',
+    sequence: [
+      'Classify the matter first: immigration admission or stay, visa or alien registration, passport or travel document, dual-citizenship reacquisition, naturalization, OFW deployment, or DMW assistance.',
+      'Map the responsible agency, eligibility or status basis, proof documents, filing route, notice or hearing path, oath or certificate where relevant, and records custodian.',
+      'Separate passport, immigration, citizenship, naturalization, civil registry, overseas employment, trafficking, labor, tax, and benefits decisions instead of treating identity documents as interchangeable.',
+      'Protect passports, visas, biometrics, citizenship evidence, birth records, oath records, employment contracts, repatriation files, and complaint records with strict access, retention, and authorized-disclosure controls.',
+    ],
+    checkpoints: [
+      'Immigration workflows identify status, visa or stay basis, responsible office, notice, hearing or appeal route, and record custody.',
+      'Passport workflows use current passport authority, citizenship proof, applicant authority, minor safeguards, issuance or renewal path, cancellation or loss process, and DFA or consular record controls.',
+      'Citizenship and naturalization workflows distinguish retention or re-acquisition, judicial naturalization, administrative naturalization, oath, certificate, civil registry, and passport consequences.',
+      'OFW and DMW workflows document agency verification, contract and fee controls, illegal-recruitment reporting, welfare, repatriation, legal assistance, and confidentiality safeguards.',
+    ],
+  },
+  {
+    id: 'elections-civic-participation-and-youth-governance',
+    title: 'Elections, Civic Participation, Campaigns, and Youth Governance Stack',
+    triggers: [
+      'election',
+      'comelec',
+      'candidate',
+      'campaign',
+      'campaign material',
+      'political advertisement',
+      'voter registration',
+      'voter list',
+      'soce',
+      'automated election',
+      'vote counting',
+      'source code review',
+      'sangguniang kabataan',
+      'sk funds',
+      'youth council',
+      'barangay election',
+    ],
+    lawIds: [
+      'bp-881',
+      'ra-8189',
+      'ra-7166',
+      'ra-9006',
+      'ra-8436',
+      'ra-9369',
+      'ra-10742',
+      'ra-11768',
+      'ra-7160',
+      'ra-10173',
+      'ra-3019',
+      'pd-1445',
+      'ra-9470',
+    ],
+    summary:
+      'Use this when a workflow touches COMELEC processes, voter registration, campaign materials, political ads, campaign finance, election returns, automated election systems, barangay or SK elections, SK funds, or youth governance records.',
+    sequence: [
+      'Classify the matter first: voter registration, candidate activity, campaign material, campaign finance, election-day or canvassing record, automated election system, complaint or offense, or SK/youth-governance program.',
+      'Map responsible office, election period, COMELEC or registration-board route, eligible actor, required proof, prohibited acts, reporting owner, complaint route, and records custodian.',
+      'Separate campaign activity, public-service announcements, government resources, procurement, public funds, voter records, election technology, youth programs, and ordinary barangay services.',
+      'Protect voter records, campaign approvals, contribution and expenditure files, election returns, canvass records, technology logs, source-code review records, SK budget records, and youth participant data with access and retention controls.',
+    ],
+    checkpoints: [
+      'Voter-registration workflows include eligibility, registration-board action, precinct or locality, objection, deactivation or reactivation, notice, and record-custody controls.',
+      'Campaign workflows include campaign period, material classification, sponsor disclosure, spending records or SOCE owner, public-resource neutrality, takedown or complaint process, and retention.',
+      'Election operations and automated election systems include custody, watcher or audit access, transmission or canvassing safeguards, incident handling, security, and evidence preservation.',
+      'SK and youth-governance workflows include eligibility, youth development plan, training, fund authority, procurement, reporting, grievance, privacy, and audit safeguards.',
     ],
   },
   {
@@ -8221,7 +9305,7 @@ function applyTopicSpecificDraftChecks(
   if (/\b(ofw|migrant worker|overseas employment|illegal recruitment|placement agency|deployment|repatriation)\b/.test(normalizedDraft)) {
     const hasMigrantVerificationControls = /\b(license|verification|employment contract|fee|placement agency|contract review)\b/.test(normalizedDraft)
     const hasMigrantComplaintControls = /\b(complaint|illegal recruitment|reporting|legal assistance|referral)\b/.test(normalizedDraft)
-    const hasMigrantWelfareControls = /\b(welfare|repatriation|worker support|confidential|case record)\b/.test(normalizedDraft)
+    const hasMigrantWelfareControls = /\b(welfare|repatriation|worker support|dmw|confidential|case record)\b/.test(normalizedDraft)
 
     if (!(hasMigrantVerificationControls && hasMigrantComplaintControls && hasMigrantWelfareControls)) {
       findings.amber.push(
@@ -8232,7 +9316,209 @@ function applyTopicSpecificDraftChecks(
           'OFW, migrant-worker, overseas-employment, recruitment, placement, or deployment language was detected without enough licensing, contract verification, fee, complaint, welfare, or repatriation controls.',
           'Add agency or offer verification, employment-contract review, fee restrictions, illegal-recruitment reporting, worker welfare referral, repatriation or legal-assistance route, and confidentiality safeguards.',
           8,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8042') || LEGAL_CORPUS[0])]
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8042') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10022') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11641') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(immigration|visa|foreign national|alien registration|overstay|deportation|blacklist|bureau of immigration)\b/.test(normalizedDraft)) {
+    const hasImmigrationStatusControls = /\b(visa|status|stay|admission|registration|entry|departure|permit)\b/.test(normalizedDraft)
+    const hasImmigrationProcessControls = /\b(bureau of immigration|bi|notice|hearing|appeal|order|verification)\b/.test(normalizedDraft)
+    const hasImmigrationRecordControls = /\b(passport|travel history|record custodian|confidential|retention|authorized disclosure|access control)\b/.test(normalizedDraft)
+
+    if (!(hasImmigrationStatusControls && hasImmigrationProcessControls && hasImmigrationRecordControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Immigration-status controls are incomplete',
+          'Immigration, visa, foreign-national, overstay, exclusion, deportation, or alien-registration language was detected without enough status basis, official verification, notice, hearing, appeal, or record-custody controls.',
+          'Add immigration status basis, visa or stay category, Bureau of Immigration or official verification route, required proof, notice and hearing or appeal path, case owner, passport and travel-record custody, retention, and authorized disclosure rules.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ca-613') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(passport|travel document|dfa passport|lost passport|passport renewal|minor passport|passport application)\b/.test(normalizedDraft)) {
+    const hasPassportAuthorityControls = /\b(dfa|consular|citizenship proof|identity proof|applicant|representative|minor)\b/.test(normalizedDraft)
+    const hasPassportLifecycleControls = /\b(application|renewal|issuance|cancellation|lost|replacement|travel document)\b/.test(normalizedDraft)
+    const hasPassportDataControls = /\b(passport number|biometric|photo|signature|record custodian|confidential|retention|access control)\b/.test(normalizedDraft)
+
+    if (!(hasPassportAuthorityControls && hasPassportLifecycleControls && hasPassportDataControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Passport and travel-document controls are incomplete',
+          'Passport, travel-document, renewal, loss, DFA, consular, or minor-passport language was detected without enough citizenship proof, applicant authority, lifecycle handling, or passport-record safeguards.',
+          'Add current passport-law review, DFA or consular filing route, applicant authority, citizenship and identity proof, minor or representative safeguards, issuance or renewal steps, loss or cancellation handling, biometric/passport-number controls, retention, and authorized disclosure.',
+          8,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11983') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8239') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(dual citizenship|citizenship reacquisition|citizenship re-acquisition|oath of allegiance|natural born filipino|ra 9225)\b/.test(normalizedDraft)) {
+    const hasReacquisitionProofControls = /\b(natural born|birth certificate|foreign citizenship|oath|certificate)\b/.test(normalizedDraft)
+    const hasReacquisitionRouteControls = /\b(consular|bureau of immigration|dfa|filing|derivative|minor child|record update)\b/.test(normalizedDraft)
+    const hasReacquisitionSafeguards = /\b(confidential|retention|access control|civil registry|passport|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasReacquisitionProofControls && hasReacquisitionRouteControls && hasReacquisitionSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Citizenship re-acquisition controls are incomplete',
+          'Dual-citizenship, citizenship-retention, re-acquisition, natural-born proof, oath, or derivative-citizenship language was detected without enough proof, filing route, certificate, child-record, or privacy controls.',
+          'Add natural-born proof, foreign-citizenship event, oath and certificate handling, consular or local filing route, derivative-child handling, civil registry or passport consequences, access controls, retention, and authorized-disclosure rules.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9225') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(naturalization|administrative naturalization|judicial naturalization|citizenship petition|certificate of naturalization)\b/.test(normalizedDraft)) {
+    const hasNaturalizationRouteControls = /\b(judicial|administrative|petition|special committee|court|filing)\b/.test(normalizedDraft)
+    const hasNaturalizationDueProcessControls = /\b(qualification|disqualification|residence|publication|hearing|opposition|oath|decision)\b/.test(normalizedDraft)
+    const hasNaturalizationRecordControls = /\b(certificate|record custodian|civil registry|confidential|retention|access control)\b/.test(normalizedDraft)
+
+    if (!(hasNaturalizationRouteControls && hasNaturalizationDueProcessControls && hasNaturalizationRecordControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Naturalization controls are incomplete',
+          'Naturalization or citizenship-petition language was detected without enough route classification, qualification, publication, hearing, oath, certificate, or record-custody controls.',
+          'Add whether the process is judicial or administrative naturalization, eligibility and disqualification checks, residence proof, publication and notice, hearing or opposition path, oath and certificate handling, civil registry or passport consequences, retention, and confidentiality controls.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ca-473') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9139') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(election|comelec|candidate|campaign period|vote buying|polling place|canvass|election offense|ballot|watcher)\b/.test(normalizedDraft)) {
+    const hasElectionScopeControls = /\b(election type|candidate|party|comelec|campaign period|polling place|canvass|voting stage)\b/.test(normalizedDraft)
+    const hasElectionOffenseControls = /\b(prohibited act|election offense|vote buying|complaint|notice|hearing|appeal|investigation)\b/.test(normalizedDraft)
+    const hasElectionRecordControls = /\b(ballot|election return|canvass|watcher|record custodian|retention|access control|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasElectionScopeControls && hasElectionOffenseControls && hasElectionRecordControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Election process controls are incomplete',
+          'Election, COMELEC, candidate, campaign-period, polling-place, canvassing, watcher, ballot, or election-offense language was detected without enough scope, prohibited-act, complaint, due-process, or records controls.',
+          'Add election type, candidate or party role, COMELEC process, campaign period, voting/canvassing stage, prohibited acts, complaint and hearing route, election-return or ballot custody, watcher access, retention, and authorized disclosure rules.',
+          8,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'bp-881') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7166') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(voter registration|voter list|registered voter|voter record|precinct|election registration board|deactivation|reactivation)\b/.test(normalizedDraft)) {
+    const hasVoterEligibilityControls = /\b(eligibility|qualified voter|residence|citizenship|age|application|proof)\b/.test(normalizedDraft)
+    const hasVoterBoardControls = /\b(election registration board|comelec|objection|approval|deactivation|reactivation|notice|appeal)\b/.test(normalizedDraft)
+    const hasVoterDataControls = /\b(voter list|precinct|biometric|address|record custodian|privacy|retention|access control|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasVoterEligibilityControls && hasVoterBoardControls && hasVoterDataControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Voter-registration controls are incomplete',
+          'Voter-registration, voter-list, precinct, registered-voter, deactivation, reactivation, or election-registration-board language was detected without enough eligibility, board action, objection, notice, appeal, or voter-record safeguards.',
+          'Add voter eligibility, application proof, residence or locality, registration-board action, objection route, deactivation or reactivation process, precinct handling, biometrics/address safeguards, retention, and authorized-disclosure controls.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8189') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(campaign material|campaign poster|political advertisement|election propaganda|common poster area|media time|soce|campaign expenditure|campaign contribution)\b/.test(normalizedDraft)) {
+    const hasCampaignMaterialControls = /\b(material type|poster|advertisement|media|placement|size|common poster area|sponsor disclosure)\b/.test(normalizedDraft)
+    const hasCampaignFinanceControls = /\b(contribution|expenditure|soce|invoice|receipt|spending|donor|expense)\b/.test(normalizedDraft)
+    const hasCampaignReviewControls = /\b(approval|takedown|complaint|retention|record custodian)\b/.test(normalizedDraft)
+
+    if (!(hasCampaignMaterialControls && hasCampaignFinanceControls && hasCampaignReviewControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Campaign material and finance controls are incomplete',
+          'Campaign-material, political-advertising, election-propaganda, media-time, SOCE, contribution, or expenditure language was detected without enough material classification, disclosure, finance, approval, complaint, or retention controls.',
+          'Add material type, size or placement limits, sponsor disclosure, campaign-period review, media contract and invoice records, contribution and expenditure tracking, SOCE owner, takedown or complaint route, retention, and audit safeguards.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9006') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7166') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(automated election|vote counting|counting machine|source code review|random manual audit|voter verified paper audit trail|election transmission|machine log)\b/.test(normalizedDraft)) {
+    const hasAesSystemControls = /\b(system scope|testing|certification|source code|machine|counting|transmission|canvassing)\b/.test(normalizedDraft)
+    const hasAesAuditControls = /\b(audit|random manual audit|paper audit trail|log|incident|exception|security)\b/.test(normalizedDraft)
+    const hasAesCustodyControls = /\b(custody|access control|retention|record custodian|transmission record|result file|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasAesSystemControls && hasAesAuditControls && hasAesCustodyControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Automated election controls are incomplete',
+          'Automated-election, vote-counting, source-code, manual-audit, transmission, machine-log, or election-technology language was detected without enough system, audit, security, incident, custody, or retention controls.',
+          'Add system scope, testing or certification, source-code review, vote-counting and transmission controls, random manual audit or paper-audit-trail handling, security incident route, result-file custody, access controls, retention, and authorized disclosure.',
+          8,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8436') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9369') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(sangguniang kabataan|katipunan ng kabataan|sk funds|sk budget|youth development plan|local youth development council|sk election|youth council)\b/.test(normalizedDraft)) {
+    const hasSkEligibilityControls = /\b(age|residence|qualification|katipunan|youth council|local youth development council)\b/.test(normalizedDraft)
+    const hasSkGovernanceControls = /\b(youth development plan|budget|fund|procurement|training|resolution|meeting minutes)\b/.test(normalizedDraft)
+    const hasSkSafeguards = /\b(reporting|sk audit|fund audit|coa|liquidation|grievance|privacy|retention|beneficiary|record custodian)\b/.test(normalizedDraft)
+
+    if (!(hasSkEligibilityControls && hasSkGovernanceControls && hasSkSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'SK and youth-governance controls are incomplete',
+          'Sangguniang Kabataan, Katipunan ng Kabataan, SK funds, youth development, local youth council, or youth-program language was detected without enough eligibility, planning, budgeting, procurement, reporting, privacy, or audit controls.',
+          'Add age and residency qualifications, youth development plan, local youth council coordination, SK fund authority, procurement or spending route, training, meeting and resolution records, beneficiary safeguards, monitoring, grievance, retention, and audit controls.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10742') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11768') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }

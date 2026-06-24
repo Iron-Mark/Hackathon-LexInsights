@@ -110,8 +110,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 109, 'Local corpus should include at least 109 authorities')
-  assert.ok(frameworks.length >= 17, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 125, 'Local corpus should include at least 125 authorities')
+  assert.ok(frameworks.length >= 19, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -168,6 +168,14 @@ try {
     frameworks.some((framework) => framework.id === 'business-market-entry-ownership-and-secured-finance'),
     'Frameworks should include business market entry, ownership, cooperative, and secured finance'
   )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'immigration-citizenship-passports-and-overseas-filipino-records'),
+    'Frameworks should include immigration, citizenship, passports, and overseas Filipino records'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'elections-civic-participation-and-youth-governance'),
+    'Frameworks should include elections, civic participation, campaigns, and youth governance'
+  )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
   assert.ok(corpus.some((document) => document.statute === 'RA 11058'), 'Corpus should include RA 11058')
@@ -206,6 +214,22 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'BP 344'), 'Corpus should include BP 344')
   assert.ok(corpus.some((document) => document.statute === 'RA 7610'), 'Corpus should include RA 7610')
   assert.ok(corpus.some((document) => document.statute === 'RA 8042'), 'Corpus should include RA 8042')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10022'), 'Corpus should include RA 10022')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11641'), 'Corpus should include RA 11641')
+  assert.ok(corpus.some((document) => document.statute === 'CA 613'), 'Corpus should include CA 613')
+  assert.ok(corpus.some((document) => document.statute === 'CA 473'), 'Corpus should include CA 473')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9139'), 'Corpus should include RA 9139')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9225'), 'Corpus should include RA 9225')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11983'), 'Corpus should include RA 11983')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8239'), 'Corpus should include RA 8239')
+  assert.ok(corpus.some((document) => document.statute === 'BP 881'), 'Corpus should include BP 881')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8189'), 'Corpus should include RA 8189')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7166'), 'Corpus should include RA 7166')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9006'), 'Corpus should include RA 9006')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8436'), 'Corpus should include RA 8436')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9369'), 'Corpus should include RA 9369')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10742'), 'Corpus should include RA 10742')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11768'), 'Corpus should include RA 11768')
   assert.ok(corpus.some((document) => document.statute === 'RA 1405'), 'Corpus should include RA 1405')
   assert.ok(corpus.some((document) => document.statute === 'RA 7581'), 'Corpus should include RA 7581')
   assert.ok(corpus.some((document) => document.statute === 'RA 9178'), 'Corpus should include RA 9178')
@@ -887,6 +911,186 @@ try {
     businessMarketEntryFrameworkResponse.summary,
     'Business Market Entry, Ownership, Cooperative, and Secured Finance Stack',
     'Business market entry framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What immigration and visa controls apply under Commonwealth Act 613 for foreign national admission, alien registration, overstay, exclusion, and deportation?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'CA 613',
+    'philippine immigration act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What passport application, renewal, lost passport, minor passport, citizenship proof, biometric, and DFA consular controls apply under RA 11983?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11983',
+    'new philippine passport act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'How should legacy RA 8239 passport records be handled when checking passport renewal, travel document, and current passport law requirements?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8239',
+    'legacy passport act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What dual citizenship controls apply under RA 9225 for natural-born Filipinos, oath of allegiance, derivative citizenship, certificates, and passport consequences?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9225',
+    'dual citizenship query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What judicial naturalization controls apply under Commonwealth Act 473 for citizenship petitions, residence, publication, hearing, oath, and certificate records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'CA 473',
+    'revised naturalization law query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What administrative naturalization controls apply under RA 9139 for petition eligibility, special committee review, publication, hearing, oath, and certificate handling?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9139',
+    'administrative naturalization query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Department of Migrant Workers controls apply under RA 11641 for OFW case intake, welfare, repatriation, legal assistance, and agency coordination?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11641',
+    'department of migrant workers query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 10022 amendments apply to migrant worker deployment, overseas employment contracts, illegal recruitment, repatriation, legal assistance, and welfare safeguards?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10022',
+    'migrant workers amendment query'
+  )
+
+  const immigrationCitizenshipFrameworkResponse = runLocalResearch(
+    {
+      query: 'What controls apply to immigration visas, foreign national status, passport and travel document records, dual citizenship, naturalization, OFW deployment, DMW assistance, and privacy safeguards?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(immigrationCitizenshipFrameworkResponse, 'CA 613', 'immigration framework immigration query')
+  assertResearchMatch(immigrationCitizenshipFrameworkResponse, 'RA 11983', 'immigration framework passport query')
+  assertResearchMatch(immigrationCitizenshipFrameworkResponse, 'RA 9225', 'immigration framework citizenship query')
+  assertResearchMatch(immigrationCitizenshipFrameworkResponse, 'RA 11641', 'immigration framework DMW query')
+  assertIncludes(
+    immigrationCitizenshipFrameworkResponse.summary,
+    'Immigration, Citizenship, Passports, and Overseas Filipino Records Stack',
+    'Immigration citizenship passport framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What election controls apply under BP 881 for candidates, campaign period, vote buying, polling place watchers, ballots, canvass records, and election offenses?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'BP 881',
+    'omnibus election code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What voter registration controls apply under RA 8189 for voter lists, precinct assignment, election registration board action, deactivation, reactivation, objections, and biometrics?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8189',
+    'voters registration act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What synchronized election controls apply under RA 7166 for campaign period, election returns, canvassing, watchers, SOCE, contributions, and expenditures?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7166',
+    'synchronized elections act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What fair election controls apply under RA 9006 for campaign materials, political advertisements, posters, media time, sponsor disclosure, and election propaganda?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9006',
+    'fair election act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What automated election system controls apply under RA 8436 for vote counting machines, election returns, ballot data, source code, transmission, and security audit?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8436',
+    'automated election system act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 9369 amended automated election controls apply to source code review, random manual audit, paper audit trail, transmission, canvassing, and election technology security?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9369',
+    'automated election amendment query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Sangguniang Kabataan controls apply under RA 10742 for SK elections, Katipunan ng Kabataan, youth development plan, SK funds, age qualification, training, and records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10742',
+    'SK reform act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 11768 strengthened SK governance controls apply to youth development, SK funds, local youth development council, budget, training, reporting, and accountability?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11768',
+    'strengthened SK reform query'
+  )
+
+  const electionsCivicFrameworkResponse = runLocalResearch(
+    {
+      query: 'What controls apply to COMELEC elections, voter registration, campaign posters, political ads, SOCE campaign finance, automated election source code, canvassing, SK funds, youth development plans, public resources, and privacy?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(electionsCivicFrameworkResponse, 'BP 881', 'elections framework election code query')
+  assertResearchMatch(electionsCivicFrameworkResponse, 'RA 8189', 'elections framework voter registration query')
+  assertResearchMatch(electionsCivicFrameworkResponse, 'RA 9006', 'elections framework campaign materials query')
+  assertResearchMatch(electionsCivicFrameworkResponse, 'RA 10742', 'elections framework SK query')
+  assertIncludes(
+    electionsCivicFrameworkResponse.summary,
+    'Elections, Civic Participation, Campaigns, and Youth Governance Stack',
+    'Elections civic participation framework title'
   )
 
   assertResearchMatch(
@@ -1659,6 +1863,74 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Foreign-investment')
   assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Retail trade entry')
   assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Secured-transaction')
+
+  const thinImmigrationCitizenshipDraft = `# Immigration, Passport, Citizenship, and OFW Records Policy
+
+## Purpose
+This policy covers immigration status, visa checks, foreign national admission, alien registration, overstay and deportation issues, passport applications, passport renewal, lost passport handling, travel document records, minor passport concerns, dual citizenship, citizenship re-acquisition, oath of allegiance, natural-born Filipino proof, naturalization, administrative naturalization, judicial naturalization, citizenship petitions, OFW deployment, overseas employment, illegal recruitment, and migrant worker assistance.
+
+## Legal Basis
+Pursuant to CA 613, CA 473, RA 9139, RA 9225, RA 11983, RA 8239, RA 8042, RA 10022, and RA 11641.
+
+## Scope
+This applies to foreign nationals, applicants, Filipino citizens, overseas workers, families, recruiters, and support officers.
+
+## Responsible Office
+The records office shall implement this policy.
+
+## Requirements
+Applicants shall submit identity, travel, citizenship, and employment documents when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinImmigrationCitizenshipDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinImmigrationCitizenshipDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinImmigrationCitizenshipDraftResponse.status, 'success', 'Immigration citizenship draft check should succeed locally')
+  assertFinding(thinImmigrationCitizenshipDraftResponse, 'amber', 'Migrant-worker protection')
+  assertFinding(thinImmigrationCitizenshipDraftResponse, 'amber', 'Immigration-status')
+  assertFinding(thinImmigrationCitizenshipDraftResponse, 'amber', 'Passport and travel-document')
+  assertFinding(thinImmigrationCitizenshipDraftResponse, 'amber', 'Citizenship re-acquisition')
+  assertFinding(thinImmigrationCitizenshipDraftResponse, 'amber', 'Naturalization controls')
+
+  const thinElectionsCivicDraft = `# Election, Campaign, Voter, and Youth Governance Policy
+
+## Purpose
+This policy covers COMELEC election coordination, candidates, campaign period activity, polling place concerns, ballot handling, watchers, canvass records, election offenses, voter registration, voter lists, registered voter records, precinct assignment, deactivation and reactivation, campaign materials, campaign posters, political advertisements, election propaganda, media time, SOCE, campaign contributions and expenditures, automated election systems, vote counting, source code review, random manual audit, election transmission, Sangguniang Kabataan, Katipunan ng Kabataan, SK funds, SK budget, local youth development council, youth development plan, and youth council programs.
+
+## Legal Basis
+Pursuant to BP 881, RA 8189, RA 7166, RA 9006, RA 8436, RA 9369, RA 10742, and RA 11768.
+
+## Scope
+This applies to candidates, voters, youth councils, barangay officers, election volunteers, campaign teams, and technology support personnel.
+
+## Responsible Office
+The civic affairs office shall implement this policy.
+
+## Requirements
+Participants shall submit election, campaign, voter, technology, and youth program documents when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinElectionsCivicDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinElectionsCivicDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinElectionsCivicDraftResponse.status, 'success', 'Elections civic draft check should succeed locally')
+  assertFinding(thinElectionsCivicDraftResponse, 'amber', 'Election process')
+  assertFinding(thinElectionsCivicDraftResponse, 'amber', 'Voter-registration')
+  assertFinding(thinElectionsCivicDraftResponse, 'amber', 'Campaign material')
+  assertFinding(thinElectionsCivicDraftResponse, 'amber', 'Automated election')
+  assertFinding(thinElectionsCivicDraftResponse, 'amber', 'SK and youth-governance')
 
   const thinMobilityLandAgriDraft = `# Mobility, Land, and Farm Support Program
 
