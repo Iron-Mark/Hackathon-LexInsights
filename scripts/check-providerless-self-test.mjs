@@ -110,8 +110,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 125, 'Local corpus should include at least 125 authorities')
-  assert.ok(frameworks.length >= 19, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 133, 'Local corpus should include at least 133 authorities')
+  assert.ok(frameworks.length >= 20, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -123,6 +123,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'health-welfare-and-accessibility'),
     'Frameworks should include health and welfare accessibility'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'public-health-disease-reporting-and-sensitive-health-records'),
+    'Frameworks should include public health, disease reporting, and sensitive health records'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'ip-investment-and-regulated-products'),
@@ -206,6 +210,14 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 8799'), 'Corpus should include RA 8799')
   assert.ok(corpus.some((document) => document.statute === 'RA 9711'), 'Corpus should include RA 9711')
   assert.ok(corpus.some((document) => document.statute === 'RA 11223'), 'Corpus should include RA 11223')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11332'), 'Corpus should include RA 11332')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9211'), 'Corpus should include RA 9211')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11900'), 'Corpus should include RA 11900')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11166'), 'Corpus should include RA 11166')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10152'), 'Corpus should include RA 10152')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7719'), 'Corpus should include RA 7719')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11215'), 'Corpus should include RA 11215')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10354'), 'Corpus should include RA 10354')
   assert.ok(corpus.some((document) => document.statute === 'RA 10066'), 'Corpus should include RA 10066')
   assert.ok(corpus.some((document) => document.statute === 'RA 9994'), 'Corpus should include RA 9994')
   assert.ok(corpus.some((document) => document.statute === 'RA 7277'), 'Corpus should include RA 7277')
@@ -1426,6 +1438,96 @@ try {
 
   assertResearchMatch(
     runLocalResearch(
+      { query: 'What disease surveillance, mandatory reporting, notifiable disease, outbreak, contact tracing, quarantine, and public health event controls apply under RA 11332?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11332',
+    'notifiable disease reporting query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What tobacco, smoking, designated smoking area, sale to minors, advertising, signage, and health warning controls apply under RA 9211?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9211',
+    'tobacco regulation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What vape, vaporized nicotine, heated tobacco, online sale, age verification, packaging warning, and advertising controls apply under RA 11900?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11900',
+    'vape products regulation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What HIV testing, AIDS counseling, informed consent, partner notification, confidentiality, and anti-discrimination controls apply under RA 11166?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11166',
+    'HIV and AIDS policy query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What child immunization, vaccination, immunization card, parent guardian records, health center referral, and school entry vaccine controls apply under RA 10152?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10152',
+    'child immunization query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What blood donation, blood donor, blood bank, voluntary blood service, donor screening, transfusion, and confidentiality controls apply under RA 7719?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7719',
+    'blood services query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What cancer screening, cancer registry, patient navigation, palliative care, survivorship, and confidentiality controls apply under RA 11215?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11215',
+    'cancer control query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What reproductive health, family planning, responsible parenthood, maternal health, adolescent health, informed choice, and counseling controls apply under RA 10354?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10354',
+    'responsible parenthood reproductive health query'
+  )
+
+  const publicHealthFrameworkResponse = runLocalResearch(
+    {
+      query: 'What public health controls apply to notifiable disease reporting, outbreak contact tracing, tobacco and vape sales, HIV status, immunization, blood donation, cancer registry, reproductive health counseling, and sensitive health records?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(publicHealthFrameworkResponse, 'RA 11332', 'public health framework disease reporting query')
+  assertResearchMatch(publicHealthFrameworkResponse, 'RA 11900', 'public health framework vape query')
+  assertResearchMatch(publicHealthFrameworkResponse, 'RA 11166', 'public health framework HIV query')
+  assertResearchMatch(publicHealthFrameworkResponse, 'RA 11215', 'public health framework cancer query')
+  assertIncludes(
+    publicHealthFrameworkResponse.summary,
+    'Public Health, Disease Reporting, and Sensitive Health Records Stack',
+    'Public health framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
       { query: 'What heritage conservation approvals are needed before altering a historic building or cultural property?', user_id: 'self-test' },
       'simulated remote outage'
     ),
@@ -2452,6 +2554,43 @@ This policy takes effect 30 days after publication.`
   )
   assert.equal(thinHealthProductDraftResponse.status, 'success', 'Health product draft check should succeed locally')
   assertFinding(thinHealthProductDraftResponse, 'amber', 'Health-product controls')
+
+  const thinPublicHealthDraft = `# Public Health and Sensitive Records Protocol
+
+## Purpose
+This protocol covers notifiable disease response, outbreak alerts, contact tracing, quarantine notices, tobacco inspections, vape online sale monitoring, HIV testing, immunization, blood donation drives, cancer registry records, and reproductive health counseling.
+
+## Legal Basis
+Pursuant to RA 11332, RA 9211, RA 11900, RA 11166, RA 10152, RA 7719, RA 11215, RA 10354, and RA 10173.
+
+## Scope
+The local health office shall collect health status, donor records, HIV status, vaccine records, cancer records, and family planning records.
+
+## Responsible Office
+The local health office shall implement this protocol.
+
+## Requirements
+Covered persons shall cooperate with reporting, inspection, testing, counseling, screening, and monitoring.
+
+## Monitoring
+The responsible office shall submit quarterly reports.
+
+## Effectivity
+This protocol takes effect after publication.`
+
+  const thinPublicHealthDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinPublicHealthDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinPublicHealthDraftResponse.status, 'success', 'Public health draft check should succeed locally')
+  assertFinding(thinPublicHealthDraftResponse, 'amber', 'Disease-reporting controls')
+  assertFinding(thinPublicHealthDraftResponse, 'amber', 'Tobacco controls')
+  assertFinding(thinPublicHealthDraftResponse, 'amber', 'Vape product controls')
+  assertFinding(thinPublicHealthDraftResponse, 'amber', 'HIV confidentiality controls')
+  assertFinding(thinPublicHealthDraftResponse, 'amber', 'Child immunization controls')
+  assertFinding(thinPublicHealthDraftResponse, 'amber', 'Blood services controls')
+  assertFinding(thinPublicHealthDraftResponse, 'amber', 'Cancer control controls')
+  assertFinding(thinPublicHealthDraftResponse, 'amber', 'Reproductive health controls')
 
   const thinAccessibilityDraft = `# PWD and Senior Citizen Desk Policy
 

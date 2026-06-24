@@ -2848,6 +2848,306 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
     ],
   },
   {
+    id: 'ra-7653',
+    statute: 'RA 7653',
+    title: 'Republic Act No. 7653',
+    shortTitle: 'The New Central Bank Act',
+    year: 1993,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1993/ra_7653_1993.html',
+    aliases: ['ra 7653', 'republic act 7653', 'new central bank act', 'bangko sentral ng pilipinas charter', 'bsp charter'],
+    topics: ['banking', 'central bank', 'bsp', 'monetary authority', 'financial supervision'],
+    keywords: [
+      'bangko sentral',
+      'bsp',
+      'central bank',
+      'monetary board',
+      'bank supervision',
+      'financial supervision',
+      'examination',
+      'reserve',
+      'monetary policy',
+      'bank regulation',
+      'financial stability',
+    ],
+    summary:
+      'The core charter of the Bangko Sentral ng Pilipinas, relevant to monetary authority, bank supervision, examinations, financial-system stability, and regulated financial institution oversight.',
+    obligations: [
+      'For bank, financial institution, payment, remittance, supervised entity, or BSP-facing workflows, identify regulatory classification, supervising office, reporting duty, examination record, confidentiality, and escalation path.',
+      'Separate BSP supervisory concerns from AML reporting, bank secrecy, credit information, consumer complaints, securities, insurance, tax, and ordinary corporate governance.',
+      'Protect examination, supervisory, financial, customer, and enforcement records with access, retention, confidentiality, and authorized-disclosure controls.',
+      'Avoid treating financial supervision as generic business licensing when BSP authorization, reporting, or examination duties may apply.',
+    ],
+    commonGaps: [
+      'Financial-service workflows mention BSP registration but omit supervised-entity classification, reporting, examination, and record controls.',
+      'Bank examination or supervisory records are mixed with ordinary customer-service records.',
+      'Escalation between BSP, AMLC, SEC, Insurance Commission, and consumer complaint channels is unclear.',
+    ],
+  },
+  {
+    id: 'ra-11211',
+    statute: 'RA 11211',
+    title: 'Republic Act No. 11211',
+    shortTitle: 'Amendments to the New Central Bank Act',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11211_2019.html',
+    aliases: ['ra 11211', 'republic act 11211', 'new central bank act amendments', 'bsp amendments', 'bangko sentral amendments'],
+    topics: ['banking', 'central bank', 'bsp', 'financial stability', 'payment systems', 'supervision'],
+    keywords: [
+      'bangko sentral',
+      'bsp',
+      'financial stability',
+      'payment system',
+      'supervision',
+      'monetary board',
+      'financial institution',
+      'regulatory report',
+      'examination',
+      'reserve',
+      'financial market',
+    ],
+    summary:
+      'A modernization statute strengthening BSP powers and financial-stability functions, useful for payment-system, market, supervised-entity, examination, and regulatory-reporting workflows.',
+    obligations: [
+      'For financial technology, payment, remittance, supervised market, or financial-stability workflows, state BSP authority, reporting owner, examination handling, confidentiality, and corrective-action route.',
+      'Coordinate BSP oversight with payment-system, AML, data privacy, bank secrecy, financial consumer, and cybersecurity controls.',
+      'Keep regulatory submissions, supervisory correspondence, board approvals, risk reports, and incident records in controlled custody.',
+      'Avoid relying only on the original BSP charter when newer BSP powers and reporting expectations may be relevant.',
+    ],
+    commonGaps: [
+      'Payment or financial-platform policies cite BSP generally but omit financial-stability or supervised-system reporting controls.',
+      'Regulatory reports and supervisory letters lack custody, access, and retention rules.',
+      'BSP escalation is missing from payment, remittance, wallet, and market-conduct workflows.',
+    ],
+  },
+  {
+    id: 'ra-8791',
+    statute: 'RA 8791',
+    title: 'Republic Act No. 8791',
+    shortTitle: 'General Banking Law of 2000',
+    year: 2000,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2000/ra_8791_2000.html',
+    aliases: ['ra 8791', 'republic act 8791', 'general banking law', 'banking law'],
+    topics: ['banking', 'banks', 'lending', 'fiduciary duties', 'bank operations'],
+    keywords: [
+      'bank',
+      'banking',
+      'bank director',
+      'bank officer',
+      'loan',
+      'credit',
+      'fiduciary',
+      'deposit',
+      'risk management',
+      'related interest',
+      'supervision',
+      'examination',
+    ],
+    summary:
+      'The general framework for banks, covering banking powers, directors and officers, loans, deposits, fiduciary functions, supervision, and prudential controls.',
+    obligations: [
+      'For bank products, loans, deposits, board approvals, related-party transactions, fiduciary accounts, or customer onboarding, state bank role, authority, approval basis, risk review, disclosures, and record owner.',
+      'Separate bank operations from ordinary lending companies, financing companies, cooperatives, insurance, securities, AML, bank secrecy, and credit-information processing.',
+      'Protect loan files, deposit records, board materials, related-interest records, examination records, and customer files with confidentiality and retention controls.',
+      'Avoid approving bank credit, fiduciary, or related-party workflows without authority, risk, disclosure, conflict, and supervisory safeguards.',
+    ],
+    commonGaps: [
+      'Bank loan workflows omit borrower authority, credit approval basis, related-party checks, or risk documentation.',
+      'Deposit, fiduciary, and customer records are treated like ordinary sales records.',
+      'Board, officer, and related-interest conflicts are not separated from routine account handling.',
+    ],
+  },
+  {
+    id: 'ra-9474',
+    statute: 'RA 9474',
+    title: 'Republic Act No. 9474',
+    shortTitle: 'Lending Company Regulation Act of 2007',
+    year: 2007,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2007/ra_9474_2007.html',
+    aliases: ['ra 9474', 'republic act 9474', 'lending company regulation act', 'lending company law'],
+    topics: ['lending', 'credit', 'consumer finance', 'registration', 'financial consumer protection'],
+    keywords: [
+      'lending company',
+      'loan',
+      'borrower',
+      'interest',
+      'charges',
+      'disclosure',
+      'collection',
+      'credit agreement',
+      'registration',
+      'sec',
+      'loan records',
+      'consumer finance',
+    ],
+    summary:
+      'A lending-company framework for registration, loan documentation, disclosures, borrower records, interest and charges, and lending-company oversight.',
+    obligations: [
+      'For lending, loan apps, microcredit, salary loans, financing offers, or collection workflows, state lender registration, borrower eligibility, loan terms, interest and charges, disclosure, complaint route, and records custody.',
+      'Separate lending companies from banks, financing companies, cooperatives, pawnshops, securities offerings, AML, credit reporting, data privacy, and ordinary accounts receivable.',
+      'Protect borrower applications, IDs, credit decisions, payment histories, collection notes, complaints, and adverse-action records with privacy and retention controls.',
+      'Avoid lending workflows that omit registration, written loan terms, transparent charges, borrower complaint handling, and collection limits.',
+    ],
+    commonGaps: [
+      'Loan policies mention approval but omit lender registration, borrower disclosures, fees, interest, and repayment terms.',
+      'Collections are described without complaint, privacy, harassment, or dispute controls.',
+      'Borrower records are reused for marketing or profiling without purpose and retention limits.',
+    ],
+  },
+  {
+    id: 'ra-8556',
+    statute: 'RA 8556',
+    title: 'Republic Act No. 8556',
+    shortTitle: 'Financing Company Act of 1998',
+    year: 1998,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1998/ra_8556_1998.html',
+    aliases: ['ra 8556', 'republic act 8556', 'financing company act', 'financing company law'],
+    topics: ['financing company', 'credit', 'leasing', 'factoring', 'receivables financing'],
+    keywords: [
+      'financing company',
+      'installment financing',
+      'lease financing',
+      'factoring',
+      'receivables',
+      'credit facility',
+      'assignment',
+      'collateral',
+      'sec',
+      'financing records',
+      'consumer finance',
+    ],
+    summary:
+      'A financing-company framework for entities extending credit facilities, installment financing, leasing, factoring, and receivables financing under SEC-facing controls.',
+    obligations: [
+      'For financing, installment, lease, factoring, receivables, or collateralized credit workflows, state financing-company authority, customer terms, assignment or collateral handling, disclosure, complaint route, and record owner.',
+      'Separate financing-company activities from ordinary lending companies, bank loans, secured transactions, consumer sales, securities, and credit-information processing.',
+      'Keep financing agreements, assignments, collateral records, customer notices, collection notes, and complaint records with access and retention safeguards.',
+      'Avoid blending sales, leasing, factoring, and lending workflows without clear license, disclosure, assignment, and collection controls.',
+    ],
+    commonGaps: [
+      'Financing products are described as ordinary sales without financing-company authority and customer disclosures.',
+      'Receivables assignments and collateral records lack notice, custody, and release controls.',
+      'Leasing, factoring, and collection records are not separated from consumer complaint files.',
+    ],
+  },
+  {
+    id: 'ra-10607',
+    statute: 'RA 10607',
+    title: 'Republic Act No. 10607',
+    shortTitle: 'Insurance Code Amendments',
+    year: 2013,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2013/ra_10607_2013.html',
+    aliases: ['ra 10607', 'republic act 10607', 'insurance code', 'insurance code amendments', 'insurance law'],
+    topics: ['insurance', 'insurance commission', 'policyholder protection', 'claims', 'intermediaries'],
+    keywords: [
+      'insurance',
+      'insurance policy',
+      'policyholder',
+      'premium',
+      'claim',
+      'insurance commission',
+      'agent',
+      'broker',
+      'underwriting',
+      'beneficiary',
+      'insurer',
+      'claims records',
+    ],
+    summary:
+      'A major amendment to the Insurance Code, useful for insurance products, policyholder disclosures, premiums, claims, intermediaries, beneficiaries, and Insurance Commission coordination.',
+    obligations: [
+      'For insurance offers, claims, premiums, beneficiaries, brokers, agents, or policy servicing, state insurer or intermediary role, license or authority, disclosures, premium handling, claim steps, complaint route, and record owner.',
+      'Separate insurance from pre-need products, warranties, employee benefits, PhilHealth, investment offers, lending, AML, privacy, and ordinary customer support.',
+      'Protect underwriting, policy, premium, beneficiary, medical, claim, complaint, and intermediary records with confidentiality and retention controls.',
+      'Avoid insurance-like promises without product classification, licensed party, clear exclusions, claims process, and regulator escalation.',
+    ],
+    commonGaps: [
+      'Insurance offers omit license, policy terms, exclusions, premium handling, or claims procedure.',
+      'Claims are processed without beneficiary verification, medical-record privacy, appeal, or complaint route.',
+      'Agent, broker, and insurer roles are blurred in sales and servicing materials.',
+    ],
+  },
+  {
+    id: 'ra-9829',
+    statute: 'RA 9829',
+    title: 'Republic Act No. 9829',
+    shortTitle: 'Pre-Need Code of the Philippines',
+    year: 2009,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2009/ra_9829_2009.html',
+    aliases: ['ra 9829', 'republic act 9829', 'pre need code', 'pre-need code', 'preneed code'],
+    topics: ['pre-need', 'financial products', 'planholders', 'trust fund', 'consumer protection'],
+    keywords: [
+      'pre need',
+      'pre-need',
+      'planholder',
+      'pre need plan',
+      'trust fund',
+      'benefit plan',
+      'education plan',
+      'memorial plan',
+      'pension plan',
+      'sales agent',
+      'disclosure',
+      'claims',
+    ],
+    summary:
+      'A regulatory framework for pre-need companies and plans, including planholder protection, disclosures, trust funds, sales agents, benefits, cancellations, and claims.',
+    obligations: [
+      'For education, memorial, pension, installment benefit, or planholder workflows, state product classification, licensed company or agent, plan terms, trust-fund handling, cancellation, claim, complaint, and records custody.',
+      'Separate pre-need products from insurance, securities, ordinary installment sales, warranties, lending, and donations.',
+      'Protect planholder applications, payment records, beneficiary data, trust-fund records, claims, cancellations, and complaints with access and retention controls.',
+      'Avoid selling plan-like products without clear license, disclosure, trust-fund, cancellation, and claim handling rules.',
+    ],
+    commonGaps: [
+      'Pre-need style plans are marketed without planholder disclosures, license, trust-fund, or cancellation controls.',
+      'Agent authority and sales materials are not reviewed or preserved.',
+      'Benefit claims and planholder records lack complaint, appeal, privacy, and retention safeguards.',
+    ],
+  },
+  {
+    id: 'ra-10846',
+    statute: 'RA 10846',
+    title: 'Republic Act No. 10846',
+    shortTitle: 'Amendments to the PDIC Charter',
+    year: 2016,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2016/ra_10846_2016.html',
+    aliases: ['ra 10846', 'republic act 10846', 'pdic charter amendments', 'deposit insurance', 'philippine deposit insurance corporation'],
+    topics: ['deposit insurance', 'pdic', 'banking', 'closed banks', 'depositor protection'],
+    keywords: [
+      'pdic',
+      'deposit insurance',
+      'insured deposit',
+      'depositor',
+      'closed bank',
+      'bank liquidation',
+      'receivership',
+      'claim',
+      'deposit account',
+      'bank records',
+      'payout',
+    ],
+    summary:
+      'A deposit-insurance and depositor-protection statute amending the PDIC framework, relevant to insured deposits, closed banks, receivership, claims, payout, liquidation, and depositor records.',
+    obligations: [
+      'For bank closure, depositor assistance, insured deposits, liquidation, receivership, or payout workflows, state PDIC coordination, claimant eligibility, documentary proof, account verification, privacy, and records custody.',
+      'Separate PDIC deposit-insurance claims from ordinary bank secrecy, AML reporting, estate claims, consumer complaints, and insolvency workflows.',
+      'Protect depositor lists, account balances, claim forms, identification documents, payout records, and liquidation records with access and retention controls.',
+      'Avoid promising deposit recovery or payout without PDIC eligibility, proof, verification, timeline, and appeal or complaint handling.',
+    ],
+    commonGaps: [
+      'Depositor assistance policies mention insured deposits but omit PDIC coordination, claim proof, or payout workflow.',
+      'Closed-bank records are handled without confidentiality and claimant verification.',
+      'Receivership, liquidation, estate claims, and ordinary customer support are mixed together.',
+    ],
+  },
+  {
     id: 'ra-7581',
     statute: 'RA 7581',
     title: 'Republic Act No. 7581',
@@ -5515,6 +5815,34 @@ const TOPIC_EXPANSIONS = [
     expansions: ['anti money laundering act', 'customer due diligence', 'suspicious transaction report', 'amlc'],
   },
   {
+    triggers: ['bsp', 'bangko sentral', 'central bank', 'monetary board', 'bank supervision', 'financial stability'],
+    expansions: ['new central bank act', 'bangko sentral supervision', 'financial stability', 'regulatory report'],
+  },
+  {
+    triggers: ['banking', 'bank loan', 'bank deposit', 'bank director', 'bank officer', 'fiduciary account'],
+    expansions: ['general banking law', 'bank supervision', 'bank loan approval', 'related interest'],
+  },
+  {
+    triggers: ['lending company', 'loan app', 'microloan', 'borrower', 'loan collection', 'salary loan'],
+    expansions: ['lending company regulation', 'borrower disclosure', 'loan charges', 'collection records'],
+  },
+  {
+    triggers: ['financing company', 'lease financing', 'factoring', 'receivables financing', 'installment financing'],
+    expansions: ['financing company act', 'financing agreement', 'assignment of receivables', 'collateral records'],
+  },
+  {
+    triggers: ['insurance', 'insurance policy', 'premium', 'policyholder', 'insurance claim', 'insurance agent', 'insurance broker'],
+    expansions: ['insurance code', 'policyholder protection', 'insurance commission', 'claims handling'],
+  },
+  {
+    triggers: ['pre need', 'pre-need', 'planholder', 'education plan', 'memorial plan', 'pension plan'],
+    expansions: ['pre need code', 'planholder protection', 'trust fund', 'benefit claim'],
+  },
+  {
+    triggers: ['pdic', 'deposit insurance', 'insured deposit', 'closed bank', 'bank liquidation', 'receivership'],
+    expansions: ['deposit insurance', 'pdic claim', 'closed bank payout', 'depositor protection'],
+  },
+  {
     triggers: ['consumer', 'customer', 'warranty', 'label', 'advertising', 'product safety', 'complaint'],
     expansions: ['consumer act', 'consumer protection', 'product standards', 'consumer complaint'],
   },
@@ -6123,6 +6451,62 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
     ],
   },
   {
+    id: 'banking-lending-insurance-and-financial-institutions',
+    title: 'Banking, Lending, Insurance, and Financial Institutions Stack',
+    triggers: [
+      'bsp',
+      'bangko sentral',
+      'central bank',
+      'bank supervision',
+      'financial stability',
+      'banking',
+      'bank loan',
+      'bank director',
+      'lending company',
+      'loan app',
+      'financing company',
+      'lease financing',
+      'factoring',
+      'insurance',
+      'insurance claim',
+      'pre need',
+      'pre-need',
+      'planholder',
+      'pdic',
+      'deposit insurance',
+      'closed bank',
+    ],
+    lawIds: [
+      'ra-7653',
+      'ra-11211',
+      'ra-8791',
+      'ra-9474',
+      'ra-8556',
+      'ra-10607',
+      'ra-9829',
+      'ra-10846',
+      'ra-9160',
+      'ra-1405',
+      'ra-11765',
+      'ra-9510',
+      'ra-10173',
+    ],
+    summary:
+      'Use this when a workflow touches BSP-supervised activity, banking, loans, lending companies, financing companies, insurance, pre-need plans, deposit insurance, borrower data, or depositor and policyholder records.',
+    sequence: [
+      'Classify the financial activity first: BSP-supervised entity, bank operation, lending company, financing company, insurance, pre-need plan, PDIC/deposit-insurance claim, AML process, credit reporting, or financial consumer complaint.',
+      'Map license or authority, responsible compliance owner, disclosure, pricing or premium terms, customer eligibility, complaint and dispute route, regulator escalation, and record custodian.',
+      'Separate prudential supervision, market conduct, AML, bank secrecy, credit reporting, consumer complaints, policy claims, borrower collections, and data privacy.',
+      'Escalate high-risk activity involving deposits, bank officers, borrower harassment, insurance-like promises, planholder funds, closed banks, suspicious transactions, or regulatory examinations.',
+    ],
+    checkpoints: [
+      'Entity type, regulator, license or authority, product terms, disclosures, fees or premiums, and responsible office are stated.',
+      'Borrower, depositor, policyholder, planholder, and beneficiary records have access, confidentiality, retention, correction, and authorized-disclosure controls.',
+      'Complaints, fraud reports, claims, collection disputes, and regulatory reports have timelines, evidence custody, and escalation owners.',
+      'Bank secrecy, AML, credit reporting, financial consumer protection, and data privacy are treated as separate but coordinated controls.',
+    ],
+  },
+  {
     id: 'payments-credit-evidence-and-dispute-resolution',
     title: 'Payments, Credit, Evidence, and Dispute Resolution Stack',
     triggers: [
@@ -6476,6 +6860,60 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'Benefits or support services include accessible channels and reasonable accommodation where needed.',
       'Victim, child, health, senior, PWD, and welfare records receive stricter privacy and disclosure controls.',
       'Emergency or protection actions do not expose complainants, patients, or beneficiaries to retaliation or public disclosure.',
+    ],
+  },
+  {
+    id: 'public-health-disease-reporting-and-sensitive-health-records',
+    title: 'Public Health, Disease Reporting, and Sensitive Health Records Stack',
+    triggers: [
+      'public health',
+      'notifiable disease',
+      'outbreak',
+      'epidemic',
+      'contact tracing',
+      'quarantine',
+      'tobacco',
+      'smoking',
+      'vape',
+      'vapor product',
+      'hiv',
+      'aids',
+      'immunization',
+      'vaccination',
+      'blood donation',
+      'blood bank',
+      'cancer',
+      'cancer registry',
+      'reproductive health',
+      'family planning',
+    ],
+    lawIds: [
+      'ra-11223',
+      'ra-11332',
+      'ra-9211',
+      'ra-11900',
+      'ra-11166',
+      'ra-10152',
+      'ra-7719',
+      'ra-11215',
+      'ra-10354',
+      'ra-10173',
+      'pd-856',
+      'ra-9711',
+    ],
+    summary:
+      'Use this when a workflow handles reportable diseases, outbreak response, tobacco or vape controls, HIV status, immunization, blood services, cancer care, reproductive health, or other sensitive public-health records.',
+    sequence: [
+      'Classify the health workflow first: disease surveillance, outbreak response, tobacco or vape regulation, HIV service, immunization, blood service, cancer care, reproductive health, or general health referral.',
+      'Map reporting office, timeline, consent basis, confidentiality, referral, facility or agency coordination, responsible staff, complaint route, and record custodian.',
+      'Separate clinical care, public-health surveillance, enforcement, school or workplace action, commercial sales, marketing claims, and privacy recordkeeping.',
+      'Escalate high-risk disclosures, minors, infectious-disease events, HIV status, donor records, registry records, and reproductive-health counseling through authorized channels only.',
+    ],
+    checkpoints: [
+      'Reportable events, service eligibility, responsible office, timeline, referral route, and complaint path are stated where relevant.',
+      'Sensitive health records have purpose, consent or legal basis, access limits, authorized disclosure, retention, and correction or grievance controls.',
+      'Tobacco and vape controls identify age restrictions, signage or warnings, sales channel, advertising review, enforcement owner, and recordkeeping.',
+      'Health programs do not publish names, status, donor identity, HIV status, reproductive-health details, or registry data without authority and safeguards.',
     ],
   },
   {
@@ -9033,6 +9471,166 @@ function applyTopicSpecificDraftChecks(
           'Add eligible users, service owner, provider or facility network, referral path, funding or benefit limits, complaint route, health-record privacy, and coordination responsibilities.',
           6,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11223') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(notifiable disease|public health concern|outbreak|epidemic|contact tracing|quarantine|case investigation|health surveillance)\b/.test(normalizedDraft)) {
+    const hasDiseaseReporting = /\b(reporting timeline|reportable event|notifiable disease|doh|local epidemiology|surveillance unit|responsible office)\b/.test(normalizedDraft)
+    const hasDiseaseResponse = /\b(case investigation|contact tracing|referral|isolation|quarantine|laboratory|coordination)\b/.test(normalizedDraft)
+    const hasDiseasePrivacy = /\b(confidential|privacy|authorized disclosure|access control|retention|redaction|health record)\b/.test(normalizedDraft)
+
+    if (!(hasDiseaseReporting && hasDiseaseResponse && hasDiseasePrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Disease-reporting controls are incomplete',
+          'Notifiable-disease, outbreak, contact-tracing, quarantine, or public-health-event language was detected without enough reporting, investigation, referral, confidentiality, or authorized-disclosure controls.',
+          'Add reportable event criteria, reporting office and timeline, DOH or LGU coordination, case investigation, referral route, confidentiality, authorized disclosure, retention, and redaction safeguards.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11332') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(tobacco|smoking|cigarette|smoke free|smoke-free|designated smoking area|sale to minors|health warning)\b/.test(normalizedDraft)) {
+    const hasTobaccoAgeControls = /\b(age restriction|minor|sale to minors|age verification|school zone|youth)\b/.test(normalizedDraft)
+    const hasTobaccoPlaceControls = /\b(public place|smoke free|smoke-free|designated smoking area|signage|warning)\b/.test(normalizedDraft)
+    const hasTobaccoEnforcement = /\b(complaint|inspection|violation|enforcement|record|retention|responsible office)\b/.test(normalizedDraft)
+
+    if (!(hasTobaccoAgeControls && hasTobaccoPlaceControls && hasTobaccoEnforcement)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Tobacco controls are incomplete',
+          'Tobacco, smoking, cigarette, smoke-free, designated-smoking-area, or sale-to-minors language was detected without enough age restriction, public-place, signage, complaint, enforcement, or recordkeeping controls.',
+          'Add minor and age-verification rules, public-place and designated-smoking-area controls, signage and health-warning review, complaint intake, inspection, violation handling, responsible office, and records retention.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9211') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(vape|vapor product|vaporized nicotine|e cigarette|e-cigarette|heated tobacco|nicotine|online vape sale|vape sale)\b/.test(normalizedDraft)) {
+    const hasVapeAgeControls = /\b(age verification|age restriction|minor|identity verification|age gate|age-gate)\b/.test(normalizedDraft)
+    const hasVapeProductControls = /\b(packaging|warning|product standard|label|labeling|flavor|product registration|approved product)\b/.test(normalizedDraft)
+    const hasVapeSalesRecords = /\b(online sale|sales channel|advertising|complaint|record|retention|privacy|takedown)\b/.test(normalizedDraft)
+
+    if (!(hasVapeAgeControls && hasVapeProductControls && hasVapeSalesRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Vape product controls are incomplete',
+          'Vape, vapor-product, vaporized-nicotine, heated-tobacco, nicotine, e-cigarette, or online-sale language was detected without enough age verification, product, packaging, warning, advertising, sales-channel, or privacy controls.',
+          'Add age verification, product classification, packaging and warning review, permitted sales channel, advertising limits, complaint handling, customer-data privacy, retention, and takedown records.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11900') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(hiv|aids|hiv testing|hiv status|partner notification|pre test counseling|post test counseling)\b/.test(normalizedDraft)) {
+    const hasHivConsent = /\b(consent|informed consent|counseling|pre test|post test|referral)\b/.test(normalizedDraft)
+    const hasHivConfidentiality = /\b(confidential|confidentiality|privacy|access control|authorized disclosure|restricted access)\b/.test(normalizedDraft)
+    const hasHivRights = /\b(non discrimination|anti discrimination|complaint|grievance|retention|records|stigma)\b/.test(normalizedDraft)
+
+    if (!(hasHivConsent && hasHivConfidentiality && hasHivRights)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'HIV confidentiality controls are incomplete',
+          'HIV, AIDS, HIV-testing, counseling, partner-notification, or HIV-status language was detected without enough informed-consent, counseling, confidentiality, anti-discrimination, restricted-access, or records controls.',
+          'Add informed consent, counseling and referral workflow, confidentiality, restricted access, authorized disclosure, anti-discrimination safeguards, complaint handling, retention, and record custody.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11166') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(immunization|vaccination|vaccine|immunization card|child vaccine|school entry vaccine)\b/.test(normalizedDraft)) {
+    const hasImmunizationGuardian = /\b(parent|guardian|consent|notice|child|minor)\b/.test(normalizedDraft)
+    const hasImmunizationRecords = /\b(immunization card|vaccine record|schedule|follow up|referral|health center)\b/.test(normalizedDraft)
+    const hasImmunizationPrivacy = /\b(privacy|confidential|retention|record custodian|access control|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasImmunizationGuardian && hasImmunizationRecords && hasImmunizationPrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Child immunization controls are incomplete',
+          'Immunization, vaccination, vaccine, immunization-card, child-vaccine, or school-entry-vaccine language was detected without enough parent or guardian, schedule, record, follow-up, referral, privacy, or retention controls.',
+          'Add parent or guardian notice, vaccine schedule and eligibility, immunization-card or record owner, health-center referral, follow-up, privacy, authorized disclosure, and retention safeguards.',
+          5,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10152') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(blood donation|blood donor|blood bank|blood drive|blood screening|transfusion|blood service)\b/.test(normalizedDraft)) {
+    const hasBloodEligibility = /\b(donor eligibility|eligibility|consent|voluntary|deferral|donor screening)\b/.test(normalizedDraft)
+    const hasBloodFacility = /\b(blood bank|facility|screening|testing|referral|coordination|inventory)\b/.test(normalizedDraft)
+    const hasBloodPrivacy = /\b(confidential|privacy|retention|record custodian|access control|authorized disclosure|traceability)\b/.test(normalizedDraft)
+
+    if (!(hasBloodEligibility && hasBloodFacility && hasBloodPrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Blood services controls are incomplete',
+          'Blood-donation, donor, blood-bank, blood-drive, screening, transfusion, or blood-service language was detected without enough donor eligibility, consent, facility coordination, screening, confidentiality, traceability, or retention controls.',
+          'Add donor eligibility and consent, screening and deferral rules, licensed facility or blood-bank coordination, referral, traceability, confidentiality, access limits, retention, and record custody.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7719') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(cancer|cancer screening|cancer registry|patient navigation|palliative care|survivorship)\b/.test(normalizedDraft)) {
+    const hasCancerReferral = /\b(eligibility|screening|referral|patient navigation|provider|facility|palliative)\b/.test(normalizedDraft)
+    const hasCancerRegistry = /\b(registry|data field|case record|consent|authorized reporting|record custodian)\b/.test(normalizedDraft)
+    const hasCancerPrivacy = /\b(confidential|privacy|access control|retention|authorized disclosure|correction|grievance)\b/.test(normalizedDraft)
+
+    if (!(hasCancerReferral && hasCancerRegistry && hasCancerPrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Cancer control controls are incomplete',
+          'Cancer, screening, registry, patient-navigation, palliative-care, or survivorship language was detected without enough eligibility, referral, registry, consent, confidentiality, retention, or grievance controls.',
+          'Add screening eligibility, referral and patient-navigation steps, registry data fields and custodian, consent or authorized reporting basis, confidentiality, retention, access limits, correction, and grievance controls.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11215') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(reproductive health|family planning|responsible parenthood|maternal health|adolescent health|rh service)\b/.test(normalizedDraft)) {
+    const hasRhCounseling = /\b(counseling|informed choice|consent|referral|maternal|adolescent)\b/.test(normalizedDraft)
+    const hasRhAccess = /\b(eligibility|provider|facility|service package|responsible office|availability)\b/.test(normalizedDraft)
+    const hasRhPrivacy = /\b(confidential|privacy|access control|retention|complaint|grievance|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasRhCounseling && hasRhAccess && hasRhPrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Reproductive health controls are incomplete',
+          'Reproductive-health, family-planning, responsible-parenthood, maternal-health, or adolescent-health language was detected without enough counseling, informed choice, referral, provider, privacy, complaint, or confidentiality controls.',
+          'Add counseling and informed-choice safeguards, eligibility and service owner, referral or provider route, maternal or adolescent safeguards where relevant, confidentiality, complaint handling, retention, and authorized disclosure.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10354') || LEGAL_CORPUS[0])]
         )
       )
     }
