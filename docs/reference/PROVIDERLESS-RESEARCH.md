@@ -25,14 +25,14 @@ npm run check:document-extraction:self-test
 
 The self-test compiles [local-legal-research.ts](../../src/lib/services/local-legal-research.ts) with TypeScript and executes it in Node. It verifies:
 
-- Corpus coverage for core statutes, including procurement, government service delivery, cybercrime, consumer protection, competition, financial consumer protection, hazardous substances, SIM registration, customs, tax administration, PhilSys, and protected areas.
+- Corpus coverage for core statutes, including procurement, government service delivery, cybercrime, consumer protection, competition, financial consumer protection, hazardous substances, SIM registration, customs, tax administration, PhilSys, protected areas, labor, health, social welfare, IP, securities, FDA, and heritage topics.
 - RA 9003, RA 11058, and RA 10173 research matching.
-- RA 12009, RA 11032, RA 10175, RA 7394, RA 10667, RA 11765, RA 6969, RA 11285, RA 11934, RA 9995, RA 10627, RA 10863, RA 11976, RA 11055, and RA 11038 research matching.
+- RA 12009, RA 11032, RA 10175, RA 7394, RA 10667, RA 11765, RA 6969, RA 11285, RA 11934, RA 9995, RA 10627, RA 10863, RA 11976, RA 11055, RA 11038, PD 442, RA 10911, RA 11036, RA 9262, RA 10364, RA 8293, RA 8799, RA 9711, RA 11223, RA 10066, RA 9994, and RA 7277 research matching.
 - Common citation formats such as `R.A. No. 10173` and `RA No. 8792`.
 - Deep Search providerless metadata.
 - No-result behavior for unrelated queries.
 - Draft warnings when a cited Republic Act is outside the bundled local corpus.
-- Draft warnings for thin procurement, service-delivery, cyber incident, consumer-protection, financial-consumer, hazardous-waste, competition, and SIM/mobile-number controls.
+- Draft warnings for thin procurement, service-delivery, cyber incident, consumer-protection, financial-consumer, hazardous-waste, competition, SIM/mobile-number, labor, mental-health, anti-trafficking, IP, securities, health-product, senior-citizen, and PWD controls.
 - Red findings for risky privacy and penalty drafting.
 - Green findings for a stronger solid-waste ordinance draft.
 - Local health-check metadata.
@@ -55,10 +55,24 @@ The upload limit is 5MB. Scanned image-only PDFs may fail with `Document extract
 The providerless research path is deterministic:
 
 1. Normalize the query, strip punctuation, remove common stop words, and extract Republic Act numbers from common formats such as `RA 9003`, `RA No. 9003`, `R.A. No. 9003`, and `Republic Act Number 9003`.
-2. Expand terms through legal-topic triggers such as waste, privacy, workplace safety, fire safety, DRRM, air, water, LGU authority, corporate governance, harassment, electronic records, procurement, government services, cybercrime, and consumer protection.
+2. Expand terms through legal-topic triggers such as waste, privacy, workplace safety, fire safety, DRRM, air, water, LGU authority, corporate governance, harassment, electronic records, procurement, government services, cybercrime, consumer protection, labor, health, welfare, IP, securities, FDA, and heritage topics.
 3. Score the bundled corpus with BM25-style term ranking plus boosts for exact RA numbers, statute aliases, short titles, and topic phrases.
-4. Return the top matches with source links, citation coverage, matched terms, practical checklists, and common gaps.
-5. Generate Markdown through templates only. Local mode does not call an AI model.
+4. Add a local compliance-framework section when a query matches a cross-law workflow such as incident response, LGU service delivery, environmental operations, health and welfare, IP/investment/product claims, or procurement/imports.
+5. Return the top matches with source links, citation coverage, matched terms, practical checklists, and common gaps.
+6. Generate Markdown through templates only. Local mode does not call an AI model.
+
+## Local Compliance Frameworks
+
+When a query spans multiple topics, local mode can synthesize a practical cross-law checklist from bundled framework packs:
+
+- Data, cyber, and mobile incident response.
+- LGU ordinance, permit, and service delivery.
+- Environmental operations and facility controls.
+- Consumer, financial, commerce, AML, and tax workflows.
+- Workplace, school, public safety, and protection.
+- Health, welfare, accessibility, and protection.
+- IP, investment, health product, and market claims.
+- Imports, public procurement, assets, and audit.
 
 ## Draft Checker Algorithm
 
@@ -68,7 +82,7 @@ The providerless draft checker uses structural and topic-specific heuristics:
 - Prioritizes explicitly cited local-corpus authorities in finding references.
 - Flags amber findings when a draft cites a Republic Act that is not in the bundled local corpus.
 - Flags red findings when penalties appear without notice, hearing, appeal, or reconsideration safeguards.
-- Adds topic checks for privacy, solid waste, workplace safety, fire safety, DRRM, water quality, air quality, digital records, procurement, government service delivery, cyber incidents, consumer protection, competition, financial consumers, hazardous substances, energy efficiency, SIM and mobile-number data, private image abuse, harassment, bullying, customs, tax administration, PhilSys identity handling, and protected areas.
+- Adds topic checks for privacy, solid waste, workplace safety, fire safety, DRRM, water quality, air quality, digital records, procurement, government service delivery, cyber incidents, consumer protection, competition, financial consumers, hazardous substances, energy efficiency, SIM and mobile-number data, private image abuse, harassment, bullying, customs, tax administration, PhilSys identity handling, protected areas, labor, age discrimination, mental health, VAWC, trafficking, IP, securities, FDA-regulated products, health service delivery, cultural heritage, senior-citizen benefits, and PWD accessibility.
 - Computes a conservative compliance score from green, amber, and red findings.
 
 This catches common drafting gaps. It does not determine legality, validity, or enforceability.
@@ -104,6 +118,18 @@ The local corpus intentionally stays small and auditable:
 - [RA 11976 - Ease of Paying Taxes Act](https://lawphil.net/statutes/repacts/ra2024/ra_11976_2024.html)
 - [RA 11055 - Philippine Identification System Act](https://lawphil.net/statutes/repacts/ra2018/ra_11055_2018.html)
 - [RA 11038 - Expanded National Integrated Protected Areas System Act of 2018](https://lawphil.net/statutes/repacts/ra2018/ra_11038_2018.html)
+- [PD 442 - Labor Code of the Philippines](https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html)
+- [RA 10911 - Anti-Age Discrimination in Employment Act](https://lawphil.net/statutes/repacts/ra2016/ra_10911_2016.html)
+- [RA 11036 - Mental Health Act](https://lawphil.net/statutes/repacts/ra2018/ra_11036_2018.html)
+- [RA 9262 - Anti-Violence Against Women and Their Children Act of 2004](https://lawphil.net/statutes/repacts/ra2004/ra_9262_2004.html)
+- [RA 10364 - Expanded Anti-Trafficking in Persons Act of 2012](https://lawphil.net/statutes/repacts/ra2013/ra_10364_2013.html)
+- [RA 8293 - Intellectual Property Code of the Philippines](https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html)
+- [RA 8799 - Securities Regulation Code](https://lawphil.net/statutes/repacts/ra2000/ra_8799_2000.html)
+- [RA 9711 - Food and Drug Administration Act of 2009](https://lawphil.net/statutes/repacts/ra2009/ra_9711_2009.html)
+- [RA 11223 - Universal Health Care Act](https://lawphil.net/statutes/repacts/ra2019/ra_11223_2019.html)
+- [RA 10066 - National Cultural Heritage Act of 2009](https://lawphil.net/statutes/repacts/ra2010/ra_10066_2010.html)
+- [RA 9994 - Expanded Senior Citizens Act of 2010](https://lawphil.net/statutes/repacts/ra2010/ra_9994_2010.html)
+- [RA 7277 - Magna Carta for Disabled Persons](https://lawphil.net/statutes/repacts/ra1992/ra_7277_1992.html)
 
 ## Limits
 

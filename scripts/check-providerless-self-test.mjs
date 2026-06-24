@@ -111,7 +111,7 @@ try {
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
   assert.ok(corpus.length >= 15, 'Local corpus should include at least 15 authorities')
-  assert.ok(frameworks.length >= 6, 'Local corpus should include compliance framework bundles')
+  assert.ok(frameworks.length >= 8, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -119,6 +119,14 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'environmental-operations'),
     'Frameworks should include environmental operations'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'health-welfare-and-accessibility'),
+    'Frameworks should include health and welfare accessibility'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'ip-investment-and-regulated-products'),
+    'Frameworks should include IP, investment, and regulated products'
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
@@ -141,6 +149,18 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 11976'), 'Corpus should include RA 11976')
   assert.ok(corpus.some((document) => document.statute === 'RA 11055'), 'Corpus should include RA 11055')
   assert.ok(corpus.some((document) => document.statute === 'RA 11038'), 'Corpus should include RA 11038')
+  assert.ok(corpus.some((document) => document.statute === 'PD 442'), 'Corpus should include PD 442')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10911'), 'Corpus should include RA 10911')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11036'), 'Corpus should include RA 11036')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9262'), 'Corpus should include RA 9262')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10364'), 'Corpus should include RA 10364')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8293'), 'Corpus should include RA 8293')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8799'), 'Corpus should include RA 8799')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9711'), 'Corpus should include RA 9711')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11223'), 'Corpus should include RA 11223')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10066'), 'Corpus should include RA 10066')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9994'), 'Corpus should include RA 9994')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7277'), 'Corpus should include RA 7277')
 
   assertResearchMatch(
     runLocalResearch(
@@ -386,6 +406,111 @@ try {
     ),
     'RA 11038',
     'protected areas query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Labor Code controls apply to wage, overtime, rest day, and termination policies?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'PD 442',
+    'labor code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'Can a job post set a maximum age requirement for applicants?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10911',
+    'age discrimination query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What mental health counseling confidentiality and crisis referral safeguards should a school policy include?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11036',
+    'mental health query'
+  )
+
+  const healthWelfareFrameworkResponse = runLocalResearch(
+    { query: 'What mental health, PWD accessibility, and senior citizen service safeguards should an LGU policy include?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(healthWelfareFrameworkResponse, 'RA 7277', 'health welfare framework PWD query')
+  assertResearchMatch(healthWelfareFrameworkResponse, 'RA 9994', 'health welfare framework senior query')
+  assertIncludes(
+    healthWelfareFrameworkResponse.summary,
+    'Health, Welfare, Accessibility, and Protection Stack',
+    'Health welfare framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What VAWC protection order and confidentiality controls should a barangay desk follow?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9262',
+    'VAWC protection query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What anti-trafficking victim referral and recovery controls apply to recruitment complaints?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10364',
+    'anti-trafficking query'
+  )
+
+  const ipInvestmentFrameworkResponse = runLocalResearch(
+    { query: 'What copyright, software license, trademark, and investment offer controls should an online product launch check?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(ipInvestmentFrameworkResponse, 'RA 8293', 'IP investment framework query')
+  assertResearchMatch(ipInvestmentFrameworkResponse, 'RA 8799', 'IP investment securities query')
+  assertIncludes(
+    ipInvestmentFrameworkResponse.summary,
+    'IP, Investment, Health Product, and Market Claims Stack',
+    'IP investment framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What FDA registration, labeling, adverse event, and recall controls apply to health product sellers?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9711',
+    'FDA health product query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Universal Health Care referral and primary care network controls apply to local health services?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11223',
+    'universal health care query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What heritage conservation approvals are needed before altering a historic building or cultural property?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10066',
+    'cultural heritage query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What senior citizen OSCA discount and VAT exemption controls should a local benefit desk use?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9994',
+    'senior citizen query'
   )
 
   const noResultsResponse = runLocalResearch(
@@ -844,6 +969,188 @@ This policy takes effect 30 days after publication.`
   )
   assert.equal(thinSimDraftResponse.status, 'success', 'SIM draft check should succeed locally')
   assertFinding(thinSimDraftResponse, 'amber', 'SIM and mobile-number controls')
+
+  const thinLaborDraft = `# Worker Scheduling Policy
+
+## Purpose
+This policy governs labor service workers and contractors assigned to municipal facilities.
+
+## Legal Basis
+Pursuant to PD 442.
+
+## Scope
+This applies to workers assigned through local service arrangements.
+
+## Responsible Office
+The administration office shall implement this policy.
+
+## Requirements
+Workers shall follow the posted schedule and supervisor instructions.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinLaborDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinLaborDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinLaborDraftResponse.status, 'success', 'Labor draft check should succeed locally')
+  assertFinding(thinLaborDraftResponse, 'amber', 'Employment and labor-standard')
+
+  const thinMentalHealthDraft = `# School Mental Health Referral Program
+
+## Purpose
+This program offers mental health and psychosocial assistance to students.
+
+## Legal Basis
+Pursuant to RA 11036 and RA 10173.
+
+## Scope
+This applies to school support requests.
+
+## Responsible Office
+The guidance office shall implement this program.
+
+## Requirements
+Students may request counseling support.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This program takes effect 30 days after publication.`
+
+  const thinMentalHealthDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinMentalHealthDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinMentalHealthDraftResponse.status, 'success', 'Mental health draft check should succeed locally')
+  assertFinding(thinMentalHealthDraftResponse, 'amber', 'Mental-health support')
+
+  const thinProtectionDraft = `# Recruitment Complaint Assistance Protocol
+
+## Purpose
+This protocol handles trafficking and forced labor complaints involving recruitment promises.
+
+## Legal Basis
+Pursuant to RA 10364 and RA 9262.
+
+## Scope
+This applies to reports from residents and families.
+
+## Responsible Office
+The help desk shall implement this protocol.
+
+## Requirements
+Residents shall report suspicious recruitment activity.
+
+## Monitoring
+The help desk shall submit quarterly reports.
+
+## Effectivity
+This protocol takes effect 30 days after publication.`
+
+  const thinProtectionDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinProtectionDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinProtectionDraftResponse.status, 'success', 'Protection draft check should succeed locally')
+  assertFinding(thinProtectionDraftResponse, 'amber', 'Anti-trafficking response')
+
+  const thinIpInvestmentDraft = `# Online Product Launch Policy
+
+## Purpose
+This policy governs software, logo, brand, user generated content, and investment offer materials.
+
+## Legal Basis
+Pursuant to RA 8293 and RA 8799.
+
+## Scope
+This applies to product teams and public launch pages.
+
+## Responsible Office
+The product office shall implement this policy.
+
+## Requirements
+Teams shall publish launch materials after manager approval.
+
+## Monitoring
+The product office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinIpInvestmentDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinIpInvestmentDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinIpInvestmentDraftResponse.status, 'success', 'IP investment draft check should succeed locally')
+  assertFinding(thinIpInvestmentDraftResponse, 'amber', 'Intellectual-property controls')
+  assertFinding(thinIpInvestmentDraftResponse, 'amber', 'Investment or securities')
+
+  const thinHealthProductDraft = `# Wellness Product Sales Policy
+
+## Purpose
+This policy covers health product and supplement sales through online channels.
+
+## Legal Basis
+Pursuant to RA 9711 and RA 7394.
+
+## Scope
+This applies to marketplace sellers.
+
+## Responsible Office
+The consumer desk shall implement this policy.
+
+## Requirements
+Sellers shall submit product details before listing.
+
+## Monitoring
+The consumer desk shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinHealthProductDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinHealthProductDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinHealthProductDraftResponse.status, 'success', 'Health product draft check should succeed locally')
+  assertFinding(thinHealthProductDraftResponse, 'amber', 'Health-product controls')
+
+  const thinAccessibilityDraft = `# PWD and Senior Citizen Desk Policy
+
+## Purpose
+This policy creates a PWD and senior citizen benefit desk.
+
+## Legal Basis
+Pursuant to RA 7277 and RA 9994.
+
+## Scope
+This applies to local resident support requests.
+
+## Responsible Office
+The social services office shall implement this policy.
+
+## Requirements
+Residents shall submit benefit requests to the desk.
+
+## Monitoring
+The social services office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinAccessibilityDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinAccessibilityDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinAccessibilityDraftResponse.status, 'success', 'Accessibility draft check should succeed locally')
+  assertFinding(thinAccessibilityDraftResponse, 'amber', 'Senior-citizen benefit')
+  assertFinding(thinAccessibilityDraftResponse, 'amber', 'PWD accessibility')
 
   const strongerDraft = `# Solid Waste Segregation Ordinance
 

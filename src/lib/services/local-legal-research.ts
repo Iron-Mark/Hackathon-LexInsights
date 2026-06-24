@@ -1250,6 +1250,451 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'LGU permits are treated as enough even when protected-area approvals may be required.',
     ],
   },
+  {
+    id: 'pd-442',
+    statute: 'PD 442',
+    title: 'Presidential Decree No. 442',
+    shortTitle: 'Labor Code of the Philippines',
+    year: 1974,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html',
+    aliases: ['pd 442', 'presidential decree 442', 'labor code', 'labor code of the philippines', 'employment law'],
+    topics: ['labor', 'employment', 'wages', 'working conditions', 'termination', 'labor standards', 'dole'],
+    keywords: [
+      'wage',
+      'minimum wage',
+      'overtime',
+      'holiday pay',
+      'rest day',
+      'hours of work',
+      'employment contract',
+      'just cause',
+      'authorized cause',
+      'termination',
+      'labor standards',
+      'dole',
+      'nlrc',
+    ],
+    summary:
+      'The core employment and labor standards framework covering working conditions, wages, hours, employment relations, termination concepts, and labor enforcement institutions.',
+    obligations: [
+      'For employee policies, identify worker classification, hours of work, pay, benefits, rest periods, leave, workplace rules, and recordkeeping. ',
+      'Separate disciplinary rules, termination procedure, notice requirements, and grievance handling from ordinary performance management.',
+      'Coordinate labor-standard, occupational-safety, discrimination, harassment, and privacy duties when workplace policies process employee data.',
+      'Avoid treating employees, contractors, trainees, volunteers, or platform workers as interchangeable without classification analysis.',
+    ],
+    commonGaps: [
+      'Employment duties are created without pay, hours, classification, records, or grievance details.',
+      'Discipline or dismissal language lacks notice, hearing, documentation, or appeal route.',
+      'Contractor or trainee policies may function like employment rules without labor-standard safeguards.',
+    ],
+  },
+  {
+    id: 'ra-10911',
+    statute: 'RA 10911',
+    title: 'Republic Act No. 10911',
+    shortTitle: 'Anti-Age Discrimination in Employment Act',
+    year: 2016,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2016/ra_10911_2016.html',
+    aliases: ['ra 10911', 'republic act 10911', 'anti age discrimination', 'age discrimination employment'],
+    topics: ['labor', 'employment', 'hiring', 'discrimination', 'age', 'recruitment'],
+    keywords: [
+      'age requirement',
+      'age limit',
+      'job advertisement',
+      'employment application',
+      'hiring',
+      'promotion',
+      'training',
+      'compensation',
+      'dismissal',
+      'retirement',
+      'bona fide occupational qualification',
+    ],
+    summary:
+      'An employment law prohibiting unreasonable age discrimination in job advertisements, hiring, promotion, compensation, training, dismissal, and employment terms.',
+    obligations: [
+      'Review job posts, hiring criteria, promotion, training, benefits, and dismissal rules for age-based exclusions.',
+      'Use ability, qualification, safety, licensing, or bona fide occupational requirements instead of unsupported age cutoffs.',
+      'Document why any age-related criterion is legally necessary and proportionate to the role.',
+      'Coordinate age-discrimination controls with broader labor, safe-spaces, and workplace privacy policies.',
+    ],
+    commonGaps: [
+      'Job posts include age caps without objective role justification.',
+      'Promotion, training, or benefit rules exclude workers by age without necessity analysis.',
+      'Hiring data collects age but does not state purpose, retention, or equal-opportunity safeguards.',
+    ],
+  },
+  {
+    id: 'ra-11036',
+    statute: 'RA 11036',
+    title: 'Republic Act No. 11036',
+    shortTitle: 'Mental Health Act',
+    year: 2018,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2018/ra_11036_2018.html',
+    aliases: ['ra 11036', 'republic act 11036', 'mental health act', 'mental health care'],
+    topics: ['health', 'mental health', 'workplace', 'school', 'privacy', 'patient rights'],
+    keywords: [
+      'mental health',
+      'psychosocial',
+      'counseling',
+      'patient rights',
+      'informed consent',
+      'confidentiality',
+      'referral',
+      'crisis intervention',
+      'workplace mental health',
+      'school mental health',
+    ],
+    summary:
+      'A mental-health framework recognizing service access, patient rights, informed consent, confidentiality, community care, workplace programs, and school-based mental-health support.',
+    obligations: [
+      'For workplace, school, barangay, or health programs, state consent, confidentiality, referral, emergency, and non-discrimination safeguards.',
+      'Separate peer support, counseling, clinical treatment, emergency intervention, and disciplinary processes.',
+      'Protect mental-health records as sensitive information and limit disclosure to authorized care or safety channels.',
+      'Avoid mandatory disclosure or punitive treatment of mental-health concerns without rights, consent, and safety controls.',
+    ],
+    commonGaps: [
+      'Mental-health support is announced without consent, confidentiality, referral, or crisis protocol.',
+      'Employee or student wellness records are handled without privacy and access limits.',
+      'Policies conflate discipline, safety intervention, counseling, and medical treatment.',
+    ],
+  },
+  {
+    id: 'ra-9262',
+    statute: 'RA 9262',
+    title: 'Republic Act No. 9262',
+    shortTitle: 'Anti-Violence Against Women and Their Children Act of 2004',
+    year: 2004,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2004/ra_9262_2004.html',
+    aliases: ['ra 9262', 'republic act 9262', 'vawc', 'violence against women and children'],
+    topics: ['protection', 'women', 'children', 'domestic violence', 'barangay protection order', 'confidentiality'],
+    keywords: [
+      'violence against women',
+      'violence against children',
+      'vawc',
+      'protection order',
+      'barangay protection order',
+      'temporary protection order',
+      'safety plan',
+      'confidentiality',
+      'referral',
+      'social welfare',
+    ],
+    summary:
+      'A protection law addressing violence against women and their children, including protection orders, safety, confidentiality, support, and referral mechanisms.',
+    obligations: [
+      'For VAWC intake, assistance, or barangay response, state safety assessment, protection-order handling, referral, confidentiality, and documentation controls.',
+      'Separate emergency assistance, social welfare support, legal referral, law-enforcement referral, and record custody.',
+      'Protect victim identity, child information, addresses, and case details from unnecessary disclosure.',
+      'Avoid mediation or public exposure workflows that can endanger complainants or children.',
+    ],
+    commonGaps: [
+      'Protection-order or referral workflows lack confidentiality and safety planning.',
+      'Victim records are collected without restricted access and retention controls.',
+      'Complaint handling is assigned without role separation among barangay, social welfare, and law enforcement.',
+    ],
+  },
+  {
+    id: 'ra-10364',
+    statute: 'RA 10364',
+    title: 'Republic Act No. 10364',
+    shortTitle: 'Expanded Anti-Trafficking in Persons Act of 2012',
+    year: 2013,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2013/ra_10364_2013.html',
+    aliases: ['ra 10364', 'republic act 10364', 'expanded anti trafficking', 'anti trafficking in persons'],
+    topics: ['trafficking', 'recruitment', 'labor exploitation', 'online exploitation', 'victim protection'],
+    keywords: [
+      'trafficking',
+      'recruitment',
+      'transport',
+      'harboring',
+      'forced labor',
+      'sexual exploitation',
+      'online exploitation',
+      'victim protection',
+      'referral',
+      'recovery',
+      'confidentiality',
+    ],
+    summary:
+      'A human-trafficking framework covering recruitment, transport, harboring, exploitation, online-facilitated trafficking, victim protection, confidentiality, and enforcement coordination.',
+    obligations: [
+      'For recruitment, placement, travel, shelter, online work, or protection workflows, screen for coercion, exploitation, deception, debt, and vulnerability indicators.',
+      'State referral, rescue, recovery, confidentiality, child protection, social welfare, and law-enforcement coordination controls.',
+      'Separate victim support from evidence handling, investigation, immigration, labor, and prosecution workflows.',
+      'Avoid publishing victim details, requiring repeated disclosure, or using complaint procedures that expose complainants to retaliation.',
+    ],
+    commonGaps: [
+      'Recruitment or placement controls do not screen for exploitation, coercion, or debt-bondage risks.',
+      'Victim support and law-enforcement referral are not separated from ordinary complaint intake.',
+      'Case records lack confidentiality, child protection, and authorized-disclosure safeguards.',
+    ],
+  },
+  {
+    id: 'ra-8293',
+    statute: 'RA 8293',
+    title: 'Republic Act No. 8293',
+    shortTitle: 'Intellectual Property Code of the Philippines',
+    year: 1997,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html',
+    aliases: ['ra 8293', 'republic act 8293', 'intellectual property code', 'copyright law', 'trademark law', 'patent law'],
+    topics: ['intellectual property', 'copyright', 'trademark', 'patent', 'licensing', 'software', 'brand'],
+    keywords: [
+      'copyright',
+      'trademark',
+      'patent',
+      'industrial design',
+      'utility model',
+      'trade name',
+      'software',
+      'license',
+      'assignment',
+      'infringement',
+      'fair use',
+      'ipo',
+    ],
+    summary:
+      'The core intellectual-property framework covering patents, trademarks, copyright, related rights, licensing, ownership, enforcement, and IP Office processes.',
+    obligations: [
+      'For software, content, brand, logo, dataset, training material, or product design workflows, identify ownership, license, permitted use, attribution, and transfer terms.',
+      'Separate copyright, trademark, patent, trade name, and confidentiality issues instead of using one generic IP clause.',
+      'Include takedown, complaint, preservation, and authorization checks for user-generated or third-party content.',
+      'Avoid assuming public availability means free commercial reuse or model-training permission.',
+    ],
+    commonGaps: [
+      'Content, software, logo, or dataset use lacks ownership and license proof.',
+      'Brand and copyright issues are merged without separate trademark and copyright analysis.',
+      'User uploads or generated content have no takedown, attribution, or infringement complaint path.',
+    ],
+  },
+  {
+    id: 'ra-8799',
+    statute: 'RA 8799',
+    title: 'Republic Act No. 8799',
+    shortTitle: 'Securities Regulation Code',
+    year: 2000,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2000/ra_8799_2000.html',
+    aliases: ['ra 8799', 'republic act 8799', 'securities regulation code', 'securities law'],
+    topics: ['securities', 'investment', 'capital markets', 'public offering', 'broker', 'dealer', 'sec'],
+    keywords: [
+      'securities',
+      'investment contract',
+      'public offering',
+      'registration statement',
+      'prospectus',
+      'broker',
+      'dealer',
+      'exchange',
+      'insider trading',
+      'market manipulation',
+      'investor protection',
+      'sec',
+    ],
+    summary:
+      'A securities-market framework for securities registration, public offerings, brokers, dealers, exchanges, investor protection, market manipulation, and SEC oversight.',
+    obligations: [
+      'For investment, token, share, note, crowdfunding, cooperative investment, or public solicitation workflows, check whether securities, registration, exemption, or SEC licensing issues arise.',
+      'State investor disclosures, risk warnings, suitability, recordkeeping, complaint handling, advertising controls, and prohibited representations.',
+      'Separate ordinary sales, lending, donations, memberships, and investment contracts before publishing an offer.',
+      'Avoid return promises, pooled-fund language, or referral commissions without securities-law review.',
+    ],
+    commonGaps: [
+      'Investment or fundraising materials lack registration, exemption, or SEC review path.',
+      'Risk disclosures, refund limits, investor complaints, and advertising controls are missing.',
+      'Referral, commission, or guaranteed-return language creates securities risk without safeguards.',
+    ],
+  },
+  {
+    id: 'ra-9711',
+    statute: 'RA 9711',
+    title: 'Republic Act No. 9711',
+    shortTitle: 'Food and Drug Administration Act of 2009',
+    year: 2009,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2009/ra_9711_2009.html',
+    aliases: ['ra 9711', 'republic act 9711', 'fda act', 'food and drug administration act'],
+    topics: ['health products', 'food', 'drug', 'cosmetic', 'medical device', 'labeling', 'recall'],
+    keywords: [
+      'food',
+      'drug',
+      'cosmetic',
+      'medical device',
+      'health product',
+      'fda',
+      'registration',
+      'labeling',
+      'adverse event',
+      'recall',
+      'post marketing surveillance',
+      'license to operate',
+    ],
+    summary:
+      'A health-product regulation framework strengthening FDA authority over foods, drugs, cosmetics, medical devices, health products, licensing, labeling, surveillance, and recalls.',
+    obligations: [
+      'For food, drug, cosmetic, supplement, device, or wellness-product workflows, identify FDA licensing, registration, labeling, claims, storage, distribution, and recall controls.',
+      'Separate product safety, advertising claims, adverse-event reporting, customer complaints, and post-market surveillance.',
+      'Coordinate consumer protection, e-commerce, privacy, and product-liability controls when health products are sold online.',
+      'Avoid therapeutic, safety, or certification claims without source, registration, and review evidence.',
+    ],
+    commonGaps: [
+      'Health products are sold or distributed without FDA registration, labeling, or license-to-operate checks.',
+      'Recall, adverse-event, complaint, and post-market surveillance workflows are missing.',
+      'Marketing claims exceed the documented registration, label, or approved use.',
+    ],
+  },
+  {
+    id: 'ra-11223',
+    statute: 'RA 11223',
+    title: 'Republic Act No. 11223',
+    shortTitle: 'Universal Health Care Act',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11223_2019.html',
+    aliases: ['ra 11223', 'republic act 11223', 'universal health care act', 'uhc act'],
+    topics: ['health', 'public health', 'primary care', 'health system', 'philhealth', 'local health'],
+    keywords: [
+      'universal health care',
+      'primary care',
+      'health care provider network',
+      'local health system',
+      'philhealth',
+      'patient navigation',
+      'health service',
+      'public health',
+      'referral system',
+      'health data',
+    ],
+    summary:
+      'A health-system framework for population-based and individual-based health services, primary care, local health systems, PhilHealth integration, referral, and service access.',
+    obligations: [
+      'For local health programs, state service eligibility, referral pathway, responsible facility or network, privacy, patient navigation, and recordkeeping.',
+      'Separate public-health functions, clinical care, financing, PhilHealth concerns, emergency referral, and local-government responsibilities.',
+      'Coordinate health data, consent, confidentiality, and interoperability with privacy and mental-health safeguards.',
+      'Avoid promising benefits, coverage, or access without identifying provider network, funding, implementation owner, and complaint route.',
+    ],
+    commonGaps: [
+      'Health services are promised without referral, provider, funding, or eligibility controls.',
+      'Patient or health records are processed without confidentiality and access safeguards.',
+      'LGU health roles are unclear or not coordinated with provider networks and PhilHealth-related processes.',
+    ],
+  },
+  {
+    id: 'ra-10066',
+    statute: 'RA 10066',
+    title: 'Republic Act No. 10066',
+    shortTitle: 'National Cultural Heritage Act of 2009',
+    year: 2010,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2010/ra_10066_2010.html',
+    aliases: ['ra 10066', 'republic act 10066', 'national cultural heritage act', 'cultural heritage law'],
+    topics: ['cultural heritage', 'historic sites', 'heritage buildings', 'archives', 'museum', 'conservation'],
+    keywords: [
+      'cultural property',
+      'heritage',
+      'historic site',
+      'heritage zone',
+      'conservation',
+      'restoration',
+      'excavation',
+      'national museum',
+      'nhcp',
+      'ncca',
+      'archives',
+    ],
+    summary:
+      'A cultural-heritage framework covering cultural property, heritage zones, conservation, restoration, documentation, museums, archives, and cultural-agency coordination.',
+    obligations: [
+      'For heritage buildings, sites, artifacts, archives, monuments, excavation, or tourism projects, identify cultural-property status and responsible heritage agencies.',
+      'State conservation, documentation, consultation, permits, expert review, emergency protection, and restoration standards.',
+      'Separate ordinary building permits, tourism promotion, land-use approvals, and cultural-property approvals.',
+      'Avoid demolition, alteration, relocation, excavation, or commercialization without heritage review and records.',
+    ],
+    commonGaps: [
+      'Heritage, archive, or cultural-site projects lack NCCA, NHCP, National Museum, or archive coordination.',
+      'Conservation standards, documentation, and expert review are missing.',
+      'Local permits are treated as enough even when cultural-property approvals may be required.',
+    ],
+  },
+  {
+    id: 'ra-9994',
+    statute: 'RA 9994',
+    title: 'Republic Act No. 9994',
+    shortTitle: 'Expanded Senior Citizens Act of 2010',
+    year: 2010,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2010/ra_9994_2010.html',
+    aliases: ['ra 9994', 'republic act 9994', 'expanded senior citizens act', 'senior citizens act'],
+    topics: ['senior citizens', 'social welfare', 'discounts', 'health', 'accessibility', 'benefits'],
+    keywords: [
+      'senior citizen',
+      'osca',
+      'discount',
+      'vat exemption',
+      'social pension',
+      'health services',
+      'privileges',
+      'identification card',
+      'benefits',
+      'elderly',
+    ],
+    summary:
+      'A senior-citizen welfare framework covering privileges, discounts, VAT exemptions, health and social services, identification, and local senior-citizen support mechanisms.',
+    obligations: [
+      'For senior-citizen benefits, services, IDs, discounts, or local programs, state eligibility, documentary requirements, OSCA or local office role, privacy, and complaint route.',
+      'Separate social services, commercial discount handling, tax treatment, health services, and fraud-prevention controls.',
+      'Protect senior-citizen identity, health, financial, and benefit records with access and retention safeguards.',
+      'Avoid broad benefit promises without funding, implementing office, eligibility, and verification process.',
+    ],
+    commonGaps: [
+      'Senior-citizen benefits lack eligibility, office ownership, verification, or complaint process.',
+      'Discount and VAT-exemption workflows are mixed with ordinary promotions or subsidies.',
+      'Personal, health, or benefit records are collected without privacy safeguards.',
+    ],
+  },
+  {
+    id: 'ra-7277',
+    statute: 'RA 7277',
+    title: 'Republic Act No. 7277',
+    shortTitle: 'Magna Carta for Disabled Persons',
+    year: 1992,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1992/ra_7277_1992.html',
+    aliases: ['ra 7277', 'republic act 7277', 'magna carta for disabled persons', 'pwd law', 'persons with disability'],
+    topics: ['persons with disability', 'accessibility', 'employment', 'education', 'health', 'social welfare'],
+    keywords: [
+      'person with disability',
+      'pwd',
+      'reasonable accommodation',
+      'accessibility',
+      'rehabilitation',
+      'auxiliary aid',
+      'disability',
+      'equal opportunity',
+      'employment',
+      'education',
+      'health services',
+    ],
+    summary:
+      'A disability-rights framework covering equal opportunity, accessibility, employment, education, health, rehabilitation, auxiliary services, and social participation of persons with disabilities.',
+    obligations: [
+      'For PWD services, facilities, employment, education, transport, health, or digital access, state accessibility, accommodation, eligibility, responsible office, and complaint controls.',
+      'Separate reasonable accommodation, benefit verification, facility accessibility, health or rehabilitation support, and privacy safeguards.',
+      'Coordinate disability records with privacy, health, labor, building, and service-delivery rules.',
+      'Avoid requiring unnecessary disability details or medical records beyond the stated purpose and authority.',
+    ],
+    commonGaps: [
+      'PWD access or benefit rules lack accommodation, accessibility, and complaint mechanisms.',
+      'Disability records are collected without purpose, confidentiality, or retention limits.',
+      'Facilities, forms, or online workflows are created without accessible alternatives.',
+    ],
+  },
 ]
 
 const TOPIC_EXPANSIONS = [
@@ -1368,6 +1813,54 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['protected area', 'buffer zone', 'biodiversity', 'pamb', 'nipas', 'enipas', 'ecotourism'],
     expansions: ['expanded national integrated protected areas system', 'protected areas', 'pamb', 'biodiversity safeguards'],
+  },
+  {
+    triggers: ['labor', 'employee', 'wage', 'overtime', 'termination', 'dismissal', 'rest day', 'holiday pay'],
+    expansions: ['labor code', 'working conditions', 'wages', 'termination procedure', 'dole nlrc'],
+  },
+  {
+    triggers: ['age discrimination', 'age limit', 'age requirement', 'job post', 'hiring', 'promotion'],
+    expansions: ['anti age discrimination employment', 'bona fide occupational qualification', 'employment application'],
+  },
+  {
+    triggers: ['mental health', 'counseling', 'psychosocial', 'wellness', 'crisis intervention'],
+    expansions: ['mental health act', 'patient rights', 'informed consent', 'confidentiality', 'referral'],
+  },
+  {
+    triggers: ['vawc', 'violence against women', 'protection order', 'domestic violence', 'barangay protection'],
+    expansions: ['anti violence against women and their children', 'protection order', 'safety plan', 'confidentiality'],
+  },
+  {
+    triggers: ['trafficking', 'forced labor', 'recruitment', 'exploitation', 'victim protection'],
+    expansions: ['expanded anti trafficking', 'victim protection', 'referral', 'confidentiality'],
+  },
+  {
+    triggers: ['copyright', 'trademark', 'patent', 'brand', 'logo', 'software license', 'intellectual property'],
+    expansions: ['intellectual property code', 'copyright', 'trademark', 'license', 'infringement'],
+  },
+  {
+    triggers: ['securities', 'investment', 'public offering', 'investment contract', 'investor', 'broker', 'dealer'],
+    expansions: ['securities regulation code', 'registration statement', 'investor protection', 'sec'],
+  },
+  {
+    triggers: ['fda', 'food', 'drug', 'cosmetic', 'medical device', 'health product', 'supplement', 'recall'],
+    expansions: ['food and drug administration', 'health product registration', 'labeling', 'adverse event', 'recall'],
+  },
+  {
+    triggers: ['universal health care', 'primary care', 'philhealth', 'health service', 'patient navigation', 'local health'],
+    expansions: ['universal health care act', 'primary care', 'health care provider network', 'referral system'],
+  },
+  {
+    triggers: ['heritage', 'cultural property', 'historic site', 'museum', 'archive', 'conservation', 'restoration'],
+    expansions: ['national cultural heritage act', 'cultural property', 'conservation', 'ncca nhcp national museum'],
+  },
+  {
+    triggers: ['senior citizen', 'elderly', 'osca', 'senior discount', 'social pension'],
+    expansions: ['expanded senior citizens act', 'senior citizen benefits', 'osca', 'discount vat exemption'],
+  },
+  {
+    triggers: ['pwd', 'person with disability', 'disabled person', 'accessibility', 'reasonable accommodation'],
+    expansions: ['magna carta for disabled persons', 'persons with disability', 'accessibility', 'reasonable accommodation'],
   },
 ]
 
@@ -1504,6 +1997,10 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
     title: 'Workplace, School, Public Safety, and Protection Stack',
     triggers: [
       'workplace safety',
+      'labor standards',
+      'wage policy',
+      'age discrimination',
+      'mental health',
       'sexual harassment',
       'safe spaces',
       'bullying',
@@ -1514,20 +2011,84 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'disaster plan',
       'internet cafe',
     ],
-    lawIds: ['ra-11058', 'ra-11313', 'ra-7877', 'ra-10627', 'ra-9775', 'ra-9514', 'ra-10121'],
+    lawIds: ['pd-442', 'ra-11058', 'ra-10911', 'ra-11036', 'ra-11313', 'ra-7877', 'ra-10627', 'ra-9775', 'ra-9514', 'ra-10121'],
     summary:
-      'Use this when policies protect workers, students, minors, complainants, establishments, or the public from safety, harassment, fire, disaster, or online exploitation risks.',
+      'Use this when policies protect workers, students, minors, complainants, establishments, or the public from labor, safety, mental-health, harassment, fire, disaster, or online exploitation risks.',
     sequence: [
-      'Classify the protected group and setting: workplace, school, public space, online platform, establishment, or emergency site.',
+      'Classify the protected group and setting: workplace, school, public space, online platform, establishment, health support channel, or emergency site.',
       'Assign prevention, reporting, investigation, confidentiality, referral, corrective action, and emergency response owners.',
-      'Separate discipline or sanctions from support, victim protection, due process, and recordkeeping.',
+      'Separate discipline, labor relations, accommodations, health support, victim protection, due process, and recordkeeping.',
       'Coordinate with the correct public office or authority when risks involve minors, fire safety, disasters, or law enforcement.',
     ],
     checkpoints: [
-      'Policy includes reporting channels, responsible office, confidentiality, non-retaliation, due process, and records.',
-      'Safety controls include training, drills, PPE or equipment, incident reports, inspections, and emergency escalation.',
+      'Policy includes reporting channels, responsible office, confidentiality, non-retaliation, due process, records, and accommodation where relevant.',
+      'Safety and labor controls include classification, working conditions, training, drills, PPE or equipment, incident reports, inspections, and emergency escalation.',
       'Child, student, or victim data is protected and referral is limited to authorized channels.',
       'Sanctions do not replace prevention, support, correction, and appeal procedures.',
+    ],
+  },
+  {
+    id: 'health-welfare-and-accessibility',
+    title: 'Health, Welfare, Accessibility, and Protection Stack',
+    triggers: [
+      'health service',
+      'primary care',
+      'mental health',
+      'senior citizen',
+      'pwd',
+      'disability',
+      'accessibility',
+      'protection order',
+      'vawc',
+      'trafficking',
+      'social welfare',
+    ],
+    lawIds: ['ra-11223', 'ra-11036', 'ra-9994', 'ra-7277', 'ra-9262', 'ra-10364', 'ra-10173'],
+    summary:
+      'Use this when a policy handles health services, vulnerable-person support, benefits, accessibility, protection orders, victim referral, or sensitive welfare records.',
+    sequence: [
+      'Classify the person served and risk: patient, senior citizen, PWD, child, VAWC complainant, trafficking victim, or general beneficiary.',
+      'Map eligibility, consent, confidentiality, referral, emergency support, responsible office, and complaint or appeal route.',
+      'Separate service delivery, benefit verification, protection, law-enforcement referral, health care, and data custody.',
+      'Limit sensitive records to the purpose, role, retention period, and authorized disclosure route stated in the policy.',
+    ],
+    checkpoints: [
+      'Eligibility, service owner, referral route, consent, confidentiality, and record retention are stated.',
+      'Benefits or support services include accessible channels and reasonable accommodation where needed.',
+      'Victim, child, health, senior, PWD, and welfare records receive stricter privacy and disclosure controls.',
+      'Emergency or protection actions do not expose complainants, patients, or beneficiaries to retaliation or public disclosure.',
+    ],
+  },
+  {
+    id: 'ip-investment-and-regulated-products',
+    title: 'IP, Investment, Health Product, and Market Claims Stack',
+    triggers: [
+      'copyright',
+      'trademark',
+      'software license',
+      'brand use',
+      'investment offer',
+      'securities',
+      'public offering',
+      'health product',
+      'fda registration',
+      'product claim',
+      'online sale',
+    ],
+    lawIds: ['ra-8293', 'ra-8799', 'ra-9711', 'ra-7394', 'ra-8792', 'ra-10173'],
+    summary:
+      'Use this when an app, campaign, product, marketplace, or public offer involves content ownership, brand use, investment claims, health products, advertising, or online sales.',
+    sequence: [
+      'Classify whether the issue is IP ownership, licensing, public investment, health-product regulation, consumer claim, e-commerce evidence, or privacy.',
+      'Collect proof of license, registration, authorization, label, disclosure, risk warning, complaint route, and record owner before publishing.',
+      'Separate marketing copy from legal disclosures, regulated claims, user-generated content, and complaint or takedown operations.',
+      'Escalate high-risk health, investment, and infringement claims before launch rather than after customer complaints.',
+    ],
+    checkpoints: [
+      'Brand, software, content, dataset, or creative work has ownership, license, attribution, and permitted-use evidence.',
+      'Investment-like offers have registration, exemption, risk disclosure, suitability, advertising, and SEC review controls where relevant.',
+      'Health-product claims have FDA registration, label, safety, adverse-event, recall, and complaint handling controls.',
+      'Online claims preserve records, protect customer data, and provide correction, takedown, refund, or escalation paths.',
     ],
   },
   {
@@ -2864,6 +3425,210 @@ function applyTopicSpecificDraftChecks(
           'Add protected-area zoning, PAMB and DENR coordination, biodiversity safeguards, carrying-capacity or mitigation controls, consultation, monitoring, and restoration duties.',
           7,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11038') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(labor|employee|worker|wage|overtime|rest day|holiday pay|employment contract|termination|dismissal|contractor|trainee)\b/.test(normalizedDraft)) {
+    if (!/\b(classification|hours of work|minimum wage|overtime|rest day|holiday pay|notice|hearing|grievance|dole|nlrc|recordkeeping)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Employment and labor-standard controls are thin',
+          'Labor, wage, working-condition, contractor, or termination language was detected without enough classification, pay, working-hours, grievance, due-process, or recordkeeping detail.',
+          'Add worker classification, wage and hour rules, leave or rest treatment, payroll and records, grievance handling, termination procedure, and DOLE or NLRC escalation where relevant.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-442') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(age limit|age requirement|age discrimination|job post|job advertisement|employment application|hiring age|maximum age)\b/.test(normalizedDraft)) {
+    if (!/\b(bona fide occupational qualification|objective criteria|ability|qualification|safety requirement|equal opportunity|non discrimination)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Age-related employment criteria need justification',
+          'Age limits or age-related hiring language was detected without clear objective criteria, bona fide occupational qualification, or equal-opportunity safeguards.',
+          'Replace unsupported age cutoffs with ability-based qualifications, document any legally necessary occupational requirement, and add equal-opportunity review.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10911') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(mental health|psychosocial|counseling|wellness|crisis intervention|suicide|therapy|patient rights)\b/.test(normalizedDraft)) {
+    const hasMentalConsent = /\b(consent|informed consent|voluntary)\b/.test(normalizedDraft)
+    const hasMentalConfidentiality = /\b(confidential|privacy|record access|authorized disclosure|sensitive information)\b/.test(normalizedDraft)
+    const hasMentalReferralOrCrisis = /\b(referral|crisis|emergency|care provider|support owner|clinical)\b/.test(normalizedDraft)
+
+    if (!(hasMentalConsent && hasMentalConfidentiality && hasMentalReferralOrCrisis)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Mental-health support needs rights and referral controls',
+          'Mental-health, counseling, wellness, or psychosocial language was detected without enough consent, confidentiality, referral, crisis, non-discrimination, or record safeguards.',
+          'Add informed consent, confidentiality, referral and crisis protocols, non-discrimination, record access limits, and responsible care or support owners.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11036') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(vawc|violence against women|domestic violence|protection order|barangay protection order|temporary protection order|women and children)\b/.test(normalizedDraft)) {
+    const hasVawcSafetyControls = /\b(safety plan|protection order|emergency assistance|risk assessment)\b/.test(normalizedDraft)
+    const hasVawcConfidentiality = /\b(confidential|restricted access|victim privacy|non disclosure|case record)\b/.test(normalizedDraft)
+    const hasVawcReferral = /\b(referral|social welfare|law enforcement|barangay protection|child protection|support service)\b/.test(normalizedDraft)
+
+    if (!(hasVawcSafetyControls && hasVawcConfidentiality && hasVawcReferral)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'VAWC response needs safety and confidentiality controls',
+          'VAWC, protection-order, or domestic-violence language was detected without enough safety planning, confidentiality, referral, victim support, or role-separation detail.',
+          'Add safety assessment, protection-order handling, confidential records, social welfare and law-enforcement referral, child safeguards, and restricted disclosure controls.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9262') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(trafficking|forced labor|sexual exploitation|recruitment|harboring|transporting|victim protection|online exploitation)\b/.test(normalizedDraft)) {
+    if (!/\b(referral|rescue|recovery|confidential|social welfare|law enforcement|screening|child protection|case management)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Anti-trafficking response needs victim-protection workflow',
+          'Trafficking, recruitment, exploitation, or forced-labor language was detected without clear screening, referral, rescue, recovery, confidentiality, or case-management controls.',
+          'Add exploitation screening, victim-centered referral, rescue and recovery workflow, social welfare coordination, authorized law-enforcement channel, confidentiality, and child-protection safeguards.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10364') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(copyright|trademark|patent|intellectual property|software|logo|brand|dataset|license|infringement|user generated content)\b/.test(normalizedDraft)) {
+    if (!/\b(ownership|license|assignment|attribution|permitted use|takedown|complaint|fair use|authorization|infringement)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Intellectual-property controls are incomplete',
+          'IP, software, logo, brand, content, dataset, or user-generated-content language was detected without enough ownership, license, attribution, permitted-use, or takedown controls.',
+          'Add ownership proof, license terms, attribution, permitted use, assignment or transfer rules, takedown and complaint handling, and preservation of infringement reports.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8293') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(securities|investment offer|investment contract|public offering|investor|prospectus|broker|dealer|shares|pooled fund|guaranteed return|crowdfunding)\b/.test(normalizedDraft)) {
+    if (!/\b(registration|exemption|sec|risk disclosure|prospectus|suitability|investor protection|advertising control|complaint|recordkeeping)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Investment or securities controls need SEC review',
+          'Investment, securities, public-offer, broker, dealer, pooled-fund, or guaranteed-return language was detected without enough registration, exemption, risk disclosure, SEC review, or investor-protection controls.',
+          'Add securities classification, registration or exemption review, risk disclosures, suitability or eligibility checks, advertising limits, investor complaint path, records, and SEC escalation.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8799') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(fda|food product|food safety|drug|cosmetic|medical device|health product|supplement|wellness product|adverse event|recall|license to operate)\b/.test(normalizedDraft)) {
+    if (!/\b(registration|license to operate|label|labeling|approved use|adverse event|recall|post marketing|storage|distribution|fda)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Health-product controls need FDA detail',
+          'Food, drug, cosmetic, medical-device, supplement, or health-product language was detected without enough FDA registration, license, labeling, storage, complaint, adverse-event, or recall controls.',
+          'Add license-to-operate and product registration checks, label and claim review, storage and distribution controls, adverse-event reporting, complaint handling, and recall procedure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9711') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(universal health care|primary care|health service|patient navigation|philhealth|local health system|health care provider network|referral system)\b/.test(normalizedDraft)) {
+    if (!/\b(eligibility|referral|provider network|facility|patient navigation|funding|complaint|confidential|health record|philhealth|responsible office)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Health-service delivery controls are thin',
+          'Health-service, primary-care, patient-navigation, PhilHealth, or local-health-system language was detected without enough eligibility, provider, referral, funding, complaint, or health-record safeguards.',
+          'Add eligible users, service owner, provider or facility network, referral path, funding or benefit limits, complaint route, health-record privacy, and coordination responsibilities.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11223') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(cultural property|heritage|historic site|heritage zone|museum|archive|conservation|restoration|excavation|monument)\b/.test(normalizedDraft)) {
+    if (!/\b(ncca|nhcp|national museum|archives|conservation|documentation|expert review|permit|consultation|heritage assessment)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Cultural-heritage controls are incomplete',
+          'Heritage, cultural-property, historic-site, archive, museum, excavation, or conservation language was detected without enough cultural-agency coordination, documentation, permit, or expert-review controls.',
+          'Add cultural-property status check, NCCA, NHCP, National Museum or archive coordination, conservation standards, documentation, expert review, consultation, and approval workflow.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10066') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(senior citizen|elderly|osca|senior discount|social pension|vat exemption|senior id)\b/.test(normalizedDraft)) {
+    const hasSeniorEligibility = /\b(eligibility|qualified|identification card|senior id|verification)\b/.test(normalizedDraft)
+    const hasSeniorBenefitControls = /\b(discount|vat exemption|social pension|benefit|privilege)\b/.test(normalizedDraft)
+    const hasSeniorAdminControls = /\b(osca|complaint|privacy|records|retention|responsible office)\b/.test(normalizedDraft)
+
+    if (!(hasSeniorEligibility && hasSeniorBenefitControls && hasSeniorAdminControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Senior-citizen benefit controls are incomplete',
+          'Senior-citizen, OSCA, discount, social-pension, or benefit language was detected without enough eligibility, verification, office ownership, complaint, tax, or privacy controls.',
+          'Add eligibility, OSCA or responsible office, ID verification, discount or benefit workflow, complaint route, record retention, privacy safeguards, and tax-treatment coordination where relevant.',
+          5,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9994') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(pwd|person with disability|persons with disability|disabled person|disability|accessibility|reasonable accommodation|auxiliary aid)\b/.test(normalizedDraft)) {
+    if (!/\b(accessibility|reasonable accommodation|auxiliary aid|alternative format|complaint|eligibility|verification|privacy|access control|non discrimination)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'PWD accessibility controls are incomplete',
+          'PWD, disability, accessibility, accommodation, or auxiliary-aid language was detected without enough accessible alternatives, eligibility, accommodation, complaint, or privacy controls.',
+          'Add accessibility standards, reasonable accommodation, alternative channels or formats, eligibility and verification, complaint process, non-discrimination, and privacy safeguards.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7277') || LEGAL_CORPUS[0])]
         )
       )
     }
