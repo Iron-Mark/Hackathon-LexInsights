@@ -32,15 +32,18 @@ export function AuthSetupNotice({
   return (
     <section
       className={cn(
-        'w-full rounded-xl border border-iris-300/25 bg-iris-50/80 text-left text-slate-900 shadow-sm shadow-slate-950/5 dark:border-iris-300/18 dark:bg-[#211a35]/80 dark:text-iris-50',
-        compact ? 'p-4' : 'p-5 sm:p-6'
+        'w-full text-left text-slate-900 dark:text-iris-50',
+        compact
+          ? 'space-y-4'
+          : 'rounded-xl border border-iris-200/80 bg-white/90 p-5 shadow-sm shadow-iris-950/10 ring-1 ring-white/80 sm:p-6 dark:border-iris-300/20 dark:bg-[#211a35]/80 dark:shadow-iris-950/35 dark:ring-iris-200/10'
       )}
       aria-live="polite"
     >
       <div className="flex items-start gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-iris-100 text-iris-700 ring-1 ring-iris-200 dark:bg-iris-300/14 dark:text-iris-100 dark:ring-iris-300/25">
-          <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-        </span>
+        <ShieldCheck
+          className="mt-0.5 h-5 w-5 shrink-0 text-iris-600 dark:text-iris-200"
+          aria-hidden="true"
+        />
         <div className="min-w-0">
           <p className="text-base font-extrabold leading-6 text-slate-950 dark:text-white">
             {title}
@@ -51,39 +54,18 @@ export function AuthSetupNotice({
         </div>
       </div>
 
-      <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-950 dark:border-emerald-300/18 dark:bg-emerald-300/10 dark:text-emerald-100">
-        <div className="flex items-start gap-2">
-          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          <p className="leading-5">
-            Guest mode is still available. Chats and document checks can be explored without account sync.
-          </p>
-        </div>
+      <div
+        className={cn(
+          'flex items-start gap-2 border-l-2 border-emerald-400/70 pl-3 text-sm text-emerald-900 dark:border-emerald-300/60 dark:text-emerald-100',
+          compact ? '' : 'mt-4'
+        )}
+      >
+        <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+        <p className="leading-5">
+          Guest mode remains available. Chats and document checks can still be explored without
+          account sync.
+        </p>
       </div>
-
-      {showDeveloperDetails && (
-        <details className="mt-4 rounded-lg border border-slate-200 bg-white/70 p-3 dark:border-iris-300/15 dark:bg-[#171322]/65">
-          <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-bold text-slate-800 marker:hidden dark:text-iris-100">
-            <KeyRound className="h-4 w-4 text-iris-600 dark:text-iris-200" aria-hidden="true" />
-            Developer setup details
-          </summary>
-          <p className="mt-2 text-xs leading-5 text-slate-600 dark:text-iris-100/65">
-            Add these environment variable names in your deployment settings. Values are intentionally never shown here.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {visibleMissingKeys.map((key) => (
-              <span
-                key={key}
-                className="rounded-full border border-amber-300/70 bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-900 dark:border-amber-300/25 dark:bg-amber-300/10 dark:text-amber-100"
-              >
-                {key}
-              </span>
-            ))}
-          </div>
-          <pre className="mt-3 overflow-x-auto rounded-lg border border-slate-200 bg-slate-950 p-3 text-xs leading-5 text-slate-100 dark:border-iris-300/15">
-            {CLERK_SETUP_REQUIRED_ENV.map((key) => `${key}=...`).join('\n')}
-          </pre>
-        </details>
-      )}
 
       <div className={cn('flex flex-col gap-2 sm:flex-row', compact ? 'mt-4' : 'mt-5')}>
         {onContinue ? (
@@ -109,6 +91,36 @@ export function AuthSetupNotice({
           Back to home
         </Link>
       </div>
+
+      {showDeveloperDetails && (
+        <details
+          className={cn(
+            'border-t border-iris-100/90 pt-4 dark:border-iris-300/15',
+            compact ? '' : 'mt-4'
+          )}
+        >
+          <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md text-sm font-bold text-slate-800 marker:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:text-iris-100 dark:focus-visible:ring-offset-[#171322]">
+            <KeyRound className="h-4 w-4 text-iris-600 dark:text-iris-200" aria-hidden="true" />
+            Developer setup details
+          </summary>
+          <p className="mt-2 text-xs leading-5 text-slate-600 dark:text-iris-100/65">
+            Add these environment variable names in your deployment settings. Values are intentionally never shown here.
+          </p>
+          <div className="mt-3 space-y-2">
+            {visibleMissingKeys.map((key) => (
+              <div
+                key={key}
+                className="flex min-h-9 items-center justify-between gap-3 border-b border-slate-200/80 pb-2 text-xs dark:border-iris-300/12"
+              >
+                <span className="font-medium text-slate-500 dark:text-iris-100/55">Missing</span>
+                <code className="min-w-0 break-all text-right font-mono font-bold text-amber-800 dark:text-amber-100">
+                  {key}
+                </code>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
 
       {!compact && (
         <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-slate-500 dark:text-iris-100/52">

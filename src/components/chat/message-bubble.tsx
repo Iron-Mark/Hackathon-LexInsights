@@ -232,11 +232,11 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
       className={cn(
         'mb-4 min-w-0 rounded-xl p-4 transition-all sm:p-5',
         isUser
-          ? 'ml-auto max-w-[90%] border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/20 dark:from-iris-400/12 dark:via-[#241f32] dark:to-[#201a2d] dark:text-iris-100/90 dark:shadow-iris-950/20'
+          ? 'ml-auto max-w-[90%] border border-iris-100 bg-gradient-to-br from-white via-iris-50/80 to-purple-50 text-slate-900 shadow-sm shadow-iris-950/5 hover:shadow-md hover:shadow-iris-950/10 sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/20 dark:from-iris-400/12 dark:via-[#241f32] dark:to-[#201a2d] dark:text-iris-100/90 dark:shadow-iris-950/20'
           : cn(
-              'mr-auto w-full max-w-full border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/15 dark:bg-[#241f32] dark:text-iris-100/84 dark:shadow-iris-950/30',
+              'mr-auto w-full max-w-full border-2 border-iris-100 bg-white/95 text-slate-900 shadow-md shadow-iris-950/10 hover:border-iris-200 hover:shadow-lg hover:shadow-iris-950/15 sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/15 dark:bg-[#241f32] dark:text-iris-100/84 dark:shadow-iris-950/30',
               isRevealing &&
-                'border-iris-200 bg-iris-50/80 shadow-iris-950/10 dark:border-iris-300/22 dark:bg-[linear-gradient(135deg,rgba(63,51,189,0.14),rgba(35,27,51,0.94)_48%,rgba(24,18,39,0.98))] dark:text-iris-100/78 dark:shadow-[0_16px_42px_rgba(9,6,22,0.34)]'
+                'border-iris-200 bg-iris-50/90 shadow-iris-950/10 dark:border-iris-300/22 dark:bg-[linear-gradient(135deg,rgba(63,51,189,0.14),rgba(35,27,51,0.94)_48%,rgba(24,18,39,0.98))] dark:text-iris-100/78 dark:shadow-[0_16px_42px_rgba(9,6,22,0.34)]'
             )
       )}
     >

@@ -165,13 +165,13 @@ export function CenteredInput({
       </label>
       <div
         onClick={focusTextareaFromShellClick}
-        className={`relative rounded-xl border bg-white shadow-none transition-colors duration-200 dark:bg-[#241f32] dark:shadow-none ${
+        className={`relative rounded-xl border bg-white/95 shadow-lg shadow-iris-950/10 backdrop-blur transition-colors duration-200 dark:bg-[#241f32] dark:shadow-none ${
           isFocused
-            ? 'border-iris-500 dark:border-iris-400/35'
-            : 'border-slate-200 dark:border-iris-300/15'
+            ? 'border-iris-500 shadow-iris-950/15 dark:border-iris-400/35'
+            : 'border-iris-100/90 dark:border-iris-300/15'
         }`}
       >
-        <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-2.5 py-2 dark:border-iris-300/10">
+        <div className="flex items-center justify-between gap-2 border-b border-iris-100/80 bg-white/45 px-2.5 py-2 dark:border-iris-300/10 dark:bg-transparent">
           <ChatModeToggle showLabelOnMobile />
 
           {mode === 'compliance' && (
@@ -187,7 +187,7 @@ export function CenteredInput({
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322]/90 dark:text-slate-200 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
+                className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-iris-100 bg-white/80 px-3 text-sm font-semibold text-slate-700 shadow-sm shadow-iris-950/5 transition-all duration-200 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322]/90 dark:text-slate-200 dark:shadow-none dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Upload compliance document"
                 type="button"
               >
@@ -199,7 +199,7 @@ export function CenteredInput({
         </div>
 
         {uploadedFiles.length > 0 && (
-          <div className="border-b border-slate-100 bg-slate-50/70 p-2.5 dark:border-iris-300/10 dark:bg-[#1a1625]/75">
+          <div className="border-b border-iris-100/80 bg-iris-50/45 p-2.5 dark:border-iris-300/10 dark:bg-[#1a1625]/75">
             <UploadedFilesList />
             {!user && mode === 'compliance' && (
               <p className="mt-2 px-1 text-xs leading-5 text-slate-500 dark:text-slate-400">

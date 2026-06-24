@@ -34,13 +34,13 @@ function SidebarTooltipButton({ label, children }: SidebarTooltipButtonProps) {
       {children}
       <div
         className={cn(
-          'pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-slate-900/10 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/30',
+          'pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-iris-100 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-iris-950/10 backdrop-blur dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/30',
           'transition-all duration-150 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100'
         )}
         role="tooltip"
       >
         {label}
-        <span className="absolute left-[-5px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-b border-l border-slate-200 bg-white dark:border-iris-300/15 dark:bg-[#241f32]" />
+        <span className="absolute left-[-5px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-b border-l border-iris-100 bg-white dark:border-iris-300/15 dark:bg-[#241f32]" />
       </div>
     </div>
   )
@@ -128,11 +128,11 @@ export function AppSidebar() {
       <ResourcesDialog open={showResourcesDialog} onOpenChange={setShowResourcesDialog} />
       <AttributionDialog open={showAttributionDialog} onOpenChange={setShowAttributionDialog} />
       
-      <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center border-r border-neutral-300 bg-white pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-[calc(env(safe-area-inset-top)+1rem)] supports-[height:100dvh]:h-dvh dark:border-iris-300/15 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_55%,#120d1f_100%)]">
+      <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center border-r border-iris-100/80 bg-[linear-gradient(180deg,#f7f6ff_0%,#ffffff_52%,#f8fafc_100%)] pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-[calc(env(safe-area-inset-top)+1rem)] shadow-[inset_-1px_0_0_rgba(39,32,117,0.04)] supports-[height:100dvh]:h-dvh dark:border-iris-300/15 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_55%,#120d1f_100%)] dark:shadow-none">
         {!isMobile && (
           <button
             onClick={isOpen ? close : open}
-            className="absolute bottom-0 right-0 top-0 z-[60] w-3 cursor-pointer bg-transparent transition-colors after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-transparent after:transition-colors hover:bg-iris-100/35 hover:after:bg-iris-300 focus-visible:bg-iris-100/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:after:bg-iris-500 dark:hover:bg-iris-300/10 dark:hover:after:bg-iris-300/45 dark:focus-visible:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
+            className="absolute bottom-0 right-0 top-0 z-[60] w-3 cursor-pointer bg-transparent transition-colors after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-iris-100 after:transition-colors hover:bg-iris-100/45 hover:after:bg-iris-400 focus-visible:bg-iris-100/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:after:bg-iris-500 dark:after:bg-transparent dark:hover:bg-iris-300/10 dark:hover:after:bg-iris-300/45 dark:focus-visible:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
             aria-label={isOpen ? 'Collapse chat history' : 'Expand chat history'}
             title={isOpen ? 'Collapse chat history' : 'Expand chat history'}
             type="button"
@@ -155,11 +155,11 @@ export function AppSidebar() {
                   size="icon"
                   className={cn(
                     'h-12 w-12 rounded-xl transition-all duration-200',
-                    'hover:bg-iris-50 hover:text-iris-700 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
+                    'hover:bg-iris-100/70 hover:text-iris-800 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2',
                     active
-                      ? 'bg-iris-100 text-iris-900 dark:bg-iris-300/14 dark:text-iris-100'
-                      : 'text-neutral-600 dark:text-iris-100/55'
+                      ? 'bg-iris-100 text-iris-900 shadow-sm shadow-iris-950/5 ring-1 ring-iris-200/80 dark:bg-iris-300/14 dark:text-iris-100 dark:ring-0'
+                      : 'text-iris-700/80 dark:text-iris-100/55'
                   )}
                   aria-label={item.label}
                 >
@@ -179,7 +179,7 @@ export function AppSidebar() {
               size="icon"
               className={cn(
                 'h-12 w-12 rounded-xl transition-all duration-200',
-                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
+                'text-iris-700/80 hover:bg-iris-100/70 hover:text-iris-900 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]'
               )}
               aria-label={themeToggleLabel}
@@ -201,7 +201,7 @@ export function AppSidebar() {
               size="icon"
               className={cn(
                 'h-12 w-12 rounded-xl transition-all duration-200',
-                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
+                'text-iris-700/80 hover:bg-iris-100/70 hover:text-iris-900 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
               )}
               aria-label="Help & Resources"
@@ -217,7 +217,7 @@ export function AppSidebar() {
               size="icon"
               className={cn(
                 'h-12 w-12 rounded-xl transition-all duration-200',
-                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
+                'text-iris-700/80 hover:bg-iris-100/70 hover:text-iris-900 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]'
               )}
               aria-label="Authors & Attribution"

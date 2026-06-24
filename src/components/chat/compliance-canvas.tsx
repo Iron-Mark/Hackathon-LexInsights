@@ -141,7 +141,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         icon: 'text-red-600 dark:text-red-300',
       },
       neutral: {
-        section: 'bg-white border-slate-200 dark:border-iris-300/15 dark:bg-[#241f32]',
+        section: 'border-iris-100 bg-white/94 shadow-sm shadow-iris-950/5 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none',
       },
     } as const
 
@@ -456,13 +456,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
   return (
     <div 
-      className="relative flex h-full border-l border-slate-200 bg-white dark:border-iris-300/15 dark:bg-[#171322]"
+      className="relative flex h-full border-l border-iris-100 bg-white/92 shadow-[inset_1px_0_0_rgba(39,32,117,0.04)] dark:border-iris-300/15 dark:bg-[#171322] dark:shadow-none"
       role="region"
       aria-label="Compliance report viewer"
     >
       {/* Version History Sidebar */}
       {showHistory && (
-        <div className="w-64 border-r border-slate-200 bg-slate-50 dark:border-iris-300/15 dark:bg-[#171322]">
+        <div className="w-64 border-r border-iris-100 bg-iris-50/45 dark:border-iris-300/15 dark:bg-[#171322]">
           <VersionHistorySidebar />
         </div>
       )}
@@ -470,7 +470,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       {/* Main Canvas */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Canvas Header */}
-        <header className="border-b border-slate-200 bg-white px-4 py-4 dark:border-iris-300/15 dark:bg-[#1a1625]">
+        <header className="border-b border-iris-100 bg-white/92 px-4 py-4 shadow-[0_1px_0_rgba(39,32,117,0.04)] backdrop-blur dark:border-iris-300/15 dark:bg-[#1a1625] dark:shadow-none">
           <div className="flex flex-col gap-3">
             <div className="flex min-w-0 items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-iris-50 text-iris-700 dark:bg-iris-400/10 dark:text-iris-200">
@@ -483,7 +483,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                     Compliance Report
                   </h2>
                   {currentVersion && (
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1 font-body text-xs font-semibold text-neutral-600 dark:bg-[#241f32] dark:text-slate-300">
+                    <span className="rounded-full bg-iris-50 px-2.5 py-1 font-body text-xs font-semibold text-iris-700 ring-1 ring-iris-100 dark:bg-[#241f32] dark:text-slate-300 dark:ring-0">
                       {currentVersion.label}
                     </span>
                   )}
@@ -506,14 +506,14 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 dark:border-iris-300/15 dark:bg-[#241f32]/80">
+          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-iris-100 bg-iris-50/45 p-2 dark:border-iris-300/15 dark:bg-[#241f32]/80">
             {/* History Toggle */}
             <Button
               onClick={() => setShowHistory(!showHistory)}
               variant="outline"
               size="sm"
               className={cn(
-                'h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:focus-visible:ring-offset-[#241f32]',
+                'h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:focus-visible:ring-offset-[#241f32]',
                 showHistory && 'border-iris-300 bg-iris-50 text-iris-700 dark:border-iris-400/50 dark:bg-iris-400/10 dark:text-iris-200'
               )}
               aria-label={showHistory ? 'Hide version history' : 'Show version history'}
@@ -529,7 +529,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               variant="outline"
               size="sm"
               className={cn(
-                'h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:focus-visible:ring-offset-[#241f32]',
+                'h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:focus-visible:ring-offset-[#241f32]',
                 isEditMode && 'border-iris-300 bg-iris-50 text-iris-700 dark:border-iris-400/50 dark:bg-iris-400/10 dark:text-iris-200'
               )}
               aria-label={isEditMode ? 'Switch to preview mode' : 'Switch to edit mode'}
@@ -569,7 +569,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 onClick={() => setShowDownloadMenu(!showDownloadMenu)}
                 variant="outline"
                 size="sm"
-                className="h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:focus-visible:ring-offset-[#241f32]"
+                className="h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Download compliance report"
                 aria-expanded={showDownloadMenu}
                 aria-haspopup="true"
@@ -591,13 +591,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                   
                   {/* Dropdown Menu */}
                   <div 
-                    className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-slate-200 bg-white shadow-lg dark:border-iris-300/15 dark:bg-[#171322] dark:shadow-iris-950/30"
+                    className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-iris-100 bg-white/95 shadow-lg shadow-iris-950/10 backdrop-blur dark:border-iris-300/15 dark:bg-[#171322] dark:shadow-iris-950/30"
                     role="menu"
                     aria-label="Download format options"
                   >
                     <button
                       onClick={handleDownloadMarkdown}
-                      className="flex w-full items-center gap-2 rounded-t-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50 active:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
+                      className="flex w-full items-center gap-2 rounded-t-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-iris-50 hover:text-iris-800 active:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
                       role="menuitem"
                       disabled={isDownloading}
                     >
@@ -606,7 +606,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                     </button>
                     <button
                       onClick={handleDownloadDocx}
-                      className="flex w-full items-center gap-2 rounded-b-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50 active:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
+                      className="flex w-full items-center gap-2 rounded-b-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-iris-50 hover:text-iris-800 active:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
                       role="menuitem"
                       disabled={isDownloading}
                     >
@@ -631,7 +631,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               id="markdown-editor"
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
-              className="h-full w-full resize-none rounded-lg border-2 border-slate-200 bg-white p-4 font-mono text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:focus:ring-offset-[#171322]"
+              className="h-full w-full resize-none rounded-lg border-2 border-iris-100 bg-white/95 p-4 font-mono text-sm text-slate-900 shadow-sm shadow-iris-950/5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-none dark:focus:ring-offset-[#171322]"
               placeholder="Enter markdown content..."
               aria-label="Markdown editor"
               spellCheck="false"

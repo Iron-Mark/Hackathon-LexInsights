@@ -301,6 +301,12 @@
       linear-gradient(135deg, #171322 0%, #211a35 46%, #120d1f 100%);
   }
 
+  html:not(.dark),
+  html:not(.dark) body {
+    background:
+      linear-gradient(180deg, rgba(224, 222, 250, 0.72) 0%, rgba(248, 250, 252, 0.94) 17rem, #f8fafc 100%);
+  }
+
   button:not(:disabled),
   [role='button']:not([aria-disabled='true']) {
     cursor: pointer;

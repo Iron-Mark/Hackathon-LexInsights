@@ -36,7 +36,7 @@ function ChatListSkeleton() {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="w-full rounded-lg border-2 border-iris-200 bg-slate-100 px-3 py-2.5 dark:border-iris-400/30 dark:bg-[#241f32]"
+      className="w-full rounded-lg border-2 border-iris-200 bg-iris-50/80 px-3 py-2.5 shadow-sm shadow-iris-950/5 dark:border-iris-400/30 dark:bg-[#241f32]"
     >
       <div className="flex items-start gap-3">
         <div className="mt-0.5 h-4 w-4 animate-pulse rounded bg-slate-200 dark:bg-iris-300/15" />
@@ -131,7 +131,7 @@ export function ChatList() {
   if (chats.length === 0) {
     return (
       <div className="flex flex-1 flex-col px-4 py-5">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-iris-300/15 dark:bg-[#241f32]">
+        <div className="rounded-lg border border-iris-100 bg-white/90 p-4 shadow-sm shadow-iris-950/5 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none">
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-iris-50 text-iris-700 dark:bg-iris-400/15 dark:text-iris-200">
               <MessageSquarePlus className="h-5 w-5" aria-hidden="true" />
@@ -159,8 +159,8 @@ export function ChatList() {
           </button>
         </div>
 
-        <div className="mt-4 rounded-lg border border-dashed border-slate-200 px-4 py-3 text-left dark:border-iris-300/15 dark:bg-[#171322]/40">
-          <p className="text-[11px] font-semibold uppercase text-slate-400 dark:text-slate-500">Chat history</p>
+        <div className="mt-4 rounded-lg border border-dashed border-iris-200/80 bg-white/35 px-4 py-3 text-left dark:border-iris-300/15 dark:bg-[#171322]/40">
+          <p className="text-[11px] font-semibold uppercase text-iris-700/65 dark:text-slate-500">Chat history</p>
           <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
             Recent conversations will be listed here for quick return.
           </p>
@@ -173,15 +173,15 @@ export function ChatList() {
     <div className="flex flex-1 flex-col overflow-hidden">
       {/* Search Bar */}
       {shouldShowSearch && (
-        <div className="border-b border-slate-200 px-3 py-2 dark:border-iris-300/15">
+        <div className="border-b border-iris-100/80 bg-white/35 px-3 py-2 dark:border-iris-300/15 dark:bg-transparent">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" aria-hidden="true" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-iris-500/70 dark:text-slate-500" aria-hidden="true" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search chats..."
-              className="min-h-11 w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-12 text-sm text-slate-900 transition-all placeholder:text-slate-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-iris-500 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:placeholder:text-slate-500"
+              className="min-h-11 w-full rounded-lg border border-iris-100 bg-white/90 py-2 pl-9 pr-12 text-sm text-slate-900 shadow-sm shadow-iris-950/5 transition-all placeholder:text-slate-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-iris-500 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-none dark:placeholder:text-slate-500"
               aria-label="Search chats"
             />
             {searchQuery && (

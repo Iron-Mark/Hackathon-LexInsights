@@ -900,7 +900,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   } as CSSProperties
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-slate-50 text-slate-900 dark:bg-transparent dark:text-slate-100">
+    <div className="flex h-full min-h-0 flex-col bg-[linear-gradient(180deg,rgba(224,222,250,0.56)_0%,rgba(248,250,252,0.98)_18rem,#f8fafc_100%)] text-slate-900 dark:bg-transparent dark:text-slate-100">
       {/* Drag and Drop Overlay */}
       <DragDropOverlay onFileDrop={handleFileDrop} maxFiles={3} />
       
@@ -925,7 +925,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-iris-300/15 dark:bg-[#241f32]"
+                  className="mb-4 rounded-lg border border-iris-100 bg-white/90 p-4 shadow-sm shadow-iris-950/5 dark:border-iris-300/15 dark:bg-[#241f32]"
                 >
                   <RAGProgress 
                     events={wsEvents} 
@@ -1033,7 +1033,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.18 }}
                 onClick={scrollToLatestMessage}
-                className="absolute bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-lg shadow-slate-900/15 backdrop-blur transition-all hover:border-iris-300 hover:text-iris-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32]/95 dark:text-slate-100 dark:shadow-iris-950/30 dark:hover:border-iris-300/60 dark:hover:bg-iris-300/12 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#171322] sm:right-6"
+                className="absolute bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-iris-100 bg-white/95 text-iris-700 shadow-lg shadow-iris-950/10 backdrop-blur transition-all hover:border-iris-300 hover:bg-iris-50 hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32]/95 dark:text-slate-100 dark:shadow-iris-950/30 dark:hover:border-iris-300/60 dark:hover:bg-iris-300/12 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#171322] sm:right-6"
               >
                 <ChevronDown className="h-5 w-5" aria-hidden="true" />
               </motion.button>

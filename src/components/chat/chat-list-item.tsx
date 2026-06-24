@@ -109,8 +109,8 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
           showDeleteConfirm
             ? 'bg-red-50 text-red-800 shadow-sm ring-1 ring-red-200 hover:bg-red-100 dark:bg-red-950/35 dark:text-red-100 dark:ring-red-500/30 dark:hover:bg-red-950/50'
             : isActive
-            ? 'bg-slate-100 text-slate-900 shadow-sm hover:bg-slate-200 dark:bg-[#2b2438] dark:text-slate-100 dark:ring-1 dark:ring-iris-300/12 dark:hover:bg-[#312944]'
-            : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#241f32] dark:hover:text-white',
+            ? 'bg-iris-100/70 text-slate-950 shadow-sm shadow-iris-950/5 ring-1 ring-iris-200/80 hover:bg-iris-100 dark:bg-[#2b2438] dark:text-slate-100 dark:ring-1 dark:ring-iris-300/12 dark:hover:bg-[#312944]'
+            : 'text-slate-700 hover:bg-white/70 hover:text-slate-950 hover:shadow-sm hover:shadow-iris-950/5 dark:text-slate-300 dark:hover:bg-[#241f32] dark:hover:text-white',
           isDeleting && 'opacity-50 cursor-not-allowed pointer-events-none'
         )}
         aria-current={!showDeleteConfirm && isActive ? 'page' : undefined}
@@ -141,7 +141,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
                 ? 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-200'
                 : isActive
                   ? 'bg-iris-100 text-iris-700 shadow-xs ring-1 ring-iris-200 dark:bg-iris-400/20 dark:text-iris-100 dark:ring-iris-300/30'
-                  : 'bg-iris-50 text-iris-500/70 dark:bg-iris-300/10 dark:text-iris-200/50'
+                  : 'bg-iris-100/55 text-iris-700/75 dark:bg-iris-300/10 dark:text-iris-200/50'
             )}
             aria-hidden="true"
           >

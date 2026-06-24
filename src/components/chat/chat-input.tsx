@@ -228,10 +228,10 @@ export function ChatInput() {
     : 'Upload or ask...'
 
   return (
-    <div className="border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] dark:border-iris-300/15 dark:bg-[#171322]/95" role="region" aria-label="Message input">
+    <div className="border-t border-iris-100/80 bg-white/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_0_rgba(39,32,117,0.04)] backdrop-blur-xl dark:border-iris-300/15 dark:bg-[#171322]/95 dark:shadow-none" role="region" aria-label="Message input">
       {/* Uploaded Files List - Shows files from drag-drop */}
       {uploadedFiles.length > 0 && (
-        <div className="border-b border-slate-200 bg-slate-50 dark:border-iris-300/15 dark:bg-[#1a1625]">
+        <div className="border-b border-iris-100/80 bg-iris-50/45 dark:border-iris-300/15 dark:bg-[#1a1625]">
           <div className="mx-auto max-w-5xl px-3 sm:px-4 py-3">
             <UploadedFilesList />
             {!user && mode === 'compliance' && (
@@ -245,7 +245,7 @@ export function ChatInput() {
       
       <div className="mx-auto max-w-5xl cursor-text p-2.5 sm:p-4" onClick={focusTextareaFromShellClick}>
         {/* Input Area */}
-        <div className="flex items-end gap-1.5 rounded-lg border-2 border-slate-200 bg-white p-2 shadow-none transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 sm:gap-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
+        <div className="flex items-end gap-1.5 rounded-lg border-2 border-iris-100 bg-white/95 p-2 shadow-sm shadow-iris-950/10 transition-all focus-within:border-iris-500 focus-within:shadow-md focus-within:shadow-iris-950/15 sm:gap-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
           {/* File Upload Button (Compliance Mode Only) */}
           {mode === 'compliance' && (
             <>
@@ -260,7 +260,7 @@ export function ChatInput() {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-1 dark:text-slate-300 dark:hover:bg-iris-400/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-iris-700 transition-all hover:bg-iris-50 hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-1 dark:text-slate-300 dark:hover:bg-iris-400/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Upload compliance document"
                 type="button"
               >
