@@ -3534,6 +3534,848 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'Credit information is mixed with ordinary marketing or profiling data without purpose limitation.',
     ],
   },
+  {
+    id: 'ra-386',
+    statute: 'RA 386',
+    title: 'Republic Act No. 386',
+    shortTitle: 'Civil Code of the Philippines',
+    year: 1949,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html',
+    aliases: ['ra 386', 'republic act 386', 'civil code', 'civil code of the philippines', 'new civil code'],
+    topics: ['civil law', 'contracts', 'obligations', 'damages', 'property', 'agency', 'lease', 'sale', 'civil liability'],
+    keywords: [
+      'contract',
+      'obligation',
+      'consent',
+      'object',
+      'cause',
+      'breach',
+      'damages',
+      'negligence',
+      'quasi delict',
+      'sale',
+      'lease',
+      'agency',
+      'property',
+      'prescription',
+      'civil liability',
+    ],
+    summary:
+      'The core civil-law framework for obligations, contracts, property, sales, leases, agency, damages, civil liability, and related private-law duties. It is useful for checking whether agreements and civil workflows identify parties, consent, object, cause, breach rules, remedies, and evidence. ',
+    obligations: [
+      'For contracts, state the parties, authority, consent, object, cause or consideration, obligations, acceptance, payment, performance standards, breach, notice, and remedies. ',
+      'For civil liability, damages, negligence, or quasi-delict workflows, identify duty, breach, causation, injury, proof, responsible party, defenses, and settlement or litigation route. ',
+      'For sale, lease, agency, service, or property arrangements, document scope, term, delivery, custody, risk, fees, termination, records, and authorized representatives. ',
+      'Avoid vague obligations that cannot be proven, monitored, enforced, or linked to a responsible person or office.',
+    ],
+    commonGaps: [
+      'Agreements mention services, payments, or duties without parties, authority, acceptance, consideration, performance standards, or remedies.',
+      'Breach or negligence workflows lack evidence preservation, notice, cure period, damages method, and escalation route.',
+      'Civil-liability language is mixed with criminal, administrative, or privacy issues without separating remedies and records.',
+    ],
+  },
+  {
+    id: 'eo-209-1987',
+    statute: 'EO 209, s. 1987',
+    title: 'Executive Order No. 209, s. 1987',
+    shortTitle: 'Family Code of the Philippines',
+    year: 1987,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/executive/execord/eo1987/eo_209_1987.html',
+    aliases: ['eo 209', 'executive order 209', 'family code', 'family code of the philippines'],
+    topics: ['family law', 'marriage', 'family relations', 'support', 'custody', 'parental authority', 'property relations'],
+    keywords: [
+      'marriage',
+      'spouse',
+      'family',
+      'support',
+      'custody',
+      'child custody',
+      'parental authority',
+      'family home',
+      'conjugal',
+      'community property',
+      'marital consent',
+      'minor child',
+      'separation',
+    ],
+    summary:
+      'The main family-law framework for marriage, spouses, property relations, family home, support, parental authority, custody, and child-related civil obligations. It helps flag family-status, child-welfare, consent, proof, and confidentiality issues.',
+    obligations: [
+      'For marriage, spouse, family support, custody, or parental-authority workflows, state status proof, affected persons, authority, consent where relevant, child-welfare standards, confidentiality, and records custody.',
+      'Separate ordinary family-status records from protection, violence, trafficking, child abuse, privacy, and court-supervised issues that need specialized routing.',
+      'When minors or dependents are affected, identify the responsible parent, guardian, office, referral channel, and decision standard before collecting records or making determinations.',
+      'Avoid informal settlement language that may pressure vulnerable parties or bypass court, social welfare, or protection procedures.',
+    ],
+    commonGaps: [
+      'Family workflows mention support, custody, or marital status without proof, authority, child-welfare criteria, or referral path.',
+      'Sensitive family and minor records are collected without confidentiality, access, retention, or authorized-disclosure controls.',
+      'Policies treat family disputes as generic mediation even where protection, child welfare, or court process may be required.',
+    ],
+  },
+  {
+    id: 'act-3753',
+    statute: 'Act No. 3753',
+    title: 'Act No. 3753',
+    shortTitle: 'Civil Registry Law',
+    year: 1930,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/acts/act1930/act_3753_1930.html',
+    aliases: ['act 3753', 'civil registry law', 'civil registrar', 'local civil registrar', 'civil registry'],
+    topics: ['civil registry', 'vital records', 'birth certificate', 'marriage certificate', 'death certificate', 'local civil registrar'],
+    keywords: [
+      'birth certificate',
+      'marriage certificate',
+      'death certificate',
+      'civil registry',
+      'civil registrar',
+      'local civil registrar',
+      'psa',
+      'vital events',
+      'registration',
+      'annotation',
+      'certified copy',
+    ],
+    summary:
+      'A civil-registration framework for recording births, marriages, deaths, and other vital events through civil registrars. It is useful when workflows depend on identity, family status, official certificates, annotations, or local civil-registry records.',
+    obligations: [
+      'For birth, marriage, death, identity, family-status, or vital-record workflows, identify the civil registry record, issuing office, requester authority, documentary proof, correction or annotation route, and privacy controls.',
+      'Separate civil registry verification from ordinary ID collection, family-code determinations, data privacy, and records-retention duties.',
+      'Protect certified copies, registry books, annotations, identity data, and family-status information with access, redaction, retention, and authorized-disclosure rules.',
+      'Avoid allowing informal changes to civil-status facts without a legal correction, court, or administrative route.',
+    ],
+    commonGaps: [
+      'Birth, marriage, or death certificate handling lacks registrar role, requester authority, proof requirements, correction route, and privacy safeguards.',
+      'Identity or family-status workflows rely on unverified copies without certification, annotation, or record-custody controls.',
+      'Civil registry data is shared broadly despite containing sensitive identity and family information.',
+    ],
+  },
+  {
+    id: 'ra-9048',
+    statute: 'RA 9048',
+    title: 'Republic Act No. 9048',
+    shortTitle: 'Clerical or Typographical Error Correction in Civil Registry Entries',
+    year: 2001,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2001/ra_9048_2001.html',
+    aliases: ['ra 9048', 'republic act 9048', 'clerical error correction', 'civil registry correction', 'change of first name'],
+    topics: ['civil registry', 'record correction', 'clerical error', 'first name change', 'local civil registrar'],
+    keywords: [
+      'clerical error',
+      'typographical error',
+      'first name',
+      'nickname',
+      'petition',
+      'civil registrar',
+      'registry correction',
+      'annotation',
+      'supporting documents',
+    ],
+    summary:
+      'A civil-registry correction law allowing administrative correction of clerical or typographical errors and change of first name or nickname under defined procedures. It is useful for certificate-correction, annotation, proof, and petition workflows.',
+    obligations: [
+      'For certificate correction or first-name change workflows, state who may file, receiving civil registrar, petition contents, supporting documents, publication or notice where required, decision route, annotation, and appeal or review path.',
+      'Separate clerical or typographical corrections from substantial changes that may need court process or other statutory authority.',
+      'Protect petitions, IDs, certificates, supporting documents, notices, and annotations with privacy, custody, retention, and authorized-disclosure controls.',
+      'Avoid accepting unsupported corrections or changing civil-status facts through informal office instructions.',
+    ],
+    commonGaps: [
+      'Civil registry correction procedures do not separate clerical corrections from substantial changes.',
+      'Petition, publication, supporting-document, annotation, and decision-record controls are missing.',
+      'Sensitive identity records are corrected or disclosed without requester authority and audit trail.',
+    ],
+  },
+  {
+    id: 'ra-10172',
+    statute: 'RA 10172',
+    title: 'Republic Act No. 10172',
+    shortTitle: 'Administrative Correction of Sex, Day, and Month in Civil Registry Entries',
+    year: 2012,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2012/ra_10172_2012.html',
+    aliases: ['ra 10172', 'republic act 10172', 'sex correction', 'date of birth correction', 'civil registry correction'],
+    topics: ['civil registry', 'record correction', 'sex correction', 'birth date correction', 'local civil registrar'],
+    keywords: [
+      'sex',
+      'gender marker',
+      'day of birth',
+      'month of birth',
+      'birth certificate correction',
+      'petition',
+      'civil registrar',
+      'medical certificate',
+      'school record',
+      'annotation',
+    ],
+    summary:
+      'A civil-registry correction law expanding administrative correction to sex and day or month of birth in civil registry entries under defined evidence and publication safeguards.',
+    obligations: [
+      'For sex, day, or month-of-birth correction workflows, identify petitioner eligibility, civil registrar, required evidence, medical or public records where applicable, publication or posting, decision route, annotation, and appeal path.',
+      'Separate administrative correction from changes that alter nationality, age, status, parentage, or other facts needing court or specialized legal review.',
+      'Protect medical, school, identity, and registry records through confidentiality, limited access, retention, and authorized disclosure.',
+      'Avoid using corrected records in downstream benefits, employment, school, or identity workflows without update, audit, and consistency checks.',
+    ],
+    commonGaps: [
+      'Birth-record correction procedures omit required proof, publication or posting, civil registrar decision, and annotation steps.',
+      'Sex or date-of-birth correction is treated as ordinary profile editing despite legal evidence and privacy implications.',
+      'Downstream systems are not told how to update records after a correction is approved.',
+    ],
+  },
+  {
+    id: 'am-02-8-13-sc',
+    statute: 'A.M. No. 02-8-13-SC',
+    title: 'A.M. No. 02-8-13-SC',
+    shortTitle: '2004 Rules on Notarial Practice',
+    year: 2008,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/courts/supreme/am/am_02_8_13_sc_2008.html',
+    aliases: ['am 02-8-13-sc', 'rules on notarial practice', 'notarial practice', 'notary rules', 'notarization'],
+    topics: ['notarial practice', 'notary', 'affidavit', 'acknowledgment', 'jurat', 'document authentication'],
+    keywords: [
+      'notary',
+      'notarization',
+      'notarial register',
+      'acknowledgment',
+      'jurat',
+      'affidavit',
+      'competent evidence of identity',
+      'personal appearance',
+      'seal',
+      'commission',
+      'document authentication',
+    ],
+    summary:
+      'Rules governing notarization, personal appearance, competent evidence of identity, acknowledgments, jurats, affidavits, notarial registers, seals, and notary responsibilities. Useful for affidavit, document-signing, identity, and evidence workflows.',
+    obligations: [
+      'For notarized documents, affidavits, acknowledgments, or jurats, require personal appearance, competent evidence of identity, document completeness, signature review, notarial register entry, seal, date, and notary details.',
+      'Separate notarization from ordinary e-signature, witness, certification, and document-upload workflows.',
+      'Protect copies, IDs, registers, affidavits, and supporting documents with access, custody, retention, and fraud-escalation controls.',
+      'Avoid accepting blank, incomplete, backdated, remotely signed, or unsigned documents as notarized without legal review.',
+    ],
+    commonGaps: [
+      'Document workflows say notarization is required but omit personal appearance, identity evidence, notarial register, and seal details.',
+      'Affidavits and jurats are accepted without document completeness, signer authority, and custody checks.',
+      'Notarized records are stored or shared without privacy and evidence-retention rules.',
+    ],
+  },
+  {
+    id: 'rules-of-court-evidence',
+    statute: 'Rules of Court',
+    title: 'Rules of Court',
+    shortTitle: 'Rules on Evidence',
+    year: 1989,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/courts/rules/rc_128-134_evidence.html',
+    aliases: ['rules of court evidence', 'rules on evidence', 'evidence rules', 'rule 128', 'rule 129', 'rule 130', 'rule 132'],
+    topics: ['evidence', 'admissibility', 'authentication', 'documents', 'witnesses', 'official records', 'hearsay'],
+    keywords: [
+      'evidence',
+      'admissible',
+      'admissibility',
+      'authentication',
+      'original document',
+      'best evidence',
+      'witness',
+      'hearsay',
+      'official record',
+      'judicial notice',
+      'chain of custody',
+      'documentary evidence',
+    ],
+    summary:
+      'The evidence framework for relevance, admissibility, authentication, documentary proof, testimonial proof, official records, hearsay issues, and court-facing evidence preparation.',
+    obligations: [
+      'For evidence, investigation, complaints, hearings, or claims, identify source, relevance, authenticity, custody, original or copy status, witness or custodian, retention, and disclosure limits.',
+      'Separate internal records, official records, electronic records, affidavits, notarized documents, and court-ready evidence.',
+      'Protect evidence logs, originals, copies, witness data, sensitive records, and investigation files with chain-of-custody and access controls.',
+      'Avoid relying on screenshots, summaries, or hearsay-style statements without authentication and source documentation.',
+    ],
+    commonGaps: [
+      'Evidence workflows collect records but omit source, authenticity, custodian, chain of custody, and retention.',
+      'Screenshots, summaries, or copied documents are treated as conclusive without original-record or authentication controls.',
+      'Witness, complainant, or sensitive records are disclosed without relevance, minimization, or authorized-access rules.',
+    ],
+  },
+  {
+    id: 'am-08-8-7-sc',
+    statute: 'A.M. No. 08-8-7-SC',
+    title: 'A.M. No. 08-8-7-SC',
+    shortTitle: 'Rule of Procedure for Small Claims Cases',
+    year: 2008,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/courts/supreme/am/am_08_8_7_sc_2008.html',
+    aliases: ['am 08-8-7-sc', 'small claims', 'small claims cases', 'small claims court', 'money claim'],
+    topics: ['small claims', 'money claims', 'debt collection', 'court procedure', 'settlement', 'civil claims'],
+    keywords: [
+      'small claims',
+      'money claim',
+      'statement of claim',
+      'collection',
+      'debt',
+      'unpaid account',
+      'promissory note',
+      'court filing',
+      'hearing',
+      'settlement',
+      'demand letter',
+      'evidence',
+    ],
+    summary:
+      'A simplified court procedure for small money claims, useful for debt collection, unpaid accounts, demand, evidence, settlement, and court-filing workflows.',
+    obligations: [
+      'For small money claims or debt collection workflows, identify claimant, respondent, amount, basis, evidence, demand or notice, venue, filing route, hearing, settlement, judgment, and records custody.',
+      'Separate small claims from criminal collection threats, bounced-check issues, consumer complaints, insolvency, arbitration, and ordinary customer support.',
+      'Preserve contracts, invoices, receipts, account statements, demand letters, checks, messages, and settlement records with privacy and evidence controls.',
+      'Avoid collection language that uses harassment, public shaming, unauthorized disclosure, or criminal threats as a substitute for lawful claim processing.',
+    ],
+    commonGaps: [
+      'Debt-collection workflows omit amount basis, proof, demand, venue, filing path, and settlement records.',
+      'Small claims are mixed with criminal threat language, privacy-unsafe disclosure, or informal pressure tactics.',
+      'Evidence and account records lack custody, retention, and authorized-access controls.',
+    ],
+  },
+  {
+    id: 'constitution-1987',
+    statute: '1987 Constitution',
+    title: 'The 1987 Constitution of the Republic of the Philippines',
+    shortTitle: '1987 Philippine Constitution',
+    year: 1987,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/consti/cons1987.html',
+    aliases: ['1987 constitution', 'philippine constitution', 'constitution', 'bill of rights', 'article iii'],
+    topics: ['constitutional law', 'bill of rights', 'due process', 'search and seizure', 'free speech', 'privacy', 'public assembly'],
+    keywords: [
+      'due process',
+      'equal protection',
+      'search',
+      'seizure',
+      'warrant',
+      'probable cause',
+      'custodial investigation',
+      'right to counsel',
+      'free speech',
+      'peaceable assembly',
+      'privacy of communication',
+      'self incrimination',
+      'speedy disposition',
+    ],
+    summary:
+      'The constitutional baseline for government power, due process, equal protection, privacy of communication, search and seizure, custodial rights, free speech, peaceable assembly, and limits on penalties or enforcement.',
+    obligations: [
+      'For government enforcement, inspection, arrest, search, seizure, surveillance, public assembly, speech, or sanction workflows, state legal authority, objective standard, notice, hearing or response route, warrant or exception analysis, and appeal path.',
+      'Protect custodial, complainant, witness, protester, minor, and sensitive-record rights with counsel, confidentiality, access, and records safeguards where relevant.',
+      'Separate regulatory inspection from criminal investigation, search and seizure, data access, speech restriction, and public assembly controls.',
+      'Avoid vague enforcement powers, blanket surveillance, warrantless access, prior restraints, or penalties without due process.',
+    ],
+    commonGaps: [
+      'Enforcement powers are broad but no due-process, warrant, probable-cause, notice, or appeal controls are stated.',
+      'Public assembly, speech, or online expression rules are treated as ordinary permit issues without constitutional safeguards.',
+      'Custodial, witness, complainant, or sensitive records lack counsel, privacy, confidentiality, or access controls.',
+    ],
+  },
+  {
+    id: 'act-3815',
+    statute: 'Act No. 3815',
+    title: 'Act No. 3815',
+    shortTitle: 'Revised Penal Code',
+    year: 1930,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/acts/act1930/act_3815_1930.html',
+    aliases: ['act 3815', 'revised penal code', 'rpc', 'penal code', 'criminal code'],
+    topics: ['criminal law', 'offenses', 'penalties', 'theft', 'estafa', 'falsification', 'libel', 'physical injuries'],
+    keywords: [
+      'crime',
+      'criminal offense',
+      'felony',
+      'penalty',
+      'theft',
+      'estafa',
+      'fraud',
+      'falsification',
+      'libel',
+      'slander',
+      'physical injuries',
+      'grave threats',
+      'malicious mischief',
+      'damage to property',
+      'complaint',
+      'affidavit',
+    ],
+    summary:
+      'The general penal law defining many crimes, penalties, and liability concepts, including property, fraud, falsification, libel, threats, injuries, and other offenses commonly referenced in complaints.',
+    obligations: [
+      'For crime-reporting, disciplinary, complaint, fraud, theft, falsification, libel, injury, threat, or property-damage workflows, separate factual intake from legal classification, evidence custody, authority to investigate, and referral route.',
+      'Identify complainant, respondent, act complained of, date, place, evidence, witnesses, injury or loss, preservation steps, and responsible receiving office.',
+      'Avoid using criminal labels as automatic conclusions before legal review, evidence evaluation, due process, and authorized referral.',
+      'Separate civil recovery, employment discipline, administrative action, settlement, barangay process, and criminal complaint handling.',
+    ],
+    commonGaps: [
+      'Policies call conduct criminal but do not define evidence, complainant, witness, receiving office, referral, or due-process handling.',
+      'Civil, administrative, and criminal remedies are mixed without separate routes and records.',
+      'Criminal accusations are shared or published without confidentiality, evidence, and defamation-risk controls.',
+    ],
+  },
+  {
+    id: 'rules-criminal-procedure',
+    statute: 'Rules of Court',
+    title: 'Rules of Court',
+    shortTitle: 'Rules on Criminal Procedure',
+    year: 1985,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/courts/rules/rc_110-127_crim.html',
+    aliases: ['rules of criminal procedure', 'criminal procedure', 'rule 110', 'rule 112', 'rule 113', 'rule 126'],
+    topics: ['criminal procedure', 'complaints', 'preliminary investigation', 'arrest', 'search warrant', 'prosecution'],
+    keywords: [
+      'criminal complaint',
+      'complaint affidavit',
+      'information',
+      'preliminary investigation',
+      'inquest',
+      'arrest',
+      'warrant of arrest',
+      'search warrant',
+      'prosecutor',
+      'subpoena',
+      'probable cause',
+      'custody',
+      'bail',
+      'arraignment',
+    ],
+    summary:
+      'The procedural framework for criminal complaints, information, preliminary investigation, arrest, search warrants, prosecution, bail, arraignment, and court-facing criminal case workflows.',
+    obligations: [
+      'For criminal complaints, incident reports, arrests, warrants, inquest, preliminary investigation, or prosecution workflows, state receiving office, affidavit and evidence requirements, probable-cause review, notices, timelines, custody, and referral path.',
+      'Separate administrative intake from prosecutor or court process, custodial rights, search and seizure, evidence preservation, and privacy rules.',
+      'Track complaint affidavits, evidence inventories, subpoenas, notices, custody documents, warrant details, and case status with chain-of-custody and retention controls.',
+      'Avoid internal policies that authorize arrest, search, detention, or criminal filing without lawful authority and procedural safeguards.',
+    ],
+    commonGaps: [
+      'Complaint intake omits affidavit, evidence inventory, receiving office, notices, and prosecutor or court referral.',
+      'Search, seizure, or arrest powers are assumed without warrant, probable cause, exception, custody, or rights safeguards.',
+      'Criminal case records lack chain-of-custody, confidentiality, retention, and authorized-access controls.',
+    ],
+  },
+  {
+    id: 'ra-9344',
+    statute: 'RA 9344',
+    title: 'Republic Act No. 9344',
+    shortTitle: 'Juvenile Justice and Welfare Act of 2006',
+    year: 2006,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2006/ra_9344_2006.html',
+    aliases: ['ra 9344', 'juvenile justice', 'juvenile justice and welfare act', 'children in conflict with the law', 'cicl'],
+    topics: ['juvenile justice', 'child protection', 'diversion', 'children in conflict with the law', 'social welfare'],
+    keywords: [
+      'child in conflict with the law',
+      'cicl',
+      'minor offender',
+      'juvenile',
+      'diversion',
+      'intervention program',
+      'discernment',
+      'bahay pag asa',
+      'social worker',
+      'child custody',
+      'restorative justice',
+      'confidentiality',
+    ],
+    summary:
+      'A child-sensitive justice framework for children in conflict with the law, emphasizing age assessment, diversion, intervention, social welfare coordination, restorative justice, confidentiality, and protection from harmful detention practices.',
+    obligations: [
+      'For incidents involving minors accused of offenses, state age verification, discernment review where relevant, social worker coordination, parent or guardian notice, diversion or intervention route, confidentiality, and child-friendly records handling.',
+      'Separate school discipline, barangay handling, police referral, social welfare case management, victim support, and court process.',
+      'Protect child identity, family records, incident reports, assessment records, and diversion agreements with strict access and disclosure limits.',
+      'Avoid adult detention, public identification, coercive settlement, or punitive handling without child-specific legal review.',
+    ],
+    commonGaps: [
+      'Minor-offender workflows omit age verification, social worker role, diversion, guardian notice, and confidentiality.',
+      'Child records are handled like ordinary incident reports despite identity and welfare risks.',
+      'Discipline or law-enforcement escalation bypasses restorative, intervention, or child-protection safeguards.',
+    ],
+  },
+  {
+    id: 'ra-9165-drugs',
+    statute: 'RA 9165',
+    title: 'Republic Act No. 9165',
+    shortTitle: 'Comprehensive Dangerous Drugs Act of 2002',
+    year: 2002,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2002/ra_9165_2002.html',
+    aliases: ['ra 9165 drugs', 'dangerous drugs act', 'comprehensive dangerous drugs act', 'drug law', 'pdea'],
+    topics: ['dangerous drugs', 'drug enforcement', 'drug testing', 'chain of custody', 'rehabilitation', 'pdea'],
+    keywords: [
+      'dangerous drugs',
+      'controlled substance',
+      'drug testing',
+      'pdea',
+      'drug enforcement',
+      'chain of custody',
+      'inventory',
+      'seizure',
+      'laboratory examination',
+      'rehabilitation',
+      'drug-free workplace',
+      'confidentiality',
+    ],
+    summary:
+      'The dangerous-drugs framework covering prohibited acts, enforcement, drug testing, custody of seized items, laboratory examination, rehabilitation, and sensitive drug-related records.',
+    obligations: [
+      'For drug-related incidents, testing, workplace or school rules, seized items, or rehabilitation referrals, state legal authority, trained personnel, consent or lawful basis, chain of custody, inventory, laboratory handling, confidentiality, and referral route.',
+      'Separate wellness, rehabilitation, employment discipline, school discipline, search and seizure, criminal referral, and health-data privacy.',
+      'Protect test results, inventories, lab records, incident reports, identities, and health or rehabilitation records with strict access, retention, and disclosure controls.',
+      'Avoid suspicion-only searches, public naming, informal detention, or drug-test disclosure without lawful authority and due process.',
+    ],
+    commonGaps: [
+      'Drug policies mention testing or enforcement without consent or authority, chain of custody, lab handling, confidentiality, and appeal controls.',
+      'Health, disciplinary, and criminal drug workflows are collapsed into one route.',
+      'Drug incident records are disclosed broadly despite high stigma and privacy risk.',
+    ],
+  },
+  {
+    id: 'ra-10591',
+    statute: 'RA 10591',
+    title: 'Republic Act No. 10591',
+    shortTitle: 'Comprehensive Firearms and Ammunition Regulation Act',
+    year: 2013,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2013/ra_10591_2013.html',
+    aliases: ['ra 10591', 'firearms law', 'firearms and ammunition regulation act', 'gun law'],
+    topics: ['firearms', 'ammunition', 'licensing', 'security', 'public safety', 'weapons control'],
+    keywords: [
+      'firearm',
+      'ammunition',
+      'license to own and possess',
+      'ltopf',
+      'permit to carry',
+      'gun',
+      'weapon',
+      'security guard',
+      'storage',
+      'transport',
+      'registration',
+      'revocation',
+      'safe custody',
+    ],
+    summary:
+      'A firearms and ammunition regulatory framework covering licensing, registration, possession, carrying, transfer, storage, transport, and public-safety controls.',
+    obligations: [
+      'For firearms, weapons, guards, transport, storage, or public-safety rules, state licensing or permit basis, identity verification, safe custody, transport limits, inventory, reporting, revocation or suspension, and incident escalation.',
+      'Separate private ownership, security operations, workplace safety, event security, police referral, and evidence custody.',
+      'Protect license records, firearm inventories, incident reports, security assignments, and identity data with access, retention, and authorized-disclosure rules.',
+      'Avoid allowing possession, carrying, storage, or confiscation without authority, documentation, custody, and due-process controls.',
+    ],
+    commonGaps: [
+      'Firearms policies omit license, permit, storage, transport, inventory, and incident reporting controls.',
+      'Weapons incidents lack evidence custody, police coordination, and privacy rules.',
+      'Security or workplace rules assume confiscation powers without authority and documentation.',
+    ],
+  },
+  {
+    id: 'bp-880',
+    statute: 'BP 880',
+    title: 'Batas Pambansa Blg. 880',
+    shortTitle: 'Public Assembly Act of 1985',
+    year: 1985,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/bataspam/bp1985/bp_880_1985.html',
+    aliases: ['bp 880', 'batas pambansa 880', 'public assembly act', 'rally permit', 'protest permit'],
+    topics: ['public assembly', 'free speech', 'peaceable assembly', 'permit', 'public order', 'local government'],
+    keywords: [
+      'public assembly',
+      'rally',
+      'protest',
+      'demonstration',
+      'march',
+      'permit',
+      'freedom park',
+      'maximum tolerance',
+      'public place',
+      'peaceable assembly',
+      'police assistance',
+      'notice',
+    ],
+    summary:
+      'A public-assembly framework balancing permit processing, freedom parks, police coordination, maximum tolerance, public order, and constitutional speech and assembly rights.',
+    obligations: [
+      'For rallies, protests, marches, demonstrations, public assemblies, or freedom-park rules, state receiving office, permit or notice requirements, timelines, grounds for action, written decision, maximum tolerance, police coordination, and appeal route.',
+      'Separate traffic or safety coordination from prior restraint, viewpoint discrimination, criminal referral, surveillance, and crowd-control action.',
+      'Protect organizer, participant, media, complaint, and police records with privacy, retention, and authorized-access safeguards.',
+      'Avoid vague denial grounds, excessive fees, arbitrary restrictions, or blanket bans on peaceful assembly.',
+    ],
+    commonGaps: [
+      'Public assembly procedures omit deadlines, written decision, appeal, maximum tolerance, and police coordination standards.',
+      'Permit workflows allow viewpoint-based or open-ended denial without objective criteria.',
+      'Organizer or participant data is collected without privacy and access controls.',
+    ],
+  },
+  {
+    id: 'ra-9745',
+    statute: 'RA 9745',
+    title: 'Republic Act No. 9745',
+    shortTitle: 'Anti-Torture Act of 2009',
+    year: 2009,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2009/ra_9745_2009.html',
+    aliases: ['ra 9745', 'anti torture act', 'anti-torture act', 'torture law'],
+    topics: ['human rights', 'custodial rights', 'detention', 'law enforcement', 'torture prevention'],
+    keywords: [
+      'torture',
+      'custody',
+      'detention',
+      'interrogation',
+      'ill treatment',
+      'medical examination',
+      'law enforcement',
+      'human rights',
+      'custodial investigation',
+      'complaint',
+      'documentation',
+      'protection',
+    ],
+    summary:
+      'A human-rights statute prohibiting torture and related ill treatment, with safeguards around custody, interrogation, documentation, medical examination, reporting, and accountability.',
+    obligations: [
+      'For detention, custody, questioning, disciplinary isolation, or law-enforcement coordination, state responsible officer, rights notice, counsel and family notification where relevant, medical examination, documentation, complaint route, and independent review.',
+      'Separate lawful security measures from coercion, punishment, interrogation, retaliation, and prohibited treatment.',
+      'Protect custody logs, medical records, complaints, witness statements, CCTV, and incident records with chain-of-custody and anti-retaliation safeguards.',
+      'Avoid policies that allow intimidation, forced confession, physical or psychological coercion, undocumented custody, or delayed medical access.',
+    ],
+    commonGaps: [
+      'Custody or interrogation workflows omit rights notice, counsel, medical examination, complaint route, and independent review.',
+      'Disciplinary or security policies allow coercive or punitive treatment without safeguards.',
+      'Custody records and complaints lack confidentiality, anti-retaliation, and evidence-preservation controls.',
+    ],
+  },
+  {
+    id: 'ra-9520',
+    statute: 'RA 9520',
+    title: 'Republic Act No. 9520',
+    shortTitle: 'Philippine Cooperative Code of 2008',
+    year: 2009,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2009/ra_9520_2009.html',
+    aliases: ['ra 9520', 'republic act 9520', 'cooperative code', 'philippine cooperative code', 'cooperative law'],
+    topics: ['cooperatives', 'business registration', 'member governance', 'cda', 'capital', 'audit', 'patronage refund'],
+    keywords: [
+      'cooperative',
+      'cda',
+      'cooperative development authority',
+      'members',
+      'articles of cooperation',
+      'bylaws',
+      'board of directors',
+      'share capital',
+      'patronage refund',
+      'general assembly',
+      'audit committee',
+      'education committee',
+      'net surplus',
+      'member records',
+    ],
+    summary:
+      'A governance and registration framework for cooperatives, covering members, articles and bylaws, registration with the Cooperative Development Authority, capital, general assembly, board duties, committees, audit, net surplus, and member records.',
+    obligations: [
+      'For cooperative formation, lending, market, farmer, transport, worker, or community enterprise workflows, state cooperative type, CDA registration, articles and bylaws, membership rules, capital contributions, board and committee roles, audit, and general assembly process.',
+      'Separate cooperative governance from corporation, association, securities, lending, procurement, social enterprise, and ordinary beneficiary-list handling.',
+      'Protect member lists, capital accounts, patronage records, loan records, voting records, audit files, and complaints with privacy, retention, and authorized-disclosure controls.',
+      'Avoid treating a cooperative as a loose beneficiary group without bylaws, member rights, accounting, audit, and dispute-resolution rules.',
+    ],
+    commonGaps: [
+      'Cooperative programs mention members and capital but omit CDA registration, bylaws, board duties, committees, audit, and general assembly controls.',
+      'Member contributions, patronage refunds, or surplus handling lack accounting, approval, and recordkeeping rules.',
+      'Cooperative member data is handled like an ordinary public list without privacy and access controls.',
+    ],
+  },
+  {
+    id: 'ra-7042',
+    statute: 'RA 7042',
+    title: 'Republic Act No. 7042',
+    shortTitle: 'Foreign Investments Act of 1991',
+    year: 1991,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1991/ra_7042_1991.html',
+    aliases: ['ra 7042', 'republic act 7042', 'foreign investments act', 'foreign investment law'],
+    topics: ['foreign investment', 'foreign equity', 'market entry', 'business registration', 'nationality restrictions'],
+    keywords: [
+      'foreign investor',
+      'foreign equity',
+      'foreign investment',
+      'foreign ownership',
+      'domestic market enterprise',
+      'export enterprise',
+      'negative list',
+      'nationality restriction',
+      'paid in capital',
+      'sec registration',
+      'dti registration',
+      'investment promotion',
+    ],
+    summary:
+      'A market-entry framework for foreign investors and foreign equity in Philippine enterprises, including domestic market and export-enterprise distinctions, nationality restrictions, registration, and the foreign investment negative list.',
+    obligations: [
+      'For foreign-owned or foreign-funded businesses, state business activity, ownership structure, investor nationality, domestic market or export classification, negative-list review, capital requirement, registration route, and report owner.',
+      'Separate foreign-investment analysis from public-service, retail trade, land, media, education, security, banking, securities, tax, visa, and anti-dummy issues.',
+      'Protect beneficial-owner, nationality, capitalization, board, shareholder, investment, and registration records with confidentiality, retention, and authorized-disclosure rules.',
+      'Avoid approving foreign participation until activity restrictions, ownership caps, capitalization, and regulator filing duties are documented.',
+    ],
+    commonGaps: [
+      'Foreign ownership is allowed without checking activity classification, negative-list restrictions, capital requirements, and registration documents.',
+      'Foreign investor records lack beneficial-owner, nationality, tax, SEC/DTI, and privacy controls.',
+      'Domestic market, export enterprise, public service, retail, and land restrictions are collapsed into a generic business permit step.',
+    ],
+  },
+  {
+    id: 'ra-11647',
+    statute: 'RA 11647',
+    title: 'Republic Act No. 11647',
+    shortTitle: 'Amendments to the Foreign Investments Act',
+    year: 2022,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2022/ra_11647_2022.html',
+    aliases: ['ra 11647', 'republic act 11647', 'foreign investments act amendments', 'amended foreign investment law'],
+    topics: ['foreign investment', 'foreign equity', 'market entry', 'investment promotion', 'inter-agency investment coordination'],
+    keywords: [
+      'foreign investment',
+      'foreign investor',
+      'foreign equity',
+      'investment promotion',
+      'domestic market enterprise',
+      'micro and small domestic market enterprise',
+      'inter agency investment promotion',
+      'negative list',
+      'capital requirement',
+      'startup',
+      'advanced technology',
+    ],
+    summary:
+      'A modernization statute amending the Foreign Investments Act, relevant to updated foreign-investment rules, domestic market enterprise thresholds, investment promotion, and policy coordination.',
+    obligations: [
+      'When reviewing foreign-investor entry, check whether updated capital, activity, technology, startup, employment, and domestic-market enterprise rules affect eligibility.',
+      'Document regulator or investment-promotion coordination, ownership restrictions, negative-list review, reporting owner, and periodic compliance updates.',
+      'Separate current foreign-investment eligibility from older templates, retail trade, public service, land, securities, tax, and employment requirements.',
+      'Avoid relying on stale market-entry assumptions without checking current amendments and activity-specific rules.',
+    ],
+    commonGaps: [
+      'Foreign-investment checklists cite the original statute but do not account for updated thresholds, exceptions, or investment-promotion coordination.',
+      'Startup, technology, domestic-market, and employment claims are used without evidence or documentation.',
+      'Foreign investor compliance is not periodically reviewed after registration.',
+    ],
+  },
+  {
+    id: 'ra-8762',
+    statute: 'RA 8762',
+    title: 'Republic Act No. 8762',
+    shortTitle: 'Retail Trade Liberalization Act of 2000',
+    year: 2000,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2000/ra_8762_2000.html',
+    aliases: ['ra 8762', 'retail trade liberalization act', 'retail trade law', 'foreign retailer'],
+    topics: ['retail trade', 'foreign retailer', 'market entry', 'capitalization', 'business registration', 'consumer protection'],
+    keywords: [
+      'retail trade',
+      'foreign retailer',
+      'retail store',
+      'minimum paid up capital',
+      'investment per store',
+      'dti',
+      'sec',
+      'local retail',
+      'consumer welfare',
+      'retail enterprise',
+      'store opening',
+      'market entry',
+    ],
+    summary:
+      'A foreign-retail market-entry framework covering retail trade participation, capitalization, registration, stores, and compliance conditions for retail enterprises.',
+    obligations: [
+      'For retail businesses, marketplaces, stores, franchises, or foreign retailers, state retail activity, ownership, capitalization, registration route, store count or branch plan, consumer-facing obligations, and reporting owner.',
+      'Separate retail trade analysis from ordinary e-commerce, wholesale, distribution, franchise, public service, foreign investment, consumer protection, tax, and local permit workflows.',
+      'Protect investor, capitalization, store, supplier, consumer, and registration records with privacy, retention, and authorized-disclosure safeguards.',
+      'Avoid opening or permitting a foreign retail operation without ownership, capital, registration, and consumer-facing compliance checks.',
+    ],
+    commonGaps: [
+      'Retail policies do not distinguish domestic retail, foreign retail, wholesale, marketplace, franchise, and e-commerce roles.',
+      'Foreign retailer capitalization, store, registration, and consumer-compliance evidence is missing.',
+      'Retail customer and supplier records lack retention, privacy, and complaint controls.',
+    ],
+  },
+  {
+    id: 'ra-11595',
+    statute: 'RA 11595',
+    title: 'Republic Act No. 11595',
+    shortTitle: 'Amendments to the Retail Trade Liberalization Act',
+    year: 2021,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2021/ra_11595_2021.html',
+    aliases: ['ra 11595', 'retail trade liberalization amendments', 'amended retail trade law', 'foreign retail amendment'],
+    topics: ['retail trade', 'foreign retailer', 'capitalization', 'market entry', 'investment requirement'],
+    keywords: [
+      'retail trade',
+      'foreign retailer',
+      'paid up capital',
+      'investment per store',
+      'retail enterprise',
+      'capitalization',
+      'registration',
+      'amendment',
+      'foreign participation',
+      'store opening',
+    ],
+    summary:
+      'A statute amending the retail trade liberalization framework, relevant to updated capitalization and entry requirements for foreign retailers and retail enterprises.',
+    obligations: [
+      'For foreign retail entry, check current paid-up capital, investment-per-store, registration, and compliance requirements instead of relying on older retail templates.',
+      'Document ownership, capitalization evidence, store plan, regulator filing, consumer-protection controls, tax registration, and local permit dependencies.',
+      'Separate updated retail entry rules from foreign-investment, public-service, e-commerce, consumer-protection, and local-business-permit checks.',
+      'Avoid stale capitalization thresholds or generic foreign-investment statements in retail-specific workflows.',
+    ],
+    commonGaps: [
+      'Retail-entry checklists cite the old law but omit updated capital and investment-per-store rules.',
+      'Foreign retail store openings proceed without registration, capitalization evidence, consumer-facing controls, or local permit alignment.',
+      'Retail workflows do not assign ownership for periodic compliance review.',
+    ],
+  },
+  {
+    id: 'ra-11057',
+    statute: 'RA 11057',
+    title: 'Republic Act No. 11057',
+    shortTitle: 'Personal Property Security Act',
+    year: 2018,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2018/ra_11057_2018.html',
+    aliases: ['ra 11057', 'personal property security act', 'ppsa', 'secured transactions law', 'movable collateral law'],
+    topics: ['secured transactions', 'collateral', 'credit', 'movable property', 'security interest', 'registry'],
+    keywords: [
+      'security interest',
+      'collateral',
+      'movable property',
+      'personal property',
+      'secured creditor',
+      'debtor',
+      'notice registry',
+      'perfection',
+      'priority',
+      'enforcement',
+      'financing statement',
+      'loan security',
+      'receivables',
+      'inventory',
+    ],
+    summary:
+      'A secured-transactions framework for security interests in movable or personal property, including creation, perfection, notice registration, priority, enforcement, and debtor/creditor records.',
+    obligations: [
+      'For loans, credit, receivables, inventory, equipment, vehicles, movable collateral, or secured transactions, state debtor, secured creditor, collateral description, security agreement, perfection method, registry notice, priority, enforcement, and release process.',
+      'Separate secured credit from ordinary debt collection, mortgage, pledge, chattel mortgage templates, consumer lending, credit reporting, privacy, and insolvency workflows.',
+      'Protect collateral descriptions, debtor data, financing statements, notices, account records, enforcement records, and release documents with access, retention, and authorized-disclosure rules.',
+      'Avoid treating movable collateral as enforceable without written security agreement, notice/perfection, priority review, and lawful enforcement steps.',
+    ],
+    commonGaps: [
+      'Loan or credit workflows mention collateral but omit security agreement, collateral description, registration or perfection, priority, and release steps.',
+      'Collateral enforcement is described without notice, custody, sale, accounting, dispute, and privacy safeguards.',
+      'Debtor and collateral records are shared without purpose limitation, access control, and retention rules.',
+    ],
+  },
 ]
 
 const TOPIC_EXPANSIONS = [
@@ -3664,6 +4506,86 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['credit report', 'credit score', 'credit bureau', 'credit information', 'borrower data', 'cic'],
     expansions: ['credit information system', 'authorized access', 'correction process', 'borrower data security'],
+  },
+  {
+    triggers: ['contract', 'obligation', 'civil liability', 'damages', 'negligence', 'quasi delict', 'sale', 'lease', 'agency'],
+    expansions: ['civil code', 'contract consent', 'object and cause', 'breach remedies'],
+  },
+  {
+    triggers: ['marriage', 'spouse', 'family support', 'custody', 'child custody', 'parental authority', 'family home'],
+    expansions: ['family code', 'family status proof', 'child welfare', 'support and custody records'],
+  },
+  {
+    triggers: ['birth certificate', 'marriage certificate', 'death certificate', 'civil registry', 'civil registrar', 'psa certificate'],
+    expansions: ['civil registry law', 'local civil registrar', 'vital records', 'certificate annotation'],
+  },
+  {
+    triggers: ['clerical error', 'typographical error', 'change first name', 'civil registry correction', 'wrong birth certificate'],
+    expansions: ['ra 9048', 'civil registry correction petition', 'supporting documents', 'annotation'],
+  },
+  {
+    triggers: ['sex correction', 'gender marker', 'wrong birth date', 'date of birth correction', 'day of birth', 'month of birth'],
+    expansions: ['ra 10172', 'birth certificate correction', 'civil registrar petition', 'medical or public records'],
+  },
+  {
+    triggers: ['notary', 'notarization', 'notarized', 'affidavit', 'jurat', 'acknowledgment', 'notarial register'],
+    expansions: ['rules on notarial practice', 'personal appearance', 'competent evidence of identity', 'notarial register'],
+  },
+  {
+    triggers: ['evidence', 'admissible', 'admissibility', 'authentication', 'witness', 'hearsay', 'official record'],
+    expansions: ['rules on evidence', 'authentication', 'original document', 'chain of custody'],
+  },
+  {
+    triggers: ['small claims', 'money claim', 'debt collection', 'unpaid account', 'demand letter', 'statement of claim'],
+    expansions: ['small claims procedure', 'statement of claim', 'court filing', 'settlement evidence'],
+  },
+  {
+    triggers: ['bill of rights', 'due process', 'search warrant', 'warrantless search', 'free speech', 'public assembly', 'custodial rights'],
+    expansions: ['1987 constitution', 'bill of rights', 'probable cause', 'notice and hearing'],
+  },
+  {
+    triggers: ['crime', 'criminal offense', 'revised penal code', 'theft', 'estafa', 'falsification', 'libel', 'physical injuries'],
+    expansions: ['revised penal code', 'criminal complaint', 'evidence preservation', 'due process'],
+  },
+  {
+    triggers: ['criminal complaint', 'preliminary investigation', 'inquest', 'arrest', 'search warrant', 'prosecutor', 'bail'],
+    expansions: ['rules on criminal procedure', 'complaint affidavit', 'probable cause', 'custody records'],
+  },
+  {
+    triggers: ['juvenile', 'minor offender', 'child in conflict with the law', 'cicl', 'diversion', 'bahay pag asa'],
+    expansions: ['juvenile justice and welfare', 'age verification', 'diversion', 'social worker'],
+  },
+  {
+    triggers: ['dangerous drugs', 'drug test', 'drug testing', 'pdea', 'controlled substance', 'drug free workplace'],
+    expansions: ['dangerous drugs act', 'chain of custody', 'laboratory examination', 'rehabilitation referral'],
+  },
+  {
+    triggers: ['firearm', 'gun', 'ammunition', 'weapon', 'ltopf', 'permit to carry', 'security guard'],
+    expansions: ['firearms and ammunition regulation', 'license to own and possess', 'safe custody', 'transport permit'],
+  },
+  {
+    triggers: ['rally', 'protest', 'demonstration', 'march', 'freedom park', 'maximum tolerance'],
+    expansions: ['public assembly act', 'peaceable assembly', 'permit processing', 'maximum tolerance'],
+  },
+  {
+    triggers: ['torture', 'detention', 'interrogation', 'custody', 'ill treatment', 'forced confession'],
+    expansions: ['anti torture act', 'custodial rights', 'medical examination', 'complaint documentation'],
+  },
+  {
+    triggers: ['cooperative', 'cda', 'cooperative members', 'patronage refund', 'articles of cooperation', 'coop bylaws'],
+    expansions: ['philippine cooperative code', 'cooperative development authority', 'member governance', 'general assembly'],
+  },
+  {
+    triggers: ['foreign investment', 'foreign investor', 'foreign equity', 'foreign ownership', 'negative list', 'domestic market enterprise'],
+    expansions: ['foreign investments act', 'foreign investment negative list', 'ownership restrictions', 'capital requirement'],
+  },
+  {
+    triggers: ['retail trade', 'foreign retailer', 'retail store', 'retail enterprise', 'paid up capital', 'investment per store'],
+    expansions: ['retail trade liberalization', 'foreign retailer registration', 'capitalization', 'consumer-facing compliance'],
+  },
+  {
+    triggers: ['security interest', 'collateral', 'movable property', 'personal property security', 'secured transaction', 'financing statement'],
+    expansions: ['personal property security act', 'notice registry', 'perfection', 'priority and enforcement'],
   },
   {
     triggers: ['cyber', 'computer', 'online fraud', 'account', 'platform', 'hacking', 'phishing'],
@@ -4251,6 +5173,157 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'Unauthorized transactions, access-device issues, bounced checks, and credit-report disputes include intake, proof, investigation, timelines, and correction or cure routes.',
       'Recording or communication-monitoring workflows include consent or lawful authority, minimization, restricted access, retention, and chain-of-custody safeguards.',
       'ADR and insolvency paths do not bypass safety, criminal, labor, consumer, creditor, court, or regulator escalation when formal process is required.',
+    ],
+  },
+  {
+    id: 'civil-documents-family-and-claims',
+    title: 'Civil Documents, Family Status, Evidence, and Small Claims Stack',
+    triggers: [
+      'civil code',
+      'contract',
+      'civil liability',
+      'damages',
+      'marriage certificate',
+      'birth certificate',
+      'civil registry',
+      'civil registrar',
+      'family support',
+      'custody',
+      'notarized affidavit',
+      'notary',
+      'evidence',
+      'small claims',
+      'money claim',
+      'debt collection',
+    ],
+    lawIds: [
+      'ra-386',
+      'eo-209-1987',
+      'act-3753',
+      'ra-9048',
+      'ra-10172',
+      'am-02-8-13-sc',
+      'rules-of-court-evidence',
+      'am-08-8-7-sc',
+      'ra-10173',
+      'ra-8792',
+      'ra-9285',
+    ],
+    summary:
+      'Use this when a workflow touches contracts, civil liability, family status, birth or marriage records, civil registry corrections, notarized affidavits, evidence handling, small money claims, or debt-collection records.',
+    sequence: [
+      'Classify the matter first: contract or obligation, family status, civil registry record, correction petition, notarized document, evidence file, or small money claim.',
+      'Map parties, authority, proof, civil registrar or notary role, record custodian, correction route, claim amount, evidence source, and privacy controls.',
+      'Separate civil remedies from criminal threats, administrative actions, privacy duties, family protection, ADR, small claims, and ordinary customer support.',
+      'Preserve contracts, certificates, IDs, affidavits, registry annotations, notices, demand letters, official records, and evidence logs with custody and retention rules.',
+    ],
+    checkpoints: [
+      'Contracts identify parties, authority, consent, object, cause or consideration, performance, breach, notice, remedies, and records.',
+      'Civil registry and family-status workflows identify the certificate, registrar, requester authority, proof, correction or annotation path, confidentiality, and downstream record updates.',
+      'Notarized documents and evidence files include personal appearance or identity checks, authentication, custodian, chain of custody, retention, and authorized disclosure.',
+      'Small-claims and debt workflows state amount basis, proof, demand, venue or filing route, settlement handling, privacy-safe collection conduct, and records custody.',
+    ],
+  },
+  {
+    id: 'rights-criminal-enforcement-and-public-order',
+    title: 'Rights, Criminal Enforcement, Public Order, and Custody Stack',
+    triggers: [
+      'bill of rights',
+      'due process',
+      'criminal complaint',
+      'police report',
+      'search warrant',
+      'arrest',
+      'theft',
+      'estafa',
+      'falsification',
+      'libel',
+      'juvenile',
+      'dangerous drugs',
+      'drug testing',
+      'firearms',
+      'public assembly',
+      'rally permit',
+      'custody',
+      'detention',
+      'torture',
+    ],
+    lawIds: [
+      'constitution-1987',
+      'act-3815',
+      'rules-criminal-procedure',
+      'ra-9344',
+      'ra-9165-drugs',
+      'ra-10591',
+      'bp-880',
+      'ra-9745',
+      'rules-of-court-evidence',
+      'ra-10173',
+      'ra-7160',
+    ],
+    summary:
+      'Use this when a workflow touches criminal complaints, police reports, searches, arrests, evidence, custody, minors in conflict with the law, dangerous drugs, firearms, public assemblies, detention, or rights-sensitive enforcement.',
+    sequence: [
+      'Classify the action: regulatory inspection, complaint intake, administrative discipline, criminal referral, search, arrest, custody, juvenile handling, public assembly, drug/firearm incident, or human-rights complaint.',
+      'Map legal authority, rights notice, receiving office, objective criteria, warrant or exception, affidavit or evidence requirements, custody owner, referral route, timeline, and appeal or review path.',
+      'Separate civil, administrative, barangay, school, workplace, police, prosecutor, court, social welfare, and human-rights channels.',
+      'Preserve affidavits, incident reports, warrants, evidence inventories, custody logs, medical records, child records, drug-test or lab records, firearm inventories, public-assembly permits, and notices with strict access and retention controls.',
+    ],
+    checkpoints: [
+      'Enforcement powers identify legal basis, due process, notice or rights information, objective standards, responsible office, written decision, records, and review path.',
+      'Criminal complaints, searches, arrests, and evidence files include affidavits, probable-cause or warrant route, custody, chain-of-custody, privacy, and authorized referral.',
+      'Minor, drug, firearm, public assembly, detention, and torture-risk workflows include specialized safeguards instead of generic incident handling.',
+      'Policies avoid public shaming, coercion, arbitrary detention, warrantless access, viewpoint-based restrictions, and unsupported criminal labels.',
+    ],
+  },
+  {
+    id: 'business-market-entry-ownership-and-secured-finance',
+    title: 'Business Market Entry, Ownership, Cooperative, and Secured Finance Stack',
+    triggers: [
+      'business registration',
+      'foreign investment',
+      'foreign equity',
+      'foreign investor',
+      'retail trade',
+      'foreign retailer',
+      'cooperative',
+      'cda',
+      'cooperative members',
+      'secured transaction',
+      'security interest',
+      'collateral',
+      'movable property',
+      'startup',
+      'paid up capital',
+      'market entry',
+    ],
+    lawIds: [
+      'ra-9520',
+      'ra-7042',
+      'ra-11647',
+      'ra-8762',
+      'ra-11595',
+      'ra-11057',
+      'ra-11232',
+      'ra-11032',
+      'ra-11976',
+      'ra-11765',
+      'ra-8792',
+      'ra-10173',
+    ],
+    summary:
+      'Use this when a workflow touches market entry, foreign ownership, retail trade, cooperative formation, member governance, secured lending, movable collateral, business registration, customer-facing sales, or investor records.',
+    sequence: [
+      'Classify the business structure and activity: corporation, cooperative, domestic market enterprise, export enterprise, foreign retailer, e-commerce seller, lender, or secured-credit arrangement.',
+      'Map ownership, nationality or foreign-equity restrictions, regulator, registration route, capitalization, permits, tax registration, customer obligations, privacy controls, and periodic reporting.',
+      'For cooperatives, map CDA registration, bylaws, member rights, board and committee duties, capital, audit, surplus, and general assembly decisions.',
+      'For secured transactions, map debtor, secured creditor, collateral, security agreement, perfection, notice registry, priority, enforcement, release, and debtor-record protection.',
+    ],
+    checkpoints: [
+      'Market-entry workflows do not collapse foreign investment, retail, corporation, cooperative, tax, local permit, consumer, and privacy duties into one generic business permit step.',
+      'Foreign investment and retail workflows document activity classification, ownership, capital, registration, regulator filing, and updated rule review.',
+      'Cooperative workflows include member governance, bylaws, board/committee roles, audit, capital, surplus handling, dispute route, and CDA records.',
+      'Secured finance workflows include collateral description, security agreement, registry/perfection, priority, enforcement, release, debtor privacy, and audit trail.',
     ],
   },
   {
@@ -5899,6 +6972,395 @@ function applyTopicSpecificDraftChecks(
           'Add notice or legal basis, authorized-user and permitted-purpose rules, minimum credit data, correction and dispute process, adverse-action explanation where relevant, access logs, security, retention, and authorized disclosure.',
           7,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9510') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(contract|obligation|civil liability|damages|negligence|quasi delict|sale|lease|agency|breach)\b/.test(normalizedDraft)) {
+    const hasCivilParties = /\b(parties|party|representative|capacity|authorized signatory|consent)\b/.test(normalizedDraft)
+    const hasCivilTerms = /\b(object|cause|consideration|payment|deliverable|performance standard)\b/.test(normalizedDraft)
+    const hasCivilRemedies = /\b(breach|notice|cure period|damages|remedy|termination|dispute|records|evidence)\b/.test(normalizedDraft)
+
+    if (!(hasCivilParties && hasCivilTerms && hasCivilRemedies)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Civil contract controls are incomplete',
+          'Contract, obligation, civil-liability, damages, negligence, sale, lease, agency, or breach language was detected without enough party authority, contract terms, performance, evidence, or remedy controls.',
+          'Add parties and authority, consent, object and scope, cause or consideration, payment and performance standards, breach notice, cure period, damages or remedies, termination, dispute route, and records custody.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-386') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(marriage|spouse|family support|child support|custody|child custody|parental authority|family home|minor child|conjugal)\b/.test(normalizedDraft)) {
+    const hasFamilyProof = /\b(certificate|status proof|proof|guardian|parent|authority|consent)\b/.test(normalizedDraft)
+    const hasChildWelfare = /\b(child welfare|best interest|minor|social welfare|dswd|referral|court)\b/.test(normalizedDraft)
+    const hasFamilyConfidentiality = /\b(confidential|privacy|access control|retention|authorized disclosure|records custody)\b/.test(normalizedDraft)
+
+    if (!(hasFamilyProof && hasChildWelfare && hasFamilyConfidentiality)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Family-status safeguards are incomplete',
+          'Marriage, support, custody, parental-authority, family-home, spouse, or minor-child language was detected without enough status proof, child-welfare, referral, confidentiality, or records controls.',
+          'Add family-status proof, responsible parent or guardian, child-welfare decision criteria, court or social-welfare referral where needed, confidentiality, access controls, retention, and authorized disclosure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'eo-209-1987') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(birth certificate|marriage certificate|death certificate|civil registry|civil registrar|local civil registrar|psa certificate|vital record|civil status)\b/.test(normalizedDraft)) {
+    const hasRegistryOffice = /\b(civil registrar|local civil registrar|psa|issuing office|registry office|record custodian)\b/.test(normalizedDraft)
+    const hasRegistryProof = /\b(certified copy|supporting document|proof|requester|authorized requester|petition|annotation)\b/.test(normalizedDraft)
+    const hasRegistryPrivacy = /\b(privacy|confidential|access control|redaction|retention|authorized disclosure|audit trail)\b/.test(normalizedDraft)
+
+    if (!(hasRegistryOffice && hasRegistryProof && hasRegistryPrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Civil registry controls are incomplete',
+          'Birth, marriage, death, civil-registry, civil-registrar, PSA, vital-record, or civil-status language was detected without enough registrar, proof, requester, annotation, privacy, or retention controls.',
+          'Add civil registrar or PSA role, certified-copy or supporting-document requirements, authorized requester rules, correction or annotation path, record custodian, privacy safeguards, retention, redaction, and audit trail.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'act-3753') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(clerical error|typographical error|change of first name|change first name|nickname correction|registry correction|civil registry correction|birth certificate correction)\b/.test(normalizedDraft)) {
+    const hasCorrectionPetition = /\b(petition|petitioner|civil registrar|local civil registrar|filing|publication|posting|notice)\b/.test(normalizedDraft)
+    const hasCorrectionEvidence = /\b(supporting document|certified copy|school record|medical record|public record|evidence|proof)\b/.test(normalizedDraft)
+    const hasCorrectionOutcome = /\b(decision|annotation|appeal|review|record update|audit trail|retention)\b/.test(normalizedDraft)
+
+    if (!(hasCorrectionPetition && hasCorrectionEvidence && hasCorrectionOutcome)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Civil registry correction route is incomplete',
+          'Civil-registry correction, clerical-error, typographical-error, first-name, nickname, or birth-certificate-correction language was detected without enough petition, proof, notice, annotation, review, or update controls.',
+          'Add petitioner eligibility, civil registrar filing route, publication or posting where required, supporting documents, decision and review path, annotation, downstream record update, privacy, and retention controls.',
+          6,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9048') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10172') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(notary|notarization|notarized|affidavit|jurat|acknowledgment|notarial register|notarial seal|competent evidence of identity)\b/.test(normalizedDraft)) {
+    const hasNotarialIdentity = /\b(personal appearance|competent evidence of identity|valid id|identity verification|signer)\b/.test(normalizedDraft)
+    const hasNotarialRecord = /\b(notarial register|seal|commission|document number|page number|book number|date)\b/.test(normalizedDraft)
+    const hasNotarialCustody = /\b(custody|retention|access control|fraud|legal review|complete document|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasNotarialIdentity && hasNotarialRecord && hasNotarialCustody)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Notarial controls are incomplete',
+          'Notary, notarization, notarized-document, affidavit, jurat, acknowledgment, or notarial-register language was detected without enough personal-appearance, identity, register, seal, custody, or fraud controls.',
+          'Add personal appearance, competent evidence of identity, document completeness, signature authority, notarial register details, seal and commission information, custody, retention, access controls, and fraud escalation.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'am-02-8-13-sc') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(evidence|admissible|admissibility|authentication|original document|best evidence|witness|hearsay|official record|chain of custody|documentary evidence)\b/.test(normalizedDraft)) {
+    const hasEvidenceSource = /\b(source|authenticity|authentication|original|certified copy|witness|custodian)\b/.test(normalizedDraft)
+    const hasEvidenceCustody = /\b(chain of custody|custody|evidence log|audit trail|retention|tamper|integrity)\b/.test(normalizedDraft)
+    const hasEvidenceDisclosure = /\b(access control|privacy|confidential|authorized disclosure|minimization|redaction|legal review)\b/.test(normalizedDraft)
+
+    if (!(hasEvidenceSource && hasEvidenceCustody && hasEvidenceDisclosure)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Evidence controls are incomplete',
+          'Evidence, admissibility, authentication, witness, hearsay, official-record, original-document, or chain-of-custody language was detected without enough source, authenticity, custody, retention, privacy, or disclosure controls.',
+          'Add evidence source and relevance, authenticity or certified-copy rules, custodian, original or copy status, chain of custody, evidence log, retention, privacy, redaction, and authorized disclosure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'rules-of-court-evidence') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(small claims|money claim|statement of claim|debt collection|unpaid account|promissory note|demand letter|collection demand)\b/.test(normalizedDraft)) {
+    const hasClaimBasis = /\b(amount|basis|contract|invoice|receipt|account statement|promissory note|proof)\b/.test(normalizedDraft)
+    const hasClaimProcess = /\b(demand letter|notice|venue|court|filing|hearing|settlement|judgment)\b/.test(normalizedDraft)
+    const hasClaimConduct = /\b(privacy|confidential|no harassment|authorized disclosure|records custody|retention)\b/.test(normalizedDraft)
+
+    if (!(hasClaimBasis && hasClaimProcess && hasClaimConduct)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Small-claims collection controls are incomplete',
+          'Small-claims, money-claim, debt-collection, unpaid-account, promissory-note, demand-letter, or statement-of-claim language was detected without enough amount basis, proof, filing, settlement, privacy, or evidence controls.',
+          'Add claim amount and basis, parties, proof such as contract or invoices, demand or notice, venue and filing route, hearing or settlement handling, privacy-safe collection conduct, records custody, retention, and evidence preservation.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'am-08-8-7-sc') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(bill of rights|due process|search warrant|warrantless search|search and seizure|custodial investigation|free speech|public assembly|peaceable assembly|right to counsel)\b/.test(normalizedDraft)) {
+    const hasRightsAuthority = /\b(legal basis|authority|probable cause|warrant|exception|objective standard)\b/.test(normalizedDraft)
+    const hasRightsProcess = /\b(notice|hearing|written decision|appeal|rights notice|counsel)\b/.test(normalizedDraft)
+    const hasRightsRecords = /\b(records custody|audit trail|privacy|confidential|authorized disclosure|retention)\b/.test(normalizedDraft)
+
+    if (!(hasRightsAuthority && hasRightsProcess && hasRightsRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Constitutional rights safeguards are incomplete',
+          'Bill-of-rights, search, seizure, due-process, custodial, speech, or public-assembly language was detected without enough authority, objective standards, notice, counsel, review, or records safeguards.',
+          'Add legal basis, probable-cause or warrant analysis where relevant, objective criteria, rights notice, counsel or assistance route, written decision, appeal or review path, privacy, retention, and authorized disclosure.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'constitution-1987') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(crime|criminal offense|felony|revised penal code|theft|estafa|falsification|libel|slander|physical injuries|grave threat|malicious mischief)\b/.test(normalizedDraft)) {
+    const hasCriminalFacts = /\b(date|place|act complained of|complainant|respondent|witness|loss|injury)\b/.test(normalizedDraft)
+    const hasCriminalEvidence = /\b(affidavit|evidence|document|photo|video|inventory|chain of custody|custodian)\b/.test(normalizedDraft)
+    const hasCriminalReferral = /\b(police|prosecutor|referral|legal review|complaint route|due process|confidential)\b/.test(normalizedDraft)
+
+    if (!(hasCriminalFacts && hasCriminalEvidence && hasCriminalReferral)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Criminal complaint controls are incomplete',
+          'Crime, Revised Penal Code, theft, estafa, falsification, libel, injury, threat, or property-damage language was detected without enough factual intake, evidence, legal review, confidentiality, or referral controls.',
+          'Add complainant and respondent fields, date, place, facts, witness and loss details, affidavit and evidence inventory, chain of custody, confidentiality, legal review, and authorized police, prosecutor, court, or administrative referral route.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'act-3815') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(criminal complaint|complaint affidavit|preliminary investigation|inquest|arrest|warrant of arrest|search warrant|prosecutor|subpoena|probable cause|bail|arraignment)\b/.test(normalizedDraft)) {
+    const hasProcedureReview = /\b(affidavit|probable cause|prosecutor|court|warrant|subpoena|notice)\b/.test(normalizedDraft)
+    const hasProcedureCustody = /\b(chain of custody|evidence inventory|case record|custody log|retention|confidentiality)\b/.test(normalizedDraft)
+    const hasProcedureRights = /\b(rights notice|right to counsel|counsel|hearing|response|appeal|legal review|family notification)\b/.test(normalizedDraft)
+
+    if (!(hasProcedureReview && hasProcedureCustody && hasProcedureRights)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Criminal procedure controls are incomplete',
+          'Criminal complaint, preliminary-investigation, arrest, search-warrant, prosecutor, subpoena, probable-cause, bail, or arraignment language was detected without enough affidavit, warrant, custody, rights, notice, or case-record controls.',
+          'Add complaint affidavit requirements, prosecutor or court route, probable-cause or warrant review, evidence inventory, custody logs, rights and counsel notice, notices or subpoenas, case-record custody, retention, and authorized disclosure.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'rules-criminal-procedure') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(juvenile|minor offender|child in conflict with the law|cicl|diversion|discernment|intervention program|bahay pag asa|restorative justice)\b/.test(normalizedDraft)) {
+    const hasJuvenileAge = /\b(age verification|birth certificate|minor|discernment|assessment)\b/.test(normalizedDraft)
+    const hasJuvenileWelfare = /\b(social worker|parent|guardian|diversion|intervention|restorative|child welfare)\b/.test(normalizedDraft)
+    const hasJuvenileConfidentiality = /\b(confidential|privacy|identity protection|records custody|authorized disclosure|retention)\b/.test(normalizedDraft)
+
+    if (!(hasJuvenileAge && hasJuvenileWelfare && hasJuvenileConfidentiality)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Juvenile justice safeguards are incomplete',
+          'Juvenile, minor-offender, child-in-conflict-with-the-law, diversion, discernment, intervention, or restorative-justice language was detected without enough age verification, social welfare, guardian, confidentiality, or diversion controls.',
+          'Add age verification, discernment assessment where relevant, social worker role, parent or guardian notice, diversion or intervention route, child-friendly records custody, confidentiality, retention, and authorized disclosure.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9344') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(dangerous drugs|controlled substance|drug testing|drug test|pdea|drug enforcement|chain of custody|laboratory examination|drug free workplace|rehabilitation referral)\b/.test(normalizedDraft)) {
+    const hasDrugAuthority = /\b(legal basis|authority|consent|lawful basis|pdea|trained personnel|policy)\b/.test(normalizedDraft)
+    const hasDrugCustody = /\b(chain of custody|inventory|laboratory|specimen|seized item|evidence custody|audit trail)\b/.test(normalizedDraft)
+    const hasDrugPrivacy = /\b(confidential|privacy|health record|rehabilitation|access control|retention|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasDrugAuthority && hasDrugCustody && hasDrugPrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Dangerous-drugs controls are incomplete',
+          'Dangerous-drugs, drug-testing, PDEA, controlled-substance, chain-of-custody, lab-examination, workplace drug, or rehabilitation language was detected without enough authority, custody, lab, privacy, or referral controls.',
+          'Add legal authority or consent basis, trained personnel, chain of custody, inventory, laboratory handling, test-result confidentiality, rehabilitation or referral route, retention, access limits, and due-process safeguards.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9165-drugs') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(firearm|firearms|ammunition|gun|weapon|ltopf|license to own and possess|permit to carry|security guard|weapons custody)\b/.test(normalizedDraft)) {
+    const hasFirearmAuthority = /\b(license|permit|ltopf|registration|authority|identity verification)\b/.test(normalizedDraft)
+    const hasFirearmCustody = /\b(storage|safe custody|inventory|transport|handover|custody log|incident report)\b/.test(normalizedDraft)
+    const hasFirearmEscalation = /\b(police|revocation|suspension|reporting|evidence|privacy|retention|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasFirearmAuthority && hasFirearmCustody && hasFirearmEscalation)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Firearms controls are incomplete',
+          'Firearm, ammunition, weapon, gun, LTOPF, permit-to-carry, security-guard, or weapons-custody language was detected without enough licensing, storage, inventory, transport, reporting, or escalation controls.',
+          'Add license and permit verification, identity checks, safe storage, inventory, transport limits, custody logs, incident reporting, revocation or suspension route, police coordination, privacy, retention, and authorized disclosure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10591') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(public assembly|rally|protest|demonstration|march|freedom park|maximum tolerance|rally permit|peaceable assembly)\b/.test(normalizedDraft)) {
+    const hasAssemblyProcess = /\b(application|receiving office|timeline|written decision|appeal)\b/.test(normalizedDraft)
+    const hasAssemblyCriteria = /\b(objective criteria|public safety|traffic plan|police coordination|denial grounds)\b/.test(normalizedDraft)
+    const hasAssemblyRights = /\b(peaceable assembly|non discrimination|privacy|retention|authorized disclosure)\b/.test(normalizedDraft)
+
+    if (!(hasAssemblyProcess && hasAssemblyCriteria && hasAssemblyRights)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Public assembly controls are incomplete',
+          'Public-assembly, rally, protest, demonstration, march, freedom-park, maximum-tolerance, or rally-permit language was detected without enough permit timeline, objective criteria, rights, police coordination, or records controls.',
+          'Add receiving office, permit or notice timeline, objective grounds, written decision, appeal, freedom-park handling, maximum tolerance, traffic or police coordination, free-speech safeguards, privacy, retention, and authorized disclosure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'bp-880') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(torture|detention|interrogation|custody|ill treatment|forced confession|custodial investigation|medical examination|law enforcement custody)\b/.test(normalizedDraft)) {
+    const hasCustodyRights = /\b(rights notice|counsel|family notification|medical examination|complaint route|human rights)\b/.test(normalizedDraft)
+    const hasCustodyRecords = /\b(custody log|documentation|incident report|medical record|cctv|chain of custody|retention)\b/.test(normalizedDraft)
+    const hasCustodyProtection = /\b(confidential|anti retaliation|independent review|authorized disclosure|access control|legal review)\b/.test(normalizedDraft)
+
+    if (!(hasCustodyRights && hasCustodyRecords && hasCustodyProtection)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Custody and anti-torture safeguards are incomplete',
+          'Torture, detention, interrogation, custody, ill-treatment, forced-confession, custodial-investigation, medical-examination, or law-enforcement-custody language was detected without enough rights, medical, documentation, complaint, or anti-retaliation controls.',
+          'Add rights notice, counsel and family notification where relevant, medical examination, custody logs, incident documentation, complaint route, independent review, anti-retaliation, confidentiality, retention, and authorized disclosure.',
+          9,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9745') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(cooperative|cooperative development authority|cda|cooperative member|articles of cooperation|patronage refund|general assembly|net surplus)\b/.test(normalizedDraft)) {
+    const hasCoopRegistration = /\b(cda|cooperative development authority|registration|articles of cooperation|bylaws|coop by laws)\b/.test(normalizedDraft)
+    const hasCoopGovernance = /\b(member rights|general assembly|board of directors|committee|audit committee|election|quorum)\b/.test(normalizedDraft)
+    const hasCoopRecords = /\b(share capital|capital account|audit|records custody|retention|privacy)\b/.test(normalizedDraft)
+
+    if (!(hasCoopRegistration && hasCoopGovernance && hasCoopRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Cooperative governance controls are incomplete',
+          'Cooperative, CDA, member, articles, bylaws, patronage-refund, general-assembly, or net-surplus language was detected without enough registration, member governance, board, committee, audit, capital, or records controls.',
+          'Add CDA registration, articles and bylaws, membership rules, general assembly, board and committee duties, capital accounts, patronage or surplus handling, audit, dispute route, privacy, retention, and authorized disclosure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9520') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(foreign investment|foreign investor|foreign equity|foreign ownership|domestic market enterprise|export enterprise|negative list|nationality restriction)\b/.test(normalizedDraft)) {
+    const hasForeignActivity = /\b(activity classification|business activity|domestic market|export enterprise|negative list|ownership cap|nationality)\b/.test(normalizedDraft)
+    const hasForeignCapital = /\b(capital|paid in capital|capitalization|investment amount|startup|advanced technology|employment)\b/.test(normalizedDraft)
+    const hasForeignRegistration = /\b(sec|dti|registration|regulator|reporting|periodic review|records custody|privacy)\b/.test(normalizedDraft)
+
+    if (!(hasForeignActivity && hasForeignCapital && hasForeignRegistration)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Foreign-investment controls are incomplete',
+          'Foreign-investment, foreign-investor, foreign-equity, foreign-ownership, domestic-market, export-enterprise, negative-list, or nationality-restriction language was detected without enough activity, ownership, capital, registration, or records controls.',
+          'Add business activity classification, ownership and nationality review, negative-list check, capital or exception evidence, SEC/DTI or regulator registration, reporting owner, periodic update review, privacy, retention, and authorized disclosure.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7042') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11647') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(retail trade|foreign retailer|retail enterprise|retail store|paid up capital|investment per store|store opening)\b/.test(normalizedDraft)) {
+    const hasRetailClassification = /\b(retail activity|retail enterprise|foreign retailer|ownership|store plan|branch plan)\b/.test(normalizedDraft)
+    const hasRetailCapital = /\b(paid up capital|capitalization|investment per store|capital evidence|investment evidence)\b/.test(normalizedDraft)
+    const hasRetailCompliance = /\b(sec|dti|registration|consumer|complaint|tax|local permit|periodic review|records custody)\b/.test(normalizedDraft)
+
+    if (!(hasRetailClassification && hasRetailCapital && hasRetailCompliance)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Retail trade entry controls are incomplete',
+          'Retail-trade, foreign-retailer, retail-enterprise, retail-store, paid-up-capital, investment-per-store, or store-opening language was detected without enough ownership, capital, registration, consumer, tax, or local-permit controls.',
+          'Add retail activity classification, foreign retailer ownership review, paid-up capital and investment-per-store evidence, SEC/DTI or regulator registration, store plan, consumer complaint route, tax and local permit dependencies, records custody, and periodic review.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8762') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11595') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(security interest|secured transaction|collateral|movable property|personal property security|secured creditor|debtor|financing statement|notice registry|perfection|priority)\b/.test(normalizedDraft)) {
+    const hasSecurityAgreement = /\b(security agreement|debtor|secured creditor|collateral description|obligor|grantor)\b/.test(normalizedDraft)
+    const hasPerfection = /\b(registry|notice registry|financing statement|perfection|priority|registration)\b/.test(normalizedDraft)
+    const hasEnforcement = /\b(enforcement|release|discharge|sale|accounting|dispute|privacy|retention)\b/.test(normalizedDraft)
+
+    if (!(hasSecurityAgreement && hasPerfection && hasEnforcement)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Secured-transaction controls are incomplete',
+          'Security-interest, secured-transaction, collateral, movable-property, debtor, secured-creditor, financing-statement, notice-registry, perfection, or priority language was detected without enough agreement, registry, priority, enforcement, release, or privacy controls.',
+          'Add debtor and secured-creditor details, collateral description, security agreement, registry notice or perfection method, priority review, enforcement notice, sale or accounting process, release or discharge, dispute route, privacy, retention, and authorized disclosure.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11057') || LEGAL_CORPUS[0])]
         )
       )
     }

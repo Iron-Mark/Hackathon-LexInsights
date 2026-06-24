@@ -110,8 +110,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 87, 'Local corpus should include at least 87 authorities')
-  assert.ok(frameworks.length >= 14, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 109, 'Local corpus should include at least 109 authorities')
+  assert.ok(frameworks.length >= 17, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -155,6 +155,18 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'payments-credit-evidence-and-dispute-resolution'),
     'Frameworks should include payments, credit, evidence, and dispute resolution'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'civil-documents-family-and-claims'),
+    'Frameworks should include civil documents, family status, evidence, and small claims'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'rights-criminal-enforcement-and-public-order'),
+    'Frameworks should include rights, criminal enforcement, public order, and custody'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'business-market-entry-ownership-and-secured-finance'),
+    'Frameworks should include business market entry, ownership, cooperative, and secured finance'
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
@@ -239,6 +251,28 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 9285'), 'Corpus should include RA 9285')
   assert.ok(corpus.some((document) => document.statute === 'RA 10142'), 'Corpus should include RA 10142')
   assert.ok(corpus.some((document) => document.statute === 'RA 9510'), 'Corpus should include RA 9510')
+  assert.ok(corpus.some((document) => document.statute === 'RA 386'), 'Corpus should include RA 386')
+  assert.ok(corpus.some((document) => document.statute === 'EO 209, s. 1987'), 'Corpus should include EO 209, s. 1987')
+  assert.ok(corpus.some((document) => document.statute === 'Act No. 3753'), 'Corpus should include Act No. 3753')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9048'), 'Corpus should include RA 9048')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10172'), 'Corpus should include RA 10172')
+  assert.ok(corpus.some((document) => document.statute === 'A.M. No. 02-8-13-SC'), 'Corpus should include A.M. No. 02-8-13-SC')
+  assert.ok(corpus.some((document) => document.statute === 'Rules of Court'), 'Corpus should include Rules of Court')
+  assert.ok(corpus.some((document) => document.statute === 'A.M. No. 08-8-7-SC'), 'Corpus should include A.M. No. 08-8-7-SC')
+  assert.ok(corpus.some((document) => document.statute === '1987 Constitution'), 'Corpus should include the 1987 Constitution')
+  assert.ok(corpus.some((document) => document.statute === 'Act No. 3815'), 'Corpus should include Act No. 3815')
+  assert.ok(corpus.some((document) => document.id === 'rules-criminal-procedure'), 'Corpus should include criminal procedure rules')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9344'), 'Corpus should include RA 9344')
+  assert.ok(corpus.some((document) => document.id === 'ra-9165-drugs'), 'Corpus should include RA 9165 dangerous-drugs coverage')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10591'), 'Corpus should include RA 10591')
+  assert.ok(corpus.some((document) => document.statute === 'BP 880'), 'Corpus should include BP 880')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9745'), 'Corpus should include RA 9745')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9520'), 'Corpus should include RA 9520')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7042'), 'Corpus should include RA 7042')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11647'), 'Corpus should include RA 11647')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8762'), 'Corpus should include RA 8762')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11595'), 'Corpus should include RA 11595')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11057'), 'Corpus should include RA 11057')
 
   assertResearchMatch(
     runLocalResearch(
@@ -604,6 +638,255 @@ try {
     paymentsCreditEvidenceFrameworkResponse.summary,
     'Payments, Credit, Evidence, and Dispute Resolution Stack',
     'Payments credit evidence framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Civil Code controls apply to contracts, obligations, consent, object, cause, breach, and damages?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 386',
+    'civil code contract query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Family Code safeguards apply to marriage, custody, support, parental authority, and child welfare records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'EO 209, s. 1987',
+    'family code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What civil registry controls apply to birth certificates, marriage certificates, local civil registrar records, and PSA certified copies?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'Act No. 3753',
+    'civil registry law query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 9048 petition controls apply to clerical error correction, typographical error correction, and change of first name in a civil registry entry?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9048',
+    'civil registry clerical correction query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 10172 controls apply to correction of sex, day of birth, month of birth, and supporting medical or public records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10172',
+    'civil registry sex and birth-date correction query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What notarial practice controls apply to notarized affidavits, jurats, acknowledgments, personal appearance, competent evidence of identity, and notarial register entries?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'A.M. No. 02-8-13-SC',
+    'notarial practice query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Rules on Evidence controls apply to admissibility, authentication, original documents, witnesses, hearsay, official records, and chain of custody?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'Rules of Court',
+    'rules on evidence query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What small claims controls apply to money claims, unpaid accounts, demand letters, statements of claim, court filing, settlement, and evidence?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'A.M. No. 08-8-7-SC',
+    'small claims query'
+  )
+
+  const civilDocumentsFrameworkResponse = runLocalResearch(
+    {
+      query: 'What controls apply to contracts, civil registry birth certificate corrections, notarized affidavits, evidence custody, family support, and small claims?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(civilDocumentsFrameworkResponse, 'RA 386', 'civil documents framework contract query')
+  assertResearchMatch(civilDocumentsFrameworkResponse, 'Act No. 3753', 'civil documents framework registry query')
+  assertResearchMatch(civilDocumentsFrameworkResponse, 'A.M. No. 02-8-13-SC', 'civil documents framework notarial query')
+  assertIncludes(
+    civilDocumentsFrameworkResponse.summary,
+    'Civil Documents, Family Status, Evidence, and Small Claims Stack',
+    'Civil documents framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Bill of Rights due process controls apply to search warrants, warrantless search, custodial investigation, free speech, and public assembly?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    '1987 Constitution',
+    'constitutional rights query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Revised Penal Code controls apply to theft, estafa, falsification, libel, physical injuries, and criminal complaint intake?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'Act No. 3815',
+    'revised penal code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What criminal procedure controls apply to complaint affidavits, preliminary investigation, inquest, arrest, search warrant, prosecutor review, bail, and custody records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'Rules of Court',
+    'criminal procedure query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What juvenile justice controls apply to a child in conflict with the law, age verification, discernment, diversion, social worker coordination, and confidentiality?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9344',
+    'juvenile justice query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What dangerous drugs controls apply to drug testing, PDEA coordination, controlled substances, chain of custody, laboratory examination, rehabilitation referral, and confidentiality?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9165',
+    'dangerous drugs query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What firearms controls apply to LTOPF, firearm registration, ammunition, permit to carry, security guards, safe custody, transport, and incident reporting?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10591',
+    'firearms query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What public assembly controls apply to rally permits, protests, demonstrations, freedom parks, maximum tolerance, police coordination, and written decisions?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'BP 880',
+    'public assembly query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What anti-torture controls apply to detention, interrogation, custody, medical examination, complaint documentation, rights notice, and anti-retaliation?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9745',
+    'anti-torture query'
+  )
+
+  const rightsCriminalFrameworkResponse = runLocalResearch(
+    {
+      query: 'What controls apply to police reports, criminal complaints for theft, estafa, falsification, search warrants, arrests, custody, minors, drug testing, firearms, public assemblies, and torture-risk safeguards?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(rightsCriminalFrameworkResponse, '1987 Constitution', 'rights framework constitutional query')
+  assertResearchMatch(rightsCriminalFrameworkResponse, 'Act No. 3815', 'rights framework penal code query')
+  assertResearchMatch(rightsCriminalFrameworkResponse, 'Rules of Court', 'rights framework procedure query')
+  assertIncludes(
+    rightsCriminalFrameworkResponse.summary,
+    'Rights, Criminal Enforcement, Public Order, and Custody Stack',
+    'Rights criminal enforcement framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What cooperative governance controls apply under RA 9520 for CDA registration, members, articles of cooperation, bylaws, general assembly, board duties, audit, and patronage refunds?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9520',
+    'cooperative code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What foreign investment controls apply under RA 7042 for foreign equity, ownership restrictions, domestic market enterprises, export enterprises, negative list, and paid-in capital?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7042',
+    'foreign investments act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 11647 amendments apply to foreign investors, startup or advanced technology claims, domestic market enterprise thresholds, negative list, and investment promotion coordination?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11647',
+    'foreign investments amendment query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What retail trade controls apply under RA 8762 for foreign retailers, retail enterprises, retail stores, paid-up capital, investment per store, SEC or DTI registration, and consumer obligations?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8762',
+    'retail trade liberalization query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 11595 updated retail trade controls apply to foreign retailer paid-up capital, investment per store, store opening, capitalization evidence, and registration?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11595',
+    'retail trade amendment query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What personal property security controls apply under RA 11057 for security interests, movable collateral, secured creditors, debtors, financing statements, perfection, priority, enforcement, and release?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11057',
+    'personal property security query'
+  )
+
+  const businessMarketEntryFrameworkResponse = runLocalResearch(
+    {
+      query: 'What controls apply to cooperative registration, foreign equity, retail trade entry, startup foreign investment, secured transactions, movable collateral, tax, consumer, and privacy records?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(businessMarketEntryFrameworkResponse, 'RA 9520', 'business market entry framework cooperative query')
+  assertResearchMatch(businessMarketEntryFrameworkResponse, 'RA 7042', 'business market entry framework foreign investment query')
+  assertResearchMatch(businessMarketEntryFrameworkResponse, 'RA 11057', 'business market entry framework secured finance query')
+  assertIncludes(
+    businessMarketEntryFrameworkResponse.summary,
+    'Business Market Entry, Ownership, Cooperative, and Secured Finance Stack',
+    'Business market entry framework title'
   )
 
   assertResearchMatch(
@@ -1270,6 +1553,112 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'ADR process')
   assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'Rehabilitation and insolvency')
   assertFinding(thinPaymentsCreditEvidenceDraftResponse, 'amber', 'Credit-information')
+
+  const thinCivilDocumentsFamilyDraft = `# Civil Documents, Registry, Family, and Claims Policy
+
+## Purpose
+This policy covers contract obligations, civil liability, damages, negligence, sale, lease, agency, breach, marriage, family support, child custody, parental authority, minor child records, family home records, birth certificate, marriage certificate, death certificate, civil registry, local civil registrar, PSA certificate, clerical error correction, typographical error correction, change of first name, sex correction, day of birth correction, month of birth correction, notarized affidavit, jurat, acknowledgment, notarial register, evidence admissibility, authentication, witness records, official records, small claims, money claims, debt collection, demand letters, and statements of claim.
+
+## Legal Basis
+Pursuant to RA 386, EO 209, Act No. 3753, RA 9048, RA 10172, A.M. No. 02-8-13-SC, the Rules of Court, and A.M. No. 08-8-7-SC.
+
+## Scope
+This applies to residents, families, claimants, respondents, document signers, and record holders.
+
+## Responsible Office
+The legal records office shall implement this policy.
+
+## Requirements
+Persons shall submit documents and records when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinCivilDocumentsFamilyDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinCivilDocumentsFamilyDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinCivilDocumentsFamilyDraftResponse.status, 'success', 'Civil documents family draft check should succeed locally')
+  assertFinding(thinCivilDocumentsFamilyDraftResponse, 'amber', 'Civil contract')
+  assertFinding(thinCivilDocumentsFamilyDraftResponse, 'amber', 'Family-status')
+  assertFinding(thinCivilDocumentsFamilyDraftResponse, 'amber', 'Civil registry controls')
+  assertFinding(thinCivilDocumentsFamilyDraftResponse, 'amber', 'Civil registry correction')
+  assertFinding(thinCivilDocumentsFamilyDraftResponse, 'amber', 'Notarial controls')
+  assertFinding(thinCivilDocumentsFamilyDraftResponse, 'amber', 'Evidence controls')
+  assertFinding(thinCivilDocumentsFamilyDraftResponse, 'amber', 'Small-claims')
+
+  const thinRightsCriminalDraft = `# Public Order, Complaint, and Custody Policy
+
+## Purpose
+This policy covers Bill of Rights, due process, search warrant, warrantless search, search and seizure, custodial investigation, free speech, public assembly, criminal offenses, Revised Penal Code, theft, estafa, falsification, libel, physical injuries, criminal complaint, complaint affidavit, preliminary investigation, inquest, arrest, prosecutor review, bail, juvenile, child in conflict with the law, diversion, dangerous drugs, drug testing, PDEA, controlled substances, firearms, ammunition, LTOPF, permit to carry, public assembly, rally permit, protest, freedom park, maximum tolerance, torture, detention, interrogation, custody, medical examination, and forced confession concerns.
+
+## Legal Basis
+Pursuant to the 1987 Constitution, Act No. 3815, the Rules of Criminal Procedure, RA 9344, RA 9165, RA 10591, BP 880, and RA 9745.
+
+## Scope
+This applies to local incidents, complaints, assemblies, students, workers, residents, visitors, and security personnel.
+
+## Responsible Office
+The security and legal office shall implement this policy.
+
+## Requirements
+Persons shall submit incident documents and cooperate with security checks when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinRightsCriminalDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinRightsCriminalDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinRightsCriminalDraftResponse.status, 'success', 'Rights criminal enforcement draft check should succeed locally')
+  assertFinding(thinRightsCriminalDraftResponse, 'amber', 'Constitutional rights')
+  assertFinding(thinRightsCriminalDraftResponse, 'amber', 'Criminal complaint')
+  assertFinding(thinRightsCriminalDraftResponse, 'amber', 'Criminal procedure')
+  assertFinding(thinRightsCriminalDraftResponse, 'amber', 'Juvenile justice')
+  assertFinding(thinRightsCriminalDraftResponse, 'amber', 'Dangerous-drugs')
+  assertFinding(thinRightsCriminalDraftResponse, 'amber', 'Firearms controls')
+  assertFinding(thinRightsCriminalDraftResponse, 'amber', 'Public assembly')
+  assertFinding(thinRightsCriminalDraftResponse, 'amber', 'Custody and anti-torture')
+
+  const thinBusinessMarketEntryDraft = `# Business Market Entry and Secured Finance Policy
+
+## Purpose
+This policy covers cooperative formation, CDA, cooperative members, articles of cooperation, bylaws, patronage refund, general assembly, net surplus, foreign investment, foreign investor, foreign equity, foreign ownership, domestic market enterprise, export enterprise, negative list, nationality restriction, retail trade, foreign retailer, retail enterprise, retail store, paid up capital, investment per store, store opening, secured transactions, security interest, movable property, personal property security, secured creditor, debtor, financing statement, notice registry, perfection, and priority.
+
+## Legal Basis
+Pursuant to RA 9520, RA 7042, RA 11647, RA 8762, RA 11595, and RA 11057.
+
+## Scope
+This applies to businesses, members, investors, stores, borrowers, lenders, debtors, and secured creditors.
+
+## Responsible Office
+The business development office shall implement this policy.
+
+## Requirements
+Applicants shall submit business and financing documents when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinBusinessMarketEntryDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinBusinessMarketEntryDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinBusinessMarketEntryDraftResponse.status, 'success', 'Business market entry draft check should succeed locally')
+  assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Cooperative governance')
+  assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Foreign-investment')
+  assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Retail trade entry')
+  assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Secured-transaction')
 
   const thinMobilityLandAgriDraft = `# Mobility, Land, and Farm Support Program
 
