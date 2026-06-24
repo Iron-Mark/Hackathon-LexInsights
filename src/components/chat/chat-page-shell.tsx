@@ -85,7 +85,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
 
       <main
         className={cn(
-          'flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-50 transition-all duration-300 dark:bg-neutral-900',
+          'flex min-w-0 flex-1 flex-col overflow-hidden bg-slate-50 transition-all duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.12),transparent_28rem),linear-gradient(135deg,#171322_0%,#211a35_48%,#120d1f_100%)]',
           !isMobile && !isOpen && 'ml-16',
           !isMobile && isOpen && 'ml-[344px]'
         )}
@@ -96,7 +96,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
               onClick={open}
               variant="outline"
               size="icon"
-              className="h-11 w-11 bg-white shadow-md transition-all duration-150 hover:bg-slate-50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800 dark:focus-visible:ring-offset-neutral-900"
+              className="h-11 w-11 bg-white shadow-md transition-all duration-150 hover:bg-slate-50 hover:shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#1b1728] dark:hover:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
               aria-label="Open sidebar menu"
             >
               <Menu className="h-5 w-5 text-slate-700 dark:text-slate-200" aria-hidden="true" />

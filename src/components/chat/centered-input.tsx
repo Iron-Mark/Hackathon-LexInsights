@@ -165,13 +165,13 @@ export function CenteredInput({
       </label>
       <div
         onClick={focusTextareaFromShellClick}
-        className={`relative rounded-xl border bg-white transition-all duration-200 dark:bg-neutral-800 ${
+        className={`relative rounded-xl border bg-white transition-colors duration-200 dark:bg-[#241f32] ${
           isFocused
-            ? 'border-iris-500 shadow-lg shadow-iris-100 dark:border-iris-400 dark:shadow-black/30'
-            : 'border-slate-200 shadow-md shadow-slate-200/60 dark:border-neutral-700 dark:shadow-black/20'
+            ? 'border-iris-500 dark:border-iris-300/55'
+            : 'border-slate-200 dark:border-iris-300/15'
         }`}
       >
-        <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-2.5 py-2 dark:border-white/10">
+        <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-2.5 py-2 dark:border-iris-300/10">
           <ChatModeToggle showLabelOnMobile />
 
           {mode === 'compliance' && (
@@ -187,7 +187,7 @@ export function CenteredInput({
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-white/10 dark:bg-neutral-950/80 dark:text-slate-200 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
+                className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322]/90 dark:text-slate-200 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Upload compliance document"
                 type="button"
               >
@@ -199,7 +199,7 @@ export function CenteredInput({
         </div>
 
         {uploadedFiles.length > 0 && (
-          <div className="border-b border-slate-100 bg-slate-50/70 p-2.5 dark:border-white/10 dark:bg-neutral-900/70">
+          <div className="border-b border-slate-100 bg-slate-50/70 p-2.5 dark:border-iris-300/10 dark:bg-[#1a1625]/75">
             <UploadedFilesList />
             {!user && mode === 'compliance' && (
               <p className="mt-2 px-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
@@ -234,7 +234,7 @@ export function CenteredInput({
           <button
             onClick={handleSend}
             disabled={(!message.trim() && uploadedFiles.length === 0) || disabled || !isHydrated || isSending || uploading}
-            className="flex min-h-11 min-w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600 dark:bg-iris-400 dark:text-neutral-900 dark:hover:bg-iris-300 dark:focus-visible:ring-offset-neutral-800 dark:disabled:hover:bg-iris-400"
+            className="flex min-h-11 min-w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600 dark:bg-iris-400 dark:text-[#171322] dark:hover:bg-iris-300 dark:focus-visible:ring-offset-[#241f32] dark:disabled:hover:bg-iris-400"
             aria-label="Send message"
             type="button"
           >

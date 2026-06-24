@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, useEffect, useRef } from 'react'
+import { useCallback, useState, useEffect, useRef, type MouseEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChatHeader } from '@/components/layout/chat-header'
 import { ChatMessages, type PendingChatTurn } from './chat-messages'
@@ -48,6 +48,19 @@ interface ChatContainerProps {
 
 const MIN_THINKING_DURATION_MS = 700
 const AUTO_SCROLL_BOTTOM_THRESHOLD_PX = 160
+const CHAT_SURFACE_FOCUS_BLOCK_SELECTOR = [
+  'button',
+  'a',
+  'input',
+  'textarea',
+  'select',
+  '[role="button"]',
+  '[role="menu"]',
+  '[role="menuitem"]',
+  '[role="menuitemradio"]',
+  '[data-chat-content]',
+  '[data-chat-no-background-focus]',
+].join(',')
 
 async function waitForThinkingWindow(startedAt: number) {
   const remainingMs = Math.max(0, MIN_THINKING_DURATION_MS - (Date.now() - startedAt))
@@ -340,6 +353,31 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       behavior: 'smooth',
     })
   }, [])
+
+  const focusVisibleComposer = useCallback(() => {
+    const inputId = hasMessages ? 'message-input' : 'centered-message-input'
+    const input = document.getElementById(inputId)
+
+    if (!(input instanceof HTMLTextAreaElement) || input.disabled) {
+      return
+    }
+
+    input.focus({ preventScroll: true })
+  }, [hasMessages])
+
+  const handleChatSurfaceClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target instanceof HTMLElement ? event.target : null
+
+    if (!target || target.closest(CHAT_SURFACE_FOCUS_BLOCK_SELECTOR)) {
+      return
+    }
+
+    if (window.getSelection()?.toString()) {
+      return
+    }
+
+    focusVisibleComposer()
+  }, [focusVisibleComposer])
 
   // Fetch messages when active chat changes
   useEffect(() => {
@@ -702,7 +740,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const isComplianceWithCanvas = mode === 'compliance' && showCanvas && canvasContent
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-slate-50 text-slate-900 dark:bg-neutral-900 dark:text-slate-100">
+    <div className="flex h-full min-h-0 flex-col bg-slate-50 text-slate-900 dark:bg-transparent dark:text-slate-100">
       {/* Drag and Drop Overlay */}
       <DragDropOverlay onFileDrop={handleFileDrop} maxFiles={3} />
       
@@ -725,7 +763,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800"
+                  className="mb-4 rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-iris-300/15 dark:bg-[#241f32]"
                 >
                   <RAGProgress 
                     events={wsEvents} 
@@ -772,7 +810,11 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
             
             {/* Messages with scrollbar on far right OR Empty State */}
             {!loadingMessages && (
-              <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
+              <div
+                ref={scrollContainerRef}
+                className="flex-1 overflow-y-auto"
+                onClick={handleChatSurfaceClick}
+              >
                 {hasMessages ? (
                   <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
                     <ChatMessages messages={messages} pendingTurns={visiblePendingTurns} />
@@ -824,7 +866,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.18 }}
                 onClick={scrollToLatestMessage}
-                className="absolute bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-lg shadow-slate-900/15 backdrop-blur transition-colors hover:border-iris-300 hover:text-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-800/95 dark:text-slate-100 dark:shadow-black/30 dark:hover:border-iris-400/60 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-900 sm:right-6"
+                className="absolute bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-700 shadow-lg shadow-slate-900/15 backdrop-blur transition-all hover:border-iris-300 hover:text-iris-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32]/95 dark:text-slate-100 dark:shadow-iris-950/30 dark:hover:border-iris-300/60 dark:hover:bg-iris-300/12 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#171322] sm:right-6"
               >
                 <ChevronDown className="h-5 w-5" aria-hidden="true" />
               </motion.button>

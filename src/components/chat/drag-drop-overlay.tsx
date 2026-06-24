@@ -99,7 +99,7 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
             className="relative mx-4 max-w-2xl w-full"
           >
             {/* Main Drop Zone */}
-            <div className="relative rounded-2xl border-4 border-dashed border-iris-400 bg-white/95 p-12 shadow-2xl dark:bg-neutral-900/95">
+            <div className="relative rounded-2xl border-4 border-dashed border-iris-400 bg-white/95 p-12 shadow-2xl dark:bg-[#171322]/95">
               {/* Animated Background */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-iris-50 to-purple-50 opacity-50 dark:from-iris-400/10 dark:to-purple-400/10" />
               
@@ -133,19 +133,19 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
 
                 {/* Supported Files */}
                 <div className="flex flex-wrap items-center justify-center gap-3">
-                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-iris-300/15 dark:bg-[#241f32]">
                     <FileText className="h-4 w-4 text-iris-600 dark:text-iris-200" />
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-200">PDF</span>
                   </div>
-                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-iris-300/15 dark:bg-[#241f32]">
                     <FileText className="h-4 w-4 text-iris-600 dark:text-iris-200" />
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Word</span>
                   </div>
-                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-iris-300/15 dark:bg-[#241f32]">
                     <FileText className="h-4 w-4 text-iris-600 dark:text-iris-200" />
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Markdown</span>
                   </div>
-                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
+                  <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm dark:border-iris-300/15 dark:bg-[#241f32]">
                     <FileText className="h-4 w-4 text-iris-600 dark:text-iris-200" />
                     <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Text</span>
                   </div>

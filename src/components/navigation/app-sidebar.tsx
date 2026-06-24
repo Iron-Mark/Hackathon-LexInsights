@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { MessageSquare, PenSquare, Search, FileText, User, HelpCircle, Moon, Sun } from 'lucide-react'
+import { MessageSquare, PenSquare, Search, FileText, User, HelpCircle, Moon, Sun, UserRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/store/auth-store'
@@ -12,6 +12,7 @@ import { SearchDialog } from '@/components/chat/search-dialog'
 import { UploadedFilesDialog } from '@/components/chat/uploaded-files-dialog'
 import { ProfileDialog } from '@/components/profile/profile-dialog'
 import { ResourcesDialog } from '@/components/help/resources-dialog'
+import { AttributionDialog } from '@/components/about/attribution-dialog'
 import { useTheme } from '@/components/providers/theme-provider'
 
 interface NavItem {
@@ -33,13 +34,13 @@ function SidebarTooltipButton({ label, children }: SidebarTooltipButtonProps) {
       {children}
       <div
         className={cn(
-          'pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-slate-900/10 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:shadow-black/30',
+          'pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-slate-900/10 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/30',
           'transition-all duration-150 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100'
         )}
         role="tooltip"
       >
         {label}
-        <span className="absolute left-[-5px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-b border-l border-slate-200 bg-white dark:border-neutral-700 dark:bg-neutral-800" />
+        <span className="absolute left-[-5px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-b border-l border-slate-200 bg-white dark:border-iris-300/15 dark:bg-[#241f32]" />
       </div>
     </div>
   )
@@ -49,7 +50,7 @@ export function AppSidebar() {
   const router = useRouter()
   const pathname = usePathname()
   const { user } = useAuthStore()
-  const { isOpen, isMobile, open, toggle } = useSidebarStore()
+  const { isOpen, isMobile, open, close, toggle } = useSidebarStore()
   const { resolvedTheme, toggleTheme } = useTheme()
   
   // Dialog states
@@ -57,6 +58,7 @@ export function AppSidebar() {
   const [showFilesDialog, setShowFilesDialog] = useState(false)
   const [showProfileDialog, setShowProfileDialog] = useState(false)
   const [showResourcesDialog, setShowResourcesDialog] = useState(false)
+  const [showAttributionDialog, setShowAttributionDialog] = useState(false)
   const avatarUrl = user?.avatar_url || user?.user_metadata?.avatar_url
   const isDarkTheme = resolvedTheme === 'dark'
   const themeToggleLabel = isDarkTheme ? 'Switch to light mode' : 'Switch to dark mode'
@@ -124,17 +126,18 @@ export function AppSidebar() {
       {user && <UploadedFilesDialog open={showFilesDialog} onOpenChange={setShowFilesDialog} />}
       {user && <ProfileDialog open={showProfileDialog} onOpenChange={setShowProfileDialog} />}
       <ResourcesDialog open={showResourcesDialog} onOpenChange={setShowResourcesDialog} />
+      <AttributionDialog open={showAttributionDialog} onOpenChange={setShowAttributionDialog} />
       
-      <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center border-r border-neutral-300 bg-white pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-[calc(env(safe-area-inset-top)+1rem)] supports-[height:100dvh]:h-dvh dark:border-neutral-700 dark:bg-neutral-900">
-        {!isMobile && !isOpen && (
+      <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center border-r border-neutral-300 bg-white pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-[calc(env(safe-area-inset-top)+1rem)] supports-[height:100dvh]:h-dvh dark:border-iris-300/15 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_55%,#120d1f_100%)]">
+        {!isMobile && (
           <button
-            onClick={open}
-            className="absolute bottom-0 right-0 top-0 z-20 w-2 cursor-pointer border-r border-transparent bg-transparent transition-colors hover:border-iris-300 hover:bg-iris-100/70 focus-visible:border-iris-500 focus-visible:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:border-iris-400/50 dark:hover:bg-iris-400/15 dark:focus-visible:bg-iris-400/15 dark:focus-visible:ring-offset-neutral-900"
-            aria-label="Expand chat history"
-            title="Expand chat history"
+            onClick={isOpen ? close : open}
+            className="absolute bottom-0 right-0 top-0 z-[60] w-3 cursor-pointer bg-transparent transition-colors after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-transparent after:transition-colors hover:bg-iris-100/35 hover:after:bg-iris-300 focus-visible:bg-iris-100/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:after:bg-iris-500 dark:hover:bg-iris-300/10 dark:hover:after:bg-iris-300/45 dark:focus-visible:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
+            aria-label={isOpen ? 'Collapse chat history' : 'Expand chat history'}
+            title={isOpen ? 'Collapse chat history' : 'Expand chat history'}
             type="button"
           >
-            <span className="sr-only">Expand chat history</span>
+            <span className="sr-only">{isOpen ? 'Collapse chat history' : 'Expand chat history'}</span>
           </button>
         )}
 
@@ -152,11 +155,11 @@ export function AppSidebar() {
                   size="icon"
                   className={cn(
                     'h-12 w-12 rounded-xl transition-all duration-200',
-                    'hover:bg-iris-50 hover:text-iris-700 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
+                    'hover:bg-iris-50 hover:text-iris-700 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2',
                     active
-                      ? 'bg-iris-100 text-iris-900 dark:bg-neutral-700 dark:text-iris-300'
-                      : 'text-neutral-600 dark:text-neutral-400'
+                      ? 'bg-iris-100 text-iris-900 dark:bg-iris-300/14 dark:text-iris-100'
+                      : 'text-neutral-600 dark:text-iris-100/55'
                   )}
                   aria-label={item.label}
                 >
@@ -167,8 +170,8 @@ export function AppSidebar() {
           })}
         </nav>
 
-        {/* Bottom Section - Help & Profile */}
-        <div className={cn('flex flex-col items-center gap-2', !user && 'pb-14')}>
+        {/* Bottom Section - Utilities */}
+        <div className={cn('flex flex-col items-center gap-2', !user && 'pb-10')}>
           <SidebarTooltipButton label={themeToggleLabel}>
             <Button
               onClick={toggleTheme}
@@ -176,8 +179,8 @@ export function AppSidebar() {
               size="icon"
               className={cn(
                 'h-12 w-12 rounded-xl transition-all duration-200',
-                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900'
+                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]'
               )}
               aria-label={themeToggleLabel}
               aria-pressed={isDarkTheme}
@@ -198,12 +201,28 @@ export function AppSidebar() {
               size="icon"
               className={cn(
                 'h-12 w-12 rounded-xl transition-all duration-200',
-                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-iris-300',
+                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
               )}
               aria-label="Help & Resources"
             >
               <HelpCircle className="h-5 w-5" />
+            </Button>
+          </SidebarTooltipButton>
+
+          <SidebarTooltipButton label="Authors & Attribution">
+            <Button
+              onClick={() => setShowAttributionDialog(true)}
+              variant="ghost"
+              size="icon"
+              className={cn(
+                'h-12 w-12 rounded-xl transition-all duration-200',
+                'text-neutral-600 hover:bg-iris-50 hover:text-iris-700 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]'
+              )}
+              aria-label="Authors & Attribution"
+            >
+              <UserRound className="h-5 w-5" aria-hidden="true" />
             </Button>
           </SidebarTooltipButton>
 

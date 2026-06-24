@@ -20,7 +20,7 @@ export function VersionHistorySidebar() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-slate-200 px-4 py-3 dark:border-neutral-700">
+      <div className="border-b border-slate-200 px-4 py-3 dark:border-iris-300/15">
         <h3 className="font-display truncate text-sm font-semibold text-neutral-900 dark:text-slate-100">Version History</h3>
         <p className="font-body mt-1 truncate text-xs font-medium text-neutral-600 dark:text-slate-400">{versions.length} versions</p>
       </div>
@@ -34,13 +34,13 @@ export function VersionHistorySidebar() {
             <div
               key={version.id}
               className={cn(
-                'group relative border-b border-slate-100 px-4 py-3 transition-colors dark:border-neutral-800',
-                isActive ? 'bg-iris-100 dark:bg-iris-400/10' : 'hover:bg-slate-50 dark:hover:bg-neutral-800'
+                'group relative border-b border-slate-100 px-4 py-3 transition-colors dark:border-iris-300/10',
+                isActive ? 'bg-iris-100 dark:bg-iris-400/10' : 'hover:bg-slate-50 dark:hover:bg-iris-300/10'
               )}
             >
               <div
                 onClick={() => setCurrentVersion(version.id)}
-                className="w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded cursor-pointer"
+                className="w-full cursor-pointer rounded text-left transition-transform active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]"
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -89,7 +89,7 @@ export function VersionHistorySidebar() {
                               deleteVersion(version.id)
                               setConfirmDeleteId(null)
                             }}
-                            className="flex h-7 w-7 items-center justify-center rounded bg-red-600 text-white transition-colors hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                            className="flex h-7 w-7 items-center justify-center rounded bg-red-600 text-white transition-all hover:bg-red-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                             aria-label={`Confirm delete ${version.label}`}
                             type="button"
                           >
@@ -97,7 +97,7 @@ export function VersionHistorySidebar() {
                           </button>
                           <button
                             onClick={() => setConfirmDeleteId(null)}
-                            className="flex h-7 w-7 items-center justify-center rounded bg-slate-100 text-slate-600 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:bg-neutral-700 dark:text-slate-200 dark:hover:bg-neutral-600"
+                            className="flex h-7 w-7 items-center justify-center rounded bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:bg-[#241f32] dark:text-slate-200 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
                             aria-label={`Cancel delete ${version.label}`}
                             type="button"
                           >
@@ -107,7 +107,7 @@ export function VersionHistorySidebar() {
                       ) : (
                         <button
                           onClick={() => setConfirmDeleteId(version.id)}
-                          className="flex h-7 w-7 items-center justify-center rounded p-0 transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:hover:bg-red-400/10"
+                          className="flex h-7 w-7 items-center justify-center rounded p-0 transition-all hover:bg-red-50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 dark:hover:bg-red-400/10"
                           aria-label={`Delete ${version.label}`}
                           type="button"
                         >

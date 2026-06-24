@@ -31,7 +31,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg dark:border-neutral-700 dark:bg-neutral-900">
+      <DialogContent className="max-w-lg dark:border-iris-300/15 dark:bg-[#171322]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 dark:text-slate-100">
             <User className="h-5 w-5 text-iris-600 dark:text-iris-200" />
@@ -59,7 +59,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
 
           {/* User Details */}
           <div className="space-y-3">
-            <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 dark:bg-neutral-800">
+            <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 dark:bg-[#241f32]">
               <Mail className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-500 dark:text-slate-400" />
               <div className="flex-1 min-w-0">
                 <p className="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Email</p>
@@ -67,7 +67,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 dark:bg-neutral-800">
+            <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 dark:bg-[#241f32]">
               <Calendar className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-500 dark:text-slate-400" />
               <div className="flex-1">
                 <p className="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Member Since</p>
@@ -75,7 +75,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
               </div>
             </div>
 
-            <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 dark:bg-neutral-800">
+            <div className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 dark:bg-[#241f32]">
               <Shield className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-500 dark:text-slate-400" />
               <div className="flex-1">
                 <p className="mb-0.5 text-xs text-slate-500 dark:text-slate-400">Account Status</p>
@@ -97,7 +97,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
           </div>
 
           {/* Actions */}
-          <div className="space-y-2 border-t border-slate-200 pt-4 dark:border-neutral-700">
+          <div className="space-y-2 border-t border-slate-200 pt-4 dark:border-iris-300/15">
             <Button
               onClick={handleSignOut}
               variant="outline"

@@ -37,7 +37,7 @@ export function UploadedFilesList() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-shrink-0 items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 shadow-sm transition-all hover:border-iris-300 hover:shadow-md dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-iris-400/50 dark:hover:shadow-black/20"
+              className="flex flex-shrink-0 items-center gap-2 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 shadow-sm transition-all hover:border-iris-300 hover:shadow-md dark:border-iris-300/15 dark:bg-[#241f32] dark:hover:border-iris-400/50 dark:hover:shadow-iris-950/20"
             >
               <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-md bg-iris-50 text-iris-600 dark:bg-iris-400/10 dark:text-iris-200">
                 <FileText className="h-4 w-4" aria-hidden="true" />
@@ -59,7 +59,7 @@ export function UploadedFilesList() {
 
               <button
                 onClick={() => handleRemove(uploadedFile.id, uploadedFile.file.name)}
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:text-slate-500 dark:hover:bg-red-400/10 dark:hover:text-red-300"
+                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-red-50 hover:text-red-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:text-slate-500 dark:hover:bg-red-400/10 dark:hover:text-red-300"
                 aria-label={`Remove ${uploadedFile.file.name}`}
                 type="button"
               >

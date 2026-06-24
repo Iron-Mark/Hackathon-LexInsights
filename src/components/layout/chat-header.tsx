@@ -9,10 +9,10 @@ import { useAuthStore } from '@/lib/store/auth-store'
 import { UserMenu } from './user-menu'
 
 const authSignInButtonClassName =
-  'h-11 rounded-md border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 shadow-xs transition-all duration-200 hover:border-iris-200 hover:bg-iris-50 hover:text-iris-700 hover:shadow-sm active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 sm:px-3 sm:text-sm dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-400/15 dark:hover:text-iris-100 dark:focus-visible:ring-offset-neutral-900'
+  'h-11 rounded-md border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 shadow-xs transition-all duration-200 hover:border-iris-200 hover:bg-iris-50 hover:text-iris-700 hover:shadow-sm active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 sm:px-3 sm:text-sm dark:border-iris-300/15 dark:bg-[#241f32]/60 dark:text-slate-100 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#1a1625]'
 
 const authSignUpButtonClassName =
-  'h-11 rounded-md border border-iris-500/25 bg-iris-600 px-3 text-xs font-semibold text-white shadow-sm shadow-iris-950/15 transition-all duration-200 hover:bg-iris-700 hover:shadow-md hover:shadow-iris-950/20 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/20 dark:bg-iris-600 dark:text-white dark:hover:bg-iris-500 dark:focus-visible:ring-offset-neutral-900 sm:text-sm'
+  'h-11 rounded-md border border-iris-500/25 bg-iris-600 px-3 text-xs font-semibold text-white shadow-sm shadow-iris-950/15 transition-all duration-200 hover:bg-iris-700 hover:shadow-md hover:shadow-iris-950/20 active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/20 dark:bg-iris-600 dark:text-white dark:hover:bg-iris-500 dark:focus-visible:ring-offset-[#1a1625] sm:text-sm'
 
 export function ChatHeader() {
   const { user } = useAuthStore()
@@ -26,12 +26,12 @@ export function ChatHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-10 border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] dark:border-neutral-700 dark:bg-neutral-900">
+    <header className="sticky top-0 z-10 border-b border-slate-200 bg-white pt-[env(safe-area-inset-top)] dark:border-iris-300/15 dark:bg-[#1a1625]/95 dark:backdrop-blur">
       <div className="relative flex h-14 w-full items-center justify-between gap-2 px-4 sm:h-16 sm:gap-4 sm:px-6">
         <div className="flex-1" />
 
         <div className="absolute left-1/2 top-1/2 flex max-w-[7.5rem] -translate-x-1/2 -translate-y-1/2 items-center gap-2 sm:max-w-[8rem] lg:max-w-none">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white p-1 shadow-sm shadow-slate-900/5 ring-1 ring-white transition-colors duration-200 dark:border-white/10 dark:bg-white/[0.07] dark:shadow-none dark:ring-white/[0.06] lg:h-11 lg:w-11">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white p-1 shadow-sm shadow-slate-900/5 ring-1 ring-white transition-colors duration-200 dark:border-iris-300/15 dark:bg-iris-300/10 dark:shadow-none dark:ring-iris-100/10 lg:h-11 lg:w-11">
             <Image
               src="/logo/LOGO-0.5-woBG.svg"
               alt="LexInSight logo"

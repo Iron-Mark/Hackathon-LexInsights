@@ -19,7 +19,7 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-50 dark:bg-neutral-900">
+    <div className="flex h-screen bg-slate-50 dark:bg-[#171322]">
       <AppSidebar />
       
       <main className="flex-1 ml-16 overflow-y-auto">
@@ -36,7 +36,7 @@ export default function DocumentsPage() {
           </div>
 
           {/* Documents List */}
-          <div className="rounded-lg border border-slate-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-900">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 dark:border-iris-300/15 dark:bg-[#241f32]">
             <UserDocumentsList />
           </div>
         </div>

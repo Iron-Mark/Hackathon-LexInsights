@@ -10,10 +10,10 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 bg-[radial-gradient(circle_at_top_right,rgba(79,70,229,0.14),transparent_34%),linear-gradient(135deg,#f8fafc_0%,#eef2ff_100%)] p-4 sm:p-6 dark:bg-neutral-950 dark:bg-[radial-gradient(circle_at_top_right,rgba(129,140,248,0.16),transparent_32%),linear-gradient(135deg,#101719_0%,#18181b_100%)]">
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 bg-[radial-gradient(circle_at_top_right,rgba(79,70,229,0.14),transparent_34%),linear-gradient(135deg,#f8fafc_0%,#eef2ff_100%)] p-4 sm:p-6 dark:bg-[#171322] dark:bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.16),transparent_34%),linear-gradient(135deg,#171322_0%,#211a35_45%,#120d1f_100%)]">
       <div className="flex w-full max-w-md flex-col items-center gap-6">
         <div className="text-center">
-          <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-950/10 ring-1 ring-white dark:border-white/10 dark:bg-white/[0.07] dark:shadow-black/30 dark:ring-white/[0.06]">
+          <span className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-200 bg-white p-2 shadow-xl shadow-slate-950/10 ring-1 ring-white dark:border-iris-300/15 dark:bg-iris-300/10 dark:shadow-iris-950/30 dark:ring-iris-100/10">
             <Image
               src="/logo/LOGO-0.5-woBG.svg"
               alt=""

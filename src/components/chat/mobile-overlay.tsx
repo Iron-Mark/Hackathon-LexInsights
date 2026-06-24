@@ -14,7 +14,7 @@ export function MobileOverlay() {
   return (
     <div
       className={cn(
-        'fixed inset-0 bg-black/50 z-30',
+        'fixed inset-0 z-30 bg-slate-950/50 dark:bg-[#0d0a16]/72',
         'transition-opacity duration-200 ease-out',
         isOpen ? 'opacity-100' : 'opacity-0'
       )}

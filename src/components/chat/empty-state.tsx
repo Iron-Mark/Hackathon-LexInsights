@@ -95,29 +95,25 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
 
   const toneStyles = {
     iris: {
-      card: 'border-iris-300/70 bg-iris-50/80 shadow-slate-950/5 dark:border-iris-300/45 dark:bg-iris-400/12 dark:shadow-black/20',
-      rail: 'bg-iris-500 dark:bg-iris-300',
+      card: 'border-iris-300/70 bg-iris-50/80 shadow-slate-950/5 dark:border-iris-300/45 dark:bg-iris-400/12 dark:shadow-iris-950/20',
       icon: 'bg-white text-iris-700 ring-iris-200 dark:bg-iris-300/15 dark:text-iris-100 dark:ring-iris-300/30',
       chip: 'bg-iris-100 text-iris-800 ring-iris-200 dark:bg-iris-300/15 dark:text-iris-100 dark:ring-iris-300/30',
       arrow: 'text-iris-600 dark:text-iris-200',
     },
     emerald: {
-      card: 'border-emerald-200/80 bg-emerald-50/75 shadow-emerald-950/5 dark:border-emerald-400/35 dark:bg-emerald-400/10 dark:shadow-black/20',
-      rail: 'bg-emerald-500 dark:bg-emerald-300',
+      card: 'border-emerald-200/80 bg-emerald-50/75 shadow-emerald-950/5 dark:border-emerald-400/35 dark:bg-emerald-400/10 dark:shadow-iris-950/20',
       icon: 'bg-white text-emerald-700 ring-emerald-200 dark:bg-emerald-300/15 dark:text-emerald-100 dark:ring-emerald-300/25',
       chip: 'bg-emerald-100 text-emerald-800 ring-emerald-200 dark:bg-emerald-300/15 dark:text-emerald-100 dark:ring-emerald-300/25',
       arrow: 'text-emerald-700 dark:text-emerald-200',
     },
     amber: {
-      card: 'border-amber-200/80 bg-amber-50/75 shadow-amber-950/5 dark:border-amber-300/35 dark:bg-amber-300/10 dark:shadow-black/20',
-      rail: 'bg-amber-500 dark:bg-amber-300',
+      card: 'border-amber-200/80 bg-amber-50/75 shadow-amber-950/5 dark:border-amber-300/35 dark:bg-amber-300/10 dark:shadow-iris-950/20',
       icon: 'bg-white text-amber-700 ring-amber-200 dark:bg-amber-300/15 dark:text-amber-100 dark:ring-amber-300/25',
       chip: 'bg-amber-100 text-amber-800 ring-amber-200 dark:bg-amber-300/15 dark:text-amber-100 dark:ring-amber-300/25',
       arrow: 'text-amber-700 dark:text-amber-200',
     },
     sky: {
-      card: 'border-sky-200/80 bg-sky-50/75 shadow-sky-950/5 dark:border-sky-300/35 dark:bg-sky-300/10 dark:shadow-black/20',
-      rail: 'bg-sky-500 dark:bg-sky-300',
+      card: 'border-sky-200/80 bg-sky-50/75 shadow-sky-950/5 dark:border-sky-300/35 dark:bg-sky-300/10 dark:shadow-iris-950/20',
       icon: 'bg-white text-sky-700 ring-sky-200 dark:bg-sky-300/15 dark:text-sky-100 dark:ring-sky-300/25',
       chip: 'bg-sky-100 text-sky-800 ring-sky-200 dark:bg-sky-300/15 dark:text-sky-100 dark:ring-sky-300/25',
       arrow: 'text-sky-700 dark:text-sky-200',
@@ -200,18 +196,11 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
             className={cn(
               'group relative flex min-h-16 w-full gap-3 overflow-hidden rounded-md border px-3.5 py-3 text-left shadow-sm transition-all duration-200',
               'hover:border-slate-300 hover:shadow-md active:shadow-sm',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
               'disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-sm',
               styles.card
             )}
           >
-            <span
-              className={cn(
-                'absolute inset-y-3 left-0 w-1 rounded-r-full opacity-90 transition-all duration-200 group-hover:opacity-100',
-                styles.rail
-              )}
-              aria-hidden="true"
-            />
             <span
               className={cn(
                 'flex h-10 w-10 shrink-0 items-center justify-center rounded-md ring-1 transition-all duration-200 group-hover:scale-105',

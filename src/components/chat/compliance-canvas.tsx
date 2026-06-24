@@ -135,7 +135,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         icon: 'text-red-600 dark:text-red-300',
       },
       neutral: {
-        section: 'bg-white border-slate-200 dark:border-neutral-700 dark:bg-neutral-800',
+        section: 'bg-white border-slate-200 dark:border-iris-300/15 dark:bg-[#241f32]',
       },
     } as const
 
@@ -253,7 +253,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return (
           <div
             key={index}
-            className="my-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed text-slate-700 shadow-sm dark:border-neutral-600 dark:bg-neutral-900/45 dark:text-slate-200"
+            className="my-2 flex items-start gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed text-slate-700 shadow-sm dark:border-iris-300/15 dark:bg-[#171322]/60 dark:text-slate-200"
           >
             <input
               type="checkbox"
@@ -262,7 +262,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               disabled
               tabIndex={-1}
               aria-label={`Checklist item: ${checklistText}`}
-              className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-neutral-500 dark:bg-neutral-950 dark:accent-iris-300"
+              className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-iris-300/30 dark:bg-[#171322] dark:accent-iris-300"
             />
             <span>{checklistText}</span>
           </div>
@@ -301,13 +301,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       }
 
       if (trimmed === '---') {
-        return <hr key={index} className="my-6 border-slate-200 dark:border-neutral-700" />
+        return <hr key={index} className="my-6 border-slate-200 dark:border-iris-300/15" />
       }
 
       if (line.includes('|')) {
         const cells = line.split('|').filter(cell => cell.trim())
         return (
-          <div key={index} className="flex gap-2 border-b border-slate-200 py-2 dark:border-neutral-700">
+          <div key={index} className="flex gap-2 border-b border-slate-200 py-2 dark:border-iris-300/15">
             {cells.map((cell, i) => (
               <div key={i} className="flex-1 text-sm text-slate-700 dark:text-slate-300">{cell.trim()}</div>
             ))}
@@ -359,13 +359,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
   return (
     <div 
-      className="relative flex h-full border-l border-slate-200 bg-white dark:border-neutral-700 dark:bg-neutral-900"
+      className="relative flex h-full border-l border-slate-200 bg-white dark:border-iris-300/15 dark:bg-[#171322]"
       role="region"
       aria-label="Compliance report viewer"
     >
       {/* Version History Sidebar */}
       {showHistory && (
-        <div className="w-64 border-r border-slate-200 bg-slate-50 dark:border-neutral-700 dark:bg-neutral-900">
+        <div className="w-64 border-r border-slate-200 bg-slate-50 dark:border-iris-300/15 dark:bg-[#171322]">
           <VersionHistorySidebar />
         </div>
       )}
@@ -373,7 +373,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       {/* Main Canvas */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Canvas Header */}
-        <header className="border-b border-slate-200 bg-white px-4 py-4 dark:border-neutral-700 dark:bg-neutral-900">
+        <header className="border-b border-slate-200 bg-white px-4 py-4 dark:border-iris-300/15 dark:bg-[#1a1625]">
           <div className="flex flex-col gap-3">
             <div className="flex min-w-0 items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-iris-50 text-iris-700 dark:bg-iris-400/10 dark:text-iris-200">
@@ -386,7 +386,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                     Compliance Report
                   </h2>
                   {currentVersion && (
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1 font-body text-xs font-semibold text-neutral-600 dark:bg-neutral-800 dark:text-slate-300">
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 font-body text-xs font-semibold text-neutral-600 dark:bg-[#241f32] dark:text-slate-300">
                       {currentVersion.label}
                     </span>
                   )}
@@ -409,14 +409,14 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 dark:border-neutral-700 dark:bg-neutral-800/80">
+          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 dark:border-iris-300/15 dark:bg-[#241f32]/80">
             {/* History Toggle */}
             <Button
               onClick={() => setShowHistory(!showHistory)}
               variant="outline"
               size="sm"
               className={cn(
-                'h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:focus-visible:ring-offset-neutral-800',
+                'h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:focus-visible:ring-offset-[#241f32]',
                 showHistory && 'border-iris-300 bg-iris-50 text-iris-700 dark:border-iris-400/50 dark:bg-iris-400/10 dark:text-iris-200'
               )}
               aria-label={showHistory ? 'Hide version history' : 'Show version history'}
@@ -432,7 +432,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               variant="outline"
               size="sm"
               className={cn(
-                'h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:focus-visible:ring-offset-neutral-800',
+                'h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:focus-visible:ring-offset-[#241f32]',
                 isEditMode && 'border-iris-300 bg-iris-50 text-iris-700 dark:border-iris-400/50 dark:bg-iris-400/10 dark:text-iris-200'
               )}
               aria-label={isEditMode ? 'Switch to preview mode' : 'Switch to edit mode'}
@@ -457,7 +457,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 onClick={handleSave}
                 variant="default"
                 size="sm"
-                className="h-9 gap-2 bg-primary hover:bg-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-800"
+                className="h-9 gap-2 bg-primary hover:bg-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Save changes as new version"
                 disabled={editContent === currentVersion?.content}
               >
@@ -472,7 +472,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 onClick={() => setShowDownloadMenu(!showDownloadMenu)}
                 variant="outline"
                 size="sm"
-                className="h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:focus-visible:ring-offset-neutral-800"
+                className="h-9 gap-2 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Download compliance report"
                 aria-expanded={showDownloadMenu}
                 aria-haspopup="true"
@@ -494,13 +494,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                   
                   {/* Dropdown Menu */}
                   <div 
-                    className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-slate-200 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-900 dark:shadow-black/30"
+                    className="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-slate-200 bg-white shadow-lg dark:border-iris-300/15 dark:bg-[#171322] dark:shadow-iris-950/30"
                     role="menu"
                     aria-label="Download format options"
                   >
                     <button
                       onClick={handleDownloadMarkdown}
-                      className="flex w-full items-center gap-2 rounded-t-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-neutral-800"
+                      className="flex w-full items-center gap-2 rounded-t-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50 active:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
                       role="menuitem"
                       disabled={isDownloading}
                     >
@@ -509,7 +509,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                     </button>
                     <button
                       onClick={handleDownloadDocx}
-                      className="flex w-full items-center gap-2 rounded-b-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-neutral-800"
+                      className="flex w-full items-center gap-2 rounded-b-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-slate-50 active:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
                       role="menuitem"
                       disabled={isDownloading}
                     >
@@ -534,7 +534,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               id="markdown-editor"
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
-              className="h-full w-full resize-none rounded-lg border-2 border-slate-200 bg-white p-4 font-mono text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:focus:ring-offset-neutral-900"
+              className="h-full w-full resize-none rounded-lg border-2 border-slate-200 bg-white p-4 font-mono text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:focus:ring-offset-[#171322]"
               placeholder="Enter markdown content..."
               aria-label="Markdown editor"
               spellCheck="false"
@@ -551,7 +551,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             {!displayContent && (
               <div className="flex flex-col items-center justify-center h-full space-y-4">
                 <div className="relative">
-                  <div className="h-16 w-16 rounded-full border-4 border-slate-200 dark:border-neutral-700"></div>
+                  <div className="h-16 w-16 rounded-full border-4 border-slate-200 dark:border-iris-300/15"></div>
                   <div className="absolute top-0 left-0 h-16 w-16 rounded-full border-4 border-iris-600 border-t-transparent animate-spin"></div>
                 </div>
                 <div className="text-center space-y-2">
@@ -585,7 +585,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                     <h4 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Related Documents:</h4>
                     <div className="space-y-2">
                       {deepSearchResult.related_documents.map((doc, idx) => (
-                        <div key={idx} className="rounded border border-iris-200 bg-white p-3 dark:border-iris-400/30 dark:bg-neutral-800">
+                        <div key={idx} className="rounded border border-iris-200 bg-white p-3 dark:border-iris-400/30 dark:bg-[#241f32]">
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex-1">
                               <p className="text-sm font-medium text-slate-950 dark:text-slate-100">{doc.title}</p>
@@ -623,7 +623,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                     <h4 className="mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">Cross References:</h4>
                     <div className="flex flex-wrap gap-2">
                       {deepSearchResult.cross_references.map((ref, idx) => (
-                        <span key={idx} className="rounded border border-iris-200 bg-white px-2 py-1 text-xs text-slate-700 dark:border-iris-400/30 dark:bg-neutral-800 dark:text-slate-300">
+                        <span key={idx} className="rounded border border-iris-200 bg-white px-2 py-1 text-xs text-slate-700 dark:border-iris-400/30 dark:bg-[#241f32] dark:text-slate-300">
                           {ref}
                         </span>
                       ))}
@@ -642,7 +642,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
             {/* RAG Metadata Section */}
             {displayContent && ragResponse && (
-              <div className="mb-6 border-b border-slate-200 pb-4 dark:border-neutral-700">
+              <div className="mb-6 border-b border-slate-200 pb-4 dark:border-iris-300/15">
                 <div className="flex items-center gap-2 mb-3">
                   <Search className="h-4 w-4 text-iris-600 dark:text-iris-200" aria-hidden="true" />
                   <h3 className="font-display text-sm font-semibold text-neutral-900 dark:text-slate-100">

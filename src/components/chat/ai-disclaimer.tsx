@@ -13,7 +13,7 @@ export function AIDisclaimer() {
 
   return (
     <aside
-      className="absolute bottom-4 right-4 z-30 w-[min(32rem,calc(100%-2rem))] rounded-xl border border-amber-200 bg-amber-50/95 p-3 shadow-xl shadow-slate-900/15 backdrop-blur dark:border-amber-400/30 dark:bg-amber-950/90 dark:shadow-black/30"
+      className="absolute bottom-4 right-4 z-30 w-[min(32rem,calc(100%-2rem))] rounded-xl border border-amber-200 bg-amber-50/95 p-3 shadow-xl shadow-slate-900/15 backdrop-blur dark:border-amber-400/30 dark:bg-amber-950/90 dark:shadow-iris-950/30"
       aria-label="Generated legal analysis notice"
       role="region"
     >

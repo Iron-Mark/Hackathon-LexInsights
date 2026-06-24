@@ -107,8 +107,8 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[88dvh] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden border-slate-200 bg-white p-0 dark:border-neutral-700 dark:bg-neutral-900 sm:max-w-2xl lg:max-w-[min(calc(100vw-2rem),60rem)] xl:max-w-6xl">
-        <DialogHeader className="shrink-0 border-b border-slate-200 bg-slate-50 px-5 py-5 dark:border-neutral-700 dark:bg-neutral-800 sm:px-7">
+      <DialogContent className="flex max-h-[88dvh] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden border-slate-200 bg-white p-0 dark:border-iris-300/15 dark:bg-[#171322] sm:max-w-2xl lg:max-w-[min(calc(100vw-2rem),60rem)] xl:max-w-6xl">
+        <DialogHeader className="shrink-0 border-b border-slate-200 bg-slate-50 px-5 py-5 dark:border-iris-300/15 dark:bg-[#1a1625] sm:px-7">
           <div className="flex items-start gap-3 pr-8">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-iris-100 text-iris-700 dark:bg-iris-400/15 dark:text-iris-200">
               <BookOpen className="h-5 w-5" aria-hidden="true" />
@@ -120,7 +120,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
               <DialogDescription className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
                 Official sources for Philippine laws, regulations, jurisprudence, and compliance information.
               </DialogDescription>
-              <div className="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-iris-700 shadow-sm dark:bg-neutral-900 dark:text-iris-200">
+              <div className="mt-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-iris-700 shadow-sm dark:bg-[#241f32] dark:text-iris-200">
                 {GOVERNMENT_RESOURCES.length} official sources
               </div>
             </div>
@@ -130,7 +130,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7">
           <div className="grid gap-6 lg:grid-cols-[190px_1fr]">
             <aside className="hidden lg:block">
-              <div className="sticky top-0 rounded-xl border border-slate-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
+              <div className="sticky top-0 rounded-xl border border-slate-200 bg-white p-4 dark:border-iris-300/15 dark:bg-[#241f32]">
                 <p className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Categories</p>
                 <div className="mt-3 space-y-2">
                   {resourceGroups.map(({ category, resources }) => (
@@ -139,7 +139,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                       className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm text-slate-600 dark:text-slate-300"
                     >
                       <span>{category}</span>
-                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500 dark:bg-neutral-700 dark:text-slate-300">
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-500 dark:bg-iris-300/12 dark:text-slate-300">
                         {resources.length}
                       </span>
                     </div>
@@ -158,7 +158,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                     >
                       {category}
                     </h3>
-                    <div className="h-px flex-1 bg-slate-200 dark:bg-neutral-700" />
+                    <div className="h-px flex-1 bg-slate-200 dark:bg-iris-300/15" />
                   </div>
 
                   <div className="grid gap-3 xl:grid-cols-2">
@@ -166,7 +166,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                       <button
                         key={resource.id}
                         onClick={() => handleResourceClick(resource.url)}
-                        className="group rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-iris-400/50 dark:focus-visible:ring-offset-neutral-900"
+                        className="group rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md active:translate-y-0 active:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:hover:border-iris-300/50 dark:hover:bg-[#2b2438] dark:focus-visible:ring-offset-[#171322]"
                         type="button"
                       >
                         <div className="flex items-start gap-3">
@@ -197,7 +197,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-400 sm:px-7">
+        <div className="shrink-0 border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-500 dark:border-iris-300/15 dark:bg-[#1a1625] dark:text-slate-400 sm:px-7">
           <p className="max-w-4xl">
             <strong className="text-slate-700 dark:text-slate-200">Note:</strong> These are official Philippine government websites.
             Always verify information with the relevant authorities for legal compliance.

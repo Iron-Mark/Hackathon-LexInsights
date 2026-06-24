@@ -69,7 +69,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[80vh] max-w-4xl flex-col overflow-hidden dark:border-neutral-700 dark:bg-neutral-900">
+      <DialogContent className="flex max-h-[80vh] max-w-4xl flex-col overflow-hidden dark:border-iris-300/15 dark:bg-[#171322]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 dark:text-slate-100">
             <Search className="h-5 w-5 text-iris-600 dark:text-iris-200" />
@@ -91,7 +91,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
             {searchQuery && (
               <button
                 onClick={handleClear}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:text-slate-500 dark:hover:bg-iris-300/12 dark:hover:text-iris-200"
                 aria-label="Clear search"
                 type="button"
               >
@@ -120,7 +120,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                 <div
                   key={chat.id}
                   onClick={() => handleChatClick(chat.id)}
-                  className="group cursor-pointer rounded-lg border border-slate-200 p-4 transition-colors hover:border-iris-300 hover:bg-iris-50/50 dark:border-neutral-700 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10"
+                  className="group cursor-pointer rounded-lg border border-slate-200 p-4 transition-all hover:border-iris-300 hover:bg-iris-50/50 active:scale-[0.99] dark:border-iris-300/15 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10"
                 >
                   <div className="flex items-start gap-3">
                     <MessageSquare className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-500" />

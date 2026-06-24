@@ -196,18 +196,24 @@
 }
 
 .dark {
-  /* Base Colors - Dark Mode with Neutral Palette */
+  /* Dark mode uses a muted iris-charcoal palette so the app keeps the brand tone without hurting contrast. */
+  --color-neutral-900: #171322;
+  --color-neutral-800: #241f32;
+  --color-neutral-700: #39334a;
+  --color-neutral-600: #514963;
+  --color-neutral-500: #746a86;
+  --color-neutral-400: #aaa1bb;
+  --color-neutral-300: #cbc4d8;
+
+  /* Base Colors - Dark Mode with Purple Charcoal Palette */
   --background: var(--color-neutral-900);
-  /* neutral-900 */
   --foreground: #F8FAFC;
   /* Light foreground */
 
   /* Card & Popover */
   --card: var(--color-neutral-800);
-  /* neutral-800 */
   --card-foreground: #F8FAFC;
   --popover: var(--color-neutral-800);
-  /* neutral-800 */
   --popover-foreground: #F8FAFC;
 
   /* Primary - Lighter Blue Iris for dark mode (WCAG AA compliant) */
@@ -218,14 +224,11 @@
 
   /* Secondary */
   --secondary: var(--color-neutral-700);
-  /* neutral-700 */
   --secondary-foreground: #F8FAFC;
 
   /* Muted */
   --muted: var(--color-neutral-800);
-  /* neutral-800 */
   --muted-foreground: var(--color-neutral-400);
-  /* neutral-400 */
 
   /* Accent - Brighter for dark mode */
   --accent: var(--color-iris-300);
@@ -240,9 +243,7 @@
 
   /* Borders & Inputs */
   --border: var(--color-neutral-700);
-  /* neutral-700 */
   --input: var(--color-neutral-700);
-  /* neutral-700 */
   --ring: var(--color-iris-400);
   /* iris-400 */
 
@@ -260,17 +261,14 @@
 
   /* Sidebar */
   --sidebar: var(--color-neutral-800);
-  /* neutral-800 */
   --sidebar-foreground: #F8FAFC;
   --sidebar-primary: var(--color-iris-400);
   /* iris-400 */
   --sidebar-primary-foreground: var(--color-neutral-900);
   /* neutral-900 */
   --sidebar-accent: var(--color-neutral-700);
-  /* neutral-700 */
   --sidebar-accent-foreground: #F8FAFC;
   --sidebar-border: var(--color-neutral-700);
-  /* neutral-700 */
   --sidebar-ring: var(--color-iris-400);
   /* iris-400 */
 }
@@ -294,6 +292,13 @@
     font-feature-settings: 'kern' 1, 'liga' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  html.dark,
+  html.dark body {
+    background:
+      linear-gradient(180deg, rgba(124, 58, 237, 0.14) 0%, rgba(23, 19, 34, 0) 24rem),
+      linear-gradient(135deg, #171322 0%, #211a35 46%, #120d1f 100%);
   }
 
   button:not(:disabled),

@@ -19,13 +19,13 @@ function getStageIcon(stage: string, status: string) {
 
   switch (stage) {
     case 'query_generation':
-      return <FileText className="h-4 w-4 text-slate-400" />
+      return <FileText className="h-4 w-4 text-slate-400 dark:text-iris-100/55" />
     case 'search':
-      return <Search className="h-4 w-4 text-slate-400" />
+      return <Search className="h-4 w-4 text-slate-400 dark:text-iris-100/55" />
     case 'summarization':
-      return <FileText className="h-4 w-4 text-slate-400" />
+      return <FileText className="h-4 w-4 text-slate-400 dark:text-iris-100/55" />
     default:
-      return <Loader2 className="h-4 w-4 text-slate-400" />
+      return <Loader2 className="h-4 w-4 text-slate-400 dark:text-iris-100/55" />
   }
 }
 
@@ -45,7 +45,7 @@ function getStageLabel(stage: string): string {
 export function RAGProgress({ events, isComplete }: RAGProgressProps) {
   if (events.length === 0 && !isComplete) {
     return (
-      <div className="flex items-center gap-2 text-sm text-neutral-600">
+      <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-slate-300">
         <Loader2 className="h-4 w-4 animate-spin" />
         <span>Initializing...</span>
       </div>
@@ -62,7 +62,7 @@ export function RAGProgress({ events, isComplete }: RAGProgressProps) {
           aria-live="polite"
         >
           {getStageIcon(event.stage, event.status)}
-          <span className="text-neutral-700">
+          <span className="text-neutral-700 dark:text-slate-300">
             {getStageLabel(event.stage)}
             {event.data?.queries_generated && ` (${event.data.queries_generated} queries)`}
             {event.data?.documents_found && ` (${event.data.documents_found} documents)`}

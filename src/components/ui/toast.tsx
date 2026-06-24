@@ -129,7 +129,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       </div>
       <button
         onClick={() => onRemove(toast.id)}
-        className="flex-shrink-0 rounded p-1 hover:bg-black/5 transition-colors"
+        className="flex-shrink-0 rounded p-1 transition-colors hover:bg-slate-950/5 dark:hover:bg-iris-300/12"
         aria-label="Close notification"
       >
         <X className="h-4 w-4" />

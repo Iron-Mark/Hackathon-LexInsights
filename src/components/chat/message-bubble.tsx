@@ -215,12 +215,13 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
   return (
     <div
+      data-chat-content
       data-revealing={isRevealing ? 'true' : 'false'}
       aria-busy={isRevealing}
       className={`mb-4 min-w-0 rounded-xl p-4 transition-all sm:p-5 ${
         isUser
-          ? 'ml-auto max-w-[90%] border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-400/25 dark:from-iris-400/15 dark:via-neutral-800 dark:to-purple-400/10 dark:text-slate-100 dark:shadow-black/20'
-          : 'mr-auto w-full max-w-full border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg sm:max-w-[85%] lg:max-w-[90%] dark:border-neutral-700 dark:bg-neutral-800 dark:text-slate-100 dark:shadow-black/30'
+          ? 'ml-auto max-w-[90%] border border-iris-100 bg-gradient-to-br from-iris-50 via-white to-purple-50 text-slate-900 shadow-sm hover:shadow-md sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/20 dark:from-iris-400/12 dark:via-[#241f32] dark:to-[#201a2d] dark:text-slate-100 dark:shadow-iris-950/20'
+          : 'mr-auto w-full max-w-full border-2 border-slate-200 bg-white text-slate-900 shadow-md hover:shadow-lg sm:max-w-[85%] lg:max-w-[90%] dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/30'
       }`}
     >
       {isUser ? (
@@ -236,7 +237,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
             components={{
               // Headings
               h1: (props) => (
-                <h1 className="mb-4 mt-6 border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 dark:border-neutral-700 dark:text-slate-100" {...stripMarkdownNode(props)} />
+                <h1 className="mb-4 mt-6 border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 dark:border-iris-300/15 dark:text-slate-100" {...stripMarkdownNode(props)} />
               ),
               h2: (props) => (
                 <h2 className="mb-3 mt-5 text-xl font-bold text-slate-800 dark:text-slate-100" {...stripMarkdownNode(props)} />
@@ -276,7 +277,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                     className={cn(
                       'leading-relaxed text-slate-700 dark:text-slate-300',
                       isTaskItem &&
-                        'flex gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed shadow-sm dark:border-neutral-600 dark:bg-neutral-900/45 dark:text-slate-200',
+                        'flex gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed shadow-sm dark:border-iris-300/15 dark:bg-[#171322]/60 dark:text-slate-200',
                       className
                     )}
                     {...domProps}
@@ -289,7 +290,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
                 return (
                   <input
                     className={cn(
-                      'mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-neutral-500 dark:bg-neutral-950 dark:accent-iris-300',
+                      'mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-iris-300/30 dark:bg-[#171322] dark:accent-iris-300',
                       className
                     )}
                     {...domProps}
@@ -304,9 +305,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               code: (props: MarkdownCodeProps) => {
                 const { inline, ...codeProps } = stripMarkdownNode(props)
                 return inline ? (
-                  <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-iris-700 dark:bg-neutral-900 dark:text-iris-200" {...codeProps} />
+                  <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-sm text-iris-700 dark:bg-[#171322] dark:text-iris-200" {...codeProps} />
                 ) : (
-                  <code className="my-3 block overflow-x-auto rounded-lg bg-slate-900 p-4 font-mono text-sm text-slate-100 dark:bg-black/40" {...codeProps} />
+                  <code className="my-3 block overflow-x-auto rounded-lg bg-slate-900 p-4 font-mono text-sm text-slate-100 dark:bg-[#171322]/80" {...codeProps} />
                 )
               },
               // Links
@@ -315,23 +316,23 @@ export function MessageBubble({ message }: MessageBubbleProps) {
               ),
               // Blockquotes
               blockquote: (props) => (
-                <blockquote className="my-3 rounded-r border-l-4 border-iris-500 bg-slate-50 py-2 pl-4 italic text-slate-600 dark:bg-neutral-900 dark:text-slate-300" {...stripMarkdownNode(props)} />
+                <blockquote className="my-3 rounded-r border-l-4 border-iris-500 bg-slate-50 py-2 pl-4 italic text-slate-600 dark:bg-[#171322]/70 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
               // Horizontal rule
               hr: (props) => (
-                <hr className="my-6 border-slate-300 dark:border-neutral-700" {...stripMarkdownNode(props)} />
+                <hr className="my-6 border-slate-300 dark:border-iris-300/15" {...stripMarkdownNode(props)} />
               ),
               // Tables
               table: (props) => (
                 <div className="overflow-x-auto my-4">
-                  <table className="min-w-full border-collapse border border-slate-300 dark:border-neutral-700" {...stripMarkdownNode(props)} />
+                  <table className="min-w-full border-collapse border border-slate-300 dark:border-iris-300/15" {...stripMarkdownNode(props)} />
                 </div>
               ),
               th: (props) => (
-                <th className="border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900 dark:border-neutral-700 dark:bg-neutral-900 dark:text-slate-100" {...stripMarkdownNode(props)} />
+                <th className="border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-100" {...stripMarkdownNode(props)} />
               ),
               td: (props) => (
-                <td className="border border-slate-300 px-4 py-2 text-slate-700 dark:border-neutral-700 dark:text-slate-300" {...stripMarkdownNode(props)} />
+                <td className="border border-slate-300 px-4 py-2 text-slate-700 dark:border-iris-300/15 dark:text-slate-300" {...stripMarkdownNode(props)} />
               ),
             }}
           >
@@ -342,10 +343,10 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       
       {/* Action Buttons - Only for assistant messages */}
       {!isUser && !isRevealing && (
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-slate-200 pt-3 sm:gap-2 dark:border-neutral-700">
+        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-slate-200 pt-3 sm:gap-2 dark:border-iris-300/15">
           <button
             onClick={handleCopy}
-            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
+            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
             aria-label="Copy to clipboard"
             type="button"
           >
@@ -375,7 +376,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 
           <button
             onClick={handleDownloadMarkdown}
-            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
+            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
             aria-label="Download as Markdown"
             type="button"
           >
@@ -387,7 +388,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           <button
             onClick={handleDownloadWord}
             disabled={isExportingWord}
-            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-neutral-800"
+            className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-slate-600 transition-all duration-150 hover:bg-iris-50 hover:text-iris-600 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100 dark:text-slate-400 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
             aria-label={isExportingWord ? 'Exporting Word document' : 'Download as Word (.docx)'}
             type="button"
           >
