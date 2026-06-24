@@ -9,7 +9,7 @@ This checkpoint is the handoff record for pausing active development after the c
 
 - Guest-first chat experience with sign-in and sign-up available without gating exploration.
 - Clerk authentication opened in modal-style entry points instead of redirecting away from the app surface.
-- Providerless local legal research for demo-ready Philippine law coverage, including RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, RA 11032, and related scope.
+- Providerless local legal research for demo-ready Philippine law coverage, including privacy, cybercrime, child online safety, AML, solid waste, procurement, government service delivery, competition, financial consumer protection, hazardous substances, SIM registration, customs, tax administration, identity, and protected-area scope.
 - Chat UX polish: realistic streaming, subtler message surfaces, mobile-safe composer, mode selector beside upload, scroll controls, improved sidebar behavior, and responsive report cards.
 - Compliance report rendering polish: practical checklist items render as checkbox-style rows, query echo removed from assistant briefs, `.docx` Word download labeling, and mobile action wrapping.
 - Dark-mode contrast and brand-logo cleanup across header, sidebar, dialogs, and app icons.

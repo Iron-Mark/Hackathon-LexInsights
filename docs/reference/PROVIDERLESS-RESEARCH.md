@@ -25,14 +25,14 @@ npm run check:document-extraction:self-test
 
 The self-test compiles [local-legal-research.ts](../../src/lib/services/local-legal-research.ts) with TypeScript and executes it in Node. It verifies:
 
-- Corpus coverage for core statutes, including procurement, government service delivery, cybercrime, and consumer protection.
+- Corpus coverage for core statutes, including procurement, government service delivery, cybercrime, consumer protection, competition, financial consumer protection, hazardous substances, SIM registration, customs, tax administration, PhilSys, and protected areas.
 - RA 9003, RA 11058, and RA 10173 research matching.
-- RA 12009, RA 11032, RA 10175, and RA 7394 research matching.
+- RA 12009, RA 11032, RA 10175, RA 7394, RA 10667, RA 11765, RA 6969, RA 11285, RA 11934, RA 9995, RA 10627, RA 10863, RA 11976, RA 11055, and RA 11038 research matching.
 - Common citation formats such as `R.A. No. 10173` and `RA No. 8792`.
 - Deep Search providerless metadata.
 - No-result behavior for unrelated queries.
 - Draft warnings when a cited Republic Act is outside the bundled local corpus.
-- Draft warnings for thin procurement, service-delivery, cyber incident, and consumer-protection controls.
+- Draft warnings for thin procurement, service-delivery, cyber incident, consumer-protection, financial-consumer, hazardous-waste, competition, and SIM/mobile-number controls.
 - Red findings for risky privacy and penalty drafting.
 - Green findings for a stronger solid-waste ordinance draft.
 - Local health-check metadata.
@@ -68,7 +68,7 @@ The providerless draft checker uses structural and topic-specific heuristics:
 - Prioritizes explicitly cited local-corpus authorities in finding references.
 - Flags amber findings when a draft cites a Republic Act that is not in the bundled local corpus.
 - Flags red findings when penalties appear without notice, hearing, appeal, or reconsideration safeguards.
-- Adds topic checks for privacy, solid waste, workplace safety, fire safety, DRRM, water quality, air quality, digital records, procurement, government service delivery, cyber incidents, and consumer protection.
+- Adds topic checks for privacy, solid waste, workplace safety, fire safety, DRRM, water quality, air quality, digital records, procurement, government service delivery, cyber incidents, consumer protection, competition, financial consumers, hazardous substances, energy efficiency, SIM and mobile-number data, private image abuse, harassment, bullying, customs, tax administration, PhilSys identity handling, and protected areas.
 - Computes a conservative compliance score from green, amber, and red findings.
 
 This catches common drafting gaps. It does not determine legality, validity, or enforceability.
@@ -92,6 +92,18 @@ The local corpus intentionally stays small and auditable:
 - [RA 11032 - Ease of Doing Business and Efficient Government Service Delivery Act of 2018](https://lawphil.net/statutes/repacts/ra2018/ra_11032_2018.html)
 - [RA 10175 - Cybercrime Prevention Act of 2012](https://lawphil.net/statutes/repacts/ra2012/ra_10175_2012.html)
 - [RA 7394 - Consumer Act of the Philippines](https://lawphil.net/statutes/repacts/ra1992/ra_7394_1992.html)
+- [RA 10667 - Philippine Competition Act](https://lawphil.net/statutes/repacts/ra2015/ra_10667_2015.html)
+- [RA 11765 - Financial Products and Services Consumer Protection Act](https://lawphil.net/statutes/repacts/ra2022/ra_11765_2022.html)
+- [RA 6969 - Toxic Substances and Hazardous and Nuclear Wastes Control Act of 1990](https://lawphil.net/statutes/repacts/ra1990/ra_6969_1990.html)
+- [RA 11285 - Energy Efficiency and Conservation Act](https://lawphil.net/statutes/repacts/ra2019/ra_11285_2019.html)
+- [RA 11934 - SIM Registration Act](https://lawphil.net/statutes/repacts/ra2022/ra_11934_2022.html)
+- [RA 9995 - Anti-Photo and Video Voyeurism Act of 2009](https://lawphil.net/statutes/repacts/ra2010/ra_9995_2010.html)
+- [RA 7877 - Anti-Sexual Harassment Act of 1995](https://lawphil.net/statutes/repacts/ra1995/ra_7877_1995.html)
+- [RA 10627 - Anti-Bullying Act of 2013](https://lawphil.net/statutes/repacts/ra2013/ra_10627_2013.html)
+- [RA 10863 - Customs Modernization and Tariff Act](https://lawphil.net/statutes/repacts/ra2016/ra_10863_2016.html)
+- [RA 11976 - Ease of Paying Taxes Act](https://lawphil.net/statutes/repacts/ra2024/ra_11976_2024.html)
+- [RA 11055 - Philippine Identification System Act](https://lawphil.net/statutes/repacts/ra2018/ra_11055_2018.html)
+- [RA 11038 - Expanded National Integrated Protected Areas System Act of 2018](https://lawphil.net/statutes/repacts/ra2018/ra_11038_2018.html)
 
 ## Limits
 

@@ -25,6 +25,16 @@ type LocalLegalDocument = {
   commonGaps: string[]
 }
 
+type LocalComplianceFramework = {
+  id: string
+  title: string
+  triggers: string[]
+  lawIds: string[]
+  summary: string
+  sequence: string[]
+  checkpoints: string[]
+}
+
 type RankedDocument = {
   document: LocalLegalDocument
   score: number
@@ -786,6 +796,460 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'Enforcement duties are created without redress, correction, or regulator coordination.',
     ],
   },
+  {
+    id: 'ra-10667',
+    statute: 'RA 10667',
+    title: 'Republic Act No. 10667',
+    shortTitle: 'Philippine Competition Act',
+    year: 2015,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2015/ra_10667_2015.html',
+    aliases: ['ra 10667', 'republic act 10667', 'philippine competition act', 'competition law', 'antitrust'],
+    topics: ['competition', 'antitrust', 'market conduct', 'mergers', 'cartel', 'abuse of dominance'],
+    keywords: [
+      'anti competitive agreement',
+      'cartel',
+      'price fixing',
+      'bid rigging',
+      'market allocation',
+      'abuse of dominant position',
+      'merger review',
+      'pcc',
+      'competition compliance',
+    ],
+    summary:
+      'A competition policy statute prohibiting anti-competitive agreements, abuse of dominant position, and anti-competitive mergers or acquisitions, with Philippine Competition Commission oversight.',
+    obligations: [
+      'Check whether pricing, bidding, exclusivity, market allocation, supplier restrictions, or platform rules could restrain competition.',
+      'Separate legitimate quality, safety, procurement, or service standards from rules that favor particular suppliers or restrict market entry.',
+      'For mergers, joint ventures, concessions, or exclusive arrangements, include competition review, conflict checks, and documentation of objective criteria.',
+      'Avoid creating local licensing or procurement preferences that function like cartel, bid-rigging, or abuse-of-dominance controls.',
+    ],
+    commonGaps: [
+      'Exclusive supplier or distributor language lacks objective justification.',
+      'Procurement or licensing rules may restrict entry without competition review.',
+      'Price, territory, or market coordination risks are not addressed.',
+    ],
+  },
+  {
+    id: 'ra-11765',
+    statute: 'RA 11765',
+    title: 'Republic Act No. 11765',
+    shortTitle: 'Financial Products and Services Consumer Protection Act',
+    year: 2022,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2022/ra_11765_2022.html',
+    aliases: [
+      'ra 11765',
+      'republic act 11765',
+      'financial products and services consumer protection act',
+      'financial consumer protection',
+      'financial services consumer protection',
+    ],
+    topics: ['financial consumer protection', 'lending', 'payments', 'fraud', 'complaints', 'client data'],
+    keywords: [
+      'financial consumer',
+      'financial service provider',
+      'disclosure',
+      'transparent pricing',
+      'unauthorized transaction',
+      'fraud',
+      'complaint handling',
+      'cooling off',
+      'client data',
+      'market conduct',
+    ],
+    summary:
+      'A financial consumer protection framework covering market conduct, disclosure, responsible pricing, fraud response, complaint handling, and protection of financial consumer assets and data.',
+    obligations: [
+      'For lending, payment, wallet, remittance, insurance, investment, or cooperative credit workflows, state clear disclosures, fees, terms, and complaint routes.',
+      'Include controls for fraud, unauthorized transactions, client-data protection, dispute resolution, and timely consumer assistance.',
+      'Separate financial consumer rights, provider responsibilities, regulator coordination, and recordkeeping for complaints or remediation.',
+      'Avoid vague consent, hidden fees, one-sided changes, or complaint rules that leave consumers without escalation.',
+    ],
+    commonGaps: [
+      'Fees, rates, penalties, or product risks are not clearly disclosed.',
+      'Unauthorized transactions and fraud complaints have no response timeline.',
+      'Financial consumer data and complaint records are handled without accountability controls.',
+    ],
+  },
+  {
+    id: 'ra-6969',
+    statute: 'RA 6969',
+    title: 'Republic Act No. 6969',
+    shortTitle: 'Toxic Substances and Hazardous and Nuclear Wastes Control Act of 1990',
+    year: 1990,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1990/ra_6969_1990.html',
+    aliases: [
+      'ra 6969',
+      'republic act 6969',
+      'toxic substances and hazardous and nuclear wastes control act',
+      'hazardous waste law',
+      'toxic substances control',
+    ],
+    topics: ['environment', 'hazardous waste', 'toxic substances', 'chemicals', 'waste transport', 'denr'],
+    keywords: [
+      'chemical',
+      'toxic substance',
+      'hazardous waste',
+      'nuclear waste',
+      'storage',
+      'transport',
+      'treatment',
+      'disposal',
+      'manifest',
+      'denr',
+      'emb',
+    ],
+    summary:
+      'A chemicals and hazardous-waste control law addressing importation, manufacture, processing, handling, storage, transport, treatment, and disposal of toxic substances and hazardous or nuclear wastes.',
+    obligations: [
+      'Identify covered chemicals, toxic substances, hazardous wastes, handlers, generators, transporters, storage areas, and disposal routes.',
+      'Require permits or registrations, labeling, manifests, emergency response, worker safety, spill reporting, and DENR or EMB coordination.',
+      'Separate ordinary solid waste from hazardous waste, special waste, medical waste, chemical waste, and prohibited nuclear waste.',
+      'Avoid authorizing dumping, storage, transfer, or disposal without chain-of-custody and approved treatment or disposal controls.',
+    ],
+    commonGaps: [
+      'Hazardous waste is mentioned but no generator, transporter, storage, treatment, or manifest workflow is stated.',
+      'Chemical handling lacks labeling, safety, spill, or emergency controls.',
+      'DENR or EMB coordination is missing for regulated toxic substances.',
+    ],
+  },
+  {
+    id: 'ra-11285',
+    statute: 'RA 11285',
+    title: 'Republic Act No. 11285',
+    shortTitle: 'Energy Efficiency and Conservation Act',
+    year: 2019,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2019/ra_11285_2019.html',
+    aliases: ['ra 11285', 'republic act 11285', 'energy efficiency and conservation act', 'energy efficiency', 'energy conservation'],
+    topics: ['energy efficiency', 'energy conservation', 'buildings', 'energy audit', 'energy management'],
+    keywords: [
+      'energy audit',
+      'energy conservation officer',
+      'energy management',
+      'designated establishment',
+      'building energy',
+      'fuel efficiency',
+      'doe',
+      'energy report',
+      'efficiency standard',
+    ],
+    summary:
+      'A framework for energy efficiency and conservation across public and private sectors, including energy management, conservation plans, audits, reporting, and efficient technologies.',
+    obligations: [
+      'Check whether facilities, buildings, fleets, equipment, or public offices need energy-efficiency targets, audits, or conservation plans.',
+      'Assign an energy conservation officer or responsible unit where the activity is energy-intensive or facility-based.',
+      'Include measurement, reporting, procurement of efficient equipment, maintenance, and DOE-facing coordination where relevant.',
+      'Avoid generic sustainability commitments without baseline energy use, owner, timetable, and verification method.',
+    ],
+    commonGaps: [
+      'Energy-saving measures have no baseline, audit, responsible officer, or reporting cadence.',
+      'Equipment procurement does not consider efficiency standards or lifecycle operating cost.',
+      'Public building or facility duties lack monitoring and maintenance accountability.',
+    ],
+  },
+  {
+    id: 'ra-11934',
+    statute: 'RA 11934',
+    title: 'Republic Act No. 11934',
+    shortTitle: 'SIM Registration Act',
+    year: 2022,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2022/ra_11934_2022.html',
+    aliases: ['ra 11934', 'republic act 11934', 'sim registration act', 'sim card registration', 'subscriber identity module registration'],
+    topics: ['telecommunications', 'sim registration', 'identity verification', 'privacy', 'fraud prevention'],
+    keywords: [
+      'sim',
+      'subscriber identity module',
+      'telco',
+      'ptelecommunication entity',
+      'mobile number',
+      'text scam',
+      'identity verification',
+      'deactivation',
+      'registration data',
+      'law enforcement request',
+    ],
+    summary:
+      'A telecommunications identity-verification law requiring SIM registration and controls relevant to mobile-number accountability, fraud prevention, privacy, and deactivation workflows.',
+    obligations: [
+      'For SIM, mobile-number, OTP, or telco workflows, state identity-verification, consent, registration-data protection, and deactivation controls.',
+      'Separate ordinary account support from law-enforcement disclosure, subpoena, warrant, or authorized-request handling.',
+      'Include fraud-reporting, text-scam response, retention, access controls, breach coordination, and user assistance.',
+      'Avoid collecting more identity data than needed or sharing registration data without lawful authority and audit trail.',
+    ],
+    commonGaps: [
+      'Mobile-number collection has no verification, retention, or privacy safeguards.',
+      'Law-enforcement access to SIM or subscriber data is not tied to lawful process.',
+      'Deactivation, reactivation, correction, and complaint handling are missing.',
+    ],
+  },
+  {
+    id: 'ra-9995',
+    statute: 'RA 9995',
+    title: 'Republic Act No. 9995',
+    shortTitle: 'Anti-Photo and Video Voyeurism Act of 2009',
+    year: 2010,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2010/ra_9995_2010.html',
+    aliases: ['ra 9995', 'republic act 9995', 'anti photo and video voyeurism act', 'photo and video voyeurism', 'voyeurism law'],
+    topics: ['privacy', 'image abuse', 'intimate media', 'online safety', 'consent'],
+    keywords: [
+      'photo',
+      'video',
+      'intimate image',
+      'voyeurism',
+      'recording',
+      'distribution',
+      'broadcast',
+      'upload',
+      'consent',
+      'privacy',
+      'takedown',
+    ],
+    summary:
+      'A privacy and dignity statute penalizing non-consensual capture, copying, reproduction, sharing, publication, broadcast, or exhibition of covered private images or videos.',
+    obligations: [
+      'For image, CCTV, media, social platform, or complaint workflows, define consent, restricted access, storage, takedown, confidentiality, and evidence handling.',
+      'Separate ordinary photo/video documentation from intimate or private-image handling and disclosure controls.',
+      'Include victim-protection, reporting, preservation, authorized review, and lawful referral steps.',
+      'Avoid public disclosure, forwarding, or broad staff access to sensitive media used as complaint evidence.',
+    ],
+    commonGaps: [
+      'Photo or video evidence is collected without consent, confidentiality, takedown, or access controls.',
+      'Complaint workflows allow unnecessary disclosure of private media.',
+      'Evidence preservation is not separated from public communication or discipline.',
+    ],
+  },
+  {
+    id: 'ra-7877',
+    statute: 'RA 7877',
+    title: 'Republic Act No. 7877',
+    shortTitle: 'Anti-Sexual Harassment Act of 1995',
+    year: 1995,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1995/ra_7877_1995.html',
+    aliases: ['ra 7877', 'republic act 7877', 'anti sexual harassment act', 'sexual harassment law', 'work education training harassment'],
+    topics: ['sexual harassment', 'workplace', 'education', 'training', 'complaints', 'discipline'],
+    keywords: [
+      'sexual harassment',
+      'authority',
+      'influence',
+      'moral ascendancy',
+      'employment',
+      'education',
+      'training',
+      'committee on decorum',
+      'codi',
+      'disciplinary action',
+    ],
+    summary:
+      'A statute declaring work, education, and training-related sexual harassment unlawful, with employer or institution duties to prevent, investigate, and address complaints.',
+    obligations: [
+      'For workplaces, schools, and training programs, define prohibited conduct, complaint intake, investigation, confidentiality, and non-retaliation.',
+      'Assign a committee or responsible body for decorum, investigation, recommendation, and recordkeeping.',
+      'Coordinate RA 7877 workplace or education duties with broader Safe Spaces Act controls where applicable.',
+      'Protect complainants, witnesses, and respondents through fair process, documentation, and escalation routes.',
+    ],
+    commonGaps: [
+      'Harassment policy bans conduct but does not create a complaint and investigation body.',
+      'Confidentiality, non-retaliation, due process, and recordkeeping are missing.',
+      'Training, education, or workplace scope is unclear.',
+    ],
+  },
+  {
+    id: 'ra-10627',
+    statute: 'RA 10627',
+    title: 'Republic Act No. 10627',
+    shortTitle: 'Anti-Bullying Act of 2013',
+    year: 2013,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2013/ra_10627_2013.html',
+    aliases: ['ra 10627', 'republic act 10627', 'anti bullying act', 'school bullying', 'cyberbullying'],
+    topics: ['education', 'bullying', 'cyberbullying', 'student safety', 'school policy'],
+    keywords: [
+      'bullying',
+      'cyberbullying',
+      'school policy',
+      'student discipline',
+      'child protection',
+      'reporting',
+      'intervention',
+      'parents',
+      'deped',
+      'school administrator',
+    ],
+    summary:
+      'A school-safety law requiring elementary and secondary schools to adopt policies to prevent and address bullying, including cyberbullying and school-related incidents.',
+    obligations: [
+      'For school or student-safety rules, define bullying, cyberbullying, reporting channels, investigation, intervention, and parent or guardian notice.',
+      'Separate victim support, discipline, restorative measures, referral, confidentiality, and recordkeeping.',
+      'Include school-wide prevention, staff training, student orientation, monitoring, and escalation to appropriate authorities.',
+      'Avoid punishment-only language without reporting, support, due process, and anti-retaliation safeguards.',
+    ],
+    commonGaps: [
+      'Bullying policy lacks reporting, investigation, intervention, or parent-notice steps.',
+      'Cyberbullying is mentioned without digital evidence and privacy safeguards.',
+      'Victim support, discipline, and referral roles are unclear.',
+    ],
+  },
+  {
+    id: 'ra-10863',
+    statute: 'RA 10863',
+    title: 'Republic Act No. 10863',
+    shortTitle: 'Customs Modernization and Tariff Act',
+    year: 2016,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2016/ra_10863_2016.html',
+    aliases: ['ra 10863', 'republic act 10863', 'customs modernization and tariff act', 'cmta', 'customs law', 'tariff act'],
+    topics: ['customs', 'importation', 'exportation', 'tariff', 'valuation', 'border control'],
+    keywords: [
+      'import',
+      'export',
+      'tariff',
+      'customs duties',
+      'valuation',
+      'classification',
+      'declaration',
+      'broker',
+      'bonded warehouse',
+      'seizure',
+      'forfeiture',
+    ],
+    summary:
+      'A customs and tariff framework for importation, exportation, valuation, classification, duties and taxes, customs brokers, bonded operations, enforcement, and post-clearance controls.',
+    obligations: [
+      'For imported or exported goods, define declaration, valuation, classification, duties, taxes, permits, broker responsibility, and record retention.',
+      'Separate customs clearance, warehousing, transport, inspection, seizure, forfeiture, and appeal procedures.',
+      'Coordinate product-specific rules with customs, tax, health, agriculture, environment, or trade regulators as needed.',
+      'Avoid allowing goods movement, disposal, or release without documentation, audit trail, and accountable office.',
+    ],
+    commonGaps: [
+      'Import or export workflow omits customs declaration, valuation, classification, or permit checks.',
+      'Goods release or disposal is allowed without records, accountability, or appeal path.',
+      'Tariff, duties, taxes, and bonded-warehouse controls are not addressed.',
+    ],
+  },
+  {
+    id: 'ra-11976',
+    statute: 'RA 11976',
+    title: 'Republic Act No. 11976',
+    shortTitle: 'Ease of Paying Taxes Act',
+    year: 2024,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2024/ra_11976_2024.html',
+    aliases: ['ra 11976', 'republic act 11976', 'ease of paying taxes act', 'eopt', 'taxpayer rights'],
+    topics: ['tax administration', 'bir', 'taxpayer rights', 'invoicing', 'filing', 'payment'],
+    keywords: [
+      'tax',
+      'taxpayer',
+      'bir',
+      'invoice',
+      'receipt',
+      'vat',
+      'filing',
+      'payment',
+      'withholding',
+      'registration',
+      'tax return',
+      'taxpayer classification',
+    ],
+    summary:
+      'A tax-administration reform law modernizing taxpayer registration, invoicing, filing, payment, classification, and taxpayer rights under the National Internal Revenue Code framework.',
+    obligations: [
+      'For tax, fee, invoice, receipt, VAT, withholding, or payment workflows, identify taxpayer classification, registration, filing, payment, and recordkeeping controls.',
+      'Separate tax compliance from permit fees, service charges, penalties, and ordinary accounting procedures.',
+      'Include invoice or receipt handling, correction, retention, taxpayer assistance, and BIR-facing responsibilities where relevant.',
+      'Avoid creating local or platform payment workflows that obscure tax treatment, official receipts, or taxpayer rights.',
+    ],
+    commonGaps: [
+      'Payment or fee collection omits invoice, receipt, taxpayer, or tax-record treatment.',
+      'Tax filing and payment duties are assigned without responsible office or timeline.',
+      'VAT, withholding, and record retention are not addressed for taxable transactions.',
+    ],
+  },
+  {
+    id: 'ra-11055',
+    statute: 'RA 11055',
+    title: 'Republic Act No. 11055',
+    shortTitle: 'Philippine Identification System Act',
+    year: 2018,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2018/ra_11055_2018.html',
+    aliases: ['ra 11055', 'republic act 11055', 'philippine identification system act', 'philsys', 'national id', 'philid'],
+    topics: ['identity', 'national id', 'philsys', 'personal data', 'government services', 'authentication'],
+    keywords: [
+      'philid',
+      'psn',
+      'pcn',
+      'national id',
+      'identity verification',
+      'authentication',
+      'psa',
+      'proof of identity',
+      'demographic data',
+      'biometric information',
+    ],
+    summary:
+      'A national identity framework establishing PhilSys as proof of identity for citizens and resident aliens, with data-governance, authentication, privacy, and service-delivery implications.',
+    obligations: [
+      'For national ID, PhilID, PSN, PCN, or identity-verification workflows, state purpose, minimum data, authentication method, retention, and access controls.',
+      'Coordinate identity handling with RA 10173 privacy duties, especially for biometric, demographic, and government-ID data.',
+      'Include correction, assistance, alternative proof, service access, audit logs, and authorized disclosure controls.',
+      'Avoid denying essential services solely because of missing PhilID where another lawful identity route should be available.',
+    ],
+    commonGaps: [
+      'National ID collection lacks purpose, retention, access-control, or privacy safeguards.',
+      'Identity verification has no alternative process, correction route, or audit trail.',
+      'PSN, PCN, PhilID, or biometric data is exposed beyond what the workflow requires.',
+    ],
+  },
+  {
+    id: 'ra-11038',
+    statute: 'RA 11038',
+    title: 'Republic Act No. 11038',
+    shortTitle: 'Expanded National Integrated Protected Areas System Act of 2018',
+    year: 2018,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2018/ra_11038_2018.html',
+    aliases: [
+      'ra 11038',
+      'republic act 11038',
+      'expanded national integrated protected areas system act',
+      'enipas',
+      'protected areas',
+      'nipas',
+    ],
+    topics: ['environment', 'protected areas', 'biodiversity', 'land use', 'buffer zone', 'pamb'],
+    keywords: [
+      'protected area',
+      'buffer zone',
+      'pamb',
+      'biodiversity',
+      'strict protection',
+      'multiple use zone',
+      'ecotourism',
+      'special use agreement',
+      'denr',
+      'indigenous peoples',
+    ],
+    summary:
+      'A protected-area management law expanding the National Integrated Protected Areas System and requiring safeguards for biodiversity, zoning, management boards, buffer zones, and regulated activities.',
+    obligations: [
+      'For land use, tourism, construction, extraction, or livelihood activities near protected areas, check zoning, PAMB role, DENR authorization, and allowed uses.',
+      'Include biodiversity safeguards, buffer-zone controls, monitoring, community consultation, indigenous peoples coordination, and restoration duties.',
+      'Separate LGU permitting from protected-area management approvals, environmental assessment, and regulator coordination.',
+      'Avoid authorizing development, extraction, or resource use in protected areas without zoning, board approval, and mitigation controls.',
+    ],
+    commonGaps: [
+      'Protected-area or buffer-zone activity lacks PAMB, DENR, zoning, or biodiversity controls.',
+      'Tourism or livelihood rules omit carrying capacity, restoration, and monitoring.',
+      'LGU permits are treated as enough even when protected-area approvals may be required.',
+    ],
+  },
 ]
 
 const TOPIC_EXPANSIONS = [
@@ -856,6 +1320,245 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['consumer', 'customer', 'warranty', 'label', 'advertising', 'product safety', 'complaint'],
     expansions: ['consumer act', 'consumer protection', 'product standards', 'consumer complaint'],
+  },
+  {
+    triggers: ['competition', 'antitrust', 'cartel', 'price fixing', 'bid rigging', 'dominance', 'exclusive supplier'],
+    expansions: ['philippine competition act', 'anti competitive agreement', 'abuse of dominant position', 'pcc'],
+  },
+  {
+    triggers: ['financial consumer', 'lending', 'wallet', 'payment', 'loan', 'unauthorized transaction', 'financial fraud'],
+    expansions: ['financial products and services consumer protection', 'financial consumer', 'disclosure', 'complaint handling'],
+  },
+  {
+    triggers: ['hazardous', 'toxic', 'chemical', 'spill', 'nuclear', 'waste transport', 'medical waste'],
+    expansions: ['toxic substances', 'hazardous waste', 'manifest', 'denr emb'],
+  },
+  {
+    triggers: ['energy', 'electricity', 'power consumption', 'energy audit', 'efficiency', 'conservation'],
+    expansions: ['energy efficiency and conservation', 'energy audit', 'energy conservation officer'],
+  },
+  {
+    triggers: ['sim', 'mobile number', 'telco', 'text scam', 'subscriber', 'otp', 'sms fraud'],
+    expansions: ['sim registration act', 'identity verification', 'subscriber data', 'deactivation'],
+  },
+  {
+    triggers: ['photo', 'video', 'voyeurism', 'intimate image', 'cctv', 'takedown', 'non consensual'],
+    expansions: ['anti photo and video voyeurism', 'consent', 'private image', 'evidence preservation'],
+  },
+  {
+    triggers: ['sexual harassment', 'codi', 'decorum', 'training institution', 'moral ascendancy'],
+    expansions: ['anti sexual harassment act', 'committee on decorum', 'complaint investigation'],
+  },
+  {
+    triggers: ['bullying', 'cyberbullying', 'school policy', 'student safety', 'student discipline'],
+    expansions: ['anti bullying act', 'school bullying policy', 'reporting intervention'],
+  },
+  {
+    triggers: ['customs', 'import', 'export', 'tariff', 'duties', 'valuation', 'broker'],
+    expansions: ['customs modernization and tariff act', 'customs declaration', 'valuation classification'],
+  },
+  {
+    triggers: ['tax', 'taxpayer', 'bir', 'invoice', 'receipt', 'vat', 'withholding', 'tax return'],
+    expansions: ['ease of paying taxes act', 'taxpayer rights', 'invoicing', 'filing payment'],
+  },
+  {
+    triggers: ['philsys', 'philid', 'national id', 'psn', 'pcn', 'identity verification'],
+    expansions: ['philippine identification system', 'national id', 'authentication', 'biometric data'],
+  },
+  {
+    triggers: ['protected area', 'buffer zone', 'biodiversity', 'pamb', 'nipas', 'enipas', 'ecotourism'],
+    expansions: ['expanded national integrated protected areas system', 'protected areas', 'pamb', 'biodiversity safeguards'],
+  },
+]
+
+const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
+  {
+    id: 'data-incident-response',
+    title: 'Data, Cyber, and Mobile Incident Response Stack',
+    triggers: [
+      'data breach',
+      'breach response',
+      'cyber incident',
+      'phishing',
+      'account compromise',
+      'unauthorized access',
+      'sim fraud',
+      'mobile number fraud',
+      'identity data',
+      'private image',
+      'takedown',
+    ],
+    lawIds: ['ra-10173', 'ra-10175', 'ra-11934', 'ra-8792', 'ra-9995', 'ra-11055'],
+    summary:
+      'Use this when a workflow involves personal data, online accounts, electronic evidence, SIM or mobile-number abuse, identity records, or image/video evidence.',
+    sequence: [
+      'Classify the incident, affected data, system, account, subscriber, or media type before choosing the response path.',
+      'Preserve evidence and logs without over-sharing personal data or private images.',
+      'Assign breach, cybercrime, telco, privacy, and victim-support owners instead of routing everything to one generic help desk.',
+      'Use lawful referral, disclosure, takedown, and notification steps with records of who approved each action.',
+    ],
+    checkpoints: [
+      'Privacy notice, lawful basis, data minimization, retention, access control, and breach response ownership are stated.',
+      'Incident reports preserve audit logs, screenshots, messages, account activity, or media evidence with chain-of-custody controls.',
+      'SIM, PhilSys, subscriber, biometric, or private-image data has stricter access and disclosure controls.',
+      'User support includes correction, complaint, escalation, and non-disclosure safeguards.',
+    ],
+  },
+  {
+    id: 'lgu-permit-and-service-delivery',
+    title: 'LGU Ordinance, Permit, and Service Delivery Stack',
+    triggers: [
+      'barangay ordinance',
+      'municipal ordinance',
+      'business permit',
+      'clearance',
+      'license',
+      'citizen charter',
+      'processing time',
+      'local fee',
+      'public hearing',
+      'local service',
+    ],
+    lawIds: ['ra-7160', 'ra-11032', 'ra-12009', 'ra-10667', 'ra-10173'],
+    summary:
+      'Use this when a city, municipality, province, or barangay creates rules, fees, services, permits, procurement steps, or citizen-facing application workflows.',
+    sequence: [
+      'Start with LGU authority, approving body, public hearing or publication, and consistency with national law.',
+      'Map each citizen-facing service to a receiving office, documentary checklist, fees, processing time, and written decision route.',
+      'If procurement or exclusive suppliers are involved, separate procurement safeguards from ordinary permit controls.',
+      'Check privacy whenever resident, business, health, financial, identity, or complaint data is collected.',
+    ],
+    checkpoints: [
+      'The ordinance states legal basis, scope, responsible office, standards, procedure, monitoring, budget, effectivity, and appeal path.',
+      'Permits and clearances do not allow open-ended extra requirements after filing.',
+      'Fees, fines, supplier preferences, and license conditions have authority, objective criteria, and due process.',
+      'Records, reports, and citizen data have retention and access controls.',
+    ],
+  },
+  {
+    id: 'environmental-operations',
+    title: 'Environmental Operations and Facility Controls Stack',
+    triggers: [
+      'environmental compliance',
+      'wastewater',
+      'solid waste',
+      'hazardous waste',
+      'air emission',
+      'protected area',
+      'buffer zone',
+      'chemical spill',
+      'energy audit',
+      'facility compliance',
+    ],
+    lawIds: ['ra-9003', 'ra-9275', 'ra-8749', 'ra-6969', 'ra-11038', 'ra-11285'],
+    summary:
+      'Use this when a facility, LGU, business, school, event, tourism site, or public building touches waste, water, emissions, chemicals, protected areas, or energy use.',
+    sequence: [
+      'Classify the activity first: solid waste, wastewater, air emissions, hazardous substances, protected-area use, or energy management.',
+      'Identify the regulator and local role before assigning inspection or penalty powers.',
+      'Separate prevention, monitoring, corrective action, reporting, emergency response, and penalties.',
+      'Track permits, sampling, manifests, reports, audits, and disposal or restoration records.',
+    ],
+    checkpoints: [
+      'Waste streams, discharge points, emission sources, chemicals, land-use zones, and energy baselines are identified.',
+      'DENR, EMB, PAMB, DOE, LGU, or barangay roles are not collapsed into one generic enforcement office.',
+      'Monitoring includes frequency, responsible office, evidence records, corrective action, and public or regulator reporting.',
+      'Penalties or shutdowns include notice, correction, hearing, and appeal safeguards.',
+    ],
+  },
+  {
+    id: 'consumer-finance-and-commerce',
+    title: 'Consumer, Financial, Commerce, AML, and Tax Stack',
+    triggers: [
+      'consumer complaint',
+      'product warranty',
+      'wallet fraud',
+      'payment collection',
+      'loan',
+      'remittance',
+      'kyc',
+      'suspicious transaction',
+      'invoice',
+      'receipt',
+      'vat',
+      'online sale',
+    ],
+    lawIds: ['ra-7394', 'ra-11765', 'ra-9160', 'ra-8792', 'ra-10173', 'ra-11976'],
+    summary:
+      'Use this when a workflow involves consumer sales, financial products, payments, remittance, AML controls, e-commerce records, invoicing, or taxpayer-facing collections.',
+    sequence: [
+      'Identify whether the issue is consumer product/service quality, financial consumer protection, AML monitoring, e-commerce evidence, tax, or privacy.',
+      'Map disclosures, fees, complaints, refunds, fraud reports, KYC, transaction reports, invoices, receipts, and record retention.',
+      'Separate customer service handling from regulator escalation, suspicious transaction reporting, and tax documentation.',
+      'Avoid collecting financial or identity data without clear purpose, access controls, and retention period.',
+    ],
+    checkpoints: [
+      'Terms, fees, risks, warranties, price, complaint route, and remedy are clear before the transaction.',
+      'Unauthorized transactions, fraud reports, and suspicious transaction workflows have timelines and responsible officers.',
+      'Invoices, receipts, VAT, withholding, and tax records are accounted for where payment collection is involved.',
+      'Financial and consumer records are protected with privacy, confidentiality, and audit safeguards.',
+    ],
+  },
+  {
+    id: 'workplace-school-and-public-safety',
+    title: 'Workplace, School, Public Safety, and Protection Stack',
+    triggers: [
+      'workplace safety',
+      'sexual harassment',
+      'safe spaces',
+      'bullying',
+      'student safety',
+      'child online safety',
+      'fire safety',
+      'evacuation',
+      'disaster plan',
+      'internet cafe',
+    ],
+    lawIds: ['ra-11058', 'ra-11313', 'ra-7877', 'ra-10627', 'ra-9775', 'ra-9514', 'ra-10121'],
+    summary:
+      'Use this when policies protect workers, students, minors, complainants, establishments, or the public from safety, harassment, fire, disaster, or online exploitation risks.',
+    sequence: [
+      'Classify the protected group and setting: workplace, school, public space, online platform, establishment, or emergency site.',
+      'Assign prevention, reporting, investigation, confidentiality, referral, corrective action, and emergency response owners.',
+      'Separate discipline or sanctions from support, victim protection, due process, and recordkeeping.',
+      'Coordinate with the correct public office or authority when risks involve minors, fire safety, disasters, or law enforcement.',
+    ],
+    checkpoints: [
+      'Policy includes reporting channels, responsible office, confidentiality, non-retaliation, due process, and records.',
+      'Safety controls include training, drills, PPE or equipment, incident reports, inspections, and emergency escalation.',
+      'Child, student, or victim data is protected and referral is limited to authorized channels.',
+      'Sanctions do not replace prevention, support, correction, and appeal procedures.',
+    ],
+  },
+  {
+    id: 'imports-procurement-and-public-assets',
+    title: 'Imports, Public Procurement, Assets, and Audit Stack',
+    triggers: [
+      'imported equipment',
+      'customs declaration',
+      'tariff',
+      'public bidding',
+      'supplier eligibility',
+      'government contract',
+      'asset disposal',
+      'acceptance inspection',
+      'procurement plan',
+    ],
+    lawIds: ['ra-10863', 'ra-12009', 'ra-11976', 'ra-10667', 'ra-7160'],
+    summary:
+      'Use this when public offices or regulated entities buy, import, classify, receive, inspect, award, dispose, or pay for goods and services.',
+    sequence: [
+      'Separate customs import/export duties from procurement planning and contract award duties.',
+      'Define accountable office, valuation or approved budget, eligibility, inspection, acceptance, payment, tax, and audit records.',
+      'Check competition and conflict-of-interest risks before creating preferred supplier, exclusive source, or restricted eligibility rules.',
+      'Preserve documents for post-clearance, procurement, acceptance, payment, and audit review.',
+    ],
+    checkpoints: [
+      'Import or procurement workflows identify declaration, valuation, classification, permits, approved budget, and accountable officers.',
+      'Supplier selection uses objective criteria and transparent documentation.',
+      'Contract implementation includes inspection, acceptance, performance security where relevant, and audit trail.',
+      'Payment, invoicing, tax, and asset records are kept separately from approval memos.',
+    ],
   },
 ]
 
@@ -1096,6 +1799,73 @@ function generateLocalSearchQueries(query: string, rankedDocuments: RankedDocume
   return uniqueByNormalized([query.trim(), ...raQueries, ...expansions, ...documentQueries]).slice(0, 10)
 }
 
+function getDocumentById(id: string) {
+  return LEGAL_CORPUS.find((document) => document.id === id)
+}
+
+function getFrameworkMatches(query: string, rankedDocuments: RankedDocument[]) {
+  const normalizedQuery = normalizeText(query)
+  const rankedDocumentIds = rankedDocuments.slice(0, 8).map((match) => match.document.id)
+  const citedDocumentIds = getCitationAnalysis(query).citedDocuments.map((document) => document.id)
+
+  return COMPLIANCE_FRAMEWORKS.map((framework) => {
+    const triggerMatches = framework.triggers.filter((trigger) => normalizedQuery.includes(normalizeText(trigger)))
+    const rankedMatches = framework.lawIds.filter((lawId) => rankedDocumentIds.includes(lawId))
+    const citationMatches = framework.lawIds.filter((lawId) => citedDocumentIds.includes(lawId))
+    const score = triggerMatches.length * 4 + rankedMatches.length * 2 + citationMatches.length * 5
+
+    return {
+      framework,
+      score,
+      triggerMatches,
+      rankedMatches,
+      citationMatches,
+    }
+  })
+    .filter((match) => match.score >= 2)
+    .sort((left, right) => right.score - left.score)
+    .slice(0, 2)
+}
+
+function formatFrameworkMatch(match: ReturnType<typeof getFrameworkMatches>[number]) {
+  const laws = match.framework.lawIds
+    .map((lawId) => getDocumentById(lawId))
+    .filter((document): document is LocalLegalDocument => Boolean(document))
+    .map((document) => `${document.statute} (${document.shortTitle})`)
+
+  return [
+    `### ${match.framework.title}`,
+    '',
+    match.framework.summary,
+    '',
+    `Related local corpus: ${laws.join('; ')}`,
+    '',
+    'Suggested order:',
+    ...match.framework.sequence.slice(0, 4).map((item) => `- ${item}`),
+    '',
+    'Framework checkpoints:',
+    ...match.framework.checkpoints.slice(0, 4).map((item) => `- ${item}`),
+  ].join('\n')
+}
+
+function buildFrameworkSection(query: string, rankedDocuments: RankedDocument[]) {
+  const frameworkMatches = getFrameworkMatches(query, rankedDocuments)
+
+  if (frameworkMatches.length === 0) {
+    return []
+  }
+
+  return [
+    '## Local Compliance Framework',
+    '',
+    ...frameworkMatches
+      .map((frameworkMatch) => formatFrameworkMatch(frameworkMatch))
+      .join('\n\n')
+      .split('\n'),
+    '',
+  ]
+}
+
 function buildCitationCoverageSection(value: string) {
   const citationAnalysis = getCitationAnalysis(value)
 
@@ -1170,7 +1940,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
-    '- Include a Republic Act number, such as RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, or RA 11058.',
+    '- Include a Republic Act number, such as RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, RA 10667, RA 11765, RA 11934, or RA 11976.',
     '- Add the regulated activity, agency, permit, affected sector, and location.',
     '- Ask for a narrower compliance checklist, for example "solid waste requirements for a barangay ordinance".',
     '',
@@ -1209,6 +1979,7 @@ function buildResearchSummary(query: string, rankedDocuments: RankedDocument[], 
     `${reasonLine} ${deepSearchLine}`,
     '',
     ...buildCitationCoverageSection(query),
+    ...buildFrameworkSection(query, rankedDocuments),
     '## Likely Relevant Authorities',
     '',
     ...topMatches.map((match, index) => formatMatchedDocument(match, index, deepSearchUsed)).join('\n\n').split('\n'),
@@ -1898,6 +2669,206 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(competition|antitrust|cartel|price fixing|bid rigging|exclusive supplier|exclusive distributor|market allocation|dominant position|merger|joint venture)\b/.test(normalizedDraft)) {
+    if (!/\b(objective criteria|competition review|pcc|conflict of interest|non discrimination|supplier eligibility|market study|fair access)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Competition safeguards are thin',
+          'Competition, exclusivity, bidding, pricing, merger, or market-access language was detected without clear competition review, objective criteria, conflict checks, or fair-access controls.',
+          'Add competition-risk review, objective eligibility criteria, non-discrimination safeguards, conflict-of-interest checks, documentation, and PCC or counsel escalation where relevant.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10667') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(financial consumer|loan|lending|payment|wallet|remittance|insurance|investment|unauthorized transaction|financial fraud|consumer finance)\b/.test(normalizedDraft)) {
+    const hasFinancialDisclosureControls = /\b(disclosure|fees|charges|terms|risk|transparent pricing)\b/.test(normalizedDraft)
+    const hasFinancialDisputeControls = /\b(complaint|dispute|fraud|unauthorized transaction|consumer assistance|escalation|resolution)\b/.test(normalizedDraft)
+    const hasFinancialDataOrRemediationControls = /\b(client data|privacy|remediation|refund|reversal|cooling off|market conduct|recordkeeping)\b/.test(normalizedDraft)
+
+    if (!(hasFinancialDisclosureControls && hasFinancialDisputeControls && hasFinancialDataOrRemediationControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Financial consumer protection controls need detail',
+          'Financial product, payment, lending, remittance, insurance, investment, or fraud language was detected without enough disclosure, complaint, dispute, fraud-response, or client-data controls.',
+          'Add clear fees and terms, consumer risk disclosures, complaint and dispute timelines, unauthorized-transaction handling, client-data safeguards, and regulator escalation.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11765') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(hazardous waste|toxic|chemical|spill|nuclear waste|medical waste|industrial waste|waste transport|hazardous substance)\b/.test(normalizedDraft)) {
+    const hasHazardousChainControls = /\b(manifest|generator|transporter|chain of custody|waste transport)\b/.test(normalizedDraft)
+    const hasHazardousHandlingControls = /\b(storage|treatment|disposal|label|segregation|containment)\b/.test(normalizedDraft)
+    const hasHazardousEmergencyControls = /\b(denr|emb|spill response|emergency response|worker safety|permit|reporting)\b/.test(normalizedDraft)
+
+    if (!(hasHazardousChainControls && hasHazardousHandlingControls && hasHazardousEmergencyControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Hazardous substance controls are incomplete',
+          'Toxic, chemical, hazardous-waste, or spill language was detected without clear generator, storage, transport, manifest, treatment, disposal, or emergency controls.',
+          'Add hazardous-waste classification, generator and transporter responsibilities, labels, manifests, approved storage and disposal, spill response, worker safety, and DENR or EMB coordination.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-6969') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(energy efficiency|energy conservation|electricity|power consumption|energy audit|fuel efficiency|building energy|energy management)\b/.test(normalizedDraft)) {
+    if (!/\b(baseline|energy audit|energy conservation officer|energy management|efficiency standard|energy report|measurement|doe)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Energy-efficiency controls need metrics',
+          'Energy-efficiency or conservation language was detected without a baseline, audit, responsible officer, target, reporting, or verification method.',
+          'Add baseline energy use, conservation plan, responsible officer, audit or measurement process, equipment-efficiency controls, reporting cadence, and DOE coordination if applicable.',
+          5,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11285') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(sim|mobile number|telco|subscriber|text scam|sms fraud|otp|deactivation|subscriber identity)\b/.test(normalizedDraft)) {
+    if (!/\b(identity verification|registration|deactivation|reactivation|subscriber data|privacy|law enforcement|authorized request|audit trail|complaint)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'SIM and mobile-number controls need detail',
+          'SIM, mobile-number, telco, OTP, or text-scam language was detected without clear identity-verification, subscriber-data, deactivation, privacy, or lawful-request controls.',
+          'Add identity verification, subscriber-data protection, registration correction, deactivation or reactivation handling, fraud reporting, lawful disclosure rules, and audit trail.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11934') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(photo|video|cctv|intimate image|private image|voyeurism|recording|upload|takedown|non consensual)\b/.test(normalizedDraft)) {
+    if (!/\b(consent|confidential|access control|takedown|evidence preservation|victim|authorized review|retention|privacy)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Private image safeguards are missing',
+          'Photo, video, CCTV, intimate-image, or takedown language was detected without enough consent, confidentiality, access-control, retention, takedown, or victim-protection controls.',
+          'Add consent rules, restricted access, confidential evidence handling, takedown path, retention, authorized review, victim support, and lawful referral safeguards.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9995') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(sexual harassment|moral ascendancy|committee on decorum|codi|workplace harassment|training harassment)\b/.test(normalizedDraft)) {
+    if (!/\b(codi|committee on decorum|complaint|investigation|confidential|non retaliation|disciplinary|due process|training)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Sexual-harassment process needs detail',
+          'Sexual-harassment language was detected without enough complaint intake, committee, investigation, confidentiality, non-retaliation, or discipline process.',
+          'Add prohibited conduct, committee or responsible office, reporting channels, confidential investigation, non-retaliation, due process, sanctions, training, and records.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7877') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(bullying|cyberbullying|school bullying|student safety|student discipline|anti bullying)\b/.test(normalizedDraft)) {
+    if (!/\b(policy|reporting|investigation|intervention|parent|guardian|referral|confidential|anti retaliation|restorative)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'School bullying controls need detail',
+          'Bullying, cyberbullying, or student-safety language was detected without enough reporting, investigation, intervention, parent-notice, referral, or anti-retaliation controls.',
+          'Add bullying definitions, reporting channels, investigation steps, intervention and support, parent or guardian notice, anti-retaliation, discipline process, and school records.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10627') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(customs|import|export|tariff|duties|valuation|classification|broker|bonded warehouse|declaration)\b/.test(normalizedDraft)) {
+    if (!/\b(customs declaration|valuation|classification|duties|taxes|permit|broker|recordkeeping|clearance|inspection|appeal)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Customs controls are incomplete',
+          'Import, export, tariff, customs, broker, valuation, or goods-release language was detected without enough declaration, valuation, duties, permits, records, or appeal controls.',
+          'Add customs declaration, valuation and classification, duties and taxes, product permits, broker or accountable office, inspection, records, release controls, and appeal procedure.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10863') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(tax|taxpayer|bir|invoice|receipt|vat|withholding|tax return|filing|payment of tax)\b/.test(normalizedDraft)) {
+    if (!/\b(registration|invoice|receipt|filing|payment|withholding|vat|recordkeeping|bir|taxpayer rights|tax return)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Tax administration controls are missing',
+          'Tax, invoice, receipt, VAT, withholding, filing, or payment language was detected without enough registration, invoicing, filing, payment, or tax-record controls.',
+          'Add taxpayer classification, BIR registration or coordination, invoice or receipt workflow, filing and payment timelines, VAT or withholding treatment, and records retention.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11976') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(philsys|philid|national id|psn|pcn|identity verification|biometric|proof of identity)\b/.test(normalizedDraft)) {
+    if (!/\b(purpose|minimum data|alternative proof|authentication|access control|retention|correction|privacy|audit trail|authorized disclosure)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'National ID handling needs safeguards',
+          'PhilSys, PhilID, national ID, PSN, PCN, biometric, or identity-verification language was detected without clear purpose, minimization, correction, alternative proof, retention, or access controls.',
+          'Add purpose limitation, minimum identity fields, authentication method, alternative proof route, correction process, access controls, retention, audit logs, and privacy safeguards.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11055') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(protected area|buffer zone|biodiversity|pamb|nipas|enipas|ecotourism|wildlife habitat|strict protection)\b/.test(normalizedDraft)) {
+    if (!/\b(pamb|denr|zoning|buffer zone|biodiversity|carrying capacity|consultation|restoration|environmental assessment|monitoring)\b/.test(normalizedDraft)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Protected-area controls are incomplete',
+          'Protected-area, biodiversity, buffer-zone, ecotourism, or land-use language was detected without enough zoning, PAMB, DENR, mitigation, consultation, or monitoring controls.',
+          'Add protected-area zoning, PAMB and DENR coordination, biodiversity safeguards, carrying-capacity or mitigation controls, consultation, monitoring, and restoration duties.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11038') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
   if (references.length === 0) {
     return
   }
@@ -2010,5 +2981,14 @@ export function getLocalResearchCorpus() {
     sourceName: document.sourceName,
     sourceUrl: document.sourceUrl,
     topics: document.topics,
+  }))
+}
+
+export function getLocalComplianceFrameworks() {
+  return COMPLIANCE_FRAMEWORKS.map((framework) => ({
+    id: framework.id,
+    title: framework.title,
+    lawIds: framework.lawIds,
+    triggers: framework.triggers,
   }))
 }

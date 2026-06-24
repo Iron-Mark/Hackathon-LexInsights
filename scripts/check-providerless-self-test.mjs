@@ -98,6 +98,7 @@ const { module: providerless, cleanup } = await loadProviderlessModule()
 
 try {
   const {
+    getLocalComplianceFrameworks,
     getLocalResearchCorpus,
     getLocalResearchHealth,
     runLocalDraftCheck,
@@ -108,7 +109,17 @@ try {
   assert.equal(typeof runLocalDraftCheck, 'function', 'runLocalDraftCheck export is missing')
 
   const corpus = getLocalResearchCorpus()
+  const frameworks = getLocalComplianceFrameworks()
   assert.ok(corpus.length >= 15, 'Local corpus should include at least 15 authorities')
+  assert.ok(frameworks.length >= 6, 'Local corpus should include compliance framework bundles')
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'data-incident-response'),
+    'Frameworks should include data incident response'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'environmental-operations'),
+    'Frameworks should include environmental operations'
+  )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
   assert.ok(corpus.some((document) => document.statute === 'RA 11058'), 'Corpus should include RA 11058')
@@ -118,6 +129,18 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 9775'), 'Corpus should include RA 9775')
   assert.ok(corpus.some((document) => document.statute === 'RA 9160'), 'Corpus should include RA 9160')
   assert.ok(corpus.some((document) => document.statute === 'RA 7394'), 'Corpus should include RA 7394')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10667'), 'Corpus should include RA 10667')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11765'), 'Corpus should include RA 11765')
+  assert.ok(corpus.some((document) => document.statute === 'RA 6969'), 'Corpus should include RA 6969')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11285'), 'Corpus should include RA 11285')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11934'), 'Corpus should include RA 11934')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9995'), 'Corpus should include RA 9995')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7877'), 'Corpus should include RA 7877')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10627'), 'Corpus should include RA 10627')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10863'), 'Corpus should include RA 10863')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11976'), 'Corpus should include RA 11976')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11055'), 'Corpus should include RA 11055')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11038'), 'Corpus should include RA 11038')
 
   assertResearchMatch(
     runLocalResearch(
@@ -148,6 +171,16 @@ try {
 
   assertResearchMatch(deepSearchResponse, 'RA 10173', 'privacy deep-search query')
   assert.equal(deepSearchResponse.deep_search_used, true, 'Deep search flag should be retained')
+  assertIncludes(
+    deepSearchResponse.summary,
+    '## Local Compliance Framework',
+    'Privacy deep-search framework section'
+  )
+  assertIncludes(
+    deepSearchResponse.summary,
+    'Data, Cyber, and Mobile Incident Response Stack',
+    'Privacy deep-search framework title'
+  )
   assertIncludes(
     deepSearchResponse.processing_stages?.deep_search_orchestrator || '',
     'local cross-reference expansion',
@@ -234,6 +267,125 @@ try {
     ),
     'RA 7394',
     'consumer protection query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'How should a city avoid price fixing, bid rigging, and exclusive supplier competition risks?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10667',
+    'competition query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What financial consumer protection controls apply to wallet fraud and unauthorized transactions?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11765',
+    'financial consumer query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What permits and manifests are needed for hazardous chemical waste storage and transport?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 6969',
+    'hazardous waste query'
+  )
+
+  const environmentalFrameworkResponse = runLocalResearch(
+    { query: 'What environmental compliance controls apply to hazardous waste, wastewater, and air emissions?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(environmentalFrameworkResponse, 'RA 6969', 'environmental framework query')
+  assertIncludes(
+    environmentalFrameworkResponse.summary,
+    'Environmental Operations and Facility Controls Stack',
+    'Environmental framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What energy efficiency audit and conservation officer controls apply to public buildings?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11285',
+    'energy efficiency query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What SIM registration and subscriber data safeguards apply to mobile number fraud reports?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11934',
+    'sim registration query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What safeguards apply to intimate photo and video takedown complaints?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9995',
+    'private image query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What committee on decorum and investigation steps are required for workplace sexual harassment complaints?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7877',
+    'sexual harassment query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What school policy controls are needed for cyberbullying reports?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10627',
+    'anti-bullying query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What customs declaration, valuation, tariff, and broker controls apply to imported equipment?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10863',
+    'customs query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What invoice, receipt, VAT, filing, and taxpayer controls apply to local payment collection?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11976',
+    'tax administration query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What privacy safeguards apply when collecting PhilSys national ID and biometric data?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11055',
+    'philsys query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What approvals are needed for ecotourism inside a protected area buffer zone and PAMB jurisdiction?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11038',
+    'protected areas query'
   )
 
   const noResultsResponse = runLocalResearch(
@@ -572,6 +724,126 @@ This ordinance takes effect 30 days after publication.`
   )
   assert.equal(thinConsumerDraftResponse.status, 'success', 'Consumer draft check should succeed locally')
   assertFinding(thinConsumerDraftResponse, 'amber', 'Consumer protection')
+
+  const thinFinancialConsumerDraft = `# Wallet Fraud Assistance Policy
+
+## Purpose
+This policy handles wallet fraud and unauthorized transaction complaints.
+
+## Legal Basis
+Pursuant to RA 11765 and RA 10173.
+
+## Scope
+This applies to local payment partners and consumer reports.
+
+## Responsible Office
+The consumer desk shall implement this policy.
+
+## Requirements
+Customers shall report suspicious transfers.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinFinancialConsumerDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinFinancialConsumerDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinFinancialConsumerDraftResponse.status, 'success', 'Financial consumer draft check should succeed locally')
+  assertFinding(thinFinancialConsumerDraftResponse, 'amber', 'Financial consumer protection')
+
+  const thinHazardousWasteDraft = `# Chemical Waste Storage Ordinance
+
+## Purpose
+This ordinance regulates hazardous waste and chemical spill risks.
+
+## Legal Basis
+Pursuant to RA 6969.
+
+## Scope
+This applies to covered establishments storing toxic substances.
+
+## Responsible Office
+The environment office shall implement this ordinance.
+
+## Requirements
+Covered establishments shall store chemicals safely.
+
+## Monitoring
+The environment office shall submit annual reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinHazardousWasteDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinHazardousWasteDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinHazardousWasteDraftResponse.status, 'success', 'Hazardous waste draft check should succeed locally')
+  assertFinding(thinHazardousWasteDraftResponse, 'amber', 'Hazardous substance controls')
+
+  const thinCompetitionDraft = `# Exclusive Supplier Accreditation Ordinance
+
+## Purpose
+This ordinance creates an exclusive supplier list for public market services.
+
+## Legal Basis
+Pursuant to RA 10667 and RA 12009.
+
+## Scope
+This applies to accredited suppliers.
+
+## Responsible Office
+The procurement office shall implement this ordinance.
+
+## Requirements
+Accredited suppliers shall be listed by the city.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This ordinance takes effect 30 days after publication.`
+
+  const thinCompetitionDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinCompetitionDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinCompetitionDraftResponse.status, 'success', 'Competition draft check should succeed locally')
+  assertFinding(thinCompetitionDraftResponse, 'amber', 'Competition safeguards')
+
+  const thinSimDraft = `# Mobile Number Fraud Reporting Policy
+
+## Purpose
+This policy handles SIM and mobile number fraud reports from residents.
+
+## Legal Basis
+Pursuant to RA 11934 and RA 10173.
+
+## Scope
+This applies to resident reports involving SMS fraud.
+
+## Responsible Office
+The information office shall implement this policy.
+
+## Requirements
+Residents shall report suspicious mobile messages.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinSimDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinSimDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinSimDraftResponse.status, 'success', 'SIM draft check should succeed locally')
+  assertFinding(thinSimDraftResponse, 'amber', 'SIM and mobile-number controls')
 
   const strongerDraft = `# Solid Waste Segregation Ordinance
 
