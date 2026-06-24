@@ -140,8 +140,8 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
               showDeleteConfirm
                 ? 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-200'
                 : isActive
-                  ? 'bg-white text-slate-600 shadow-xs dark:bg-iris-300/12 dark:text-iris-100'
-                  : 'bg-slate-100 text-slate-400 dark:bg-[#241f32] dark:text-slate-500'
+                  ? 'bg-iris-100 text-iris-700 shadow-xs ring-1 ring-iris-200 dark:bg-iris-400/20 dark:text-iris-100 dark:ring-iris-300/30'
+                  : 'bg-iris-50 text-iris-500/70 dark:bg-iris-300/10 dark:text-iris-200/50'
             )}
             aria-hidden="true"
           >

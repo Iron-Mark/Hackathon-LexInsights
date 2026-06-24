@@ -165,9 +165,9 @@ export function CenteredInput({
       </label>
       <div
         onClick={focusTextareaFromShellClick}
-        className={`relative rounded-xl border bg-white transition-colors duration-200 dark:bg-[#241f32] ${
+        className={`relative rounded-xl border bg-white shadow-none transition-colors duration-200 dark:bg-[#241f32] dark:shadow-none ${
           isFocused
-            ? 'border-iris-500 dark:border-iris-300/55'
+            ? 'border-iris-500 dark:border-iris-400/35'
             : 'border-slate-200 dark:border-iris-300/15'
         }`}
       >
@@ -248,7 +248,7 @@ export function CenteredInput({
       </div>
       <p
         id="centered-message-disclaimer"
-        className="mx-auto mt-2 max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-500 dark:text-slate-400"
+        className="mx-auto mt-2 max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-500 dark:text-iris-100/35"
       >
         LexInSight can make mistakes. Verify legal information with official sources; this is not legal advice.
       </p>

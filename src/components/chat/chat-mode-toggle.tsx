@@ -52,11 +52,11 @@ export function ChatModeToggle({ showLabelOnMobile = false }: ChatModeToggleProp
           className="min-h-11 shrink-0 gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-slate-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-700 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322]/90 dark:text-slate-200 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
           aria-label={`Mode: ${activeMode.label}`}
         >
-          <ActiveIcon className="h-4 w-4" aria-hidden="true" />
+          <ActiveIcon className="h-4 w-4 text-iris-600 dark:text-iris-200" aria-hidden="true" />
           <span className={cn('text-sm font-semibold', showLabelOnMobile ? 'inline' : 'hidden min-[430px]:inline')}>
             {activeMode.label}
           </span>
-          <ChevronDown className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" aria-hidden="true" />
+          <ChevronDown className="h-3.5 w-3.5 text-iris-400/80 dark:text-iris-200/55" aria-hidden="true" />
         </Button>
       </DropdownMenuTrigger>
 

@@ -245,7 +245,7 @@ export function ChatInput() {
       
       <div className="mx-auto max-w-5xl cursor-text p-2.5 sm:p-4" onClick={focusTextareaFromShellClick}>
         {/* Input Area */}
-        <div className="flex items-end gap-1.5 rounded-lg border-2 border-slate-200 bg-white p-2 transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 sm:gap-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:focus-within:border-iris-300/70 dark:focus-within:ring-iris-400/20">
+        <div className="flex items-end gap-1.5 rounded-lg border-2 border-slate-200 bg-white p-2 shadow-none transition-all focus-within:border-iris-500 focus-within:ring-2 focus-within:ring-iris-100 sm:gap-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
           {/* File Upload Button (Compliance Mode Only) */}
           {mode === 'compliance' && (
             <>
