@@ -2830,6 +2830,222 @@ const LEGAL_CORPUS: LocalLegalDocument[] = [
       'Beneficiary organization and financial records lack privacy and retention safeguards.',
     ],
   },
+  {
+    id: 'ra-3019',
+    statute: 'RA 3019',
+    title: 'Republic Act No. 3019',
+    shortTitle: 'Anti-Graft and Corrupt Practices Act',
+    year: 1960,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1960/ra_3019_1960.html',
+    aliases: ['ra 3019', 'republic act 3019', 'anti graft and corrupt practices act', 'anti graft law', 'corrupt practices act'],
+    topics: ['anti-graft', 'public officers', 'conflict of interest', 'procurement integrity', 'public accountability'],
+    keywords: [
+      'graft',
+      'corruption',
+      'corrupt practice',
+      'public officer',
+      'undue injury',
+      'unwarranted benefit',
+      'manifestly disadvantageous',
+      'private interest',
+      'conflict of interest',
+      'kickback',
+    ],
+    summary:
+      'A public-accountability statute penalizing corrupt practices by public officers, including unwarranted benefits, undue injury, prohibited interests, and manifestly disadvantageous transactions. It is a practical screen for conflict, procurement, permit, and subsidy workflows.',
+    obligations: [
+      'For public transactions, grants, permits, procurement, inspections, benefits, or enforcement, identify decision makers, approval basis, conflict checks, documentation, and review or complaint routes.',
+      'Separate official discretion, supplier or beneficiary selection, private interests, gifts, fees, facilitation, and enforcement powers.',
+      'Require objective criteria, recusal, approval records, audit trail, and escalation for suspected unwarranted benefits or undue injury.',
+      'Avoid discretionary advantages, informal facilitation, or preferred access without legal basis, documented criteria, and accountability controls.',
+    ],
+    commonGaps: [
+      'Officials can approve permits, suppliers, subsidies, or penalties without conflict checks and objective criteria.',
+      'Gift, referral, facilitation, or preferred-access risks are not separated from ordinary processing.',
+      'No audit trail, complaint path, or escalation route for suspected unwarranted benefits.',
+    ],
+  },
+  {
+    id: 'ra-6713',
+    statute: 'RA 6713',
+    title: 'Republic Act No. 6713',
+    shortTitle: 'Code of Conduct and Ethical Standards for Public Officials and Employees',
+    year: 1989,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1989/ra_6713_1989.html',
+    aliases: ['ra 6713', 'republic act 6713', 'code of conduct and ethical standards', 'public officials code of conduct', 'saln law'],
+    topics: ['ethics', 'public officials', 'saln', 'conflict disclosure', 'public service standards'],
+    keywords: [
+      'saln',
+      'statement of assets liabilities and net worth',
+      'public disclosure',
+      'gift',
+      'conflict disclosure',
+      'divestment',
+      'public official',
+      'ethical standards',
+      'public trust',
+      'financial interest',
+    ],
+    summary:
+      'An ethics and disclosure framework for public officials and employees, covering public-service norms, conflicts of interest, gifts, divestment, disclosure, and SALN-related accountability.',
+    obligations: [
+      'For official conduct, hiring, procurement, benefits, inspection, permits, or board service, state ethical duties, disclosure, conflict review, gift rules, and complaint or disciplinary routing.',
+      'Treat SALN, financial-interest, family-interest, gift, employment, and post-decision records as sensitive accountability records with access and retention controls.',
+      'Separate citizen service standards, conflicts, recusal, disclosure, gifts, divestment, and data privacy.',
+      'Avoid requiring or publishing personal accountability records without authority, redaction, custody, and disclosure controls.',
+    ],
+    commonGaps: [
+      'Ethics policies mention integrity but omit conflicts, gifts, disclosure, recusal, and records custody.',
+      'SALN or financial-interest data is collected without access, redaction, retention, and authorized-disclosure controls.',
+      'Public-service norms are not translated into measurable service, complaint, or disciplinary workflows.',
+    ],
+  },
+  {
+    id: 'pd-1445',
+    statute: 'PD 1445',
+    title: 'Presidential Decree No. 1445',
+    shortTitle: 'Government Auditing Code of the Philippines',
+    year: 1978,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/presdecs/pd1978/pd_1445_1978.html',
+    aliases: ['pd 1445', 'presidential decree 1445', 'government auditing code', 'coa audit code', 'government audit'],
+    topics: ['public funds', 'government audit', 'coa', 'liquidation', 'accountability'],
+    keywords: [
+      'coa',
+      'commission on audit',
+      'public funds',
+      'disbursement',
+      'cash advance',
+      'liquidation',
+      'voucher',
+      'supporting documents',
+      'accountable officer',
+      'audit trail',
+    ],
+    summary:
+      'A public-funds and audit framework covering government receipts, expenditures, disbursements, accountable officers, supporting documents, liquidation, and COA audit controls.',
+    obligations: [
+      'For public funds, grants, reimbursements, procurement payments, cash advances, aid distribution, or asset custody, state authority, accountable officer, supporting documents, approval, liquidation, and audit records.',
+      'Separate budget authority, procurement, disbursement, inspection, acceptance, liquidation, inventory, reporting, and COA audit response.',
+      'Protect vouchers, payroll, beneficiary lists, bank details, receipts, inspection reports, and audit workpapers with access and retention controls.',
+      'Avoid releases, reimbursements, or advances without documentary support, liquidation timeline, segregation of duties, and audit trail.',
+    ],
+    commonGaps: [
+      'Cash advances, grants, or reimbursements lack liquidation deadlines and supporting-document rules.',
+      'Budget, procurement, payment, inspection, and acceptance roles are handled by the same office without segregation.',
+      'Public-funds records lack custody, retention, privacy, and audit-response routing.',
+    ],
+  },
+  {
+    id: 'ra-7080',
+    statute: 'RA 7080',
+    title: 'Republic Act No. 7080',
+    shortTitle: 'Plunder Act',
+    year: 1991,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1991/ra_7080_1991.html',
+    aliases: ['ra 7080', 'republic act 7080', 'plunder act', 'plunder law', 'ill gotten wealth'],
+    topics: ['plunder', 'public funds', 'ill-gotten wealth', 'public accountability', 'anti-corruption'],
+    keywords: [
+      'plunder',
+      'ill gotten wealth',
+      'public funds',
+      'misappropriation',
+      'conversion',
+      'kickback',
+      'commission',
+      'aggregate amount',
+      'conspiracy',
+      'public officer',
+    ],
+    summary:
+      'A high-severity anti-corruption statute focused on public officers who amass ill-gotten wealth through combinations or series of overt criminal acts involving public funds, kickbacks, commissions, or similar schemes.',
+    obligations: [
+      'For high-value public-funds, asset, procurement, subsidy, or concession workflows, add anti-collusion, conflict, audit, escalation, and law-enforcement referral controls.',
+      'Separate ordinary audit findings from suspected conversion, kickbacks, commissions, repeated schemes, asset accumulation, or conspiracy indicators.',
+      'Preserve evidence, approvals, payment records, beneficiary lists, supplier records, asset records, and complaints with chain-of-custody and confidentiality controls.',
+      'Avoid vague discretionary fund release or asset transfer authority without approval thresholds, segregation of duties, and independent audit review.',
+    ],
+    commonGaps: [
+      'High-value funds or assets can be released repeatedly without approval thresholds and independent review.',
+      'Kickback, commission, conversion, conflict, and collusion risks are not screened separately.',
+      'Evidence preservation and escalation paths for suspected serious corruption are missing.',
+    ],
+  },
+  {
+    id: 'ra-10149',
+    statute: 'RA 10149',
+    title: 'Republic Act No. 10149',
+    shortTitle: 'GOCC Governance Act of 2011',
+    year: 2011,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra2011/ra_10149_2011.html',
+    aliases: ['ra 10149', 'republic act 10149', 'gocc governance act', 'government owned or controlled corporation governance', 'gocc board'],
+    topics: ['gocc', 'corporate governance', 'public corporations', 'board accountability', 'performance governance'],
+    keywords: [
+      'gocc',
+      'government owned or controlled corporation',
+      'governance commission',
+      'board of directors',
+      'fit and proper',
+      'performance agreement',
+      'public corporate governance',
+      'compensation',
+      'director',
+      'trustee',
+    ],
+    summary:
+      'A governance framework for government-owned or controlled corporations, covering board accountability, fit-and-proper standards, performance agreements, compensation review, and oversight through the Governance Commission for GOCCs.',
+    obligations: [
+      'For GOCC, government corporate, subsidiary, board, or public-enterprise workflows, identify board duties, appointing or oversight body, fit-and-proper standards, performance targets, disclosures, compensation review, and audit controls.',
+      'Separate GOCC corporate governance from ordinary LGU, private corporation, procurement, public-service, compensation, and COA audit rules.',
+      'Protect board records, performance reports, conflict disclosures, compensation records, and sensitive corporate information.',
+      'Avoid board approvals, benefits, or transactions without conflict checks, performance basis, oversight route, and audit trail.',
+    ],
+    commonGaps: [
+      'GOCC or public-enterprise policies omit board accountability, performance targets, and oversight routing.',
+      'Director, trustee, compensation, and conflict disclosures lack custody and disclosure controls.',
+      'Corporate approvals are treated like ordinary office memoranda without governance or audit records.',
+    ],
+  },
+  {
+    id: 'ra-6758',
+    statute: 'RA 6758',
+    title: 'Republic Act No. 6758',
+    shortTitle: 'Compensation and Position Classification Act of 1989',
+    year: 1989,
+    sourceName: 'Lawphil',
+    sourceUrl: 'https://lawphil.net/statutes/repacts/ra1989/ra_6758_1989.html',
+    aliases: ['ra 6758', 'republic act 6758', 'compensation and position classification act', 'salary standardization', 'public sector compensation'],
+    topics: ['public compensation', 'salary grades', 'position classification', 'allowances', 'government personnel'],
+    keywords: [
+      'salary grade',
+      'position classification',
+      'compensation',
+      'allowance',
+      'honorarium',
+      'benefits',
+      'government personnel',
+      'public officer',
+      'dbm',
+      'standardized salary',
+    ],
+    summary:
+      'A public-sector compensation framework for standardized salaries, position classification, allowances, benefits, and government personnel pay controls.',
+    obligations: [
+      'For salary, allowance, honorarium, incentive, benefit, staffing, or position policies, state legal authority, eligible positions, salary grade or classification, funding source, approval office, and audit records.',
+      'Separate employee compensation from procurement payments, grants, consultancy contracts, rewards, social benefits, and GOCC compensation controls.',
+      'Protect payroll, personnel, eligibility, appointment, and benefit records with privacy, retention, and access controls.',
+      'Avoid ad hoc allowances, honoraria, incentives, or benefits without legal basis, position classification, funding, and audit review.',
+    ],
+    commonGaps: [
+      'Allowances, honoraria, or incentives are created without legal basis, eligibility, salary-grade, or DBM/approval review.',
+      'Payroll, appointment, and benefit records lack custody, privacy, and audit controls.',
+      'Compensation, contractor payments, and beneficiary grants are mixed without classification.',
+    ],
+  },
 ]
 
 const TOPIC_EXPANSIONS = [
@@ -2884,6 +3100,30 @@ const TOPIC_EXPANSIONS = [
   {
     triggers: ['permit', 'license', 'clearance', 'service', 'transaction', 'citizen charter', 'red tape'],
     expansions: ['ease of doing business', 'citizen charter', 'processing time', 'anti red tape'],
+  },
+  {
+    triggers: ['graft', 'corruption', 'corrupt practice', 'conflict of interest', 'kickback', 'unwarranted benefit'],
+    expansions: ['anti graft and corrupt practices', 'conflict checks', 'recusal', 'audit trail'],
+  },
+  {
+    triggers: ['saln', 'code of conduct', 'ethical standards', 'gift', 'public official', 'financial interest'],
+    expansions: ['code of conduct and ethical standards', 'saln', 'gift rules', 'conflict disclosure'],
+  },
+  {
+    triggers: ['coa', 'audit', 'public funds', 'cash advance', 'liquidation', 'voucher', 'disbursement'],
+    expansions: ['government auditing code', 'commission on audit', 'supporting documents', 'liquidation'],
+  },
+  {
+    triggers: ['plunder', 'ill gotten wealth', 'misappropriation', 'conversion', 'commission', 'aggregate amount'],
+    expansions: ['plunder act', 'ill gotten wealth', 'public funds', 'evidence preservation'],
+  },
+  {
+    triggers: ['gocc', 'government owned or controlled corporation', 'gocc board', 'performance agreement', 'fit and proper'],
+    expansions: ['gocc governance act', 'board accountability', 'performance agreement', 'governance commission'],
+  },
+  {
+    triggers: ['salary grade', 'position classification', 'honorarium', 'allowance', 'public sector compensation', 'dbm'],
+    expansions: ['compensation and position classification', 'salary grade', 'public sector compensation', 'allowance controls'],
   },
   {
     triggers: ['cyber', 'computer', 'online fraud', 'account', 'platform', 'hacking', 'phishing'],
@@ -3185,6 +3425,42 @@ const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'Permits and clearances do not allow open-ended extra requirements after filing.',
       'Fees, fines, supplier preferences, and license conditions have authority, objective criteria, and due process.',
       'Records, reports, and citizen data have retention and access controls.',
+    ],
+  },
+  {
+    id: 'public-accountability-and-government-funds',
+    title: 'Public Accountability, Ethics, Audit, and Government Funds Stack',
+    triggers: [
+      'graft',
+      'corruption',
+      'conflict of interest',
+      'saln',
+      'gift',
+      'coa audit',
+      'public funds',
+      'cash advance',
+      'liquidation',
+      'disbursement',
+      'plunder',
+      'gocc',
+      'salary grade',
+      'honorarium',
+      'allowance',
+    ],
+    lawIds: ['ra-3019', 'ra-6713', 'pd-1445', 'ra-7080', 'ra-10149', 'ra-6758', 'ra-12009', 'ra-11032', 'ra-7160'],
+    summary:
+      'Use this when public officers, public funds, official discretion, supplier or beneficiary selection, GOCCs, compensation, gifts, conflicts, liquidation, or COA audit exposure overlap.',
+    sequence: [
+      'Classify the public action: official decision, procurement, grant, permit, disbursement, cash advance, asset custody, GOCC board action, or compensation item.',
+      'Map authority, decision maker, conflict checks, beneficiary or supplier criteria, supporting documents, approval thresholds, accountable officer, and audit route.',
+      'Separate ethics, anti-graft, audit, procurement, service delivery, public compensation, GOCC governance, privacy, and criminal-escalation issues.',
+      'Preserve evidence such as approvals, vouchers, receipts, liquidation reports, conflict disclosures, SALN or financial-interest records, board minutes, and complaints.',
+    ],
+    checkpoints: [
+      'Decision makers, approving bodies, accountable officers, and reviewers are named with segregation of duties.',
+      'Conflicts, gifts, private interests, supplier or beneficiary preferences, and unwarranted-benefit risks have disclosure, recusal, and complaint controls.',
+      'Public funds, cash advances, payments, grants, assets, and compensation items have authority, support documents, liquidation, retention, and COA audit trails.',
+      'High-value or repeated transactions have escalation, evidence preservation, and independent review for serious corruption or plunder-risk indicators.',
     ],
   },
   {
@@ -4574,6 +4850,125 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(graft|corruption|corrupt practice|conflict of interest|kickback|unwarranted benefit|undue injury|manifestly disadvantageous|private interest)\b/.test(normalizedDraft)) {
+    const hasConflictControls = /\b(disclosure|conflict check|recusal|inhibit|private interest|financial interest|gift rule)\b/.test(normalizedDraft)
+    const hasObjectiveCriteria = /\b(objective criteria|eligibility|selection criteria|evaluation|approval basis|written justification)\b/.test(normalizedDraft)
+    const hasAccountabilityRoute = /\b(audit trail|complaint|investigation|escalation|disciplinary|ombudsman|authorized report)\b/.test(normalizedDraft)
+
+    if (!(hasConflictControls && hasObjectiveCriteria && hasAccountabilityRoute)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Anti-graft safeguards are incomplete',
+          'Graft, corruption, conflict-of-interest, kickback, unwarranted-benefit, or disadvantageous-transaction language was detected without enough disclosure, recusal, objective criteria, complaint, or audit controls.',
+          'Add conflict disclosure, recusal rules, objective selection or approval criteria, written justifications, audit trail, complaint handling, and escalation for suspected corrupt practices.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-3019') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(saln|statement of assets|code of conduct|ethical standards|gift|public official|financial interest|divestment)\b/.test(normalizedDraft)) {
+    const hasEthicsDisclosure = /\b(disclosure|saln|financial interest|family interest|gift rule|divestment|recusal)\b/.test(normalizedDraft)
+    const hasEthicsCustody = /\b(custody|redaction|authorized disclosure|confidential|access control|retention|records)\b/.test(normalizedDraft)
+    const hasEthicsComplaint = /\b(complaint|disciplinary|review|investigation|appeal|ethics committee|human resources)\b/.test(normalizedDraft)
+
+    if (!(hasEthicsDisclosure && hasEthicsCustody && hasEthicsComplaint)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Public-official ethics controls need more detail',
+          'SALN, code-of-conduct, gift, public-official, financial-interest, or divestment language was detected without enough disclosure, custody, complaint, or disciplinary controls.',
+          'Add disclosure and gift rules, conflict and recusal review, SALN or financial-interest record custody, redaction and retention rules, complaint intake, investigation, and disciplinary routing.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-6713') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(coa|commission on audit|public funds|cash advance|liquidation|disbursement|voucher|accountable officer|reimbursement|government funds)\b/.test(normalizedDraft)) {
+    const hasAuditAuthority = /\b(appropriation|funding source|allotment|obligation|accountable officer|approving officer|authority)\b/.test(normalizedDraft)
+    const hasAuditDocuments = /\b(supporting documents|voucher|receipt|invoice|inspection|acceptance|payroll|beneficiary list)\b/.test(normalizedDraft)
+    const hasLiquidation = /\b(liquidation|audit trail|coa|segregation of duties|reconciliation|retention|reporting)\b/.test(normalizedDraft)
+
+    if (!(hasAuditAuthority && hasAuditDocuments && hasLiquidation)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Public-funds audit controls are incomplete',
+          'Public funds, cash advance, liquidation, disbursement, voucher, reimbursement, or COA audit language was detected without enough authority, supporting documents, liquidation, segregation, or audit-trail controls.',
+          'Add funding authority, accountable officer, approving officer, supporting documents, voucher or receipt requirements, inspection and acceptance, liquidation timelines, segregation of duties, retention, and COA audit response.',
+          8,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-1445') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(plunder|ill gotten wealth|misappropriation|conversion of funds|kickback|commission|series of transactions|aggregate amount)\b/.test(normalizedDraft)) {
+    const hasHighRiskControls = /\b(approval threshold|independent review|anti collusion|segregation of duties|conflict check|asset inventory)\b/.test(normalizedDraft)
+    const hasEvidenceControls = /\b(evidence preservation|chain of custody|audit trail|complaint|escalation|authorized referral|investigation)\b/.test(normalizedDraft)
+
+    if (!(hasHighRiskControls && hasEvidenceControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'High-value corruption risk controls are incomplete',
+          'Plunder, ill-gotten wealth, misappropriation, conversion, kickback, commission, repeated-transaction, or aggregate-amount language was detected without enough independent review, evidence preservation, or escalation controls.',
+          'Add approval thresholds, anti-collusion and conflict checks, segregation of duties, asset or payment inventory, evidence preservation, chain of custody, independent audit review, complaint handling, and authorized referral.',
+          9,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7080') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(gocc|government owned or controlled corporation|government-owned or controlled corporation|governance commission|gocc board|public corporate governance)\b/.test(normalizedDraft)) {
+    const hasGoccBoardControls = /\b(board|director|trustee|fit and proper|appointment|oversight|governance commission)\b/.test(normalizedDraft)
+    const hasGoccPerformanceControls = /\b(performance agreement|performance target|disclosure|compensation review|audit|conflict)\b/.test(normalizedDraft)
+    const hasGoccRecords = /\b(minutes|record|report|retention|confidential|authorized disclosure|custody)\b/.test(normalizedDraft)
+
+    if (!(hasGoccBoardControls && hasGoccPerformanceControls && hasGoccRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'GOCC governance controls need more detail',
+          'GOCC, government corporate, governance commission, or public corporate governance language was detected without enough board, fit-and-proper, performance, compensation, conflict, audit, or records controls.',
+          'Add board and officer duties, fit-and-proper review, oversight body, performance targets or agreements, compensation review, conflict disclosure, audit trail, board minutes, records custody, and authorized disclosure rules.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10149') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(salary grade|position classification|honorarium|allowance|public sector compensation|government personnel|standardized salary|dbm)\b/.test(normalizedDraft)) {
+    const hasCompAuthority = /\b(legal basis|salary grade|position classification|dbm|approval|appropriation|funding source)\b/.test(normalizedDraft)
+    const hasCompEligibility = /\b(eligible position|employee classification|appointment|payroll|benefit criteria|personnel record)\b/.test(normalizedDraft)
+    const hasCompAudit = /\b(audit|record|retention|payroll|supporting documents|review|liquidation)\b/.test(normalizedDraft)
+
+    if (!(hasCompAuthority && hasCompEligibility && hasCompAudit)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Public-sector compensation controls are incomplete',
+          'Salary grade, position classification, honorarium, allowance, government personnel, or public-sector compensation language was detected without enough authority, eligibility, funding, approval, payroll, or audit controls.',
+          'Add legal basis, salary grade or position classification, eligible positions, funding source, approval office, DBM or compensation review where relevant, payroll records, privacy, retention, and audit trail.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-6758') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
   if (/\b(cyber|computer|online fraud|phishing|hacking|account compromise|system access|platform|electronic evidence)\b/.test(normalizedDraft)) {
     if (!/\b(incident report|evidence preservation|access control|authorized officer|law enforcement|data breach|audit log|retention|referral)\b/.test(normalizedDraft)) {
       findings.amber.push(
@@ -4957,9 +5352,9 @@ function applyTopicSpecificDraftChecks(
   }
 
   if (/\b(indigenous peoples|indigenous cultural communities|ancestral domain|ancestral land|fpic|free prior informed consent|ncip|customary law)\b/.test(normalizedDraft)) {
-    const hasCommunityIdentification = /\b(affected community|ancestral domain|ancestral land|community map|customary law|indigenous cultural)\b/.test(normalizedDraft)
+    const hasCommunityIdentification = /\b(affected communit(?:y|ies)|ancestral domain|ancestral land|community map|customary law|indigenous cultural)\b/.test(normalizedDraft)
     const hasFpicProcess = /\b(fpic|free prior informed consent|ncip|consent process|community assembly|consultation)\b/.test(normalizedDraft)
-    const hasCulturalSafeguards = /\b(cultural|sacred|benefit sharing|grievance|confidential|records|monitoring)\b/.test(normalizedDraft)
+    const hasCulturalSafeguards = /\b(cultural safeguard|cultural integrity|sacred site|benefit sharing|grievance|confidential community|customary record|fpic record)\b/.test(normalizedDraft)
 
     if (!(hasCommunityIdentification && hasFpicProcess && hasCulturalSafeguards)) {
       findings.amber.push(
@@ -4971,6 +5366,86 @@ function applyTopicSpecificDraftChecks(
           'Add ancestral-domain screening, affected-community identification, NCIP coordination, FPIC process, customary decision path, cultural and sacred-site safeguards, benefit-sharing, grievance, confidentiality, and monitoring records.',
           8,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8371') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(agriculture|fisheries|farmers|fisherfolk|irrigation|post harvest|rural credit|food security|farm support|farm input)\b/.test(normalizedDraft)) {
+    const hasAgriEligibility = /\b(eligible|beneficiary|farmer registry|fisherfolk registry|selection criteria|organization|cooperative)\b/.test(normalizedDraft)
+    const hasAgriDeliveryControls = /\b(inventory|distribution|procurement|market access|credit|post harvest|irrigation|support package)\b/.test(normalizedDraft)
+    const hasAgriAudit = /\b(audit|monitoring|grievance|inspection|reporting|retention|conflict)\b/.test(normalizedDraft)
+
+    if (!(hasAgriEligibility && hasAgriDeliveryControls && hasAgriAudit)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Agriculture support controls are incomplete',
+          'Agriculture, fisheries, farmer, fisherfolk, irrigation, post-harvest, rural-credit, food-security, or farm-support language was detected without enough eligibility, delivery, inventory, audit, grievance, or records controls.',
+          'Add beneficiary or organization eligibility, support-package details, inventory and distribution controls, procurement path, market-access or credit criteria, monitoring, grievance, conflict checks, and retention rules.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8435') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(organic agriculture|organic farming|organic labels?|organic certification|organic products?|organic inputs?)\b/.test(normalizedDraft)) {
+    const hasOrganicCertification = /\b(certification|accreditation|certifying body|verified|inspection|audit)\b/.test(normalizedDraft)
+    const hasOrganicTraceability = /\b(traceability|label|labeling|permitted input|production record|farm record|supplier record)\b/.test(normalizedDraft)
+    const hasOrganicComplaint = /\b(complaint|corrective action|recall|consumer|market monitoring|records retention)\b/.test(normalizedDraft)
+
+    if (!(hasOrganicCertification && hasOrganicTraceability && hasOrganicComplaint)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Organic agriculture controls are incomplete',
+          'Organic agriculture, organic farming, organic label, certification, product, or input language was detected without enough certification, traceability, labeling, inspection, complaint, or corrective-action controls.',
+          'Add certification or accreditation review, permitted-input rules, traceability records, labeling controls, inspection cadence, complaint handling, corrective action, and retention of certification evidence.',
+          6,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10068') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(food safety|food business|food chain|traceability|contamination|food recall|food vendor|public market vendor)\b/.test(normalizedDraft)) {
+    const hasFoodInspection = /\b(inspection|sanitary|risk analysis|standard|permit|food business operator|supplier verification)\b/.test(normalizedDraft)
+    const hasFoodTraceability = /\b(traceability|batch|supplier record|vendor record|storage|distribution|temperature|chain)\b/.test(normalizedDraft)
+    const hasFoodResponse = /\b(recall|contamination|corrective action|complaint|reporting|retention|regulator)\b/.test(normalizedDraft)
+
+    if (!(hasFoodInspection && hasFoodTraceability && hasFoodResponse)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Food-safety controls are incomplete',
+          'Food-safety, food-chain, traceability, contamination, recall, food-business, vendor, or public-market language was detected without enough inspection, traceability, complaint, recall, regulator, or records controls.',
+          'Add food-chain role, inspection standards, supplier and batch traceability, storage controls, complaint intake, contamination response, recall steps, regulator coordination, retention, and corrective-action records.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10611') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(sagip saka|farmers organization|fisherfolk organization|direct purchase|agri enterprise|market linkage|enterprise development)\b/.test(normalizedDraft)) {
+    const hasEnterpriseEligibility = /\b(eligible organization|organization eligibility|selection criteria|farmer organization|farmers organization|fisherfolk organization|organization registration|enterprise registration|accreditation)\b/.test(normalizedDraft)
+    const hasEnterpriseProcurement = /\b(direct purchase|procurement|market linkage|purchase order|price|delivery|performance)\b/.test(normalizedDraft)
+    const hasEnterpriseIntegrity = /\b(conflict check|conflict of interest|audit trail|performance monitoring|grievance|beneficiary validation|retention rules)\b/.test(normalizedDraft)
+
+    if (!(hasEnterpriseEligibility && hasEnterpriseProcurement && hasEnterpriseIntegrity)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Sagip Saka enterprise controls are incomplete',
+          'Sagip Saka, farmers organization, fisherfolk organization, direct purchase, agri-enterprise, market-linkage, or enterprise-development language was detected without enough organization eligibility, procurement, conflict, audit, monitoring, or grievance controls.',
+          'Add organization eligibility and registration checks, objective selection, direct-purchase or procurement route, price and delivery controls, conflict checks, audit trail, monitoring, grievance handling, and retention rules.',
+          7,
+          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11321') || LEGAL_CORPUS[0])]
         )
       )
     }

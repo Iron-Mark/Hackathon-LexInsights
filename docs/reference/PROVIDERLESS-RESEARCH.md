@@ -25,14 +25,14 @@ npm run check:document-extraction:self-test
 
 The self-test compiles [local-legal-research.ts](../../src/lib/services/local-legal-research.ts) with TypeScript and executes it in Node. It verifies:
 
-- Corpus coverage for core statutes and official issuances, including procurement, government service delivery, cybercrime, consumer protection, competition, financial consumer protection, hazardous substances, SIM registration, customs, tax administration, PhilSys, protected areas, labor, health, social welfare, IP, securities, FDA, heritage, built environment, sanitation, accessibility, child protection, migrant workers, bank secrecy, price controls, MSME/BMBE support, renewable energy, climate, fisheries, mining, education, records, FOI, housing, and social-benefit topics.
+- Corpus coverage for core statutes and official issuances, including procurement, government service delivery, cybercrime, consumer protection, competition, financial consumer protection, hazardous substances, SIM registration, customs, tax administration, PhilSys, public accountability, anti-graft, ethics, COA audit, GOCC governance, public-sector compensation, transport, public services, land titles, FPIC, agriculture, organic agriculture, food safety, protected areas, labor, health, social welfare, IP, securities, FDA, heritage, built environment, sanitation, accessibility, child protection, migrant workers, bank secrecy, price controls, MSME/BMBE support, renewable energy, climate, fisheries, mining, education, records, FOI, housing, and social-benefit topics.
 - RA 9003, RA 11058, and RA 10173 research matching.
-- RA 12009, RA 11032, RA 10175, RA 7394, RA 10667, RA 11765, RA 6969, RA 11285, RA 11934, RA 9995, RA 10627, RA 10863, RA 11976, RA 11055, RA 11038, PD 442, RA 10911, RA 11036, RA 9262, RA 10364, RA 8293, RA 8799, RA 9711, RA 11223, RA 10066, RA 9994, RA 7277, PD 1096, PD 856, BP 344, RA 7610, RA 8042, RA 1405, RA 7581, RA 9178, RA 9501, RA 9513, RA 9729, RA 8550, RA 7942, RA 10533, RA 10931, RA 7279, RA 11201, RA 9470, EO 2 s. 2016, RA 11310, RA 11861, RA 11596, and RA 11510 research matching.
+- RA 12009, RA 11032, RA 10175, RA 7394, RA 10667, RA 11765, RA 6969, RA 11285, RA 11934, RA 9995, RA 10627, RA 10863, RA 11976, RA 11055, RA 11038, RA 4136, RA 11659, RA 8371, PD 1529, RA 8435, RA 10068, RA 10611, RA 11321, RA 3019, RA 6713, PD 1445, RA 7080, RA 10149, RA 6758, PD 442, RA 10911, RA 11036, RA 9262, RA 10364, RA 8293, RA 8799, RA 9711, RA 11223, RA 10066, RA 9994, RA 7277, PD 1096, PD 856, BP 344, RA 7610, RA 8042, RA 1405, RA 7581, RA 9178, RA 9501, RA 9513, RA 9729, RA 8550, RA 7942, RA 10533, RA 10931, RA 7279, RA 11201, RA 9470, EO 2 s. 2016, RA 11310, RA 11861, RA 11596, and RA 11510 research matching.
 - Common citation formats such as `R.A. No. 10173` and `RA No. 8792`.
 - Deep Search providerless metadata.
 - No-result behavior for unrelated queries.
 - Draft warnings when a cited Republic Act is outside the bundled local corpus.
-- Draft warnings for thin procurement, service-delivery, cyber incident, consumer-protection, financial-consumer, hazardous-waste, competition, SIM/mobile-number, labor, mental-health, anti-trafficking, IP, securities, health-product, senior-citizen, PWD, built-environment, sanitation, child-protection, migrant-worker, bank-secrecy, price-control, renewable-energy, climate, fisheries, mining, education, records, FOI, housing, social-assistance, solo-parent, and child-marriage controls.
+- Draft warnings for thin procurement, service-delivery, public-accountability, anti-graft, ethics, public-funds audit, GOCC governance, compensation, transport, public-service, land-title, FPIC, agriculture, organic-agriculture, food-safety, Sagip Saka, cyber incident, consumer-protection, financial-consumer, hazardous-waste, competition, SIM/mobile-number, labor, mental-health, anti-trafficking, IP, securities, health-product, senior-citizen, PWD, built-environment, sanitation, child-protection, migrant-worker, bank-secrecy, price-control, renewable-energy, climate, fisheries, mining, education, records, FOI, housing, social-assistance, solo-parent, and child-marriage controls.
 - Red findings for risky privacy and penalty drafting.
 - Green findings for a stronger solid-waste ordinance draft.
 - Local health-check metadata.
@@ -55,9 +55,9 @@ The upload limit is 5MB. Scanned image-only PDFs may fail with `Document extract
 The providerless research path is deterministic:
 
 1. Normalize the query, strip punctuation, remove common stop words, and extract Republic Act numbers from common formats such as `RA 9003`, `RA No. 9003`, `R.A. No. 9003`, and `Republic Act Number 9003`.
-2. Expand terms through legal-topic triggers such as waste, privacy, workplace safety, fire safety, DRRM, air, water, LGU authority, corporate governance, harassment, electronic records, procurement, government services, cybercrime, consumer protection, labor, health, welfare, IP, securities, FDA, heritage, building permits, sanitation, accessibility, child protection, migrant workers, bank secrecy, price controls, renewable energy, climate, fisheries, mining, education, records, FOI, housing, and social benefits.
+2. Expand terms through legal-topic triggers such as waste, privacy, workplace safety, fire safety, DRRM, air, water, LGU authority, corporate governance, harassment, electronic records, procurement, government services, public accountability, anti-graft, ethics, audit, public funds, compensation, transport, land titles, FPIC, agriculture, food safety, cybercrime, consumer protection, labor, health, welfare, IP, securities, FDA, heritage, building permits, sanitation, accessibility, child protection, migrant workers, bank secrecy, price controls, renewable energy, climate, fisheries, mining, education, records, FOI, housing, and social benefits.
 3. Score the bundled corpus with BM25-style term ranking plus boosts for exact RA numbers, statute aliases, short titles, and topic phrases.
-4. Add a local compliance-framework section when a query matches a cross-law workflow such as incident response, LGU service delivery, environmental operations, health and welfare, IP/investment/product claims, or procurement/imports.
+4. Add a local compliance-framework section when a query matches a cross-law workflow such as incident response, LGU service delivery, public accountability and government funds, environmental operations, mobility and land/agriculture workflows, health and welfare, IP/investment/product claims, or procurement/imports.
 5. Return the top matches with source links, citation coverage, matched terms, practical checklists, and common gaps. Standard local research returns up to six matches; deep local search returns up to ten.
 6. Generate Markdown through templates only. Local mode does not call an AI model.
 
@@ -67,7 +67,9 @@ When a query spans multiple topics, local mode can synthesize a practical cross-
 
 - Data, cyber, and mobile incident response.
 - LGU ordinance, permit, and service delivery.
+- Public accountability, ethics, audit, and government funds.
 - Environmental operations and facility controls.
+- Mobility, land, agriculture, and community rights.
 - Consumer, financial, commerce, AML, and tax workflows.
 - Workplace, school, public safety, and protection.
 - Health, welfare, accessibility, and protection.
@@ -83,7 +85,7 @@ The providerless draft checker uses structural and topic-specific heuristics:
 - Prioritizes explicitly cited local-corpus authorities in finding references.
 - Flags amber findings when a draft cites a Republic Act that is not in the bundled local corpus.
 - Flags red findings when penalties appear without notice, hearing, appeal, or reconsideration safeguards.
-- Adds topic checks for privacy, solid waste, workplace safety, fire safety, DRRM, water quality, air quality, digital records, procurement, government service delivery, cyber incidents, consumer protection, competition, financial consumers, hazardous substances, energy efficiency, SIM and mobile-number data, private image abuse, harassment, bullying, customs, tax administration, PhilSys identity handling, protected areas, labor, age discrimination, mental health, VAWC, trafficking, IP, securities, FDA-regulated products, health service delivery, cultural heritage, senior-citizen benefits, PWD accessibility, building and occupancy, sanitation, physical accessibility, child protection, migrant workers, bank deposits, price controls, micro and small business support, renewable energy, climate action, fisheries, mining, education, student aid, alternative learning, records management, FOI requests, housing, social assistance, solo-parent benefits, and child-marriage prevention.
+- Adds topic checks for privacy, solid waste, workplace safety, fire safety, DRRM, water quality, air quality, digital records, procurement, government service delivery, public accountability, anti-graft, ethics and SALN/gifts, public-funds audit, plunder-risk indicators, GOCC governance, public-sector compensation, transport, public-service operators, land-title verification, FPIC, agriculture support, organic agriculture, food safety, Sagip Saka enterprise support, cyber incidents, consumer protection, competition, financial consumers, hazardous substances, energy efficiency, SIM and mobile-number data, private image abuse, harassment, bullying, customs, tax administration, PhilSys identity handling, protected areas, labor, age discrimination, mental health, VAWC, trafficking, IP, securities, FDA-regulated products, health service delivery, cultural heritage, senior-citizen benefits, PWD accessibility, building and occupancy, sanitation, physical accessibility, child protection, migrant workers, bank deposits, price controls, micro and small business support, renewable energy, climate action, fisheries, mining, education, student aid, alternative learning, records management, FOI requests, housing, social assistance, solo-parent benefits, and child-marriage prevention.
 - Computes a conservative compliance score from green, amber, and red findings.
 
 This catches common drafting gaps. It does not determine legality, validity, or enforceability.
@@ -154,6 +156,20 @@ The local corpus intentionally stays small and auditable:
 - [RA 11861 - Expanded Solo Parents Welfare Act](https://lawphil.net/statutes/repacts/ra2022/ra_11861_2022.html)
 - [RA 11596 - Prohibition of Child Marriage Law](https://lawphil.net/statutes/repacts/ra2021/ra_11596_2021.html)
 - [RA 11510 - Alternative Learning System Act](https://lawphil.net/statutes/repacts/ra2020/ra_11510_2020.html)
+- [RA 4136 - Land Transportation and Traffic Code](https://lawphil.net/statutes/repacts/ra1964/ra_4136_1964.html)
+- [RA 11659 - Public Service Act Amendments](https://lawphil.net/statutes/repacts/ra2022/ra_11659_2022.html)
+- [RA 8371 - Indigenous Peoples Rights Act of 1997](https://lawphil.net/statutes/repacts/ra1997/ra_8371_1997.html)
+- [PD 1529 - Property Registration Decree](https://lawphil.net/statutes/presdecs/pd1978/pd_1529_1978.html)
+- [RA 8435 - Agriculture and Fisheries Modernization Act of 1997](https://lawphil.net/statutes/repacts/ra1997/ra_8435_1997.html)
+- [RA 10068 - Organic Agriculture Act of 2010](https://lawphil.net/statutes/repacts/ra2010/ra_10068_2010.html)
+- [RA 10611 - Food Safety Act of 2013](https://lawphil.net/statutes/repacts/ra2013/ra_10611_2013.html)
+- [RA 11321 - Sagip Saka Act](https://lawphil.net/statutes/repacts/ra2019/ra_11321_2019.html)
+- [RA 3019 - Anti-Graft and Corrupt Practices Act](https://lawphil.net/statutes/repacts/ra1960/ra_3019_1960.html)
+- [RA 6713 - Code of Conduct and Ethical Standards for Public Officials and Employees](https://lawphil.net/statutes/repacts/ra1989/ra_6713_1989.html)
+- [PD 1445 - Government Auditing Code of the Philippines](https://lawphil.net/statutes/presdecs/pd1978/pd_1445_1978.html)
+- [RA 7080 - Plunder Act](https://lawphil.net/statutes/repacts/ra1991/ra_7080_1991.html)
+- [RA 10149 - GOCC Governance Act of 2011](https://lawphil.net/statutes/repacts/ra2011/ra_10149_2011.html)
+- [RA 6758 - Compensation and Position Classification Act of 1989](https://lawphil.net/statutes/repacts/ra1989/ra_6758_1989.html)
 
 ## Limits
 

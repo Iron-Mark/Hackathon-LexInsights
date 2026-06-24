@@ -110,8 +110,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 60, 'Local corpus should include at least 60 authorities')
-  assert.ok(frameworks.length >= 11, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 74, 'Local corpus should include at least 74 authorities')
+  assert.ok(frameworks.length >= 12, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -139,6 +139,14 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'education-housing-records-and-benefits'),
     'Frameworks should include education, housing, records, and benefits'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'mobility-land-agriculture-and-community-rights'),
+    'Frameworks should include mobility, land, agriculture, and community rights'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'public-accountability-and-government-funds'),
+    'Frameworks should include public accountability and government funds'
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
@@ -196,6 +204,20 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 11861'), 'Corpus should include RA 11861')
   assert.ok(corpus.some((document) => document.statute === 'RA 11596'), 'Corpus should include RA 11596')
   assert.ok(corpus.some((document) => document.statute === 'RA 11510'), 'Corpus should include RA 11510')
+  assert.ok(corpus.some((document) => document.statute === 'RA 4136'), 'Corpus should include RA 4136')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11659'), 'Corpus should include RA 11659')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8371'), 'Corpus should include RA 8371')
+  assert.ok(corpus.some((document) => document.statute === 'PD 1529'), 'Corpus should include PD 1529')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8435'), 'Corpus should include RA 8435')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10068'), 'Corpus should include RA 10068')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10611'), 'Corpus should include RA 10611')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11321'), 'Corpus should include RA 11321')
+  assert.ok(corpus.some((document) => document.statute === 'RA 3019'), 'Corpus should include RA 3019')
+  assert.ok(corpus.some((document) => document.statute === 'RA 6713'), 'Corpus should include RA 6713')
+  assert.ok(corpus.some((document) => document.statute === 'PD 1445'), 'Corpus should include PD 1445')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7080'), 'Corpus should include RA 7080')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10149'), 'Corpus should include RA 10149')
+  assert.ok(corpus.some((document) => document.statute === 'RA 6758'), 'Corpus should include RA 6758')
 
   assertResearchMatch(
     runLocalResearch(
@@ -286,6 +308,76 @@ try {
     ),
     'RA 11032',
     'service delivery query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What anti-graft controls apply to conflict of interest, kickbacks, unwarranted benefits, and supplier selection?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 3019',
+    'anti-graft query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What SALN, gift, financial interest, and code of conduct controls apply to public officials?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 6713',
+    'public ethics query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What COA audit, cash advance, liquidation, voucher, and public funds controls should a local aid program include?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'PD 1445',
+    'government audit query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What plunder and ill-gotten wealth red flags apply to repeated public funds conversion, kickbacks, and commissions?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7080',
+    'plunder query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What GOCC board, fit and proper, performance agreement, and compensation review controls apply to a public corporation?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10149',
+    'GOCC governance query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What salary grade, honorarium, allowance, position classification, and DBM controls apply to government personnel compensation?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 6758',
+    'public compensation query'
+  )
+
+  const publicAccountabilityFrameworkResponse = runLocalResearch(
+    {
+      query: 'What public accountability checks apply to a local cash aid program with supplier selection, conflict of interest, COA liquidation, public funds, gifts, and honoraria?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(publicAccountabilityFrameworkResponse, 'RA 3019', 'public accountability framework anti-graft query')
+  assertResearchMatch(publicAccountabilityFrameworkResponse, 'PD 1445', 'public accountability framework audit query')
+  assertIncludes(
+    publicAccountabilityFrameworkResponse.summary,
+    'Public Accountability, Ethics, Audit, and Government Funds Stack',
+    'Public accountability framework title'
   )
 
   assertResearchMatch(
@@ -495,6 +587,86 @@ try {
     ),
     'RA 11055',
     'philsys query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What traffic ordinance controls apply to driver license, vehicle registration, parking, and road safety enforcement?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 4136',
+    'traffic transport query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What public service franchise and public utility safeguards apply to a transport or telecom operator?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11659',
+    'public service query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What land title, Torrens, register of deeds, encumbrance, and survey plan checks apply to a relocation project?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'PD 1529',
+    'property registration query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What FPIC, NCIP, customary law, and ancestral domain safeguards apply to an infrastructure project?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8371',
+    'indigenous peoples query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What agriculture and fisheries modernization controls apply to farm support, irrigation, rural credit, and market access?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8435',
+    'agriculture modernization query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What organic agriculture certification, organic label, farm input, and traceability controls apply to local food procurement?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10068',
+    'organic agriculture query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What food safety, food chain, contamination, traceability, inspection, and recall controls apply to public market vendors?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10611',
+    'food safety query'
+  )
+
+  const mobilityLandAgriFrameworkResponse = runLocalResearch(
+    {
+      query: 'What traffic, public utility, land title, FPIC, agriculture, food safety, organic, and Sagip Saka controls should an LGU project check?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(mobilityLandAgriFrameworkResponse, 'RA 4136', 'mobility framework traffic query')
+  assertResearchMatch(mobilityLandAgriFrameworkResponse, 'RA 8371', 'mobility framework FPIC query')
+  assertResearchMatch(mobilityLandAgriFrameworkResponse, 'RA 11321', 'mobility framework Sagip Saka query')
+  assertIncludes(
+    mobilityLandAgriFrameworkResponse.summary,
+    'Mobility, Land, Agriculture, and Community Rights Stack',
+    'Mobility land agriculture framework title'
   )
 
   assertResearchMatch(
@@ -820,6 +992,78 @@ This ordinance takes effect 30 days after publication.`
   )
   assert.equal(thinServiceDraftResponse.status, 'success', 'Service delivery draft check should succeed locally')
   assertFinding(thinServiceDraftResponse, 'amber', 'Government service delivery')
+
+  const thinPublicAccountabilityDraft = `# Public Funds Integrity and GOCC Support Policy
+
+## Purpose
+This policy handles public funds, cash advance, liquidation, COA audit, supplier selection, conflict of interest, gifts, SALN, plunder red flags, kickback reports, GOCC board actions, honorarium, allowance, and salary grade issues.
+
+## Legal Basis
+Pursuant to RA 3019, RA 6713, PD 1445, RA 7080, RA 10149, and RA 6758.
+
+## Scope
+This applies to public officials, accountable officers, suppliers, and government personnel.
+
+## Responsible Office
+The administration office shall implement this policy.
+
+## Requirements
+Officials shall process public funds, select suppliers, receive gift reports, release allowances, and monitor GOCC board actions.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinPublicAccountabilityDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinPublicAccountabilityDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinPublicAccountabilityDraftResponse.status, 'success', 'Public accountability draft check should succeed locally')
+  assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'Anti-graft safeguards')
+  assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'Public-official ethics')
+  assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'Public-funds audit')
+  assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'High-value corruption risk')
+  assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'GOCC governance')
+  assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'Public-sector compensation')
+
+  const thinMobilityLandAgriDraft = `# Mobility, Land, and Farm Support Program
+
+## Purpose
+This program covers traffic enforcement, driver license, vehicle registration, public utility franchise coordination, land title verification, Torrens and register of deeds records, FPIC, ancestral domain, NCIP coordination, agriculture and fisheries support, organic labels, food safety traceability, and Sagip Saka direct purchase.
+
+## Legal Basis
+Pursuant to RA 4136, RA 11659, PD 1529, RA 8371, RA 8435, RA 10068, RA 10611, and RA 11321.
+
+## Scope
+This applies to local projects, drivers, operators, farmers, fisherfolk, and affected communities.
+
+## Responsible Office
+The project office shall implement this program.
+
+## Requirements
+Participants shall submit records and project documents when requested.
+
+## Monitoring
+The project office shall submit annual reports.
+
+## Effectivity
+This program takes effect 30 days after publication.`
+
+  const thinMobilityLandAgriDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinMobilityLandAgriDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinMobilityLandAgriDraftResponse.status, 'success', 'Mobility land agriculture draft check should succeed locally')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Transport and traffic controls')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Public-service operation')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Land-title verification')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'FPIC and indigenous-community')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Agriculture support')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Organic agriculture')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Food-safety')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Sagip Saka')
 
   const thinCyberDraft = `# Online Safety Incident Ordinance
 
