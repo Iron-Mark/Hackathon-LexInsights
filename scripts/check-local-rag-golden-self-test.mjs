@@ -570,6 +570,23 @@ try {
   })
   assertCompletedMatches(internetTransactionsWorkflow, ['RA 11967', 'RA 7394', 'RA 8792'], 'internet transactions workflow')
 
+  const internetTransactionsIrrWorkflow = runLocalResearch({
+    query:
+      'What does Joint Administrative Order No. 24-03 require for RA 11967 Internet Transactions Act IRR merchant onboarding, seller verification, e-marketplace takedown, consumer redress, E-Commerce Bureau routing, and transaction records?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    internetTransactionsIrrWorkflow,
+    ['Joint Administrative Order No. 24-03, s. 2024', 'RA 11967', 'RA 7394', 'RA 8792'],
+    'internet transactions IRR workflow'
+  )
+  assert.equal(
+    statutes(internetTransactionsIrrWorkflow)[0],
+    'Joint Administrative Order No. 24-03, s. 2024',
+    'Internet Transactions Act IRR should rank first'
+  )
+
   const financialAccountScamWorkflow = runLocalResearch({
     query: 'What money mule, mule account, phishing, social engineering, account takeover, transaction hold, suspicious transaction, and evidence preservation controls apply to a wallet scam response?',
     user_id: 'golden',

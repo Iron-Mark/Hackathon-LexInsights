@@ -654,6 +654,27 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     weight: 0.9,
   },
   {
+    sourceId: 'dti-jao-24-03-2024',
+    targetId: 'ra-11967',
+    type: 'implements',
+    label: 'DTI-led implementing rules for the Internet Transactions Act',
+    weight: 1.25,
+  },
+  {
+    sourceId: 'dti-jao-24-03-2024',
+    targetId: 'ra-7394',
+    type: 'workflow_related_to',
+    label: 'Internet transaction IRR and consumer redress workflow relationship',
+    weight: 0.95,
+  },
+  {
+    sourceId: 'dti-jao-24-03-2024',
+    targetId: 'ra-8792',
+    type: 'workflow_related_to',
+    label: 'Internet transaction IRR and e-commerce record workflow relationship',
+    weight: 0.9,
+  },
+  {
     sourceId: 'ra-12023',
     targetId: 'ra-8792',
     type: 'workflow_related_to',

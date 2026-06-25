@@ -40,6 +40,7 @@ const GOLDEN_AUTHORITY_IDS = new Set([
   'ra-9775',
   'ra-7394',
   'ra-11967',
+  'dti-jao-24-03-2024',
   'ra-11765',
   'bsp-circular-1160-2022',
   'bsp-circular-1169-2023',
