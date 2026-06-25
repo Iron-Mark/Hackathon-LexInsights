@@ -2863,6 +2863,30 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(beneficial owner|beneficial ownership|ultimate beneficial owner|bo disclosure|bo registry|harbor portal|sec harbor|general information sheet|gis|nominee shareholder|authorized filer)\b/.test(normalizedDraft)) {
+    const hasBeneficialOwnerScope = /\b(beneficial owner|ultimate beneficial owner|direct owner|indirect owner|nominee|control person|control|ownership layer|ownership percentage)\b/.test(normalizedDraft)
+    const hasSecFilingControls = /\b(sec|harbor|gis|general information sheet|authorized filer|corporate secretary|portal|submission|confirmation|filing deadline|reportorial)\b/.test(normalizedDraft)
+    const hasBoRecordsPrivacy = /\b(record|retention|privacy|access control|data minimization|notice|audit trail|change trigger|update trigger|supporting document|backup access)\b/.test(normalizedDraft)
+
+    if (!(hasBeneficialOwnerScope && hasSecFilingControls && hasBoRecordsPrivacy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'SEC beneficial ownership controls are incomplete',
+          'Beneficial-owner, BO disclosure, HARBOR, GIS, nominee, control-person, or authorized-filer language was detected without enough owner-scope, SEC filing, portal, records, privacy, or update controls.',
+          'Add direct and indirect beneficial-owner scope, nominee and control-person evidence, SEC/HARBOR or GIS filing route, authorized filer and corporate secretary review, portal confirmation, filing deadline or update trigger, privacy notice, access control, retention, and audit records.',
+          8,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'sec-mc-15-2025') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'sec-harbor-2026') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11232') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
   if (/\b(retail trade|foreign retailer|retail enterprise|retail store|paid up capital|investment per store|store opening)\b/.test(normalizedDraft)) {
     const hasRetailClassification = /\b(retail activity|retail enterprise|foreign retailer|ownership|store plan|branch plan)\b/.test(normalizedDraft)
     const hasRetailCapital = /\b(paid up capital|capitalization|investment per store|capital evidence|investment evidence)\b/.test(normalizedDraft)

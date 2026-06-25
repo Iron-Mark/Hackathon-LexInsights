@@ -146,7 +146,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 242, 'Local corpus should include at least 242 authorities')
+  assert.ok(corpus.length >= 245, 'Local corpus should include at least 245 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -367,6 +367,9 @@ try {
   assert.ok(corpus.some((document) => document.id === 'dole-do-174-17'), 'Corpus should include DOLE Department Order No. 174-17')
   assert.ok(corpus.some((document) => document.id === 'dole-do-198-18'), 'Corpus should include DOLE Department Order No. 198-18')
   assert.ok(corpus.some((document) => document.id === 'sec-mc-28-2020'), 'Corpus should include SEC Memorandum Circular No. 28, s. 2020')
+  assert.ok(corpus.some((document) => document.id === 'sec-mc-01-2021'), 'Corpus should include SEC Memorandum Circular No. 1, s. 2021')
+  assert.ok(corpus.some((document) => document.id === 'sec-mc-15-2025'), 'Corpus should include SEC Memorandum Circular No. 15, s. 2025')
+  assert.ok(corpus.some((document) => document.id === 'sec-harbor-2026'), 'Corpus should include SEC HARBOR beneficial ownership portal guidance')
   assert.ok(corpus.some((document) => document.statute === 'RA 9262'), 'Corpus should include RA 9262')
   assert.ok(corpus.some((document) => document.statute === 'RA 10364'), 'Corpus should include RA 10364')
   assert.ok(corpus.some((document) => document.statute === 'RA 8293'), 'Corpus should include RA 8293')
@@ -1621,6 +1624,28 @@ try {
     secContactFallbackResponse.summary,
     'Business Market Entry, Ownership, Cooperative, and Secured Finance Stack',
     'SEC MC28 fallback framework title'
+  )
+
+  const secBeneficialOwnershipFallbackResponse = runLocalResearch(
+    {
+      query:
+        'What SEC MC 15 s. 2025 beneficial ownership disclosure, HARBOR portal, GIS, beneficial owner, nominee, control person, authorized filer, corporate secretary, privacy, and AMLA relationship controls should a corporation maintain?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(
+    secBeneficialOwnershipFallbackResponse,
+    'SEC Memorandum Circular No. 15, s. 2025',
+    'SEC beneficial ownership rules query'
+  )
+  assertResearchMatch(secBeneficialOwnershipFallbackResponse, 'SEC HARBOR', 'SEC HARBOR fallback query')
+  assertResearchMatch(secBeneficialOwnershipFallbackResponse, 'RA 11232', 'SEC beneficial ownership corporation code context')
+  assertIncludes(
+    secBeneficialOwnershipFallbackResponse.summary,
+    'Business Market Entry, Ownership, Cooperative, and Secured Finance Stack',
+    'SEC beneficial ownership fallback framework title'
   )
 
   assertResearchMatch(
@@ -3666,6 +3691,40 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Foreign-investment')
   assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Retail trade entry')
   assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Secured-transaction')
+
+  const thinSecBeneficialOwnershipDraft = `# Beneficial Ownership Filing Policy
+
+## Purpose
+This policy covers SEC beneficial ownership, beneficial owner, HARBOR portal, GIS, nominee shareholder, control person, and authorized filer records.
+
+## Legal Basis
+Pursuant to SEC MC 15 s. 2025 and SEC HARBOR guidance.
+
+## Scope
+This applies to corporations and reportorial staff.
+
+## Responsible Office
+The corporate services office shall implement this policy.
+
+## Requirements
+Companies shall submit ownership information when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinSecBeneficialOwnershipDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinSecBeneficialOwnershipDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(
+    thinSecBeneficialOwnershipDraftResponse.status,
+    'success',
+    'SEC beneficial ownership draft check should succeed locally'
+  )
+  assertFinding(thinSecBeneficialOwnershipDraftResponse, 'amber', 'SEC beneficial ownership')
 
   const thinBusinessTaxDraft = `# Small Business Tax and Incentives Policy
 

@@ -157,6 +157,24 @@ try {
   assertCompletedMatch(amlaIrrImplementation, 'RA 9160', '2018 AMLA IRR related statute', 0.35)
   assert.equal(statutes(amlaIrrImplementation)[0], '2018 AMLA IRR', '2018 AMLA IRR should be the top implementation match')
 
+  const secBeneficialOwnershipImplementation = runLocalResearch({
+    query:
+      'What does SEC MC 15 s. 2025 require for beneficial ownership disclosure, HARBOR portal filing, GIS records, authorized filers, nominees, control persons, privacy safeguards, and corporate secretary review?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(
+    secBeneficialOwnershipImplementation,
+    'SEC Memorandum Circular No. 15, s. 2025',
+    'SEC beneficial ownership disclosure rules',
+    0.45
+  )
+  assertCompletedMatch(secBeneficialOwnershipImplementation, 'SEC HARBOR', 'SEC HARBOR related workflow', 0.35)
+  assert.equal(
+    statutes(secBeneficialOwnershipImplementation)[0],
+    'SEC Memorandum Circular No. 15, s. 2025',
+    'SEC beneficial ownership rules should be the top implementation match'
+  )
+
   const npcBreachManagement = runLocalResearch({
     query: 'What does NPC Circular 16-03 require for personal data breach management, notification, containment, and incident records?',
     user_id: 'golden',
@@ -847,6 +865,28 @@ try {
   assert.ok(
     secContactWorkflow.summary.includes('Business Market Entry, Ownership, Cooperative, and Secured Finance Stack'),
     'SEC contact workflow should include the business market-entry framework section'
+  )
+
+  const secBeneficialOwnershipWorkflow = runLocalResearch({
+    query:
+      'What controls apply to corporate beneficial ownership, SEC HARBOR, GIS, authorized filer, ultimate beneficial owner, nominee shareholder, control person, corporate secretary records, AML due diligence links, and privacy safeguards?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    secBeneficialOwnershipWorkflow,
+    ['SEC Memorandum Circular No. 15, s. 2025', 'SEC HARBOR', 'RA 11232'],
+    'SEC beneficial ownership and HARBOR workflow',
+    0.25
+  )
+  assert.equal(
+    statutes(secBeneficialOwnershipWorkflow)[0],
+    'SEC HARBOR',
+    'SEC beneficial ownership workflow should rank the HARBOR portal first when the query emphasizes portal filing'
+  )
+  assert.ok(
+    secBeneficialOwnershipWorkflow.summary.includes('Business Market Entry, Ownership, Cooperative, and Secured Finance Stack'),
+    'SEC beneficial ownership workflow should include the business market-entry framework section'
   )
 
   const immigrationWorkflow = runLocalResearch({

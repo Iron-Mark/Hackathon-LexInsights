@@ -205,6 +205,15 @@ const AMLC_AMLA_IRR_FRAMEWORK_IDS = [
   'banking-lending-insurance-and-financial-institutions',
 ]
 
+const SEC_BENEFICIAL_OWNERSHIP_IDS = ['sec-mc-01-2021', 'sec-mc-15-2025', 'sec-harbor-2026']
+const SEC_BENEFICIAL_OWNERSHIP_STATUTES = [
+  'SEC Memorandum Circular No. 1, s. 2021',
+  'SEC Memorandum Circular No. 15, s. 2025',
+  'SEC HARBOR',
+]
+const SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID = 'business-market-entry-ownership-and-secured-finance'
+const SEC_BENEFICIAL_OWNERSHIP_DRAFT_IDS = ['sec-mc-15-2025', 'sec-harbor-2026']
+
 async function loadLocalResearchData() {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
@@ -709,6 +718,88 @@ try {
     amlaIrrEvidenceText.includes('suspicious transaction'),
     `${AMLC_AMLA_IRR_ID} evidence should cover suspicious transaction reporting`
   )
+
+  const secBeneficialOwnershipFramework = data.frameworks.find((framework) => (
+    framework.id === SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID
+  ))
+
+  assert.ok(
+    secBeneficialOwnershipFramework,
+    `${SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID} framework should exist`
+  )
+  assert.ok(
+    SEC_BENEFICIAL_OWNERSHIP_IDS.every((lawId) => secBeneficialOwnershipFramework.lawIds.includes(lawId)),
+    `${SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID} should include ${SEC_BENEFICIAL_OWNERSHIP_STATUTES.join(', ')}`
+  )
+
+  const secBeneficialOwnershipFrameworkText = [
+    secBeneficialOwnershipFramework.title,
+    secBeneficialOwnershipFramework.summary,
+    ...secBeneficialOwnershipFramework.triggers,
+    ...secBeneficialOwnershipFramework.sequence,
+    ...secBeneficialOwnershipFramework.checkpoints,
+  ].join(' ').toLowerCase()
+
+  for (const requiredTopic of ['beneficial ownership', 'harbor', 'gis', 'authorized filer', 'privacy']) {
+    assert.ok(
+      secBeneficialOwnershipFrameworkText.includes(requiredTopic),
+      `${SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID} should cover SEC BO ${requiredTopic}`
+    )
+  }
+
+  for (const [index, lawId] of SEC_BENEFICIAL_OWNERSHIP_IDS.entries()) {
+    const document = data.corpus.find((corpusDocument) => corpusDocument.id === lawId)
+    const coverage = coverageById.get(lawId)
+    const source = sourcesById.get(lawId)
+    const documentText = [
+      document?.statute || '',
+      document?.title || '',
+      document?.shortTitle || '',
+      document?.summary || '',
+      ...(document?.aliases || []),
+      ...(document?.topics || []),
+      ...(document?.keywords || []),
+      ...(document?.obligations || []),
+      ...(document?.commonGaps || []),
+    ].join(' ').toLowerCase()
+    const evidenceText = (evidenceById.get(lawId) || [])
+      .map((anchor) => `${anchor.label} ${anchor.note} ${anchor.supports.join(' ')}`)
+      .join(' ')
+      .toLowerCase()
+
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `SEC beneficial ownership corpus should include ${SEC_BENEFICIAL_OWNERSHIP_STATUTES[index]}`
+    )
+    assert.ok(document, `${lawId} should have a corpus document`)
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.ok(
+      coverage?.frameworkIds.includes(SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID}`
+    )
+    assert.ok(source, `${lawId} should have an authority source record`)
+    assert.equal(source?.sourceName, 'Securities and Exchange Commission', `${lawId} should use SEC as source`)
+    assert.equal(source?.sourceTier, 'official-guidance', `${lawId} should use official SEC guidance`)
+    assert.equal(source?.provenanceStatus, 'verified', `${lawId} should have verified provenance`)
+    assert.ok(
+      source?.sourceUrl.startsWith('https://www.sec.gov.ph/') || source?.sourceUrl.startsWith('https://harbor.sec.gov.ph/'),
+      `${lawId} should link to an SEC-hosted source`
+    )
+    assert.ok(source?.provenanceNotes?.includes('Official SEC'), `${lawId} should have explicit SEC provenance notes`)
+    assert.ok(documentText.includes('beneficial ownership'), `${lawId} should mention beneficial ownership`)
+    assert.ok(
+      documentText.includes('harbor') || documentText.includes('corporate transparency'),
+      `${lawId} should cover HARBOR or corporate transparency`
+    )
+    assert.ok(
+      evidenceText.includes('beneficial ownership') || evidenceText.includes('harbor'),
+      `${lawId} evidence should cover SEC BO or HARBOR support`
+    )
+  }
+
+  for (const lawId of SEC_BENEFICIAL_OWNERSHIP_DRAFT_IDS) {
+    assert.equal(coverageById.get(lawId)?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
+  }
 
   for (const [index, lawId] of PRIVACY_OPERATIONS_LAW_IDS.entries()) {
     assert.ok(

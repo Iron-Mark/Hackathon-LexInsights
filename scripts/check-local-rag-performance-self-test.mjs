@@ -206,6 +206,16 @@ const scenarios = [
     p95Limit: 70,
   },
   {
+    label: 'SEC beneficial ownership HARBOR workflow',
+    params: {
+      query:
+        'What controls apply to SEC beneficial ownership disclosure, HARBOR portal filing, GIS records, authorized filer, ultimate beneficial owner, nominee shareholder, control person, corporate secretary review, AML due diligence links, privacy safeguards, and reportorial records?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'EPR plastic packaging workflow',
     params: {
       query:
