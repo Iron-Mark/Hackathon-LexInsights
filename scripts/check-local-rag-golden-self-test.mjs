@@ -190,6 +190,21 @@ try {
   })
   assertCompletedMatches(womenProtectionWorkflow, ['RA 9710', 'RA 9262'], 'women protection workflow')
 
+  const hospitalPatientRightsWorkflow = runLocalResearch({
+    query: 'What hospital no-deposit emergency care, refusal to treat, patient transfer, unpaid bill discharge, hospital detention, health facility license, inspection, complaint, and patient record controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    hospitalPatientRightsWorkflow,
+    ['RA 10932', 'RA 8344', 'RA 9439', 'RA 4226'],
+    'hospital emergency care and patient rights workflow'
+  )
+  assert.ok(
+    hospitalPatientRightsWorkflow.summary.includes('Health Facility, Emergency Care, and Patient Rights Stack'),
+    'hospital patient rights workflow should include its framework section'
+  )
+
   const onlineChildProtectionWorkflow = runLocalResearch({
     query: 'What OSAEC, CSAEM, child online safety, takedown, platform reporting, victim confidentiality, and evidence preservation controls should a school or platform use?',
     user_id: 'golden',

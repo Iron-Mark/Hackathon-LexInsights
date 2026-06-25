@@ -622,6 +622,22 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['universal health care act', 'primary care', 'health care provider network', 'referral system'],
   },
   {
+    triggers: ['hospital deposit', 'anti hospital deposit', 'no deposit', 'emergency room deposit', 'er deposit', 'advance payment emergency'],
+    expansions: ['anti hospital deposit law', 'emergency care', 'initial medical treatment', 'patient stabilization'],
+  },
+  {
+    triggers: ['refusal to treat', 'emergency patient', 'medical emergency', 'patient transfer', 'emergency treatment'],
+    expansions: ['anti hospital refusal law', 'emergency treatment', 'stabilization', 'transfer coordination'],
+  },
+  {
+    triggers: ['hospital detention', 'detain patient', 'unpaid hospital bill', 'patient discharge', 'hospital discharge'],
+    expansions: ['hospital detention law', 'patient release', 'billing notice', 'promissory note'],
+  },
+  {
+    triggers: ['hospital license', 'hospital licensure', 'health facility license', 'clinic license', 'license to operate hospital'],
+    expansions: ['hospital licensure act', 'doh inspection', 'health facility standards', 'patient safety records'],
+  },
+  {
     triggers: ['notifiable disease', 'outbreak', 'epidemic', 'contact tracing', 'quarantine', 'public health concern'],
     expansions: ['mandatory reporting of notifiable diseases', 'health surveillance', 'case investigation', 'public health event'],
   },

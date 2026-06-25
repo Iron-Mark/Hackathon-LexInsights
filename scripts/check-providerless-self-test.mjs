@@ -128,8 +128,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 182, 'Local corpus should include at least 182 authorities')
-  assert.ok(frameworks.length >= 29, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 186, 'Local corpus should include at least 186 authorities')
+  assert.ok(frameworks.length >= 30, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -193,6 +193,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'critical-utilities-energy-telecom-and-water-services'),
     'Frameworks should include critical utilities, energy, telecom, and water services'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'health-facility-emergency-care-and-patient-rights'),
+    'Frameworks should include health facility, emergency care, and patient rights'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'public-accountability-and-government-funds'),
@@ -290,6 +294,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 8799'), 'Corpus should include RA 8799')
   assert.ok(corpus.some((document) => document.statute === 'RA 9711'), 'Corpus should include RA 9711')
   assert.ok(corpus.some((document) => document.statute === 'RA 11223'), 'Corpus should include RA 11223')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10932'), 'Corpus should include RA 10932')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8344'), 'Corpus should include RA 8344')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9439'), 'Corpus should include RA 9439')
+  assert.ok(corpus.some((document) => document.statute === 'RA 4226'), 'Corpus should include RA 4226')
   assert.ok(corpus.some((document) => document.statute === 'RA 11332'), 'Corpus should include RA 11332')
   assert.ok(corpus.some((document) => document.statute === 'RA 9211'), 'Corpus should include RA 9211')
   assert.ok(corpus.some((document) => document.statute === 'RA 11900'), 'Corpus should include RA 11900')
@@ -1963,6 +1971,24 @@ try {
     'universal health care query'
   )
 
+  const healthFacilityPatientRightsResponse = runLocalResearch(
+    {
+      query: 'What hospital no-deposit emergency care, refusal to treat, patient transfer, unpaid bill discharge, hospital detention, facility license, inspection, complaint, and patient record controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(healthFacilityPatientRightsResponse, 'RA 10932', 'anti hospital deposit query')
+  assertResearchMatch(healthFacilityPatientRightsResponse, 'RA 8344', 'hospital refusal emergency care query')
+  assertResearchMatch(healthFacilityPatientRightsResponse, 'RA 9439', 'hospital detention query')
+  assertResearchMatch(healthFacilityPatientRightsResponse, 'RA 4226', 'hospital licensure query')
+  assertIncludes(
+    healthFacilityPatientRightsResponse.summary,
+    'Health Facility, Emergency Care, and Patient Rights Stack',
+    'Health facility patient rights framework title'
+  )
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What disease surveillance, mandatory reporting, notifiable disease, outbreak, contact tracing, quarantine, and public health event controls apply under RA 11332?', user_id: 'self-test' },
@@ -3528,6 +3554,36 @@ This policy takes effect 30 days after publication.`
   )
   assert.equal(thinHealthProductDraftResponse.status, 'success', 'Health product draft check should succeed locally')
   assertFinding(thinHealthProductDraftResponse, 'amber', 'Health-product controls')
+
+  const thinHospitalPatientRightsDraft = `# Hospital Emergency and Discharge Policy
+
+## Purpose
+This policy covers hospital deposit requests, no deposit emergency care, refusal to treat, patient transfer, hospital detention, unpaid hospital bill handling, patient discharge, hospital license, health facility inspection, and clinic service records.
+
+## Legal Basis
+Pursuant to RA 10932, RA 8344, RA 9439, RA 4226, RA 11223, and RA 10173.
+
+## Scope
+This applies to emergency patients, admitted patients, billing staff, and hospital personnel.
+
+## Responsible Office
+The hospital desk shall implement this policy.
+
+## Requirements
+Patients shall submit identification and billing details when requested.
+
+## Monitoring
+The hospital desk shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinHospitalPatientRightsDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinHospitalPatientRightsDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinHospitalPatientRightsDraftResponse.status, 'success', 'Hospital patient-rights draft check should succeed locally')
+  assertFinding(thinHospitalPatientRightsDraftResponse, 'amber', 'Hospital emergency and patient-rights controls')
 
   const thinPublicHealthDraft = `# Public Health and Sensitive Records Protocol
 

@@ -3425,6 +3425,32 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(hospital deposit|anti hospital deposit|no deposit|advance payment|emergency patient|medical emergency|emergency treatment|refusal to treat|patient transfer|hospital detention|detain patient|unpaid hospital bill|patient discharge|hospital license|hospital licensure|health facility|medical clinic|clinic license)\b/.test(normalizedDraft)) {
+    const hasEmergencyCareControls = /\b(triage|emergency assessment|initial treatment|stabilization|stabilize|transfer|receiving facility|attending physician|emergency care)\b/.test(normalizedDraft)
+    const hasPatientReleaseControls = /\b(discharge|release|billing notice|promissory note|guarantee|social service|collection|patient assistance)\b/.test(normalizedDraft)
+    const hasFacilityLicensingControls = /\b(license|licensure|doh|inspection|facility standard|license to operate|service capability|administrator)\b/.test(normalizedDraft)
+    const hasHospitalRecordControls = /\b(complaint|incident report|medical record|billing record|confidential|privacy|retention|record custodian)\b/.test(normalizedDraft)
+
+    if (!(hasEmergencyCareControls && hasPatientReleaseControls && hasFacilityLicensingControls && hasHospitalRecordControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Hospital emergency and patient-rights controls are incomplete',
+          'Hospital deposit, emergency patient, refusal-to-treat, patient transfer, unpaid bill, discharge, detention, health-facility, or hospital-licensure language was detected without enough emergency triage, stabilization, transfer, discharge, billing, licensing, complaint, or records controls.',
+          'Add emergency triage and initial treatment steps, stabilization and transfer coordination, discharge and patient-release rules, billing or guarantee handling, social-service referral, DOH license or inspection owner, complaint route, incident records, medical-record custody, retention, and privacy safeguards.',
+          8,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10932') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8344') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9439') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-4226') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
   if (/\b(notifiable disease|public health concern|outbreak|epidemic|contact tracing|quarantine|case investigation|health surveillance)\b/.test(normalizedDraft)) {
     const hasDiseaseReporting = /\b(reporting timeline|reportable event|notifiable disease|doh|local epidemiology|surveillance unit|responsible office)\b/.test(normalizedDraft)
     const hasDiseaseResponse = /\b(case investigation|contact tracing|referral|isolation|quarantine|laboratory|coordination)\b/.test(normalizedDraft)
