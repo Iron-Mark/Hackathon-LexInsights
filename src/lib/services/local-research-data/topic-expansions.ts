@@ -39,6 +39,64 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
   },
   {
     triggers: [
+      'dpo',
+      'data protection officer',
+      'privacy management program',
+      'data processing system',
+      'dps registration',
+      'npc registration',
+      'npc seal',
+      'automated decision making',
+      'profiling',
+    ],
+    expansions: [
+      'data protection officer designation',
+      'personal data processing system registration',
+      'privacy management program',
+      'automated decision making notification',
+      'npc seal of registration',
+    ],
+  },
+  {
+    triggers: [
+      'breach notification',
+      'personal data breach',
+      'dbnms',
+      'data breach notification management system',
+      'incident notification',
+      'breach report',
+    ],
+    expansions: [
+      'personal data breach management',
+      'npc breach notification',
+      'dbnms submission',
+      'affected data subject notification',
+      'containment remediation evidence',
+    ],
+  },
+  {
+    triggers: ['data sharing', 'data sharing agreement', 'dsa', 'third party sharing', 'joint controller', 'data recipient'],
+    expansions: [
+      'data sharing agreement',
+      'lawful basis',
+      'recipient accountability',
+      'breach responsibility',
+      'retention and return',
+    ],
+  },
+  {
+    triggers: ['privacy engineering', 'privacy by design', 'systems lifecycle', 'system life cycle', 'software privacy', 'privacy release gate'],
+    expansions: [
+      'privacy engineering in systems life cycle processes',
+      'privacy by design',
+      'data flow map',
+      'privacy impact assessment',
+      'release gate',
+      'decommissioning',
+    ],
+  },
+  {
+    triggers: [
       'ai',
       'artificial intelligence',
       'ai system',

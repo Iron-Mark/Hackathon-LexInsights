@@ -1173,7 +1173,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
-    '- Include a Republic Act number, such as RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 8479, RA 11592, RA 9367, RA 7638, RA 10667, RA 11765, RA 11934, or RA 11976.',
+    '- Include a Republic Act number or official issuance, such as RA 10173, NPC Circular 16-03, NPC Circular 2023-06, NPC Circular 2022-04, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 8479, RA 11592, RA 9367, RA 7638, RA 10667, RA 11765, RA 11934, or RA 11976.',
     '- Add the regulated activity, agency, permit, affected sector, and location.',
     '- Ask for a narrower compliance checklist, for example "solid waste requirements for a barangay ordinance".',
     '',
@@ -1716,6 +1716,37 @@ function applyTopicSpecificDraftChecks(
         [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10173') || LEGAL_CORPUS[0])]
       )
     )
+  }
+
+  if (/\b(personal data|personal information|sensitive personal information|privacy|biometric|health record|id number|data subject|consent|data sharing|processor|controller|dpo|breach notification|privacy impact assessment)\b/.test(normalizedDraft)) {
+    const hasPrivacyOwner = /\b(dpo|data protection officer|privacy office|privacy officer|personal information controller|pic|personal information processor|pip|controller|processor|system owner|responsible office)\b/.test(normalizedDraft)
+    const hasProcessingInventory = /\b(data inventory|system inventory|processing system|personal data processing system|dps|registration|record of processing|data flow|data-flow|privacy impact assessment|pia)\b/.test(normalizedDraft)
+    const hasLawfulBasisOrConsent = /\b(lawful basis|legal basis|privacy notice|consent|withdrawal|data subject right|data subject rights|purpose limitation|minimum data|minimization)\b/.test(normalizedDraft)
+    const hasSecurityOrBreachControls = /\b(access control|authentication|encryption|logging|audit log|security measure|security measures|breach|incident response|dbnms|breach notification|containment|remediation)\b/.test(normalizedDraft)
+    const mentionsSharingOrVendor = /\b(data sharing|data sharing agreement|dsa|third party|vendor|outsourcing|processor|recipient|cross border|sharing partner)\b/.test(normalizedDraft)
+    const hasSharingOrVendorControls = /\b(data sharing agreement|dsa|processor agreement|vendor due diligence|recipient|authorized disclosure|return|deletion|termination|breach responsibility)\b/.test(normalizedDraft)
+
+    if (!(hasPrivacyOwner && hasProcessingInventory && hasLawfulBasisOrConsent && hasSecurityOrBreachControls) || (mentionsSharingOrVendor && !hasSharingOrVendorControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Privacy operations need NPC compliance detail',
+          'Personal-data, consent, sharing, DPO, breach, processor, or privacy-impact language was detected without enough NPC-facing operational controls for ownership, inventory or registration, lawful basis, security, breach notification, data sharing, or privacy engineering.',
+          'Add PIC/PIP/DPO ownership, data inventory and processing-system registration review, lawful basis or consent evidence, data-subject rights route, security controls, breach/DBNMS workflow, data sharing or processor terms, retention, and privacy-engineering release checks.',
+          8,
+          [
+            referenceForId('ra-10173'),
+            referenceForId('npc-circular-2023-06'),
+            referenceForId('npc-circular-16-03'),
+            referenceForId('npc-circular-2022-04'),
+            referenceForId('npc-circular-2023-04'),
+            referenceForId('npc-circular-2020-03'),
+            referenceForId('npc-advisory-2025-02'),
+          ]
+        )
+      )
+    }
   }
 
   if (/\b(waste|garbage|recycling|compost|landfill|mrf|segregation)\b/.test(normalizedDraft)) {

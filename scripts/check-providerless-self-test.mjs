@@ -145,11 +145,15 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 220, 'Local corpus should include at least 220 authorities')
-  assert.ok(frameworks.length >= 41, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 227, 'Local corpus should include at least 227 authorities')
+  assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'privacy-operations-and-npc-compliance'),
+    'Frameworks should include privacy operations and NPC compliance'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'financial-account-scam-response'),
@@ -297,6 +301,13 @@ try {
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
+  assert.ok(corpus.some((document) => document.id === 'npc-circular-16-03'), 'Corpus should include NPC Circular 16-03')
+  assert.ok(corpus.some((document) => document.id === 'npc-advisory-2026-02'), 'Corpus should include NPC Advisory 2026-02')
+  assert.ok(corpus.some((document) => document.id === 'npc-circular-2023-06'), 'Corpus should include NPC Circular 2023-06')
+  assert.ok(corpus.some((document) => document.id === 'npc-circular-2023-04'), 'Corpus should include NPC Circular 2023-04')
+  assert.ok(corpus.some((document) => document.id === 'npc-circular-2022-04'), 'Corpus should include NPC Circular 2022-04')
+  assert.ok(corpus.some((document) => document.id === 'npc-circular-2020-03'), 'Corpus should include NPC Circular 2020-03')
+  assert.ok(corpus.some((document) => document.id === 'npc-advisory-2025-02'), 'Corpus should include NPC Advisory 2025-02')
   assert.ok(corpus.some((document) => document.statute === 'RA 11898'), 'Corpus should include RA 11898')
   assert.ok(
     corpus.some((document) => document.statute === 'NPC Advisory No. 2024-04'),
@@ -859,6 +870,91 @@ try {
     ),
     'RA 10175',
     'cybercrime query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does NPC Circular 16-03 require for personal data breach notification, breach reports, and incident records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'NPC Circular No. 16-03',
+    'NPC breach management query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does NPC Advisory 2026-02 require for DBNMS breach notification submissions and supporting evidence?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'NPC Advisory No. 2026-02',
+    'NPC DBNMS advisory query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does NPC Circular 2023-06 require for security of personal data, access controls, logs, and backups?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'NPC Circular No. 2023-06',
+    'NPC personal data security query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What do the NPC consent guidelines require for consent withdrawal, privacy notices, and specific processing purposes?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'NPC Circular No. 2023-04',
+    'NPC consent guidelines query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does NPC Circular 2022-04 require for DPO designation, DPS registration, automated decision-making, profiling, and the NPC seal?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'NPC Circular No. 2022-04',
+    'NPC DPS registration query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does NPC Circular 2020-03 require for data sharing agreements, recipients, safeguards, retention, and breach responsibilities?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'NPC Circular No. 2020-03',
+    'NPC data sharing agreement query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does NPC Advisory 2025-02 require for privacy engineering, privacy by design, system lifecycle, testing, deployment, and decommissioning?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'NPC Advisory No. 2025-02',
+    'NPC privacy engineering query'
+  )
+
+  const privacyOperationsFrameworkResponse = runLocalResearch(
+    {
+      query: 'What RA 10173, DPO, PIC, PIP, DPS registration, consent, data sharing agreement, DBNMS breach notification, personal data security, privacy engineering, AI personal data, automated decision-making, profiling, and data-subject rights controls should a privacy office check?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'RA 10173', 'privacy operations framework Data Privacy Act query')
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Circular No. 16-03', 'privacy operations framework breach query')
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Advisory No. 2026-02', 'privacy operations framework DBNMS query')
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Circular No. 2023-06', 'privacy operations framework security query')
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Circular No. 2023-04', 'privacy operations framework consent query')
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Circular No. 2022-04', 'privacy operations framework registration query')
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Circular No. 2020-03', 'privacy operations framework data sharing query')
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Advisory No. 2025-02', 'privacy operations framework privacy engineering query')
+  assertIncludes(
+    privacyOperationsFrameworkResponse.summary,
+    'Privacy Operations and NPC Compliance Stack',
+    'Privacy operations framework title'
   )
 
   assertResearchMatch(
@@ -2836,6 +2932,36 @@ The barangay office shall submit monthly registry reports.`
   assertFinding(riskyDraftResponse, 'red', 'No explicit legal authority')
   assertFinding(riskyDraftResponse, 'red', 'Personal-data processing')
   assertFinding(riskyDraftResponse, 'red', 'Penalties lack due process')
+
+  const thinPrivacyOperationsDraft = `# Privacy Operations Policy
+
+## Purpose
+This policy handles personal data, DPO inquiries, consent forms, data sharing, breach notification, automated profiling, and system privacy review.
+
+## Legal Basis
+Pursuant to RA 10173 and National Privacy Commission issuances.
+
+## Scope
+This applies to customer records, employee records, app logs, partner access, and automated scoring.
+
+## Responsible Office
+The privacy team shall process requests.
+
+## Requirements
+Teams shall submit forms and reports when needed.
+
+## Monitoring
+The privacy team shall prepare an annual report.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinPrivacyOperationsDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinPrivacyOperationsDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinPrivacyOperationsDraftResponse.status, 'success', 'Thin privacy operations draft check should succeed locally')
+  assertFinding(thinPrivacyOperationsDraftResponse, 'amber', 'Privacy operations')
 
   const unknownCitationDraft = `# Local Licensing Ordinance
 
