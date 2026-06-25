@@ -948,6 +948,137 @@ try {
     'privacy operations workflow should include its framework section'
   )
 
+  const culturalHeritageWorkflow = runLocalResearch({
+    query: 'What does RA 10066 require before altering a heritage building, archive, monument, or cultural property?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(culturalHeritageWorkflow, 'RA 10066', 'cultural heritage exact citation topic')
+  assert.equal(statutes(culturalHeritageWorkflow)[0], 'RA 10066', 'cultural heritage topic should rank RA 10066 first')
+
+  const earlyYearsWorkflow = runLocalResearch({
+    query: 'Historically, what did RA 10410 require for early childhood care, child development centers, ECCD services, and young learner records before RA 12199 replaced it?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(earlyYearsWorkflow, 'RA 10410', 'early years ECCD exact citation topic')
+  assert.equal(statutes(earlyYearsWorkflow)[0], 'RA 12199', 'early years topic should rank the current RA 12199 framework first')
+  assert.ok(
+    earlyYearsWorkflow.summary.includes('repealed by RA 12199') ||
+      earlyYearsWorkflow.summary.includes('superseded') ||
+      earlyYearsWorkflow.summary.includes('historical'),
+    'early years historical topic should flag RA 10410 as superseded by RA 12199'
+  )
+
+  const condominiumWorkflow = runLocalResearch({
+    query:
+      'What condominium master deed, unit title, common area, condominium corporation, developer turnover, license to sell, buyer disclosure, and HOA record controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    condominiumWorkflow,
+    ['RA 4726', 'PD 957', 'RA 9904'],
+    'condominium buyer governance workflow',
+    0.2
+  )
+  assert.equal(statutes(condominiumWorkflow)[0], 'RA 4726', 'condominium workflow should rank RA 4726 first')
+  assert.ok(
+    condominiumWorkflow.summary.includes('Real Estate, Housing Buyer, HOA, and Tenant Protection Stack'),
+    'condominium workflow should include the real estate housing framework section'
+  )
+
+  const socializedHousingWorkflow = runLocalResearch({
+    query:
+      'What BP 220 economic housing, socialized housing standards, site development, beneficiary validation, DHSUD, relocation, and grievance controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    socializedHousingWorkflow,
+    ['BP 220', 'RA 7279', 'RA 11201'],
+    'economic and socialized housing workflow',
+    0.2
+  )
+  assert.equal(statutes(socializedHousingWorkflow)[0], 'BP 220', 'socialized housing standards should rank BP 220 first')
+  assert.ok(
+    socializedHousingWorkflow.summary.includes('Real Estate, Housing Buyer, HOA, and Tenant Protection Stack'),
+    'socialized housing workflow should include the real estate housing framework section'
+  )
+
+  const professionalLicensingWorkflow = runLocalResearch({
+    query:
+      'What PRC license, professional board, CPD units, license renewal, signed and sealed plans, pharmacist, registered architect, licensed engineer, real estate broker, and credential records should be checked?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    professionalLicensingWorkflow,
+    ['RA 8981', 'RA 10912', 'RA 9646'],
+    'professional licensing and CPD workflow',
+    0.2
+  )
+  assert.equal(statutes(professionalLicensingWorkflow)[0], 'RA 10912', 'professional licensing workflow should rank CPD evidence first for CPD-heavy query')
+  assert.ok(
+    professionalLicensingWorkflow.summary.includes('Professional Licensing, CPD, and Regulated Practice Stack'),
+    'professional licensing workflow should include its framework section'
+  )
+
+  const pharmacyWorkflow = runLocalResearch({
+    query:
+      'What pharmacy, responsible pharmacist, prescription dispensing, compounding, patient counseling, drugstore, online pharmacy, and medicine records controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatch(pharmacyWorkflow, 'RA 10918', 'pharmacy professional practice workflow', 0.25)
+  assert.equal(statutes(pharmacyWorkflow)[0], 'RA 10918', 'pharmacy workflow should rank RA 10918 first')
+  assert.ok(
+    pharmacyWorkflow.summary.includes('IP, Investment, Health Product, and Market Claims Stack'),
+    'pharmacy workflow should include the health product framework section'
+  )
+
+  const medicineAccessWorkflow = runLocalResearch({
+    query:
+      'What cheaper medicines, generic substitution, drug price, medicine access, quality affordable medicines, pharmacy retail, and patient complaint controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(medicineAccessWorkflow, ['RA 9502', 'RA 10918'], 'medicine access and pharmacy workflow', 0.25)
+  assert.equal(statutes(medicineAccessWorkflow)[0], 'RA 9502', 'medicine access workflow should rank RA 9502 first')
+  assert.ok(
+    medicineAccessWorkflow.summary.includes('IP, Investment, Health Product, and Market Claims Stack'),
+    'medicine access workflow should include the health product framework section'
+  )
+
+  const tobaccoWarningWorkflow = runLocalResearch({
+    query:
+      'What graphic health warning, tobacco package, cigarette label, product warning, manufacturer, distributor, retailer, and consumer disclosure controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(tobaccoWarningWorkflow, ['RA 10643', 'RA 9211'], 'tobacco graphic health warning workflow', 0.25)
+  assert.equal(statutes(tobaccoWarningWorkflow)[0], 'RA 10643', 'graphic health warning workflow should rank RA 10643 first')
+  assert.ok(
+    tobaccoWarningWorkflow.summary.includes('IP, Investment, Health Product, and Market Claims Stack'),
+    'tobacco warning workflow should include the health product framework section'
+  )
+
+  const agriculturalSabotageWorkflow = runLocalResearch({
+    query:
+      'What RA 12022 agricultural economic sabotage, agricultural smuggling, agricultural hoarding, food profiteering, food cartel, customs documents for agricultural imports, rice warehouse inventory, rice price monitoring, and food traceability controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    agriculturalSabotageWorkflow,
+    ['RA 12022', 'RA 10863', 'RA 10611'],
+    'agricultural economic sabotage workflow',
+    0.2
+  )
+  assert.equal(statutes(agriculturalSabotageWorkflow)[0], 'RA 12022', 'agricultural sabotage workflow should rank RA 12022 first')
+  assert.ok(
+    agriculturalSabotageWorkflow.summary.includes('Agricultural Economic Sabotage and Food Supply Chain Stack'),
+    'agricultural sabotage workflow should include the agricultural economic sabotage framework section'
+  )
+
   const noResult = runLocalResearch({ query: 'How do I bake sourdough bread at high altitude?', user_id: 'golden' })
   assert.equal(noResult.status, 'no_results', 'unrelated query should return no_results')
   assert.equal(noResult.documents_found, 0, 'unrelated query should not report documents')

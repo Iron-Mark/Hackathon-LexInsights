@@ -58,6 +58,7 @@ function assertResearchMatch(response, expectedStatute, label) {
   assert.equal(response.status, 'completed', `${label} should complete`)
   assert.equal(response.provider_mode, 'local-providerless', `${label} should use local providerless mode`)
   assert.equal(response.fallback_used, true, `${label} should record fallback use`)
+  assert.ok(response.fallback_reason, `${label} should record fallback reason`)
   assert.ok((response.documents_found || 0) > 0, `${label} should find documents`)
   assert.ok((response.confidence_score || 0) > 0.3, `${label} should include confidence`)
   assert.ok(
@@ -367,7 +368,15 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 4226'), 'Corpus should include RA 4226')
   assert.ok(corpus.some((document) => document.statute === 'RA 11332'), 'Corpus should include RA 11332')
   assert.ok(corpus.some((document) => document.statute === 'RA 9211'), 'Corpus should include RA 9211')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10643'), 'Corpus should include RA 10643')
   assert.ok(corpus.some((document) => document.statute === 'RA 11900'), 'Corpus should include RA 11900')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10918'), 'Corpus should include RA 10918')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9502'), 'Corpus should include RA 9502')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8981'), 'Corpus should include RA 8981')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10912'), 'Corpus should include RA 10912')
+  assert.ok(corpus.some((document) => document.statute === 'RA 4726'), 'Corpus should include RA 4726')
+  assert.ok(corpus.some((document) => document.statute === 'BP 220'), 'Corpus should include BP 220')
+  assert.ok(corpus.some((document) => document.statute === 'RA 12022'), 'Corpus should include RA 12022')
   assert.ok(corpus.some((document) => document.statute === 'RA 11166'), 'Corpus should include RA 11166')
   assert.ok(corpus.some((document) => document.statute === 'RA 10152'), 'Corpus should include RA 10152')
   assert.ok(corpus.some((document) => document.statute === 'RA 7719'), 'Corpus should include RA 7719')
@@ -2106,6 +2115,56 @@ try {
     'Business tax framework title'
   )
 
+  const professionalLicensingFallbackResponse = runLocalResearch(
+    {
+      query: 'What PRC license renewal, CPD units, professional board, signed and sealed plans, pharmacist credential, and professional record controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(professionalLicensingFallbackResponse, 'RA 8981', 'professional licensing fallback PRC query')
+  assertResearchMatch(professionalLicensingFallbackResponse, 'RA 10912', 'professional licensing fallback CPD query')
+  assertResearchMatch(professionalLicensingFallbackResponse, 'RA 10918', 'professional licensing fallback pharmacy query')
+  assertIncludes(
+    professionalLicensingFallbackResponse.summary,
+    'Professional Licensing, CPD, and Regulated Practice Stack',
+    'Professional licensing fallback framework title'
+  )
+
+  const housingFallbackResponse = runLocalResearch(
+    {
+      query: 'What condominium master deed, unit title, common area, condominium corporation, BP 220 socialized housing standards, beneficiary validation, and DHSUD records apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(housingFallbackResponse, 'RA 4726', 'condominium fallback query')
+  assertResearchMatch(housingFallbackResponse, 'BP 220', 'socialized housing fallback query')
+  assertIncludes(
+    housingFallbackResponse.summary,
+    'Real Estate, Housing Buyer, HOA, and Tenant Protection Stack',
+    'Housing fallback framework title'
+  )
+
+  const agriculturalSabotageFallbackResponse = runLocalResearch(
+    {
+      query: 'What RA 12022 agricultural smuggling, agricultural hoarding, customs documents for agricultural imports, food traceability, rice warehouse inventory, and rice price monitoring controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(agriculturalSabotageFallbackResponse, 'RA 12022', 'agricultural sabotage fallback query')
+  assertResearchMatch(agriculturalSabotageFallbackResponse, 'RA 10863', 'agricultural sabotage customs fallback query')
+  assertResearchMatch(agriculturalSabotageFallbackResponse, 'RA 10611', 'agricultural sabotage food traceability fallback query')
+  assertIncludes(
+    agriculturalSabotageFallbackResponse.summary,
+    'Agricultural Economic Sabotage and Food Supply Chain Stack',
+    'Agricultural sabotage fallback framework title'
+  )
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What privacy safeguards apply when collecting PhilSys national ID and biometric data?', user_id: 'self-test' },
@@ -2653,6 +2712,38 @@ try {
     ),
     'RA 9711',
     'FDA health product query'
+  )
+
+  const medicineAccessFallbackResponse = runLocalResearch(
+    {
+      query: 'What cheaper medicines, generic substitution, drug price, quality affordable medicines, pharmacy retail, and patient complaint controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(medicineAccessFallbackResponse, 'RA 9502', 'medicine access fallback query')
+  assertResearchMatch(medicineAccessFallbackResponse, 'RA 10918', 'medicine access pharmacy fallback query')
+  assertIncludes(
+    medicineAccessFallbackResponse.summary,
+    'IP, Investment, Health Product, and Market Claims Stack',
+    'Medicine access fallback framework title'
+  )
+
+  const graphicWarningFallbackResponse = runLocalResearch(
+    {
+      query: 'What graphic health warning, tobacco package, cigarette label, manufacturer, distributor, retailer, and consumer disclosure controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(graphicWarningFallbackResponse, 'RA 10643', 'graphic health warning fallback query')
+  assertResearchMatch(graphicWarningFallbackResponse, 'RA 9211', 'graphic health warning tobacco fallback query')
+  assertIncludes(
+    graphicWarningFallbackResponse.summary,
+    'IP, Investment, Health Product, and Market Claims Stack',
+    'Graphic health warning fallback framework title'
   )
 
   assertResearchMatch(

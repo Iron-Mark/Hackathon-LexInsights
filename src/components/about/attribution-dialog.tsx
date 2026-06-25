@@ -24,7 +24,7 @@ const AUTHORS = [
   },
   {
     name: 'Ken Patrick Garcia',
-    role: 'Backend & API Developer',
+    role: 'Full stack AI engineer',
     href: 'https://ph.linkedin.com/in/ken-patrick-garcia',
     Icon: ServerCog,
   },

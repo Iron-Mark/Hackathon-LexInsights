@@ -45,6 +45,7 @@ export interface LegalCitationContext {
 }
 
 const RA_CITATION_PATTERN = /\b(?:R\.?\s*A\.?(?:\s*(?:No\.?|Number))?|Republic\s+Act(?:\s*(?:No\.?|Number))?)\s*[-.]?\s*(\d{3,6})\b/gi
+const MAX_INLINE_CITATION_CHIPS_PER_TEXT = 3
 const SKIPPED_INLINE_ELEMENTS = new Set(['a', 'code', 'pre', 'kbd', 'samp', 'script', 'style', 'button'])
 
 function collectRaNumbers(value?: string) {
@@ -177,6 +178,7 @@ function renderCitationText(
 ) {
   const parts: ReactNode[] = []
   let lastIndex = 0
+  let renderedCitationCount = 0
 
   for (const match of text.matchAll(new RegExp(RA_CITATION_PATTERN))) {
     const matchedText = match[0]
@@ -187,14 +189,25 @@ function renderCitationText(
       parts.push(text.slice(lastIndex, matchIndex))
     }
 
-    const citation = citationContext.resolveCitation(citationNumber)
-    parts.push(
-      <LegalCitationInline
-        key={`${keyPrefix}-${matchIndex}-${citationNumber}`}
-        citation={citation}
-        displayText={matchedText}
-      />
-    )
+    if (renderedCitationCount < MAX_INLINE_CITATION_CHIPS_PER_TEXT) {
+      const citation = citationContext.resolveCitation(citationNumber)
+
+      if (citation.status === 'metadata-missing') {
+        parts.push(matchedText)
+      } else {
+        parts.push(
+          <LegalCitationInline
+            key={`${keyPrefix}-${matchIndex}-${citationNumber}`}
+            citation={citation}
+            displayText={matchedText}
+          />
+        )
+        renderedCitationCount += 1
+      }
+    } else {
+      parts.push(matchedText)
+    }
+
     lastIndex = matchIndex + matchedText.length
   }
 

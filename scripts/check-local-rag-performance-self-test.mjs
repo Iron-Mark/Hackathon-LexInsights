@@ -156,6 +156,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'professional pharmacy housing agri workflow',
+    params: {
+      query:
+        'What controls apply to PRC license renewal, CPD units, responsible pharmacist dispensing, cheaper medicines, graphic tobacco warnings, condominium master deed, BP 220 socialized housing, and agricultural economic sabotage inventory records?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'EPR plastic packaging workflow',
     params: {
       query:
