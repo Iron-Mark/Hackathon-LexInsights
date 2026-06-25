@@ -146,7 +146,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 234, 'Local corpus should include at least 234 authorities')
+  assert.ok(corpus.length >= 242, 'Local corpus should include at least 242 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -2178,6 +2178,31 @@ try {
     'RA 11976',
     'tax administration query'
   )
+
+  const eoptInvoicingImplementationResponse = runLocalResearch(
+    {
+      query: 'What does RA 11976 plus BIR RR 7-2024, RR 11-2024, and RMC 77-2024 require for EOPT invoices, service invoices, official receipts, COR, ATP, unused official receipts, serial numbers, and transition records?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(eoptInvoicingImplementationResponse, 'RR 7-2024', 'EOPT invoicing regulation query')
+  assertResearchMatch(eoptInvoicingImplementationResponse, 'RR 11-2024', 'EOPT invoicing transitory amendment query')
+  assertResearchMatch(eoptInvoicingImplementationResponse, 'RMC 77-2024', 'EOPT invoicing clarification circular query')
+
+  const eoptTaxAdministrationResponse = runLocalResearch(
+    {
+      query: 'What EOPT VAT, percentage tax, tax filing, payment, refund, reduced penalty, and taxpayer classification controls apply under BIR RR 3-2024, RR 4-2024, RR 5-2024, RR 6-2024, and RR 8-2024?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(eoptTaxAdministrationResponse, 'RR 3-2024', 'EOPT VAT and percentage tax query')
+  assertResearchMatch(eoptTaxAdministrationResponse, 'RR 4-2024', 'EOPT filing and payment query')
+  assertResearchMatch(eoptTaxAdministrationResponse, 'RR 5-2024', 'EOPT refund query')
+  assertResearchMatch(eoptTaxAdministrationResponse, 'RR 6-2024', 'EOPT reduced penalty query')
+  assertResearchMatch(eoptTaxAdministrationResponse, 'RR 8-2024', 'EOPT taxpayer classification query')
 
   assertResearchMatch(
     runLocalResearch(

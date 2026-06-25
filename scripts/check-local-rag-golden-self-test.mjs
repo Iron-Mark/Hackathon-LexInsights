@@ -582,7 +582,7 @@ try {
   assertCompletedMatches(onlineChildProtectionWorkflow, ['RA 11930', 'RA 9775', 'RA 10175'], 'online child protection workflow')
 
   const internetTransactionsWorkflow = runLocalResearch({
-    query: 'What seller verification, online merchant identity, e-marketplace platform responsibility, consumer redress, takedown, and transaction record controls apply to internet transactions?',
+    query: 'What seller verification, online merchant identity, e-marketplace platform responsibility, consumer redress, takedown, electronic commerce records, and transaction record controls apply to internet transactions?',
     user_id: 'golden',
     use_deep_search: true,
   })
@@ -622,6 +622,28 @@ try {
   })
   assertExactCitationMatch(exactDigitalServicesVatCitation, 'RA 12023', '12023', 'exact RA 12023 citation')
 
+  const eoptInvoicingImplementation = runLocalResearch({
+    query: 'What does RA 11976 plus BIR RR 7-2024, RR 11-2024, and RMC 77-2024 require for EOPT registration, COR, invoices, service invoices, official receipts, ATP, unused official receipts, serial numbers, and transition records?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    eoptInvoicingImplementation,
+    ['RR 7-2024', 'RR 11-2024', 'RMC 77-2024'],
+    'EOPT invoicing implementation workflow'
+  )
+
+  const eoptTaxAdministrationImplementation = runLocalResearch({
+    query: 'What EOPT VAT, percentage tax, filing, payment, refund, reduced interest, reduced penalties, and taxpayer classification controls apply under BIR RR 3-2024, RR 4-2024, RR 5-2024, RR 6-2024, and RR 8-2024?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    eoptTaxAdministrationImplementation,
+    ['RR 3-2024', 'RR 4-2024', 'RR 5-2024', 'RR 6-2024', 'RR 8-2024', 'RA 11976'],
+    'EOPT tax administration implementation workflow'
+  )
+
   const businessTaxWorkflow = runLocalResearch({
     query: 'What BIR registration, NIRC income tax, VAT, withholding certificates, EOPT invoices, tax returns, TRAIN excise tax, NRDSP digital services VAT invoicing and remittance, CREATE Act corporate incentives, and CREATE MORE registered business enterprise controls should a small platform business keep?',
     user_id: 'golden',
@@ -629,7 +651,7 @@ try {
   })
   assertCompletedMatches(
     businessTaxWorkflow,
-    ['RA 8424', 'RA 11976', 'RA 10963', 'RA 11534', 'RA 12066', 'RA 12023'],
+    ['RA 8424', 'RR 3-2024', 'RR 7-2024', 'RA 10963', 'RA 11534', 'RA 12066', 'RA 12023'],
     'business tax registration and incentives workflow'
   )
   assert.ok(
