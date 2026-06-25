@@ -13,6 +13,7 @@ This checkpoint is the handoff record for pausing active development after the c
 - Expanded local demo scope covers RA 11898 EPR/plastic-packaging recovery and DENR reporting, RA 11127 operators of payment systems and clearing/settlement infrastructure, RA 10168 CFT/sanctions and AMLC asset-freeze/watchlist workflows, and RA 11479 anti-terrorism designation/proscription due-process safeguards.
 - Providerless downstream fuels/local energy demo scope covers RA 8479 downstream oil and fuel retail, petroleum product quality/pricing/stock reporting, RA 11592 LPG cylinders/refilling/dealers, RA 9367 biofuel blend mandates, and RA 7638 DOE coordination/monitoring.
 - Providerless education/inclusive-learning demo scope covers RA 9155 basic education governance, RA 10157 kindergarten, RA 12199 current early childhood/ECCD, RA 10650 open distance learning, and RA 11650 inclusive learning for learners with disabilities. RA 10410 is historical/superseded Early Years Act context only because RA 12199 repealed it in 2025.
+- Providerless public-land/free-patent/agrarian-reform demo scope covers RA 11573 imperfect and incomplete title confirmation, RA 10023 residential free patents, RA 11231 agricultural free patents, RA 6657 CARP, RA 9700 CARPER, and RA 11953 agrarian emancipation/debt condonation. Outputs must remind users to verify land status, patents, CLOA/ARB records, DAR clearance, LandBank amortization/debt context, Register of Deeds records, and LGU land-use signals with the relevant agencies.
 - Chat UX polish: realistic streaming, subtler message surfaces, mobile-safe composer, mode selector beside upload, scroll controls, improved sidebar behavior, and responsive report cards.
 - Compliance report rendering polish: practical checklist items render as checkbox-style rows, query echo removed from assistant briefs, `.docx` Word download labeling, and mobile action wrapping.
 - Dark-mode contrast and brand-logo cleanup across header, sidebar, dialogs, and app icons.
@@ -47,6 +48,8 @@ npm run check:local-rag:governance
 npm run check:document-extraction:self-test
 npm run smoke:browser
 ```
+
+For the public-land/free-patent/agrarian-reform slice, the local RAG gates should include exact-citation probes for RA 11573, RA 10023, RA 11231, RA 6657, RA 9700, and RA 11953; a broad workflow query covering public land, imperfect title, residential/agricultural free patent, CARP/CARPER, CLOA/ARB, DAR clearance, and agrarian emancipation; and governance checks that the framework `public-land-free-patent-and-agrarian-reform` references the new corpus and coverage-map records.
 
 ## Required Live Gates
 

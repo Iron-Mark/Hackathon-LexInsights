@@ -176,6 +176,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'public land free patent agrarian workflow',
+    params: {
+      query:
+        'What public land, imperfect title, incomplete title, residential free patent, agricultural free patent, alienable and disposable land, DENR CENRO, CARP, CARPER, CLOA, ARB, DAR clearance, debt condonation, agrarian emancipation, and register of deeds controls apply?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 65,
+  },
+  {
     label: 'unrelated no-result',
     params: { query: 'How do I bake sourdough bread at high altitude?', user_id: 'performance' },
     p95Limit: 12,

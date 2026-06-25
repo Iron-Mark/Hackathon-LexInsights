@@ -219,6 +219,42 @@ try {
   })
   assertExactCitationMatch(exactInclusiveEducationCitation, 'RA 11650', '11650', 'exact RA 11650 citation')
 
+  const exactImperfectTitleCitation = runLocalResearch({
+    query: 'What does RA 11573 require for confirmation of imperfect and incomplete land titles?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactImperfectTitleCitation, 'RA 11573', '11573', 'exact RA 11573 citation')
+
+  const exactResidentialFreePatentCitation = runLocalResearch({
+    query: 'What does RA 10023 require for residential free patents and public land titling?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactResidentialFreePatentCitation, 'RA 10023', '10023', 'exact RA 10023 citation')
+
+  const exactAgriculturalFreePatentCitation = runLocalResearch({
+    query: 'What does RA 11231 require for agricultural free patents and restrictions on agricultural land patents?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactAgriculturalFreePatentCitation, 'RA 11231', '11231', 'exact RA 11231 citation')
+
+  const exactCarpCitation = runLocalResearch({
+    query: 'What does RA 6657 require for CARP agrarian reform coverage and agrarian reform beneficiaries?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactCarpCitation, 'RA 6657', '6657', 'exact RA 6657 citation')
+
+  const exactCarperCitation = runLocalResearch({
+    query: 'What does RA 9700 require for CARPER amendments to agrarian reform implementation?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactCarperCitation, 'RA 9700', '9700', 'exact RA 9700 citation')
+
+  const exactAgrarianEmancipationCitation = runLocalResearch({
+    query: 'What does RA 11953 require for agrarian emancipation and agrarian reform debt condonation?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactAgrarianEmancipationCitation, 'RA 11953', '11953', 'exact RA 11953 citation')
+
   const citationVariant = runLocalResearch({
     query: 'What controls apply under R.A. No. 10173 and RA No. 8792 for online consent records?',
     user_id: 'golden',
@@ -643,6 +679,22 @@ try {
   assert.ok(
     realEstateHousingWorkflow.summary.includes('Real Estate, Housing Buyer, HOA, and Tenant Protection Stack'),
     'real estate housing workflow should include its framework section'
+  )
+
+  const publicLandAgrarianWorkflow = runLocalResearch({
+    query: 'What public land, imperfect title, incomplete title, residential free patent, agricultural free patent, alienable and disposable land, DENR CENRO, CARP, CARPER, CLOA, ARB, DAR clearance, debt condonation, agrarian emancipation, and register of deeds controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    publicLandAgrarianWorkflow,
+    ['RA 11573', 'RA 10023', 'RA 11231', 'RA 6657', 'RA 9700', 'RA 11953'],
+    'public land free patent agrarian reform workflow',
+    0.25
+  )
+  assert.ok(
+    publicLandAgrarianWorkflow.summary.includes('Public Land, Free Patent, and Agrarian Reform Stack'),
+    'public land free patent agrarian reform workflow should include its framework section'
   )
 
   const roadSafetyWorkflow = runLocalResearch({
