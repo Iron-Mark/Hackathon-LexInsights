@@ -137,6 +137,27 @@ const ACCESSIBILITY_BENEFITS_DRAFT_IDS = [
 
 const ACCESSIBILITY_BENEFITS_FRAMEWORK_ID = 'health-welfare-and-accessibility'
 
+const BUSINESS_TAX_LAW_IDS = [
+  'ra-8424',
+  'ra-11976',
+  'ra-10963',
+  'ra-11534',
+  'ra-12066',
+  'ra-12023',
+]
+
+const BUSINESS_TAX_STATUTES = [
+  'RA 8424',
+  'RA 11976',
+  'RA 10963',
+  'RA 11534',
+  'RA 12066',
+  'RA 12023',
+]
+
+const BUSINESS_TAX_FRAMEWORK_ID = 'business-tax-registration-invoicing-and-incentives'
+const DIGITAL_SERVICES_VAT_LAW_ID = 'ra-12023'
+
 async function loadLocalResearchData() {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
@@ -418,6 +439,126 @@ try {
   for (const lawId of ACCESSIBILITY_BENEFITS_DRAFT_IDS) {
     assert.equal(coverageById.get(lawId)?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
   }
+
+  for (const [index, lawId] of BUSINESS_TAX_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `Business tax corpus should include ${BUSINESS_TAX_STATUTES[index]}`
+    )
+  }
+
+  const businessTaxFramework = data.frameworks.find((framework) => (
+    framework.id === BUSINESS_TAX_FRAMEWORK_ID
+  ))
+
+  assert.ok(
+    businessTaxFramework,
+    `${BUSINESS_TAX_FRAMEWORK_ID} framework should exist`
+  )
+  assert.ok(
+    BUSINESS_TAX_LAW_IDS.every((lawId) => businessTaxFramework.lawIds.includes(lawId)),
+    `${BUSINESS_TAX_FRAMEWORK_ID} should include ${BUSINESS_TAX_STATUTES.join(', ')}`
+  )
+
+  const businessTaxFrameworkText = [
+    businessTaxFramework.title,
+    businessTaxFramework.summary,
+    ...businessTaxFramework.triggers,
+    ...businessTaxFramework.sequence,
+    ...businessTaxFramework.checkpoints,
+  ].join(' ').toLowerCase()
+
+  for (const requiredTopic of ['bir', 'vat', 'remittance']) {
+    assert.ok(
+      businessTaxFrameworkText.includes(requiredTopic),
+      `${BUSINESS_TAX_FRAMEWORK_ID} should cover ${requiredTopic}`
+    )
+  }
+  assert.ok(
+    businessTaxFrameworkText.includes('digital service'),
+    `${BUSINESS_TAX_FRAMEWORK_ID} should cover digital services`
+  )
+  assert.ok(
+    businessTaxFrameworkText.includes('invoice') || businessTaxFrameworkText.includes('invoicing'),
+    `${BUSINESS_TAX_FRAMEWORK_ID} should cover invoicing`
+  )
+  assert.ok(
+    businessTaxFrameworkText.includes('nrdsp') ||
+      businessTaxFrameworkText.includes('nonresident digital service provider'),
+    `${BUSINESS_TAX_FRAMEWORK_ID} should cover NRDSP workflows`
+  )
+
+  const digitalServicesVatDocument = data.corpus.find((document) => document.id === DIGITAL_SERVICES_VAT_LAW_ID)
+  assert.ok(digitalServicesVatDocument, 'Corpus should include RA 12023 digital services VAT document')
+
+  const digitalServicesVatDocumentText = [
+    digitalServicesVatDocument.statute,
+    digitalServicesVatDocument.title,
+    digitalServicesVatDocument.shortTitle || '',
+    digitalServicesVatDocument.summary,
+    ...digitalServicesVatDocument.aliases,
+    ...digitalServicesVatDocument.topics,
+    ...digitalServicesVatDocument.keywords,
+    ...digitalServicesVatDocument.obligations,
+    ...digitalServicesVatDocument.commonGaps,
+  ].join(' ').toLowerCase()
+
+  for (const requiredTopic of ['vat', 'bir', 'registration', 'remittance']) {
+    assert.ok(
+      digitalServicesVatDocumentText.includes(requiredTopic),
+      `${DIGITAL_SERVICES_VAT_LAW_ID} should cover ${requiredTopic}`
+    )
+  }
+  assert.ok(
+    digitalServicesVatDocumentText.includes('digital service'),
+    `${DIGITAL_SERVICES_VAT_LAW_ID} should cover digital services`
+  )
+  assert.ok(
+    digitalServicesVatDocumentText.includes('invoice') ||
+      digitalServicesVatDocumentText.includes('invoicing'),
+    `${DIGITAL_SERVICES_VAT_LAW_ID} should cover invoicing`
+  )
+  assert.ok(
+    digitalServicesVatDocumentText.includes('nrdsp') ||
+      digitalServicesVatDocumentText.includes('nonresident digital service provider'),
+    `${DIGITAL_SERVICES_VAT_LAW_ID} should cover NRDSP terminology`
+  )
+
+  const digitalServicesVatCoverage = coverageById.get(DIGITAL_SERVICES_VAT_LAW_ID)
+  const digitalServicesVatSource = sourcesById.get(DIGITAL_SERVICES_VAT_LAW_ID)
+  const digitalServicesVatEvidenceText = (evidenceById.get(DIGITAL_SERVICES_VAT_LAW_ID) || [])
+    .map((anchor) => `${anchor.label} ${anchor.note} ${anchor.supports.join(' ')}`)
+    .join(' ')
+    .toLowerCase()
+
+  assert.ok(
+    digitalServicesVatCoverage?.frameworkIds.includes(BUSINESS_TAX_FRAMEWORK_ID),
+    `${DIGITAL_SERVICES_VAT_LAW_ID} coverage should reference ${BUSINESS_TAX_FRAMEWORK_ID}`
+  )
+  assert.equal(
+    digitalServicesVatCoverage?.coverageStatus,
+    'golden',
+    `${DIGITAL_SERVICES_VAT_LAW_ID} should have golden coverage`
+  )
+  assert.ok(digitalServicesVatSource, `${DIGITAL_SERVICES_VAT_LAW_ID} should have an authority source record`)
+  assert.equal(
+    digitalServicesVatSource?.authorityType,
+    'statute',
+    `${DIGITAL_SERVICES_VAT_LAW_ID} should be a statute`
+  )
+  assert.equal(
+    digitalServicesVatSource?.sourceTier,
+    'official-primary',
+    `${DIGITAL_SERVICES_VAT_LAW_ID} should use an official primary source tier`
+  )
+  assert.ok(
+    ['seeded', 'verified'].includes(digitalServicesVatSource?.provenanceStatus),
+    `${DIGITAL_SERVICES_VAT_LAW_ID} should expose provenance status`
+  )
+  assert.ok(
+    digitalServicesVatEvidenceText.includes('digital') && digitalServicesVatEvidenceText.includes('vat'),
+    `${DIGITAL_SERVICES_VAT_LAW_ID} evidence anchors should describe digital services VAT`
+  )
 
   for (const [index, lawId] of PRIVACY_OPERATIONS_LAW_IDS.entries()) {
     assert.ok(

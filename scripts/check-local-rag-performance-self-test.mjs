@@ -146,6 +146,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'digital services VAT workflow',
+    params: {
+      query:
+        'What controls apply to VAT on Digital Services, NRDSP BIR registration, platform invoicing, VAT remittance, tax return filing, and payment records?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 65,
+  },
+  {
     label: 'EPR plastic packaging workflow',
     params: {
       query:

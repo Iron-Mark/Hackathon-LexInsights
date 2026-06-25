@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, XCircle } from 'lucide-react'
+import { useState, useEffect, useMemo, type ReactNode } from 'react'
+import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useComplianceStore } from '@/lib/store/compliance-store'
 import { VersionHistorySidebar } from './version-history-sidebar'
@@ -13,6 +13,7 @@ import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
 import { type DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { showToast } from '@/components/ui/toast'
 import { announceToAssistiveTechnology, downloadBlob } from '@/lib/utils/browser-actions'
+import { buildLegalCitationContext, renderLegalCitationNodes } from './legal-citation'
 
 interface ComplianceCanvasProps {
   content: string
@@ -102,6 +103,9 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   // Always prioritize the content prop over stored versions for fresh analysis
   const displayContent = content || currentVersion?.content || ''
   const previewContent = formatReportMarkdownForPreview(displayContent)
+  const citationContext = useMemo(() => buildLegalCitationContext(ragResponse), [ragResponse])
+  const renderCitationText = (children: ReactNode, scope: string) =>
+    renderLegalCitationNodes(children, citationContext, `compliance-canvas-${scope}`)
 
   // Enhanced markdown rendering with semantic status blocks
   const renderContent = (text: string) => {
@@ -226,7 +230,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
           >
             {fieldTone && normalizedLabel === 'status' ? renderToneIcon(fieldTone, 'h-3.5 w-3.5') : null}
             <span className="text-[0.68rem] opacity-75">{compactLabel}</span>
-            <span className="min-w-0 normal-case">{value}</span>
+            <span className="min-w-0 normal-case">{renderCitationText(value, `field-badge-${index}`)}</span>
           </div>
         )
       }
@@ -250,7 +254,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             {fieldLabel}
           </p>
           <p className="mt-1 text-sm leading-6 text-slate-700 break-words [overflow-wrap:anywhere] dark:text-slate-200">
-            {value || 'Not provided'}
+            {renderCitationText(value || 'Not provided', `field-value-${index}`)}
           </p>
         </div>
       )
@@ -264,7 +268,9 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return (
           <h2 key={index} className={'mb-2 flex items-center gap-2 border-l-4 py-2 pl-4 text-xl font-bold ' + toneStyles[headingTone].heading}>
             {renderToneIcon(headingTone, 'h-5 w-5')}
-            <span className="min-w-0 break-words [overflow-wrap:anywhere]">{line.slice(3)}</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+              {renderCitationText(line.slice(3), `tone-h2-${index}`)}
+            </span>
           </h2>
         )
       }
@@ -273,16 +279,18 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return (
           <h3 key={index} className={'mb-2 mt-3 flex items-center gap-2 border-l-2 px-3 py-2 text-lg font-bold ' + toneStyles[headingTone].heading}>
             {renderToneIcon(headingTone)}
-            <span className="min-w-0 break-words [overflow-wrap:anywhere]">{line.slice(4)}</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+              {renderCitationText(line.slice(4), `tone-h3-${index}`)}
+            </span>
           </h3>
         )
       }
 
       if (line.startsWith('# ')) {
-        return <h1 key={index} className="mb-4 mt-6 break-words text-2xl font-bold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{line.slice(2)}</h1>
+        return <h1 key={index} className="mb-4 mt-6 break-words text-2xl font-bold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{renderCitationText(line.slice(2), `h1-${index}`)}</h1>
       }
       if (line.startsWith('## ')) {
-        return <h2 key={index} className="mb-3 mt-5 break-words text-xl font-semibold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{line.slice(3)}</h2>
+        return <h2 key={index} className="mb-3 mt-5 break-words text-xl font-semibold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{renderCitationText(line.slice(3), `h2-${index}`)}</h2>
       }
       if (line.startsWith('### ')) {
         const headingText = line.slice(4)
@@ -300,13 +308,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 {findingMatch[1]}
               </span>
               <h3 className="min-w-0 break-words font-display text-base font-bold leading-6 text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">
-                {findingMatch[2]}
+                {renderCitationText(findingMatch[2], `finding-heading-${index}`)}
               </h3>
             </div>
           )
         }
 
-        return <h3 key={index} className="mb-2 mt-4 break-words text-lg font-semibold text-slate-800 [overflow-wrap:anywhere] dark:text-slate-200">{headingText}</h3>
+        return <h3 key={index} className="mb-2 mt-4 break-words text-lg font-semibold text-slate-800 [overflow-wrap:anywhere] dark:text-slate-200">{renderCitationText(headingText, `h3-${index}`)}</h3>
       }
 
       if (line.includes('**Status:**') || /^status:/i.test(trimmed)) {
@@ -315,7 +323,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
           return (
             <p key={index} className={'my-2 inline-flex max-w-full items-center gap-2 rounded px-2 py-1 font-semibold break-words [overflow-wrap:anywhere] ' + toneStyles[statusTone].badge}>
               {renderToneIcon(statusTone)}
-              <span className="min-w-0 break-words [overflow-wrap:anywhere]">{line}</span>
+              <span className="min-w-0 break-words [overflow-wrap:anywhere]">{renderCitationText(line, `status-${index}`)}</span>
             </p>
           )
         }
@@ -328,11 +336,11 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         if (scoreNum >= 80) colorClass = 'text-green-700 bg-green-50 border-green-200 dark:border-green-400/30 dark:bg-green-400/10 dark:text-green-100'
         else if (scoreNum >= 60) colorClass = 'text-amber-700 bg-amber-50 border-amber-200 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-100'
 
-        return <div key={index} className={'my-4 rounded-lg border-2 p-4 text-2xl font-bold break-words [overflow-wrap:anywhere] ' + colorClass}>{line}</div>
+        return <div key={index} className={'my-4 rounded-lg border-2 p-4 text-2xl font-bold break-words [overflow-wrap:anywhere] ' + colorClass}>{renderCitationText(line, `score-${index}`)}</div>
       }
 
       if (line.startsWith('**') && line.endsWith('**')) {
-        return <p key={index} className="my-2 break-words font-semibold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{line.slice(2, -2)}</p>
+        return <p key={index} className="my-2 break-words font-semibold text-slate-950 [overflow-wrap:anywhere] dark:text-slate-100">{renderCitationText(line.slice(2, -2), `strong-line-${index}`)}</p>
       }
 
       const checklistMatch = trimmed.match(/^-\s+\[([ xX])\]\s+(.+)$/)
@@ -355,7 +363,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               aria-label={`Checklist item: ${checklistText}`}
               className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 bg-white accent-iris-600 disabled:cursor-default disabled:opacity-100 dark:border-iris-300/30 dark:bg-[#171322] dark:accent-iris-300"
             />
-            <span className="min-w-0 break-words [overflow-wrap:anywhere]">{checklistText}</span>
+            <span className="min-w-0 break-words [overflow-wrap:anywhere]">{renderCitationText(checklistText, `checklist-${index}`)}</span>
           </div>
         )
       }
@@ -381,20 +389,22 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
           return (
             <li key={index} className={'ml-4 my-1 flex min-w-0 items-start gap-2 rounded px-2 py-1.5 font-medium break-words [overflow-wrap:anywhere] ' + toneStyles[listTone].text}>
               {renderToneIcon(listTone)}
-              <span className="min-w-0 break-words [overflow-wrap:anywhere]">{cleanedText || listText}</span>
+              <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+                {renderCitationText(cleanedText || listText, `tone-list-${index}`)}
+              </span>
             </li>
           )
         }
 
-        return <li key={index} className="ml-4 my-1 min-w-0 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{listText}</li>
+        return <li key={index} className="ml-4 my-1 min-w-0 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{renderCitationText(listText, `list-${index}`)}</li>
       }
 
       if (/^\d+\./.test(trimmed)) {
-        return <li key={index} className="ml-4 my-1 min-w-0 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{trimmed.replace(/^\d+\.\s*/, '')}</li>
+        return <li key={index} className="ml-4 my-1 min-w-0 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{renderCitationText(trimmed.replace(/^\d+\.\s*/, ''), `numbered-${index}`)}</li>
       }
 
       if (/^(action|deadline|target|owner):/i.test(trimmed)) {
-        return <p key={index} className="my-2 break-words pl-6 leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{line}</p>
+        return <p key={index} className="my-2 break-words pl-6 leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{renderCitationText(line, `action-${index}`)}</p>
       }
 
       if (trimmed === '---') {
@@ -406,7 +416,9 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return (
           <div key={index} className="flex min-w-0 gap-2 border-b border-slate-200 py-2 dark:border-iris-300/15">
             {cells.map((cell, i) => (
-              <div key={i} className="min-w-0 flex-1 break-words text-sm text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{cell.trim()}</div>
+              <div key={i} className="min-w-0 flex-1 break-words text-sm text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">
+                {renderCitationText(cell.trim(), `table-${index}-${i}`)}
+              </div>
             ))}
           </div>
         )
@@ -416,7 +428,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         return <div key={index} className="h-2" />
       }
 
-      return <p key={index} className="my-2 break-words leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{line}</p>
+      return <p key={index} className="my-2 break-words leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-slate-300">{renderCitationText(line, `paragraph-${index}`)}</p>
     }
 
     for (let i = 0; i < lines.length; i++) {
@@ -462,15 +474,31 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
     >
       {/* Version History Sidebar */}
       {showHistory && (
-        <div className="w-64 border-r border-iris-100 bg-iris-50/45 dark:border-iris-300/15 dark:bg-[#171322]">
-          <VersionHistorySidebar />
-        </div>
+        <>
+          <button
+            type="button"
+            className="absolute inset-0 z-20 bg-slate-950/35 backdrop-blur-sm lg:hidden"
+            aria-label="Close version history"
+            onClick={() => setShowHistory(false)}
+          />
+          <div className="absolute inset-y-0 left-0 z-30 w-[min(18rem,calc(100vw-3rem))] border-r border-iris-100 bg-iris-50/95 shadow-xl shadow-iris-950/15 dark:border-iris-300/15 dark:bg-[#171322] dark:shadow-iris-950/40 lg:relative lg:inset-auto lg:z-auto lg:w-64 lg:bg-iris-50/45 lg:shadow-none">
+            <button
+              type="button"
+              className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-iris-100 hover:text-iris-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 lg:hidden"
+              aria-label="Close version history panel"
+              onClick={() => setShowHistory(false)}
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <VersionHistorySidebar />
+          </div>
+        </>
       )}
 
       {/* Main Canvas */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Canvas Header */}
-        <header className="border-b border-iris-100 bg-white/92 px-4 py-4 shadow-[0_1px_0_rgba(39,32,117,0.04)] backdrop-blur dark:border-iris-300/15 dark:bg-[#1a1625] dark:shadow-none">
+        <header className="border-b border-iris-100 bg-white/92 px-4 py-4 pr-16 shadow-[0_1px_0_rgba(39,32,117,0.04)] backdrop-blur dark:border-iris-300/15 dark:bg-[#1a1625] dark:shadow-none lg:pr-4">
           <div className="flex flex-col gap-3">
             <div className="flex min-w-0 items-start gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-iris-50 text-iris-700 dark:bg-iris-400/10 dark:text-iris-200">
@@ -640,7 +668,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         ) : (
           /* Preview Mode - Formatted View */
           <article 
-            className="flex-1 overflow-y-auto p-6 pb-32 focus:outline-none"
+            className="flex-1 overflow-y-auto p-4 pb-32 focus:outline-none sm:p-6"
             tabIndex={0}
             aria-label="Compliance report content"
           >

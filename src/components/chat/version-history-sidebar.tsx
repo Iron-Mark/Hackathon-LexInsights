@@ -20,7 +20,7 @@ export function VersionHistorySidebar() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="border-b border-slate-200 px-4 py-3 dark:border-iris-300/15">
+      <div className="border-b border-slate-200 px-4 py-3 pr-14 dark:border-iris-300/15 lg:pr-4">
         <h3 className="font-display truncate text-sm font-semibold text-neutral-900 dark:text-slate-100">Version History</h3>
         <p className="font-body mt-1 truncate text-xs font-medium text-neutral-600 dark:text-slate-400">{versions.length} versions</p>
       </div>
@@ -78,7 +78,7 @@ export function VersionHistorySidebar() {
                     <div
                       className={cn(
                         'flex items-center gap-1 transition-opacity',
-                        confirmDeleteId === version.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        confirmDeleteId === version.id ? 'opacity-100' : 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100'
                       )}
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -89,7 +89,7 @@ export function VersionHistorySidebar() {
                               deleteVersion(version.id)
                               setConfirmDeleteId(null)
                             }}
-                            className="flex h-7 w-7 items-center justify-center rounded bg-red-600 text-white transition-all hover:bg-red-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                            className="flex h-10 w-10 items-center justify-center rounded bg-red-600 text-white transition-all hover:bg-red-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
                             aria-label={`Confirm delete ${version.label}`}
                             type="button"
                           >
@@ -97,7 +97,7 @@ export function VersionHistorySidebar() {
                           </button>
                           <button
                             onClick={() => setConfirmDeleteId(null)}
-                            className="flex h-7 w-7 items-center justify-center rounded bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:bg-[#241f32] dark:text-slate-200 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
+                            className="flex h-10 w-10 items-center justify-center rounded bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:bg-[#241f32] dark:text-slate-200 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
                             aria-label={`Cancel delete ${version.label}`}
                             type="button"
                           >
@@ -107,7 +107,7 @@ export function VersionHistorySidebar() {
                       ) : (
                         <button
                           onClick={() => setConfirmDeleteId(version.id)}
-                          className="flex h-7 w-7 items-center justify-center rounded p-0 transition-all hover:bg-red-50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 dark:hover:bg-red-400/10"
+                          className="flex h-10 w-10 items-center justify-center rounded p-0 transition-all hover:bg-red-50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 dark:hover:bg-red-400/10"
                           aria-label={`Delete ${version.label}`}
                           type="button"
                         >

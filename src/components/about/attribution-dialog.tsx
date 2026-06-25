@@ -1,7 +1,7 @@
 'use client'
 
 import type { LucideIcon } from 'lucide-react'
-import { BrainCircuit, ExternalLink, FileCheck2, GitBranch, Palette, ServerCog, Sparkles, UsersRound, Wrench } from 'lucide-react'
+import { BrainCircuit, ChevronDown, ExternalLink, FileCheck2, GitBranch, Palette, ServerCog, Sparkles, UsersRound, Wrench } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -35,8 +35,8 @@ const AUTHORS = [
     Icon: Palette,
   },
   {
-    name: 'Ashlyn Torres',
-    role: 'QA & Project Assistant Manager',
+    name: 'Ashlyn Jam Torres',
+    role: 'QA & Documentation',
     href: 'https://ph.linkedin.com/in/ashlyn-torres-120354329',
     Icon: FileCheck2,
   },
@@ -48,7 +48,11 @@ const AUTHORS = [
 }>
 
 const PROJECT_FACTS = [
-  { label: 'Built for', value: 'Devkada Codekada 2025' },
+  {
+    label: 'Built for',
+    value: 'DevKada CodeKada 2025',
+    href: 'https://www.facebook.com/events/kmc-armstrong-corporate-center/codekada-the-innovation-hackathon/1122064766115595/',
+  },
   { label: 'Product focus', value: 'Philippine legal research and compliance review workflows' },
   { label: 'Public proof', value: 'Live app, portfolio case study, and Iron-Mark repository' },
 ]
@@ -77,7 +81,7 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
                 Authors & Attribution
               </DialogTitle>
               <DialogDescription className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                LexInSight was built during Devkada Codekada 2025 and is now maintained as a public
+                LexInSight was built during DevKada CodeKada 2025 and is now maintained as a public
                 proof-backed AI legal compliance project.
               </DialogDescription>
             </div>
@@ -100,10 +104,10 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
                   aria-label={`Open ${author.name} on LinkedIn`}
                 >
                   <span className="flex min-w-0 items-center gap-2">
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-iris-500/80 transition-colors group-hover:text-iris-700 dark:text-iris-200/70 dark:group-hover:text-iris-100" aria-hidden="true" />
                     <span className="truncate text-sm font-semibold text-slate-950 transition-colors group-hover:text-iris-700 dark:text-slate-100 dark:group-hover:text-iris-100">
                       {author.name}
                     </span>
-                    <Icon className="h-3.5 w-3.5 shrink-0 text-iris-500/80 transition-colors group-hover:text-iris-700 dark:text-iris-200/70 dark:group-hover:text-iris-100" aria-hidden="true" />
                     <ExternalLink className="h-3.5 w-3.5 shrink-0 text-slate-400 opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:opacity-100 dark:text-iris-200/55" aria-hidden="true" />
                   </span>
                   <span className="mt-1 block text-xs leading-5 text-slate-500 transition-colors group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200">
@@ -132,7 +136,21 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
                   <dt className="text-[11px] font-bold uppercase tracking-wide text-iris-700 dark:text-iris-200">
                     {fact.label}
                   </dt>
-                  <dd className="mt-1 text-[15px] font-medium leading-6 text-slate-900 dark:text-slate-100">{fact.value}</dd>
+                  <dd className="mt-1 text-[15px] font-medium leading-6 text-slate-900 dark:text-slate-100">
+                    {'href' in fact ? (
+                      <a
+                        href={fact.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-sm font-semibold text-iris-700 transition-colors hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-iris-200 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+                      >
+                        {fact.value}
+                        <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                      </a>
+                    ) : (
+                      fact.value
+                    )}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -148,14 +166,20 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
             <p className="mt-3 text-sm leading-6 text-slate-800 dark:text-slate-200">
               Mark Siazon, also publishing under Iron-Mark, is the solo active maintainer for now.
             </p>
-            <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-700 dark:text-slate-300">
-              {MAINTAINER_FACTS.map((fact) => (
-                <li key={fact} className="flex gap-2">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-iris-500 dark:bg-iris-300" aria-hidden="true" />
-                  <span>{fact}</span>
-                </li>
-              ))}
-            </ul>
+            <details className="group mt-3">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-iris-700 transition-colors hover:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-iris-200 dark:hover:bg-iris-300/10 dark:focus-visible:ring-offset-[#171322] [&::-webkit-details-marker]:hidden">
+                <span>Maintainer details</span>
+                <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
+              </summary>
+              <ul className="mt-2 space-y-2 px-3 text-sm leading-6 text-slate-700 dark:text-slate-300">
+                {MAINTAINER_FACTS.map((fact) => (
+                  <li key={fact} className="flex gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-iris-500 dark:bg-iris-300" aria-hidden="true" />
+                    <span>{fact}</span>
+                  </li>
+                ))}
+              </ul>
+            </details>
           </section>
 
           <section className="mt-5 border-t border-slate-200 pt-5 dark:border-iris-300/15" aria-labelledby="attribution-sources">

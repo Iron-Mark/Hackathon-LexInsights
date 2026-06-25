@@ -521,14 +521,20 @@ try {
   })
   assertCompletedMatches(financialAccountScamWorkflow, ['RA 12010', 'RA 11765', 'RA 9160'], 'financial account scam workflow')
 
+  const exactDigitalServicesVatCitation = runLocalResearch({
+    query: 'What does RA 12023 require for VAT on Digital Services, NRDSP BIR registration, invoicing, and remittance?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactDigitalServicesVatCitation, 'RA 12023', '12023', 'exact RA 12023 citation')
+
   const businessTaxWorkflow = runLocalResearch({
-    query: 'What BIR registration, NIRC income tax, VAT, withholding certificates, EOPT invoices, tax returns, TRAIN excise tax, CREATE Act corporate incentives, and CREATE MORE registered business enterprise controls should a small platform business keep?',
+    query: 'What BIR registration, NIRC income tax, VAT, withholding certificates, EOPT invoices, tax returns, TRAIN excise tax, NRDSP digital services VAT invoicing and remittance, CREATE Act corporate incentives, and CREATE MORE registered business enterprise controls should a small platform business keep?',
     user_id: 'golden',
     use_deep_search: true,
   })
   assertCompletedMatches(
     businessTaxWorkflow,
-    ['RA 8424', 'RA 11976', 'RA 10963', 'RA 11534', 'RA 12066'],
+    ['RA 8424', 'RA 11976', 'RA 10963', 'RA 11534', 'RA 12066', 'RA 12023'],
     'business tax registration and incentives workflow'
   )
   assert.ok(

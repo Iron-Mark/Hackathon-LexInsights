@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, type ComponentProps } from 'react'
+import { useEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from 'react'
 import { Message } from '@/types'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -11,6 +11,7 @@ import { exportToDocx } from '@/lib/utils/docx-export'
 import { cn } from '@/lib/utils'
 import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
 import { downloadBlob, formatClockTime } from '@/lib/utils/browser-actions'
+import { buildLegalCitationContext, renderLegalCitationNodes } from './legal-citation'
 
 interface MessageBubbleProps {
   message: Message
@@ -222,6 +223,12 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
   }
 
   const renderedAssistantContent = formatReportMarkdownForPreview(visibleContent)
+  const citationContext = useMemo(
+    () => buildLegalCitationContext(message.metadata?.ragResponse),
+    [message.metadata?.ragResponse]
+  )
+  const renderCitationChildren = (children: ReactNode, scope: string) =>
+    renderLegalCitationNodes(children, citationContext, `${message.id}-${scope}`)
   let checklistInputIndex = 0
 
   return (
@@ -252,19 +259,43 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
             remarkPlugins={[remarkGfm]}
             components={{
               // Headings
-              h1: (props) => (
-                <h1 className="mb-4 mt-6 break-words border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:text-iris-100/90" {...stripMarkdownNode(props)} />
-              ),
-              h2: (props) => (
-                <h2 className="mb-3 mt-5 break-words text-xl font-bold text-slate-800 [overflow-wrap:anywhere] dark:text-iris-100/88" {...stripMarkdownNode(props)} />
-              ),
-              h3: (props) => (
-                <h3 className="mb-2 mt-4 break-words text-lg font-semibold text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/82" {...stripMarkdownNode(props)} />
-              ),
+              h1: (props) => {
+                const { children, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <h1 className="mb-4 mt-6 break-words border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:text-iris-100/90" {...domProps}>
+                    {renderCitationChildren(children, 'h1')}
+                  </h1>
+                )
+              },
+              h2: (props) => {
+                const { children, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <h2 className="mb-3 mt-5 break-words text-xl font-bold text-slate-800 [overflow-wrap:anywhere] dark:text-iris-100/88" {...domProps}>
+                    {renderCitationChildren(children, 'h2')}
+                  </h2>
+                )
+              },
+              h3: (props) => {
+                const { children, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <h3 className="mb-2 mt-4 break-words text-lg font-semibold text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/82" {...domProps}>
+                    {renderCitationChildren(children, 'h3')}
+                  </h3>
+                )
+              },
               // Paragraphs
-              p: (props) => (
-                <p className="my-3 break-words text-base leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/72" {...stripMarkdownNode(props)} />
-              ),
+              p: (props) => {
+                const { children, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <p className="my-3 break-words text-base leading-relaxed text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/72" {...domProps}>
+                    {renderCitationChildren(children, 'p')}
+                  </p>
+                )
+              },
               // Lists
               ul: (props) => {
                 const { className, ...domProps } = stripMarkdownNode(props)
@@ -295,7 +326,7 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                       {...domProps}
                     >
                       <label className="flex min-h-11 w-full cursor-pointer gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed shadow-sm transition-all duration-150 hover:border-iris-300 hover:bg-iris-50/80 active:scale-[0.99] dark:border-iris-300/15 dark:bg-[#171322]/60 dark:text-iris-100/80 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10">
-                        {children}
+                        {renderCitationChildren(children, `task-li-${checklistInputIndex}`)}
                       </label>
                     </li>
                   )
@@ -309,7 +340,7 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                     )}
                     {...domProps}
                   >
-                    {children}
+                    {renderCitationChildren(children, 'li')}
                   </li>
                 )
               },
@@ -353,9 +384,15 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                 )
               },
               // Strong/Bold
-              strong: (props) => (
-                <strong className="break-words font-bold text-slate-900 [overflow-wrap:anywhere] dark:text-iris-50/95" {...stripMarkdownNode(props)} />
-              ),
+              strong: (props) => {
+                const { children, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <strong className="break-words font-bold text-slate-900 [overflow-wrap:anywhere] dark:text-iris-50/95" {...domProps}>
+                    {renderCitationChildren(children, 'strong')}
+                  </strong>
+                )
+              },
               // Code
               code: (props: MarkdownCodeProps) => {
                 const { inline, ...codeProps } = stripMarkdownNode(props)
@@ -370,9 +407,15 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                 <a className="break-words font-medium text-iris-600 underline [overflow-wrap:anywhere] hover:text-iris-700 dark:text-iris-300 dark:hover:text-iris-200" {...stripMarkdownNode(props)} />
               ),
               // Blockquotes
-              blockquote: (props) => (
-                <blockquote className="my-3 break-words rounded-r border-l-4 border-iris-500 bg-slate-50 py-2 pl-4 italic text-slate-600 [overflow-wrap:anywhere] dark:bg-[#171322]/70 dark:text-iris-100/72" {...stripMarkdownNode(props)} />
-              ),
+              blockquote: (props) => {
+                const { children, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <blockquote className="my-3 break-words rounded-r border-l-4 border-iris-500 bg-slate-50 py-2 pl-4 italic text-slate-600 [overflow-wrap:anywhere] dark:bg-[#171322]/70 dark:text-iris-100/72" {...domProps}>
+                    {renderCitationChildren(children, 'blockquote')}
+                  </blockquote>
+                )
+              },
               // Horizontal rule
               hr: (props) => (
                 <hr className="my-6 border-slate-300 dark:border-iris-300/15" {...stripMarkdownNode(props)} />
@@ -383,12 +426,24 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                   <table className="min-w-full table-fixed border-collapse border border-slate-300 dark:border-iris-300/15" {...stripMarkdownNode(props)} />
                 </div>
               ),
-              th: (props) => (
-                <th className="break-words border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-100" {...stripMarkdownNode(props)} />
-              ),
-              td: (props) => (
-                <td className="break-words border border-slate-300 px-4 py-2 text-slate-700 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:text-iris-100/72" {...stripMarkdownNode(props)} />
-              ),
+              th: (props) => {
+                const { children, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <th className="break-words border border-slate-300 bg-slate-100 px-4 py-2 text-left font-semibold text-slate-900 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-100" {...domProps}>
+                    {renderCitationChildren(children, 'th')}
+                  </th>
+                )
+              },
+              td: (props) => {
+                const { children, ...domProps } = stripMarkdownNode(props)
+
+                return (
+                  <td className="break-words border border-slate-300 px-4 py-2 text-slate-700 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:text-iris-100/72" {...domProps}>
+                    {renderCitationChildren(children, 'td')}
+                  </td>
+                )
+              },
             }}
           >
             {renderedAssistantContent}
