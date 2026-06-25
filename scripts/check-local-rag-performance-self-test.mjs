@@ -146,6 +146,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'internet transactions IRR marketplace workflow',
+    params: {
+      query:
+        'What controls apply to RA 11967 Internet Transactions Act IRR, Joint Administrative Order 24-03, online merchant onboarding, seller verification, e-marketplace takedown, consumer redress, E-Commerce Bureau routing, marketplace transaction records, payment evidence, logistics complaints, privacy, and tax invoices?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'BSP consumer fraud and VASP workflow',
     params: {
       query:

@@ -328,6 +328,7 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 11479'), 'Corpus should include RA 11479')
   assert.ok(corpus.some((document) => document.statute === 'RA 7394'), 'Corpus should include RA 7394')
   assert.ok(corpus.some((document) => document.statute === 'RA 10667'), 'Corpus should include RA 10667')
+  assert.ok(corpus.some((document) => document.id === 'dti-jao-24-03-2024'), 'Corpus should include Joint Administrative Order No. 24-03, s. 2024')
   assert.ok(corpus.some((document) => document.statute === 'RA 11765'), 'Corpus should include RA 11765')
   assert.ok(corpus.some((document) => document.id === 'bsp-circular-1160-2022'), 'Corpus should include BSP Circular No. 1160, s. 2022')
   assert.ok(corpus.some((document) => document.id === 'bsp-circular-1169-2023'), 'Corpus should include BSP Circular No. 1169, s. 2023')
@@ -1908,6 +1909,18 @@ try {
     'RA 11967',
     'internet transactions query'
   )
+
+  const internetTransactionsIrrResponse = runLocalResearch(
+    {
+      query:
+        'What does Joint Administrative Order No. 24-03 require for RA 11967 Internet Transactions Act IRR merchant onboarding, seller verification, e-marketplace takedown, consumer redress, and transaction records?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(internetTransactionsIrrResponse, 'Joint Administrative Order No. 24-03, s. 2024', 'internet transactions IRR query')
+  assertResearchMatch(internetTransactionsIrrResponse, 'RA 11967', 'internet transactions IRR parent-law query')
 
   const financialAccountScamFrameworkResponse = runLocalResearch(
     { query: 'What money mule, phishing, account takeover, transaction hold, evidence preservation, and law-enforcement escalation controls apply to financial account scams?', user_id: 'self-test' },
