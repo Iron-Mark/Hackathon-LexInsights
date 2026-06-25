@@ -119,7 +119,7 @@ const scenarios = [
     label: 'privacy operations NPC workflow',
     params: {
       query:
-        'What RA 10173, DPO, PIC, PIP, DPS registration, consent, data sharing agreement, DBNMS breach notification, personal data security, privacy engineering, AI personal data, automated decision-making, profiling, and data-subject rights controls should a privacy office check?',
+        'What RA 10173 and Data Privacy Act IRR controls should a privacy office check for DPO, PIC, PIP, lawful processing, DPS registration, consent, data sharing agreement, outsourcing, DBNMS breach notification, personal data security, privacy engineering, AI personal data, automated decision-making, profiling, and data-subject rights?',
       user_id: 'performance',
       use_deep_search: true,
     },

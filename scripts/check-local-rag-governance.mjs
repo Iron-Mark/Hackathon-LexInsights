@@ -75,6 +75,7 @@ const CHILD_ADOPTION_STATUS_STATUTES = [
 const CHILD_ADOPTION_STATUS_FRAMEWORK_ID = 'child-adoption-foundling-and-civil-status'
 
 const PRIVACY_OPERATIONS_LAW_IDS = [
+  'npc-irr-2016',
   'npc-circular-16-03',
   'npc-advisory-2026-02',
   'npc-circular-2023-06',
@@ -85,6 +86,7 @@ const PRIVACY_OPERATIONS_LAW_IDS = [
 ]
 
 const PRIVACY_OPERATIONS_STATUTES = [
+  'Data Privacy Act IRR',
   'NPC Circular No. 16-03',
   'NPC Advisory No. 2026-02',
   'NPC Circular No. 2023-06',
@@ -97,6 +99,7 @@ const PRIVACY_OPERATIONS_STATUTES = [
 const PRIVACY_OPERATIONS_FRAMEWORK_ID = 'privacy-operations-and-npc-compliance'
 
 const PRIVACY_OPERATIONS_AUTHORITY_TYPES = new Map([
+  ['npc-irr-2016', 'regulation'],
   ['npc-circular-16-03', 'regulation'],
   ['npc-advisory-2026-02', 'advisory'],
   ['npc-circular-2023-06', 'regulation'],
@@ -597,7 +600,7 @@ try {
     `${PRIVACY_OPERATIONS_FRAMEWORK_ID} should be privacy-facing`
   )
 
-  for (const requiredTopic of ['breach', 'dpo', 'registration', 'consent', 'data sharing', 'privacy engineering']) {
+  for (const requiredTopic of ['lawful processing', 'breach', 'dpo', 'registration', 'consent', 'data sharing', 'privacy engineering']) {
     assert.ok(
       privacyOperationsFrameworkText.includes(requiredTopic),
       `${PRIVACY_OPERATIONS_FRAMEWORK_ID} should cover ${requiredTopic}`

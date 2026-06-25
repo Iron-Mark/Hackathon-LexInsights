@@ -57,6 +57,10 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
     title: 'Privacy Operations and NPC Compliance Stack',
     triggers: [
       'data privacy compliance',
+      'data privacy act irr',
+      'dpa irr',
+      'ra 10173 irr',
+      'lawful processing',
       'privacy operations',
       'privacy management program',
       'data protection officer',
@@ -76,6 +80,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
     ],
     lawIds: [
       'ra-10173',
+      'npc-irr-2016',
       'npc-circular-16-03',
       'npc-advisory-2026-02',
       'npc-circular-2023-06',
@@ -88,14 +93,15 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'ra-12254',
     ],
     summary:
-      'Use this when a workflow asks for RA 10173 compliance operations: breach notification, DPO governance, data processing system registration, consent, data sharing, privacy engineering, security safeguards, automated decisions, or NPC-facing records.',
+      'Use this when a workflow asks for RA 10173 compliance operations: lawful processing, PIC/PIP roles, breach notification, DPO governance, data processing system registration, consent, data sharing, privacy engineering, security safeguards, automated decisions, or NPC-facing records.',
     sequence: [
-      'Classify the privacy issue first: lawful processing, consent, data sharing, processor outsourcing, system security, DPO or privacy office governance, DPS registration, automated decision-making/profiling, breach response, AI processing, or privacy engineering.',
+      'Classify the privacy issue first: Data Privacy Act IRR implementation, lawful processing, PIC/PIP role assignment, consent, data sharing, processor outsourcing, system security, DPO or privacy office governance, DPS registration, automated decision-making/profiling, breach response, AI processing, or privacy engineering.',
       'Map the accountable parties: personal information controller, processor, DPO, system owner, security owner, vendor, recipient, joint initiative, regulator-facing filer, and data-subject support owner.',
       'Separate notices, consent, lawful basis, data-sharing agreement, system registration, security controls, breach notification, privacy impact assessment, rights handling, and engineering release gates.',
       'Document data inventory, data-flow map, system inventory, lawful basis, retention, access roles, security controls, consent/version evidence, DSA terms, DBNMS or NPC submissions, and change-review records.',
     ],
     checkpoints: [
+      'The Data Privacy Act IRR role split is clear: controller, processor, vendor, recipient, DPO, and system owner duties are not collapsed into one generic owner.',
       'Consent is not used as a catch-all lawful basis where contract, legal obligation, public authority, legitimate interest, or other grounds are more accurate.',
       'Breach response includes reportability assessment, containment, DBNMS/NPC notification route, affected-person notice, remediation, and restricted evidence custody.',
       'Data processing systems, automated decisions, profiling, DPO designation, registration, amendments, and seal usage are tracked where triggered.',

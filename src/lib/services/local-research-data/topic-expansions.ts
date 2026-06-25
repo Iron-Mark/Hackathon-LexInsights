@@ -39,6 +39,32 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
   },
   {
     triggers: [
+      'data privacy act irr',
+      'dpa irr',
+      'ra 10173 irr',
+      'privacy irr',
+      'lawful processing',
+      'personal information controller',
+      'personal information processor',
+      'pic pip',
+      'pic',
+      'pip',
+    ],
+    expansions: [
+      'data privacy act implementing rules',
+      'personal information controller',
+      'personal information processor',
+      'lawful processing',
+      'privacy notice',
+      'data subject rights',
+      'data sharing',
+      'outsourcing',
+      'security measures',
+      'breach notification',
+    ],
+  },
+  {
+    triggers: [
       'dpo',
       'data protection officer',
       'privacy management program',
