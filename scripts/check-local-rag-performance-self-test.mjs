@@ -146,6 +146,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'BSP consumer fraud and VASP workflow',
+    params: {
+      query:
+        'What controls apply to BSP Circular 1160 financial consumer protection, BSP Circular 1169 consumer assistance mechanism, BSP Circular 1140 fraud management system, BSP Circular 1108 virtual asset service provider registration, wallet fraud, unauthorized transfers, crypto custody, transaction monitoring, AML escalation, and consumer remediation?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'digital services VAT workflow',
     params: {
       query:

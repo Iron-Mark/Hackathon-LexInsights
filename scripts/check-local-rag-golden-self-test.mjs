@@ -379,6 +379,62 @@ try {
     'payment systems topic should include its framework section'
   )
 
+  const bspFinancialConsumerRegulations = runLocalResearch({
+    query:
+      'What does BSP Circular 1160 require for financial consumer protection regulations, market conduct, transparent pricing, complaint handling, fraud response, and consumer data protection?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    bspFinancialConsumerRegulations,
+    ['BSP Circular No. 1160, s. 2022', 'RA 11765'],
+    'BSP Circular 1160 financial consumer protection workflow',
+    0.25
+  )
+  assert.equal(statutes(bspFinancialConsumerRegulations)[0], 'BSP Circular No. 1160, s. 2022', 'BSP Circular 1160 should rank first')
+
+  const bspConsumerAssistance = runLocalResearch({
+    query:
+      'What does BSP Circular 1169 require for consumer assistance mechanism, complaint intake, acknowledgment, resolution timeline, escalation, root cause analysis, and remediation?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    bspConsumerAssistance,
+    ['BSP Circular No. 1169, s. 2023', 'BSP Circular No. 1160, s. 2022'],
+    'BSP Circular 1169 consumer assistance workflow',
+    0.25
+  )
+  assert.equal(statutes(bspConsumerAssistance)[0], 'BSP Circular No. 1169, s. 2023', 'BSP Circular 1169 should rank first')
+
+  const bspFraudManagement = runLocalResearch({
+    query:
+      'What does BSP Circular 1140 require for a robust fraud management system, fraud monitoring, transaction monitoring, customer authentication, account takeover, incident response, and fraud reporting?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    bspFraudManagement,
+    ['BSP Circular No. 1140, s. 2022', 'RA 12010'],
+    'BSP Circular 1140 fraud management workflow',
+    0.25
+  )
+  assert.equal(statutes(bspFraudManagement)[0], 'BSP Circular No. 1140, s. 2022', 'BSP Circular 1140 should rank first')
+
+  const bspVaspGuidelines = runLocalResearch({
+    query:
+      'What does BSP Circular 1108 require for virtual asset service providers, VASP registration, crypto exchange custody, wallet-address records, customer due diligence, transaction monitoring, cybersecurity, and consumer disclosure?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    bspVaspGuidelines,
+    ['BSP Circular No. 1108, s. 2021', 'RA 11127', 'RA 9160'],
+    'BSP Circular 1108 VASP workflow',
+    0.25
+  )
+  assert.equal(statutes(bspVaspGuidelines)[0], 'BSP Circular No. 1108, s. 2021', 'BSP Circular 1108 should rank first')
+
   const sanctionsTopic = runLocalResearch({
     query: 'What sanctions screening and asset-freeze controls apply to a donation transfer flagged for terrorism financing?',
     user_id: 'golden',
