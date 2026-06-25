@@ -61,13 +61,28 @@ assertIncludes(registration, "scope: '/'", 'Service worker registration componen
 assertIncludes(registration, "updateViaCache: 'none'", 'Service worker registration component')
 
 const serviceWorker = readProjectFile('public/sw.js')
-assertIncludes(serviceWorker, "const CACHE_NAME = 'lexinsight-pwa-v1'", 'Service worker')
+assertIncludes(serviceWorker, "const CACHE_NAME = 'lexinsight-pwa-v2'", 'Service worker')
 assertMatches(serviceWorker, /self\.addEventListener\('install'/, 'Service worker must handle install')
 assertMatches(serviceWorker, /self\.addEventListener\('activate'/, 'Service worker must handle activate')
 assertMatches(serviceWorker, /self\.addEventListener\('fetch'/, 'Service worker must handle fetch')
+assertIncludes(serviceWorker, 'navigationPreload', 'Service worker')
 assertIncludes(serviceWorker, "event.request.mode === 'navigate'", 'Service worker')
 assertIncludes(serviceWorker, "request.url.includes('/api/')", 'Service worker')
 assertIncludes(serviceWorker, "'/offline'", 'Service worker')
+assertIncludes(serviceWorker, "'/manifest.webmanifest'", 'Service worker app shell')
+
+const installButton = readProjectFile('src/components/pwa/install-app-button.tsx')
+assertIncludes(installButton, 'beforeinstallprompt', 'Install button')
+assertIncludes(installButton, 'appinstalled', 'Install button')
+assertIncludes(installButton, 'Install LexInSight', 'Install button')
+
+const offlinePage = readProjectFile('src/app/offline/page.tsx')
+assertIncludes(offlinePage, 'OfflineActions', 'Offline page')
+assertIncludes(offlinePage, 'Offline mode', 'Offline page')
+
+const offlineActions = readProjectFile('src/components/pwa/offline-actions.tsx')
+assertIncludes(offlineActions, 'window.location.reload()', 'Offline actions')
+assertIncludes(offlineActions, 'Return home', 'Offline actions')
 
 const nextConfig = readProjectFile('next.config.ts')
 assertIncludes(nextConfig, 'async headers()', 'Next config')

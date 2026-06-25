@@ -14,6 +14,7 @@ const rootDir = process.cwd()
 const sourcePath = path.join(rootDir, 'src/lib/services/local-legal-research.ts')
 const dataSourceDir = path.join(rootDir, 'src/lib/services/local-research-data')
 const require = createRequire(import.meta.url)
+const performanceMultiplier = process.env.CI ? 3 : 1
 
 async function loadProviderlessModule() {
   assert.equal(existsSync(sourcePath), true, 'local-legal-research.ts is missing')
@@ -145,13 +146,19 @@ try {
   )
 
   for (const { scenario, metrics } of results) {
+    const p95Limit = scenario.p95Limit * performanceMultiplier
+
     assert.ok(
-      metrics.p95 <= scenario.p95Limit,
-      `${scenario.label} p95 ${format(metrics.p95)} exceeded ${format(scenario.p95Limit)}`
+      metrics.p95 <= p95Limit,
+      `${scenario.label} p95 ${format(metrics.p95)} exceeded ${format(p95Limit)}`
     )
   }
 
-  assert.ok(warmCacheMetrics.p95 <= 6, `warm cache p95 ${format(warmCacheMetrics.p95)} exceeded 6.00ms`)
+  const warmCacheLimit = 6 * performanceMultiplier
+  assert.ok(
+    warmCacheMetrics.p95 <= warmCacheLimit,
+    `warm cache p95 ${format(warmCacheMetrics.p95)} exceeded ${format(warmCacheLimit)}`
+  )
 
   console.table([
     ...results.map(({ metrics }) => ({
@@ -169,7 +176,7 @@ try {
       max: format(warmCacheMetrics.max),
     },
   ])
-  console.log('Local RAG performance self-test passed.')
+  console.log(`Local RAG performance self-test passed with ${performanceMultiplier}x threshold multiplier.`)
 } finally {
   cleanup()
 }

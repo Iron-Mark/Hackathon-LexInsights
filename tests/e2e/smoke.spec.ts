@@ -138,6 +138,17 @@ test.describe('LexInSight smoke checks', () => {
 
     await page.getByRole('button', { name: 'Open sidebar menu' }).click()
     await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeVisible()
+    await page.evaluate(() => {
+      const installPromptEvent = new Event('beforeinstallprompt', { cancelable: true })
+
+      Object.assign(installPromptEvent, {
+        prompt: () => Promise.resolve(),
+        userChoice: Promise.resolve({ outcome: 'dismissed', platform: 'web' }),
+      })
+
+      window.dispatchEvent(installPromptEvent)
+    })
+    await expect(page.getByRole('button', { name: 'Install LexInSight' })).toBeVisible()
     await page.getByRole('button', { name: 'Collapse chat history' }).click()
     await expect.poll(async () => {
       return page.evaluate(() => {
@@ -146,6 +157,39 @@ test.describe('LexInSight smoke checks', () => {
         return Math.round(history?.getBoundingClientRect().right ?? 999)
       })
     }).toBeLessThanOrEqual(1)
+  })
+
+  test('service worker serves mobile offline fallback after install', async ({ page, context }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/chat')
+
+    await expect(chatInput(page)).toBeVisible()
+
+    await page.evaluate(async () => {
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+        updateViaCache: 'none',
+      })
+
+      await navigator.serviceWorker.ready
+
+      if (!navigator.serviceWorker.controller) {
+        await new Promise<void>((resolve) => {
+          navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), { once: true })
+          registration.active?.postMessage({ type: 'SKIP_WAITING' })
+        })
+      }
+    })
+
+    await context.setOffline(true)
+    await page.goto('/offline-smoke-route', { waitUntil: 'domcontentloaded', timeout: 10_000 })
+
+    await expect(page.getByRole('heading', { name: 'You are offline' })).toBeVisible()
+    await expect(page.getByText('Offline mode')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Return home' })).toBeVisible()
+
+    await context.setOffline(false)
   })
 
   test('public chat answers end-to-end without external AI', async ({ page }) => {
