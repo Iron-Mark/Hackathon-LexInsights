@@ -37,7 +37,16 @@ async function loadProviderlessModule() {
     writeFileSync(outputPath, transpiled.outputText, 'utf8')
   }
 
-  for (const fileName of ['types.ts', 'corpus.ts', 'topic-expansions.ts', 'compliance-frameworks.ts']) {
+  for (const fileName of [
+    'types.ts',
+    'corpus.ts',
+    'topic-expansions.ts',
+    'compliance-frameworks.ts',
+    'authority-sources.ts',
+    'evidence-anchors.ts',
+    'authority-relations.ts',
+    'coverage-map.ts',
+  ]) {
     const inputPath = path.join(dataSourceDir, fileName)
     const outputPath = path.join(tempDataDir, fileName.replace(/\.ts$/, '.js'))
 
@@ -110,6 +119,16 @@ const scenarios = [
       use_deep_search: true,
     },
     p95Limit: 55,
+  },
+  {
+    label: 'transport workflow',
+    params: {
+      query:
+        'What controls apply to domestic shipping, ferry route permits, port cargo handling, Coast Guard incident response, seafarer STCW welfare, aircraft, airport, air operator, and passenger manifest privacy?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 60,
   },
   {
     label: 'unrelated no-result',

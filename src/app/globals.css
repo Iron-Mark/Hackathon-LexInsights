@@ -374,6 +374,18 @@
   }
 }
 
+.chat-viewport-surface {
+  background:
+    linear-gradient(180deg, rgba(224, 222, 250, 0.56) 0%, rgba(248, 250, 252, 0.98) 18rem, #f8fafc 100%);
+}
+
+.dark .chat-viewport-surface,
+[data-theme='dark'] .chat-viewport-surface {
+  background:
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.12), transparent 28rem),
+    linear-gradient(135deg, #171322 0%, #211a35 48%, #120d1f 100%);
+}
+
 /* WCAG 2.1 AA Accessibility Utilities */
 @layer utilities {
 

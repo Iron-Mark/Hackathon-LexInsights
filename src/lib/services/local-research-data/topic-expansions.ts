@@ -903,4 +903,24 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     triggers: ['mining', 'quarry', 'mineral', 'tailings', 'mine safety', 'exploration permit'],
     expansions: ['philippine mining act', 'quarry permit', 'environmental protection', 'rehabilitation'],
   },
+  {
+    triggers: ['domestic shipping', 'shipping operator', 'ferry', 'vessel route', 'ro-ro', 'water transport'],
+    expansions: ['domestic shipping development act', 'marina operator authority', 'vessel safety', 'passenger manifest'],
+  },
+  {
+    triggers: ['seafarer', 'stcw', 'manning agency', 'crew certificate', 'shipboard employment'],
+    expansions: ['marina stcw administration', 'magna carta of filipino seafarers', 'certificate of competency', 'seafarer welfare'],
+  },
+  {
+    triggers: ['coast guard', 'maritime incident', 'oil spill', 'search and rescue', 'marine safety'],
+    expansions: ['philippine coast guard law', 'maritime safety', 'marine environmental protection', 'incident reporting'],
+  },
+  {
+    triggers: ['port', 'terminal', 'cargo handling', 'berthing', 'stevedoring', 'port operator'],
+    expansions: ['philippine ports authority', 'port facility', 'cargo custody', 'terminal operations'],
+  },
+  {
+    triggers: ['aviation', 'airport', 'aircraft', 'air operator', 'flight operation', 'caap'],
+    expansions: ['civil aviation authority act', 'aviation safety', 'airworthiness', 'airport safety'],
+  },
 ]

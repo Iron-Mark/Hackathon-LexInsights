@@ -17,6 +17,9 @@ npx tsc --noEmit
 npm run check:docs:self-test
 npm run check:docs
 npm run check:providerless:self-test
+npm run check:local-rag:golden
+npm run check:local-rag:performance
+npm run check:local-rag:governance
 npm run check:document-text:self-test
 npm run check:document-extraction:self-test
 npm run check:release:self-test

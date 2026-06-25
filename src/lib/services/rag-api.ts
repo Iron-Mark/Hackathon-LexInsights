@@ -100,6 +100,14 @@ export interface RAGResponse {
     known_citation_numbers?: string[]
     unknown_citation_numbers?: string[]
     source_type_counts?: Record<string, number>
+    provenance_coverage?: Record<string, number>
+    relation_paths?: Array<{
+      source: string
+      relation_type: string
+      target: string
+      label: string
+    }>
+    coverage_warnings?: string[]
     local_corpus_limitations?: string[]
     processing_ms?: number
   }
@@ -113,6 +121,19 @@ export interface RAGResponse {
     support_level?: 'direct' | 'related' | 'framework'
     authority_type?: string
     source_tier?: string
+    source_last_verified?: string
+    provenance_status?: string
+    evidence_anchors?: Array<{
+      label: string
+      supports: string[]
+      note: string
+    }>
+    related_authorities?: Array<{
+      statute: string
+      title: string
+      relation_type: string
+      label: string
+    }>
     supporting_fields?: string[]
   }>
 }
