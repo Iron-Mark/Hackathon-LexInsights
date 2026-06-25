@@ -128,8 +128,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 156, 'Local corpus should include at least 156 authorities')
-  assert.ok(frameworks.length >= 23, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 179, 'Local corpus should include at least 179 authorities')
+  assert.ok(frameworks.length >= 28, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -137,6 +137,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'financial-account-scam-response'),
     'Frameworks should include financial account scam response'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'business-tax-registration-invoicing-and-incentives'),
+    'Frameworks should include business tax registration, invoicing, and incentives'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'digital-government-and-public-ict'),
@@ -175,12 +179,28 @@ try {
     'Frameworks should include education, housing, records, and benefits'
   )
   assert.ok(
+    frameworks.some((framework) => framework.id === 'real-estate-housing-buyer-and-tenant-protection'),
+    'Frameworks should include real estate, housing buyer, HOA, and tenant protection'
+  )
+  assert.ok(
     frameworks.some((framework) => framework.id === 'mobility-land-agriculture-and-community-rights'),
     'Frameworks should include mobility, land, agriculture, and community rights'
   )
   assert.ok(
+    frameworks.some((framework) => framework.id === 'road-safety-driver-and-vehicle-compliance'),
+    'Frameworks should include road safety, driver, and vehicle compliance'
+  )
+  assert.ok(
     frameworks.some((framework) => framework.id === 'public-accountability-and-government-funds'),
     'Frameworks should include public accountability and government funds'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'barangay-justice-and-local-complaint-routing'),
+    'Frameworks should include barangay justice and local complaint routing'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'public-personnel-appointment-and-discipline'),
+    'Frameworks should include public personnel appointment and discipline'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'employee-benefits-and-social-insurance'),
@@ -245,8 +265,14 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10627'), 'Corpus should include RA 10627')
   assert.ok(corpus.some((document) => document.statute === 'RA 10863'), 'Corpus should include RA 10863')
   assert.ok(corpus.some((document) => document.statute === 'RA 11976'), 'Corpus should include RA 11976')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8424'), 'Corpus should include RA 8424')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10963'), 'Corpus should include RA 10963')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11534'), 'Corpus should include RA 11534')
+  assert.ok(corpus.some((document) => document.statute === 'RA 12066'), 'Corpus should include RA 12066')
   assert.ok(corpus.some((document) => document.statute === 'RA 11055'), 'Corpus should include RA 11055')
   assert.ok(corpus.some((document) => document.statute === 'RA 11038'), 'Corpus should include RA 11038')
+  assert.ok(corpus.some((document) => document.statute === 'EO 292, s. 1987'), 'Corpus should include EO 292')
+  assert.ok(corpus.some((document) => document.statute === 'PD 807'), 'Corpus should include PD 807')
   assert.ok(corpus.some((document) => document.statute === 'PD 442'), 'Corpus should include PD 442')
   assert.ok(corpus.some((document) => document.statute === 'RA 11165'), 'Corpus should include RA 11165')
   assert.ok(corpus.some((document) => document.statute === 'RA 11360'), 'Corpus should include RA 11360')
@@ -272,6 +298,12 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 9994'), 'Corpus should include RA 9994')
   assert.ok(corpus.some((document) => document.statute === 'RA 7277'), 'Corpus should include RA 7277')
   assert.ok(corpus.some((document) => document.statute === 'PD 1096'), 'Corpus should include PD 1096')
+  assert.ok(corpus.some((document) => document.statute === 'RA 4566'), 'Corpus should include RA 4566')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9266'), 'Corpus should include RA 9266')
+  assert.ok(corpus.some((document) => document.statute === 'RA 544'), 'Corpus should include RA 544')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7920'), 'Corpus should include RA 7920')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8495'), 'Corpus should include RA 8495')
+  assert.ok(corpus.some((document) => document.statute === 'RA 1378'), 'Corpus should include RA 1378')
   assert.ok(corpus.some((document) => document.statute === 'PD 856'), 'Corpus should include PD 856')
   assert.ok(corpus.some((document) => document.statute === 'BP 344'), 'Corpus should include BP 344')
   assert.ok(corpus.some((document) => document.statute === 'RA 7610'), 'Corpus should include RA 7610')
@@ -312,6 +344,11 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10931'), 'Corpus should include RA 10931')
   assert.ok(corpus.some((document) => document.statute === 'RA 7279'), 'Corpus should include RA 7279')
   assert.ok(corpus.some((document) => document.statute === 'RA 11201'), 'Corpus should include RA 11201')
+  assert.ok(corpus.some((document) => document.statute === 'PD 957'), 'Corpus should include PD 957')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9904'), 'Corpus should include RA 9904')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9653'), 'Corpus should include RA 9653')
+  assert.ok(corpus.some((document) => document.statute === 'RA 6552'), 'Corpus should include RA 6552')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9646'), 'Corpus should include RA 9646')
   assert.ok(corpus.some((document) => document.statute === 'RA 9470'), 'Corpus should include RA 9470')
   assert.ok(corpus.some((document) => document.statute === 'EO 2, s. 2016'), 'Corpus should include EO 2, s. 2016')
   assert.ok(corpus.some((document) => document.statute === 'RA 11310'), 'Corpus should include RA 11310')
@@ -326,6 +363,12 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 11966'), 'Corpus should include RA 11966')
   assert.ok(corpus.some((document) => document.statute === 'RA 12010'), 'Corpus should include RA 12010')
   assert.ok(corpus.some((document) => document.statute === 'RA 4136'), 'Corpus should include RA 4136')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10930'), 'Corpus should include RA 10930')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8750'), 'Corpus should include RA 8750')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10054'), 'Corpus should include RA 10054')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10586'), 'Corpus should include RA 10586')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10913'), 'Corpus should include RA 10913')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11229'), 'Corpus should include RA 11229')
   assert.ok(corpus.some((document) => document.statute === 'RA 11659'), 'Corpus should include RA 11659')
   assert.ok(corpus.some((document) => document.statute === 'RA 8371'), 'Corpus should include RA 8371')
   assert.ok(corpus.some((document) => document.statute === 'PD 1529'), 'Corpus should include PD 1529')
@@ -468,6 +511,15 @@ try {
 
   assertResearchMatch(
     runLocalResearch(
+      { query: 'What barangay justice controls apply to lupon conciliation, pangkat settlement, certificate to file action, and neighborhood dispute records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7160',
+    'barangay justice query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
       { query: 'What anti-graft controls apply to conflict of interest, kickbacks, unwarranted benefits, and supplier selection?', user_id: 'self-test' },
       'simulated remote outage'
     ),
@@ -518,6 +570,24 @@ try {
     ),
     'RA 6758',
     'public compensation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Administrative Code controls apply to agency authority, delegated office action, administrative orders, records, and appeal routes?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'EO 292, s. 1987',
+    'administrative code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What civil service controls apply to government appointments, promotions, service records, preventive suspension, administrative cases, and CSC appeals?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'PD 807',
+    'civil service personnel query'
   )
 
   assertResearchMatch(
@@ -1509,6 +1579,39 @@ try {
     'DHSUD housing query'
   )
 
+  const realEstateHousingResponse = runLocalResearch(
+    { query: 'What subdivision condominium buyer, license to sell, contract to sell, homeowners association HOA dues, rent control, Maceda installment buyer, and real estate broker controls apply?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(realEstateHousingResponse, 'PD 957', 'real estate housing PD 957 query')
+  assertResearchMatch(realEstateHousingResponse, 'RA 9904', 'real estate housing HOA query')
+  assertResearchMatch(realEstateHousingResponse, 'RA 9653', 'real estate housing rent control query')
+  assertResearchMatch(realEstateHousingResponse, 'RA 6552', 'real estate housing Maceda query')
+  assertResearchMatch(realEstateHousingResponse, 'RA 9646', 'real estate housing broker query')
+  assertIncludes(
+    realEstateHousingResponse.summary,
+    'Real Estate, Housing Buyer, HOA, and Tenant Protection Stack',
+    'Real estate housing framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What license to sell, approved plan, facilities, title, refund, and buyer remedies apply to a condominium or subdivision developer?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'PD 957',
+    'subdivision condominium buyer query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What broker license, salesperson accreditation, appraisal, authority to sell, commission, and listing agreement checks apply to real estate services?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9646',
+    'real estate service query'
+  )
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What age verification and child protection referral controls apply to child marriage prevention?', user_id: 'self-test' },
@@ -1538,6 +1641,46 @@ try {
 
   assertResearchMatch(
     runLocalResearch(
+      { query: 'What NIRC income tax, VAT, percentage tax, withholding, tax return, books of account, and BIR assessment controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8424',
+    'national internal revenue code query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What TRAIN Law personal income tax, VAT threshold, excise tax, documentary stamp tax, estate tax, and donor tax checks apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10963',
+    'TRAIN law query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What CREATE Act corporate income tax, registered business enterprise, investment promotion agency, PEZA, BOI, and tax incentive controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11534',
+    'CREATE Act query'
+  )
+
+  const businessTaxFrameworkResponse = runLocalResearch(
+    { query: 'What BIR registration, invoices, receipts, withholding certificates, VAT, corporate income tax, CREATE MORE incentives, and tax-return controls should a registered business enterprise keep?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
+  assertResearchMatch(businessTaxFrameworkResponse, 'RA 8424', 'business tax framework NIRC query')
+  assertResearchMatch(businessTaxFrameworkResponse, 'RA 11976', 'business tax framework EOPT query')
+  assertResearchMatch(businessTaxFrameworkResponse, 'RA 12066', 'business tax framework CREATE MORE query')
+  assertIncludes(
+    businessTaxFrameworkResponse.summary,
+    'Business Tax Registration, Invoicing, and Incentives Stack',
+    'Business tax framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
       { query: 'What privacy safeguards apply when collecting PhilSys national ID and biometric data?', user_id: 'self-test' },
       'simulated remote outage'
     ),
@@ -1552,6 +1695,80 @@ try {
     ),
     'RA 4136',
     'traffic transport query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What LTO driver license renewal and validity controls apply under RA 10930?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10930',
+    'driver license validity query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What seat belt and front seat passenger road safety duties apply under RA 8750?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8750',
+    'seat belt query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What motorcycle helmet, rider, back rider, and product standard controls apply under RA 10054?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10054',
+    'motorcycle helmet query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What drunk driving, drugged driving, field sobriety, breath analyzer, and chemical test controls apply under RA 10586?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10586',
+    'anti drunk and drugged driving query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What distracted driving, mobile phone, and electronic device controls apply under RA 10913?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10913',
+    'anti distracted driving query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What child car seat and child restraint system duties apply under RA 11229?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11229',
+    'child restraint query'
+  )
+
+  const roadSafetyFrameworkResponse = runLocalResearch(
+    {
+      query: 'What driver license, seat belt, motorcycle helmet, drunk driving, distracted driving, child restraint, traffic accident evidence, and vehicle record controls should a road safety program include?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(roadSafetyFrameworkResponse, 'RA 4136', 'road safety framework traffic code query')
+  assertResearchMatch(roadSafetyFrameworkResponse, 'RA 8750', 'road safety framework seat belt query')
+  assertResearchMatch(roadSafetyFrameworkResponse, 'RA 10054', 'road safety framework motorcycle helmet query')
+  assertResearchMatch(roadSafetyFrameworkResponse, 'RA 10586', 'road safety framework anti drunk driving query')
+  assertResearchMatch(roadSafetyFrameworkResponse, 'RA 10913', 'road safety framework anti distracted driving query')
+  assertResearchMatch(roadSafetyFrameworkResponse, 'RA 11229', 'road safety framework child restraint query')
+  assertIncludes(
+    roadSafetyFrameworkResponse.summary,
+    'Road Safety, Driver, and Vehicle Compliance Stack',
+    'Road safety framework title'
   )
 
   assertResearchMatch(
@@ -1830,15 +2047,72 @@ try {
   )
 
   const builtEnvironmentFrameworkResponse = runLocalResearch(
-    { query: 'What building permit, sanitary permit, accessibility, and occupancy controls should a public market renovation check?', user_id: 'self-test' },
+    { query: 'What building permit, licensed contractor, architect, civil engineer, sanitary permit, accessibility, and occupancy controls should a public market renovation check?', user_id: 'self-test' },
     'simulated remote outage'
   )
   assertResearchMatch(builtEnvironmentFrameworkResponse, 'PD 1096', 'built environment building query')
+  assertResearchMatch(builtEnvironmentFrameworkResponse, 'RA 4566', 'built environment contractor query')
+  assertResearchMatch(builtEnvironmentFrameworkResponse, 'RA 9266', 'built environment architect query')
+  assertResearchMatch(builtEnvironmentFrameworkResponse, 'RA 544', 'built environment civil engineer query')
   assertResearchMatch(builtEnvironmentFrameworkResponse, 'PD 856', 'built environment sanitation query')
   assertIncludes(
     builtEnvironmentFrameworkResponse.summary,
     'Built Environment, Sanitation, Accessibility, and Public Facilities Stack',
     'Built environment framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What contractor license and PCAB qualification controls apply to a municipal fit-out contractor?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 4566',
+    'contractor license query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What registered architect signed and sealed architectural plan controls apply to a building permit package?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9266',
+    'architecture act query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What civil engineer structural plans, estimates, and inspection controls apply to public works?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 544',
+    'civil engineering query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What electrical engineer wiring, load, electrical plan, testing, and inspection controls apply to facility fit-out?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 7920',
+    'electrical engineering query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What mechanical engineer HVAC, elevator, boiler, equipment inspection, and maintenance controls apply to a public building?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 8495',
+    'mechanical engineering query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What registered master plumber plumbing plan, water supply, drainage, septic, and sanitary plumbing controls apply?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 1378',
+    'plumbing law query'
   )
 
   assertResearchMatch(
@@ -2069,6 +2343,36 @@ This ordinance takes effect 30 days after publication.`
   assert.equal(thinServiceDraftResponse.status, 'success', 'Service delivery draft check should succeed locally')
   assertFinding(thinServiceDraftResponse, 'amber', 'Government service delivery')
 
+  const thinBarangayJusticeDraft = `# Barangay Complaint Intake Policy
+
+## Purpose
+This policy handles barangay complaints, neighborhood disputes, barangay conciliation, lupon meetings, pangkat sessions, amicable settlement, barangay blotter entries, and certificate to file action requests.
+
+## Legal Basis
+Pursuant to RA 7160.
+
+## Scope
+This applies to local complaints filed at the barangay.
+
+## Responsible Office
+The barangay office shall implement this policy.
+
+## Requirements
+Residents shall file complaint forms and attend meetings when requested.
+
+## Monitoring
+The barangay office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinBarangayJusticeDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinBarangayJusticeDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinBarangayJusticeDraftResponse.status, 'success', 'Barangay justice draft check should succeed locally')
+  assertFinding(thinBarangayJusticeDraftResponse, 'amber', 'Barangay complaint routing')
+
   const thinPublicAccountabilityDraft = `# Public Funds Integrity and GOCC Support Policy
 
 ## Purpose
@@ -2103,6 +2407,36 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'High-value corruption risk')
   assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'GOCC governance')
   assertFinding(thinPublicAccountabilityDraftResponse, 'amber', 'Public-sector compensation')
+
+  const thinCivilServiceDraft = `# Civil Service Personnel Action Policy
+
+## Purpose
+This policy handles civil service appointments, promotions, reassignment, detail, preventive suspension, formal charge, administrative case processing, service records, and CSC appeals.
+
+## Legal Basis
+Pursuant to PD 807 and EO 292, s. 1987.
+
+## Scope
+This applies to public employees and personnel actions in the office.
+
+## Responsible Office
+The human resources office shall implement this policy.
+
+## Requirements
+The office shall process appointment papers and personnel actions.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinCivilServiceDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinCivilServiceDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinCivilServiceDraftResponse.status, 'success', 'Civil service draft check should succeed locally')
+  assertFinding(thinCivilServiceDraftResponse, 'amber', 'Civil-service personnel controls')
 
   const thinEmployeeBenefitsDraft = `# Employee Benefits and Household Worker Policy
 
@@ -2281,6 +2615,36 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Retail trade entry')
   assertFinding(thinBusinessMarketEntryDraftResponse, 'amber', 'Secured-transaction')
 
+  const thinBusinessTaxDraft = `# Small Business Tax and Incentives Policy
+
+## Purpose
+This policy handles BIR tax registration, NIRC income tax, VAT, percentage tax, withholding tax, invoices, receipts, tax returns, TRAIN excise tax, CREATE Act corporate income tax, CREATE MORE tax incentives, registered business enterprise status, and PEZA or BOI support.
+
+## Legal Basis
+Pursuant to RA 8424, RA 11976, RA 10963, RA 11534, and RA 12066.
+
+## Scope
+This applies to business taxpayers, platform sellers, registered business enterprises, and payment collectors.
+
+## Responsible Office
+The business support office shall implement this policy.
+
+## Requirements
+Businesses shall submit tax documents and payment records when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinBusinessTaxDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinBusinessTaxDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinBusinessTaxDraftResponse.status, 'success', 'Business tax draft check should succeed locally')
+  assertFinding(thinBusinessTaxDraftResponse, 'amber', 'Business tax and invoicing')
+
   const thinImmigrationCitizenshipDraft = `# Immigration, Passport, Citizenship, and OFW Records Policy
 
 ## Purpose
@@ -2352,13 +2716,13 @@ This policy takes effect 30 days after publication.`
   const thinMobilityLandAgriDraft = `# Mobility, Land, and Farm Support Program
 
 ## Purpose
-This program covers traffic enforcement, driver license, vehicle registration, public utility franchise coordination, land title verification, Torrens and register of deeds records, FPIC, ancestral domain, NCIP coordination, agriculture and fisheries support, organic labels, food safety traceability, and Sagip Saka direct purchase.
+This program covers traffic enforcement, driver license, license renewal, vehicle registration, seat belt, motorcycle helmet, drunk driving, drugged driving, distracted driving, child car seat, child restraint, public utility franchise coordination, land title verification, Torrens and register of deeds records, FPIC, ancestral domain, NCIP coordination, agriculture and fisheries support, organic labels, food safety traceability, and Sagip Saka direct purchase.
 
 ## Legal Basis
-Pursuant to RA 4136, RA 11659, PD 1529, RA 8371, RA 8435, RA 10068, RA 10611, and RA 11321.
+Pursuant to RA 4136, RA 10930, RA 8750, RA 10054, RA 10586, RA 10913, RA 11229, RA 11659, PD 1529, RA 8371, RA 8435, RA 10068, RA 10611, and RA 11321.
 
 ## Scope
-This applies to local projects, drivers, operators, farmers, fisherfolk, and affected communities.
+This applies to local projects, drivers, riders, passengers, operators, children, farmers, fisherfolk, and affected communities.
 
 ## Responsible Office
 The project office shall implement this program.
@@ -2377,7 +2741,7 @@ This program takes effect 30 days after publication.`
     'simulated draft checker outage'
   )
   assert.equal(thinMobilityLandAgriDraftResponse.status, 'success', 'Mobility land agriculture draft check should succeed locally')
-  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Transport and traffic controls')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Transport and road-safety controls')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Public-service operation')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Land-title verification')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'FPIC and indigenous-community')
@@ -3181,10 +3545,10 @@ This policy takes effect 30 days after publication.`
   const thinFacilityDraft = `# Public Market Renovation Policy
 
 ## Purpose
-This policy covers construction, occupancy permit, sanitary permit, and accessibility improvements for a public market.
+This policy covers construction, contractor license, architect signed plans, civil engineer structural review, electrical plan, mechanical equipment, master plumber plumbing plan, occupancy permit, sanitary permit, and accessibility improvements for a public market.
 
 ## Legal Basis
-Pursuant to PD 1096, PD 856, and BP 344.
+Pursuant to PD 1096, RA 4566, RA 9266, RA 544, RA 7920, RA 8495, RA 1378, PD 856, and BP 344.
 
 ## Scope
 This applies to vendors and public market facilities.
@@ -3206,7 +3570,7 @@ This policy takes effect 30 days after publication.`
     'simulated draft checker outage'
   )
   assert.equal(thinFacilityDraftResponse.status, 'success', 'Facility draft check should succeed locally')
-  assertFinding(thinFacilityDraftResponse, 'amber', 'Building and occupancy controls')
+  assertFinding(thinFacilityDraftResponse, 'amber', 'Building, occupancy, and licensed-construction controls')
   assertFinding(thinFacilityDraftResponse, 'amber', 'Sanitation controls')
   assertFinding(thinFacilityDraftResponse, 'amber', 'Physical accessibility features')
 
@@ -3383,6 +3747,36 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Social-assistance controls')
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Solo-parent benefit controls')
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Child-marriage prevention')
+
+  const thinRealEstateDraft = `# Real Estate Assistance Desk Policy
+
+## Purpose
+This policy handles subdivision project inquiries, condominium reservations, license to sell checks, contract to sell review, homeowners association dues, rent control questions, residential lease complaints, Maceda Law installment buyer cancellations, real estate broker referrals, salesperson activity, appraisals, and broker commissions.
+
+## Legal Basis
+Pursuant to PD 957, RA 9904, RA 9653, RA 6552, and RA 9646.
+
+## Scope
+This applies to buyers, homeowners, tenants, sellers, brokers, and residents.
+
+## Responsible Office
+The housing assistance desk shall process requests.
+
+## Requirements
+Applicants shall submit property documents when requested.
+
+## Monitoring
+The desk shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinRealEstateDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinRealEstateDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinRealEstateDraftResponse.status, 'success', 'Real estate draft check should succeed locally')
+  assertFinding(thinRealEstateDraftResponse, 'amber', 'Real estate and housing transaction')
 
   const strongerDraft = `# Solid Waste Segregation Ordinance
 
