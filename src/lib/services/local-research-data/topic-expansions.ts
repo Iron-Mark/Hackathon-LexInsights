@@ -953,6 +953,18 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['sagip saka act', 'farmers and fisherfolk enterprise development', 'market linkage', 'direct purchase'],
   },
   {
+    triggers: ['public land', 'free patent', 'land patent', 'residential free patent', 'agricultural free patent', 'alienable and disposable', 'a and d land'],
+    expansions: ['free patent', 'public land titling', 'alienable and disposable land', 'denr cenro', 'register of deeds'],
+  },
+  {
+    triggers: ['imperfect title', 'incomplete title', 'judicial confirmation', 'administrative titling', 'tax declaration possession'],
+    expansions: ['confirmation of imperfect title', 'land title confirmation', 'survey plan', 'public land classification'],
+  },
+  {
+    triggers: ['agrarian reform', 'carp', 'carper', 'dar clearance', 'agrarian reform beneficiary', 'arb', 'cloa', 'land amortization', 'agrarian emancipation'],
+    expansions: ['comprehensive agrarian reform', 'agrarian reform beneficiary', 'certificate of land ownership award', 'debt condonation', 'dar landbank'],
+  },
+  {
     triggers: ['housing', 'socialized housing', 'resettlement', 'relocation', 'informal settler', 'urban poor', 'demolition'],
     expansions: ['urban development and housing act', 'socialized housing', 'beneficiary selection', 'consultation grievance'],
   },

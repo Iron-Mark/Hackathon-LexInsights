@@ -40,6 +40,26 @@ const EDUCATION_GOVERNANCE_STATUTES = [
   'RA 11650',
 ]
 
+const PUBLIC_LAND_AGRARIAN_LAW_IDS = [
+  'ra-11573',
+  'ra-10023',
+  'ra-11231',
+  'ra-6657',
+  'ra-9700',
+  'ra-11953',
+]
+
+const PUBLIC_LAND_AGRARIAN_STATUTES = [
+  'RA 11573',
+  'RA 10023',
+  'RA 11231',
+  'RA 6657',
+  'RA 9700',
+  'RA 11953',
+]
+
+const PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID = 'public-land-free-patent-and-agrarian-reform'
+
 async function loadLocalResearchData() {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
@@ -175,6 +195,50 @@ try {
     assert.ok(
       coverageById.get(lawId)?.frameworkIds.includes(educationGovernanceFramework.id),
       `${lawId} coverage should reference ${educationGovernanceFramework.id}`
+    )
+  }
+
+  for (const [index, lawId] of PUBLIC_LAND_AGRARIAN_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `Public land and agrarian corpus should include ${PUBLIC_LAND_AGRARIAN_STATUTES[index]}`
+    )
+  }
+
+  const publicLandAgrarianFramework = data.frameworks.find((framework) => (
+    framework.id === PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID
+  ))
+
+  assert.ok(
+    publicLandAgrarianFramework,
+    `${PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID} framework should exist`
+  )
+  assert.ok(
+    PUBLIC_LAND_AGRARIAN_LAW_IDS.every((lawId) => publicLandAgrarianFramework.lawIds.includes(lawId)),
+    `${PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID} should include ${PUBLIC_LAND_AGRARIAN_STATUTES.join(', ')}`
+  )
+
+  const publicLandAgrarianFrameworkText = [
+    publicLandAgrarianFramework.title,
+    publicLandAgrarianFramework.summary,
+    ...publicLandAgrarianFramework.triggers,
+  ].join(' ').toLowerCase()
+
+  assert.ok(
+    publicLandAgrarianFrameworkText.includes('land'),
+    `${PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID} should be land-facing`
+  )
+  assert.ok(
+    publicLandAgrarianFrameworkText.includes('free patent') ||
+      publicLandAgrarianFrameworkText.includes('agrarian') ||
+      publicLandAgrarianFrameworkText.includes('tenure'),
+    `${PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID} should cover free-patent or agrarian-reform workflows`
+  )
+
+  for (const lawId of PUBLIC_LAND_AGRARIAN_LAW_IDS) {
+    assert.ok(
+      coverageById.get(lawId)?.frameworkIds.includes(PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID}`
     )
   }
 

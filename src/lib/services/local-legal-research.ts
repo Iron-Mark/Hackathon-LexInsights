@@ -3582,6 +3582,48 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(public land|free patent|residential free patent|agricultural free patent|land patent|imperfect title|incomplete title|judicial confirmation|administrative titling|alienable and disposable|a and d land|denr cenro|cenro|penro)\b/.test(normalizedDraft)) {
+    const hasLandClassification = /\b(alienable and disposable|a and d|land classification|public land|denr|cenro|penro|land status)\b/.test(normalizedDraft)
+    const hasPatentEligibility = /\b(qualification|eligibility|actual occupation|possession|residential use|agricultural use|area limit|survey plan|applicant)\b/.test(normalizedDraft)
+    const hasRegistryAndRestrictionChecks = /\b(register of deeds|certificate of title|annotation|encumbrance|restriction|mortgage|transfer|sale|patent|title verification|existing title)\b/.test(normalizedDraft)
+    const hasPatentRecords = /\b(record|custody|redaction|access control|retention|privacy|notice|audit trail|certified copy)\b/.test(normalizedDraft)
+
+    if (!(hasLandClassification && hasPatentEligibility && hasRegistryAndRestrictionChecks && hasPatentRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Public-land and free-patent controls are incomplete',
+          'Public-land, free-patent, imperfect-title, DENR/CENRO, or alienable-and-disposable land language was detected without enough land classification, applicant qualification, survey, registry, restriction, notice, or record-custody controls.',
+          'Add land classification and DENR/CENRO/PENRO verification, applicant qualification or possession basis, survey review, existing-title and annotation checks, patent or confirmation route, transfer or mortgage restrictions, notice, custody, privacy, and retention rules.',
+          7,
+          [referenceForId('ra-11573'), referenceForId('ra-10023'), referenceForId('ra-11231'), referenceForId('pd-1529')]
+        )
+      )
+    }
+  }
+
+  if (/\b(agrarian reform|carp|carper|dar clearance|agrarian reform beneficiary|arb|cloa|certificate of land ownership award|land amortization|agrarian emancipation|debt condonation|landbank|land bank)\b/.test(normalizedDraft)) {
+    const hasAgrarianCoverage = /\b(carp|carper|covered land|landholding|dar|agrarian reform|beneficiary|arb|tenant|farmworker|retention)\b/.test(normalizedDraft)
+    const hasAgrarianAwardOrDebt = /\b(cloa|certificate of land ownership award|award|amortization|condonation|landbank|land bank|compensation|valuation|support service)\b/.test(normalizedDraft)
+    const hasAgrarianRestrictions = /\b(transfer|sale|mortgage|conversion|dar clearance|restriction|dispute|appeal|grievance|notice)\b/.test(normalizedDraft)
+    const hasAgrarianRecords = /\b(record|beneficiary list|landowner|privacy|retention|custody|access control|audit|certification)\b/.test(normalizedDraft)
+
+    if (!(hasAgrarianCoverage && hasAgrarianAwardOrDebt && hasAgrarianRestrictions && hasAgrarianRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Agrarian-reform land controls are incomplete',
+          'Agrarian reform, CARP/CARPER, DAR clearance, ARB, CLOA, amortization, or debt-condonation language was detected without enough coverage, beneficiary, award, transfer, conversion, dispute, DAR/LandBank, or record safeguards.',
+          'Add CARP/CARPER coverage screen, DAR office and landholding status, beneficiary or landowner notices, CLOA or award records, compensation or amortization/condonation path, transfer and conversion restrictions, DAR clearance, dispute route, privacy, and retention controls.',
+          8,
+          [referenceForId('ra-6657'), referenceForId('ra-9700'), referenceForId('ra-11953')]
+        )
+      )
+    }
+  }
+
   if (/\b(indigenous peoples|indigenous cultural communities|ancestral domain|ancestral land|fpic|free prior informed consent|ncip|customary law)\b/.test(normalizedDraft)) {
     const hasCommunityIdentification = /\b(affected communit(?:y|ies)|ancestral domain|ancestral land|community map|customary law|indigenous cultural)\b/.test(normalizedDraft)
     const hasFpicProcess = /\b(fpic|free prior informed consent|ncip|consent process|community assembly|consultation)\b/.test(normalizedDraft)

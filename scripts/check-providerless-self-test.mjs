@@ -145,8 +145,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 211, 'Local corpus should include at least 211 authorities')
-  assert.ok(frameworks.length >= 39, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 217, 'Local corpus should include at least 217 authorities')
+  assert.ok(frameworks.length >= 40, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -214,6 +214,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'mobility-land-agriculture-and-community-rights'),
     'Frameworks should include mobility, land, agriculture, and community rights'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'public-land-free-patent-and-agrarian-reform'),
+    'Frameworks should include public land, free patent, and agrarian reform'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'road-safety-driver-and-vehicle-compliance'),
@@ -450,6 +454,12 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 7638'), 'Corpus should include RA 7638')
   assert.ok(corpus.some((document) => document.statute === 'RA 8371'), 'Corpus should include RA 8371')
   assert.ok(corpus.some((document) => document.statute === 'PD 1529'), 'Corpus should include PD 1529')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11573'), 'Corpus should include RA 11573')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10023'), 'Corpus should include RA 10023')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11231'), 'Corpus should include RA 11231')
+  assert.ok(corpus.some((document) => document.statute === 'RA 6657'), 'Corpus should include RA 6657')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9700'), 'Corpus should include RA 9700')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11953'), 'Corpus should include RA 11953')
   assert.ok(corpus.some((document) => document.statute === 'RA 8435'), 'Corpus should include RA 8435')
   assert.ok(corpus.some((document) => document.statute === 'RA 10068'), 'Corpus should include RA 10068')
   assert.ok(corpus.some((document) => document.statute === 'RA 10611'), 'Corpus should include RA 10611')
@@ -2160,6 +2170,60 @@ try {
 
   assertResearchMatch(
     runLocalResearch(
+      { query: 'What does RA 11573 require for confirmation of imperfect land titles, free patents, alienable and disposable land, and DENR records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11573',
+    'imperfect title confirmation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 10023 require for residential free patent applications, occupation evidence, and land title registration?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10023',
+    'residential free patent query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 11231 require for agricultural free patent transfer, mortgage, and title restriction review?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11231',
+    'agricultural free patent query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 6657 require for CARP agrarian reform beneficiaries, CLOA, land acquisition, and landowner compensation?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 6657',
+    'comprehensive agrarian reform query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'How does RA 9700 update CARPER agrarian reform coverage, support services, and beneficiary safeguards?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9700',
+    'CARPER agrarian reform query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 11953 require for agrarian reform beneficiary debt condonation, amortization, DAR, and LandBank records?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11953',
+    'agrarian emancipation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
       { query: 'What FPIC, NCIP, customary law, and ancestral domain safeguards apply to an infrastructure project?', user_id: 'self-test' },
       'simulated remote outage'
     ),
@@ -2209,6 +2273,26 @@ try {
     mobilityLandAgriFrameworkResponse.summary,
     'Mobility, Land, Agriculture, and Community Rights Stack',
     'Mobility land agriculture framework title'
+  )
+
+  const publicLandAgrarianFrameworkResponse = runLocalResearch(
+    {
+      query: 'What public land, imperfect title, residential free patent, agricultural free patent, land tenure, CARP, CARPER, CLOA, ARB, DAR clearance, and agrarian emancipation controls should a land services desk check?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(publicLandAgrarianFrameworkResponse, 'RA 11573', 'public land framework imperfect title query')
+  assertResearchMatch(publicLandAgrarianFrameworkResponse, 'RA 10023', 'public land framework residential free patent query')
+  assertResearchMatch(publicLandAgrarianFrameworkResponse, 'RA 11231', 'public land framework agricultural free patent query')
+  assertResearchMatch(publicLandAgrarianFrameworkResponse, 'RA 6657', 'public land framework CARP query')
+  assertResearchMatch(publicLandAgrarianFrameworkResponse, 'RA 9700', 'public land framework CARPER query')
+  assertResearchMatch(publicLandAgrarianFrameworkResponse, 'RA 11953', 'public land framework agrarian emancipation query')
+  assertIncludes(
+    publicLandAgrarianFrameworkResponse.summary,
+    'Public Land, Free Patent, and Agrarian Reform Stack',
+    'Public land agrarian framework title'
   )
 
   assertResearchMatch(
@@ -4344,6 +4428,38 @@ This ordinance takes effect 30 days after publication.`
   assertFinding(thinResourceDraftResponse, 'amber', 'Renewable-energy project')
   assertFinding(thinResourceDraftResponse, 'amber', 'Fisheries controls')
   assertFinding(thinResourceDraftResponse, 'amber', 'Mining or quarry controls')
+
+  const thinLandTenureDraft = `# Land Tenure Assistance Desk Policy
+
+## Purpose
+This policy handles public land, imperfect title, residential free patent, agricultural free patent, land title, register of deeds inquiries, agrarian reform, CARP, CARPER, DAR clearance, CLOA, ARB amortization, and agrarian emancipation requests.
+
+## Legal Basis
+Pursuant to RA 11573, RA 10023, RA 11231, RA 6657, RA 9700, and RA 11953.
+
+## Scope
+This applies to land assistance applicants.
+
+## Responsible Office
+The land services desk shall implement this policy.
+
+## Requirements
+Applicants shall submit documents when requested.
+
+## Monitoring
+The desk shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinLandTenureDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinLandTenureDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinLandTenureDraftResponse.status, 'success', 'Land tenure draft check should succeed locally')
+  assertFinding(thinLandTenureDraftResponse, 'amber', 'Land-title verification controls')
+  assertFinding(thinLandTenureDraftResponse, 'amber', 'Public-land and free-patent controls')
+  assertFinding(thinLandTenureDraftResponse, 'amber', 'Agrarian-reform land controls')
 
   const thinCivicServicesDraft = `# Civic Services Desk Policy
 
