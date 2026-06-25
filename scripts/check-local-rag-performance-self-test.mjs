@@ -186,6 +186,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'PWD benefits accessibility workflow',
+    params: {
+      query:
+        'What controls apply to a PDAO PWD benefit desk covering PWD ID verification, discounts, VAT exemption, reasonable accommodation, accessible service channels, PWD employment support, complaint handling, and confidential records?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 65,
+  },
+  {
     label: 'public land free patent agrarian workflow',
     params: {
       query:

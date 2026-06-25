@@ -245,6 +245,30 @@ try {
   })
   assertExactCitationMatch(exactInclusiveEducationCitation, 'RA 11650', '11650', 'exact RA 11650 citation')
 
+  const exactPwdPrivilegesCitation = runLocalResearch({
+    query: 'What does RA 9442 require for PWD privileges, discounts, and anti-discrimination controls?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactPwdPrivilegesCitation, 'RA 9442', '9442', 'exact RA 9442 citation')
+
+  const exactPdaoCitation = runLocalResearch({
+    query: 'What does RA 10070 require for PDAO and local PWD affairs office services?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactPdaoCitation, 'RA 10070', '10070', 'exact RA 10070 citation')
+
+  const exactPwdEmploymentCitation = runLocalResearch({
+    query: 'What does RA 10524 require for PWD employment, reserved positions, and reasonable accommodation?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactPwdEmploymentCitation, 'RA 10524', '10524', 'exact RA 10524 citation')
+
+  const exactPwdBenefitsCitation = runLocalResearch({
+    query: 'What does RA 10754 require for PWD discount, VAT exemption, and benefit verification?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactPwdBenefitsCitation, 'RA 10754', '10754', 'exact RA 10754 citation')
+
   const exactImperfectTitleCitation = runLocalResearch({
     query: 'What does RA 11573 require for confirmation of imperfect and incomplete land titles?',
     user_id: 'golden',
@@ -757,6 +781,23 @@ try {
     'child adoption foundling civil status workflow should include its framework section'
   )
 
+  const pwdBenefitsAccessibilityWorkflow = runLocalResearch({
+    query:
+      'What controls apply to a PDAO PWD benefit desk covering PWD ID verification, discounts, VAT exemption, reasonable accommodation, accessible service channels, PWD employment support, complaint handling, and confidential records?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    pwdBenefitsAccessibilityWorkflow,
+    ['RA 7277', 'RA 9442', 'RA 10070', 'RA 10524', 'RA 10754'],
+    'PWD benefits accessibility and employment workflow',
+    0.25
+  )
+  assert.ok(
+    pwdBenefitsAccessibilityWorkflow.summary.includes('Health, Welfare, Accessibility, and Protection Stack'),
+    'PWD benefits accessibility workflow should include its framework section'
+  )
+
   const roadSafetyWorkflow = runLocalResearch({
     query: 'What driver license renewal, seat belt, motorcycle helmet, drunk driving, distracted driving, child restraint, traffic accident evidence, and vehicle record controls should an LGU road safety program check?',
     user_id: 'golden',
@@ -938,7 +979,7 @@ try {
   })
   assertCompletedMatches(
     aiGovernanceQuery,
-    ['NPC Advisory No. 2024-04', 'RA 10173'],
+    ['NPC Advisory No. 2024-04', 'NPC Circular No. 2023-06'],
     'AI chatbot privacy governance',
     0.25
   )

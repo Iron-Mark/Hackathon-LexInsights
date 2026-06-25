@@ -13,6 +13,10 @@ const PROVENANCE_NOTES: Partial<Record<string, string>> = {
   'npc-advisory-2025-02': 'Official NPC privacy-engineering advisory in the bundled local corpus.',
   'npc-advisory-2024-04': 'Official NPC guidance source in the bundled local corpus.',
   'sc-ai-governance-framework-2026': 'Official Supreme Court publication summarized as local providerless guidance.',
+  'ra-9442': 'Official Lawphil PWD privileges amendment in the bundled local corpus.',
+  'ra-10070': 'Official Lawphil PDAO local implementation statute in the bundled local corpus.',
+  'ra-10524': 'Official Lawphil PWD employment amendment in the bundled local corpus.',
+  'ra-10754': 'Official Lawphil PWD benefits and VAT-exemption statute in the bundled local corpus.',
 }
 
 function getAuthorityType(document: LocalLegalDocument): NonNullable<LocalLegalDocument['authorityType']> {

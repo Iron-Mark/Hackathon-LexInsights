@@ -896,7 +896,50 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
   },
   {
     triggers: ['pwd', 'person with disability', 'disabled person', 'accessibility', 'reasonable accommodation'],
-    expansions: ['magna carta for disabled persons', 'persons with disability', 'accessibility', 'reasonable accommodation'],
+    expansions: [
+      'magna carta for disabled persons',
+      'persons with disability',
+      'accessibility',
+      'reasonable accommodation',
+      'pwd privileges',
+      'pwd benefits',
+      'pwd affairs office',
+    ],
+  },
+  {
+    triggers: ['pwd discount', 'pwd vat exemption', 'pwd benefits', 'pwd id', 'disabled persons privileges', 'person with disability benefits'],
+    expansions: [
+      'expanded benefits and privileges of persons with disability',
+      'pwd discount',
+      'vat exemption',
+      'identification card',
+      'commercial establishment',
+      'benefit verification',
+      'tax documentation',
+    ],
+  },
+  {
+    triggers: ['pdao', 'pwd affairs office', 'persons with disability affairs office', 'pwd registry', 'pwd focal person'],
+    expansions: [
+      'persons with disability affairs office',
+      'local government',
+      'pwd registry',
+      'programs and services',
+      'benefit desk',
+      'complaint route',
+      'referral',
+    ],
+  },
+  {
+    triggers: ['pwd employment', 'qualified worker with disability', 'disabled worker', 'reserved positions', 'inclusive hiring disability'],
+    expansions: [
+      'persons with disability employment',
+      'qualified person with disability',
+      'reserved positions',
+      'reasonable accommodation',
+      'accessible recruitment',
+      'non discrimination',
+    ],
   },
   {
     triggers: ['building permit', 'occupancy permit', 'construction', 'renovation', 'structural', 'building official'],

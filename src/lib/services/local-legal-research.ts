@@ -1173,7 +1173,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
-    '- Include a Republic Act number or official issuance, such as RA 10173, NPC Circular 16-03, NPC Circular 2023-06, NPC Circular 2022-04, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 8479, RA 11592, RA 9367, RA 7638, RA 10667, RA 11765, RA 11934, or RA 11976.',
+    '- Include a Republic Act number or official issuance, such as RA 10173, NPC Circular 16-03, NPC Circular 2023-06, NPC Circular 2022-04, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 8479, RA 11592, RA 9367, RA 7638, RA 10667, RA 11765, RA 11934, RA 11976, RA 7277, RA 9442, RA 10070, RA 10524, or RA 10754.',
     '- Add the regulated activity, agency, permit, affected sector, and location.',
     '- Ask for a narrower compliance checklist, for example "solid waste requirements for a barangay ordinance".',
     '',
@@ -4340,6 +4340,51 @@ function applyTopicSpecificDraftChecks(
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7277') || LEGAL_CORPUS[0])]
         )
       )
+    }
+
+    if (/\b(pwd discount|vat exemption|pwd benefit|pwd benefits|privilege|pwd id|identification card|pdao|pwd affairs office|benefit desk)\b/.test(normalizedDraft)) {
+      const hasPwdBenefitEligibility = /\b(eligibility|qualified|identification card|pwd id|verification|proof)\b/.test(normalizedDraft)
+      const hasPwdBenefitOffice = /\b(pdao|pwd affairs office|focal person|responsible office|social welfare|osca|benefit desk)\b/.test(normalizedDraft)
+      const hasPwdBenefitWorkflow = /\b(discount|vat exemption|tax|point of sale|pos|covered goods|covered services|reimbursement|complaint)\b/.test(normalizedDraft)
+      const hasPwdBenefitPrivacy = /\b(privacy|confidential|records|retention|access control|non disclosure|authorized disclosure)\b/.test(normalizedDraft)
+
+      if (!(hasPwdBenefitEligibility && hasPwdBenefitOffice && hasPwdBenefitWorkflow && hasPwdBenefitPrivacy)) {
+        findings.amber.push(
+          createFinding(
+            'amber',
+            'gap',
+            'PWD benefit and PDAO controls are incomplete',
+            'PWD benefit, discount, VAT-exemption, ID, PDAO, or benefit-desk language was detected without enough eligibility, office ownership, benefit workflow, complaint, tax, or privacy controls.',
+            'Add PDAO or focal-person ownership, PWD ID and eligibility verification, covered discount or VAT-exemption transactions, tax or POS documentation, complaint route, staff training, fraud checks, retention, and privacy safeguards.',
+            6,
+            [
+              referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10754') || LEGAL_CORPUS[0]),
+              referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10070') || LEGAL_CORPUS[0]),
+              referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9442') || LEGAL_CORPUS[0]),
+            ]
+          )
+        )
+      }
+    }
+
+    if (/\b(pwd employment|disabled worker|employee with disability|applicant with disability|reserved position|inclusive hiring|accessible recruitment)\b/.test(normalizedDraft)) {
+      const hasPwdEmploymentQualification = /\b(qualification|qualified|ability based|job requirement|position description|selection)\b/.test(normalizedDraft)
+      const hasPwdEmploymentAccommodation = /\b(reasonable accommodation|accessible recruitment|workplace accessibility|assistive|adjustment|alternative format)\b/.test(normalizedDraft)
+      const hasPwdEmploymentRecords = /\b(confidential|privacy|records|retention|access control|complaint|non discrimination|appeal)\b/.test(normalizedDraft)
+
+      if (!(hasPwdEmploymentQualification && hasPwdEmploymentAccommodation && hasPwdEmploymentRecords)) {
+        findings.amber.push(
+          createFinding(
+            'amber',
+            'gap',
+            'PWD employment controls need detail',
+            'PWD employment, reserved-position, inclusive-hiring, or disabled-worker language was detected without enough qualification, accommodation, record, complaint, or non-discrimination controls.',
+            'Add ability-based qualifications, accessible recruitment, reasonable-accommodation review, selection records, HR ownership, confidentiality, retention, complaint route, and non-discrimination safeguards.',
+            6,
+            [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10524') || LEGAL_CORPUS[0])]
+          )
+        )
+      }
     }
   }
 

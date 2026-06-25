@@ -145,7 +145,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 227, 'Local corpus should include at least 227 authorities')
+  assert.ok(corpus.length >= 231, 'Local corpus should include at least 231 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -375,6 +375,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10066'), 'Corpus should include RA 10066')
   assert.ok(corpus.some((document) => document.statute === 'RA 9994'), 'Corpus should include RA 9994')
   assert.ok(corpus.some((document) => document.statute === 'RA 7277'), 'Corpus should include RA 7277')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9442'), 'Corpus should include RA 9442')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10070'), 'Corpus should include RA 10070')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10524'), 'Corpus should include RA 10524')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10754'), 'Corpus should include RA 10754')
   assert.ok(corpus.some((document) => document.statute === 'PD 1096'), 'Corpus should include PD 1096')
   assert.ok(corpus.some((document) => document.statute === 'RA 4566'), 'Corpus should include RA 4566')
   assert.ok(corpus.some((document) => document.statute === 'RA 9266'), 'Corpus should include RA 9266')
@@ -2756,6 +2760,33 @@ try {
     'senior citizen query'
   )
 
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What RA 10754 PWD discount and VAT exemption controls should a store or benefit desk follow?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10754',
+    'PWD discount and VAT exemption query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What PDAO and PWD affairs office controls should an LGU disability benefit desk use?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10070',
+    'PDAO local implementation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What PWD employment, reserved positions, and reasonable accommodation controls apply under RA 10524?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10524',
+    'PWD employment query'
+  )
+
   const builtEnvironmentFrameworkResponse = runLocalResearch(
     { query: 'What building permit, licensed contractor, architect, civil engineer, sanitary permit, accessibility, and occupancy controls should a public market renovation check?', user_id: 'self-test' },
     'simulated remote outage'
@@ -4439,6 +4470,66 @@ This policy takes effect 30 days after publication.`
   assert.equal(thinAccessibilityDraftResponse.status, 'success', 'Accessibility draft check should succeed locally')
   assertFinding(thinAccessibilityDraftResponse, 'amber', 'Senior-citizen benefit')
   assertFinding(thinAccessibilityDraftResponse, 'amber', 'PWD accessibility')
+
+  const thinPwdBenefitDraft = `# PWD Benefit Desk Policy
+
+## Purpose
+This policy creates a PWD benefit desk for discounts and VAT exemptions.
+
+## Legal Basis
+Pursuant to RA 7277, RA 9442, RA 10070, and RA 10754.
+
+## Scope
+This applies to local establishments and residents.
+
+## Responsible Office
+The social services office shall implement this policy.
+
+## Requirements
+Applicants may request assistance from the desk.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinPwdBenefitDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinPwdBenefitDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinPwdBenefitDraftResponse.status, 'success', 'PWD benefit draft check should succeed locally')
+  assertFinding(thinPwdBenefitDraftResponse, 'amber', 'PWD benefit and PDAO')
+
+  const thinPwdEmploymentDraft = `# Inclusive Hiring for Persons with Disability
+
+## Purpose
+This policy supports PWD employment and reserved positions.
+
+## Legal Basis
+Pursuant to RA 10524 and RA 7277.
+
+## Scope
+This applies to applicants and employees.
+
+## Responsible Office
+The HR office shall implement this policy.
+
+## Requirements
+The office may open vacancies for persons with disability.
+
+## Monitoring
+The HR office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinPwdEmploymentDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinPwdEmploymentDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinPwdEmploymentDraftResponse.status, 'success', 'PWD employment draft check should succeed locally')
+  assertFinding(thinPwdEmploymentDraftResponse, 'amber', 'PWD employment')
 
   const thinFacilityDraft = `# Public Market Renovation Policy
 
