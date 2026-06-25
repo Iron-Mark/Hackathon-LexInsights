@@ -145,8 +145,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 217, 'Local corpus should include at least 217 authorities')
-  assert.ok(frameworks.length >= 40, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 220, 'Local corpus should include at least 220 authorities')
+  assert.ok(frameworks.length >= 41, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -206,6 +206,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'basic-education-governance-and-inclusive-learning'),
     'Frameworks should include basic education governance and inclusive learning'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'child-adoption-foundling-and-civil-status'),
+    'Frameworks should include child adoption, foundling, and civil status'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'real-estate-housing-buyer-and-tenant-protection'),
@@ -429,6 +433,9 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 11310'), 'Corpus should include RA 11310')
   assert.ok(corpus.some((document) => document.statute === 'RA 11861'), 'Corpus should include RA 11861')
   assert.ok(corpus.some((document) => document.statute === 'RA 11596'), 'Corpus should include RA 11596')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11642'), 'Corpus should include RA 11642')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11222'), 'Corpus should include RA 11222')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11767'), 'Corpus should include RA 11767')
   assert.ok(corpus.some((document) => document.statute === 'RA 11510'), 'Corpus should include RA 11510')
   assert.ok(corpus.some((document) => document.statute === 'RA 9710'), 'Corpus should include RA 9710')
   assert.ok(corpus.some((document) => document.statute === 'RA 11930'), 'Corpus should include RA 11930')
@@ -1788,6 +1795,24 @@ try {
     'Education governance framework title'
   )
 
+  const childAdoptionFoundlingFrameworkResponse = runLocalResearch(
+    {
+      query: 'What adoption, administrative adoption, alternative child care, NACC, simulated birth rectification, foundling recognition, birth certificate, civil registry, child identity, social welfare, and confidentiality controls should a child services desk check?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(childAdoptionFoundlingFrameworkResponse, 'RA 11642', 'child adoption framework administrative adoption query')
+  assertResearchMatch(childAdoptionFoundlingFrameworkResponse, 'RA 11222', 'child adoption framework simulated birth query')
+  assertResearchMatch(childAdoptionFoundlingFrameworkResponse, 'RA 11767', 'child adoption framework foundling query')
+  assertResearchMatch(childAdoptionFoundlingFrameworkResponse, 'RA 10173', 'child adoption framework privacy query')
+  assertIncludes(
+    childAdoptionFoundlingFrameworkResponse.summary,
+    'Child Adoption, Foundling, and Civil Status Stack',
+    'Child adoption foundling framework title'
+  )
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What does RA 9470 require for records management, archives, retention schedules, and document disposal?', user_id: 'self-test' },
@@ -1864,6 +1889,33 @@ try {
     ),
     'RA 11596',
     'child marriage query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 11642 require for domestic administrative adoption, NACC alternative child care, child placement, and post-adoption confidentiality?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11642',
+    'administrative adoption query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 11222 require for simulated birth rectification, birth certificate correction, adoption-linked records, and confidentiality?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11222',
+    'simulated birth rectification query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What does RA 11767 require for foundling recognition, birth registration, child identity, services, and confidentiality?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 11767',
+    'foundling recognition query'
   )
 
   assertResearchMatch(
@@ -4499,6 +4551,36 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Social-assistance controls')
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Solo-parent benefit controls')
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Child-marriage prevention')
+
+  const thinChildStatusDraft = `# Child Status and Alternative Care Desk Policy
+
+## Purpose
+This policy handles administrative adoption, alternative child care, NACC inquiries, simulated birth rectification, foundling recognition, child placement, birth certificate concerns, and civil registry referrals.
+
+## Legal Basis
+Pursuant to RA 11642, RA 11222, and RA 11767.
+
+## Scope
+This applies to children, guardians, custodians, prospective adoptive parents, and social welfare staff.
+
+## Responsible Office
+The child services desk shall process requests.
+
+## Requirements
+Applicants shall submit documents when requested.
+
+## Monitoring
+The desk shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinChildStatusDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinChildStatusDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinChildStatusDraftResponse.status, 'success', 'Child status draft check should succeed locally')
+  assertFinding(thinChildStatusDraftResponse, 'amber', 'Adoption, foundling, or child-status controls')
 
   const thinEducationGovernanceDraft = `# School Services and Inclusive Learning Desk Policy
 

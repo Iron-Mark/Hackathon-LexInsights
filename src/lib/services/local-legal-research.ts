@@ -4431,6 +4431,27 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(adoption|administrative adoption|domestic adoption|alternative child care|child placement|nacc|national authority for child care|simulated birth|birth simulation|birth rectification|foundling|abandoned child|deserted child|child legally available for adoption)\b/.test(normalizedDraft)) {
+    const hasChildStatusClassification = /\b(adoption|alternative child care|simulated birth|foundling|civil registry|birth certificate|child status|case classification)\b/.test(normalizedDraft)
+    const hasResponsibleChildCareOffice = /\b(nacc|national authority for child care|dswd|social worker|local social welfare|civil registrar|local civil registrar|responsible office)\b/.test(normalizedDraft)
+    const hasChildBestInterestOrEvidence = /\b(best interest|case study|home study|social case|matching|consent|eligibility|identity evidence|birth record|placement|custody)\b/.test(normalizedDraft)
+    const hasChildIdentitySafeguards = /\b(confidential|child identity|privacy|redaction|restricted access|retention|records|authorized disclosure|case record)\b/.test(normalizedDraft)
+
+    if (!(hasChildStatusClassification && hasResponsibleChildCareOffice && hasChildBestInterestOrEvidence && hasChildIdentitySafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Adoption, foundling, or child-status controls are incomplete',
+          'Adoption, alternative child care, simulated birth, foundling, child-placement, or child-status language was detected without enough classification, NACC/DSWD/LGU/civil-registrar role mapping, child-best-interest review, social-case evidence, consent or identity evidence, confidentiality, or records controls.',
+          'Add issue classification, responsible child-care and civil-registry offices, child-best-interest and social-case review, consent or authority path, identity and birth-record evidence, referral or grievance route, confidentiality, redaction, access, retention, and authorized-disclosure controls.',
+          8,
+          [referenceForId('ra-11642'), referenceForId('ra-11222'), referenceForId('ra-11767'), referenceForId('ra-10173')]
+        )
+      )
+    }
+  }
+
   if (/\b(building permit|occupancy permit|construction|renovation|structural|building official|fit out|facility use|contractor license|licensed contractor|architect|civil engineer|electrical engineer|mechanical engineer|master plumber|signed plans|sealed plans|plumbing plan|electrical plan|mechanical plan|architectural plan)\b/.test(normalizedDraft)) {
     const hasBuildingPermitControls = /\b(building permit|plan review|building official|zoning)\b/.test(normalizedDraft)
     const hasLicensedRoleControls = /\b(licensed contractor|contractor license|pcab|registered architect|architect|civil engineer|electrical engineer|mechanical engineer|master plumber|signed plans|sealed plans|professional seal|responsible professional)\b/.test(normalizedDraft)
