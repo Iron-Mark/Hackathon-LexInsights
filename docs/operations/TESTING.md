@@ -49,8 +49,8 @@ npm run check:release
 ```
 
 The providerless self-test covers the local legal research and draft-checking engine directly, without network or browser dependencies.
-The local RAG golden-query check covers exact citations, citation variants, AI governance guidance, cross-law workflows, aviation/maritime/ports/seafarer workflows, ranking diagnostics, source trust metadata, and no-result behavior.
-The local RAG performance check covers uncached exact-citation, AI-governance, deep-workflow, aviation/maritime workflow, unrelated no-result, and warm-cache local queries.
+The local RAG golden-query check covers exact citations, citation variants, AI governance guidance, cross-law workflows, EPR/plastic-packaging workflows, payment-system operator and settlement workflows, CFT/sanctions and AMLC asset-freeze workflows, anti-terrorism designation/proscription safeguards, aviation/maritime/ports/seafarer workflows, ranking diagnostics, source trust metadata, and no-result behavior.
+The local RAG performance check covers uncached exact-citation, AI-governance, deep-workflow, payment-system/CFT workflow, aviation/maritime workflow, unrelated no-result, and warm-cache local queries.
 The local RAG governance check validates corpus source records, evidence anchors, authority relations, framework references, and coverage-map records.
 The document text self-test covers browser-readable Markdown and text normalization plus unsupported, oversized, empty, and unknown-file handling.
 The document extraction self-test generates deterministic PDF and DOCX fixtures and verifies server-side text extraction before draft checking.

@@ -4,10 +4,12 @@ import type { LocalAuthorityCoverage, LocalCoverageStatus } from './types'
 
 const GOLDEN_AUTHORITY_IDS = new Set([
   'ra-10173',
+  'ra-11898',
   'ra-8792',
   'ra-8293',
   'ra-8799',
   'ra-7653',
+  'ra-11127',
   'ra-8791',
   'ra-10607',
   'ra-12009',
@@ -28,6 +30,8 @@ const GOLDEN_AUTHORITY_IDS = new Set([
   'ra-11967',
   'ra-11765',
   'ra-12010',
+  'ra-10168',
+  'ra-11479',
   'ra-8424',
   'ra-11976',
   'ra-10963',
@@ -70,6 +74,7 @@ const GOLDEN_AUTHORITY_IDS = new Set([
 
 const DRAFT_CHECK_AUTHORITY_IDS = new Set([
   'ra-9003',
+  'ra-11898',
   'ra-10173',
   'ra-11058',
   'ra-9514',
@@ -85,6 +90,10 @@ const DRAFT_CHECK_AUTHORITY_IDS = new Set([
   'ra-12021',
   'ra-9497',
   'pd-857',
+  'ra-11127',
+  'ra-9160',
+  'ra-10168',
+  'ra-11479',
 ])
 
 const FRAMEWORK_IDS_BY_AUTHORITY_ID = COMPLIANCE_FRAMEWORKS.reduce((index, framework) => {

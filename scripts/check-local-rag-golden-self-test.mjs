@@ -90,6 +90,26 @@ function assertCompletedMatches(response, expectedStatutes, label, minConfidence
   assert.ok(response.retrieval_metadata, `${label} should include retrieval metadata`)
 }
 
+function assertExactCitationMatch(response, expectedStatute, citationNumber, label, minConfidence = 0.55) {
+  assertCompletedMatch(response, expectedStatute, label, minConfidence)
+  assert.equal(statutes(response)[0], expectedStatute, `${label} should be the top match`)
+  assert.deepEqual(response.retrieval_metadata.citation_numbers, [citationNumber], `${label} citation metadata`)
+  assert.ok(response.retrieval_metadata.provenance_coverage, `${label} should include provenance coverage`)
+  assert.ok(
+    response.matched_documents[0].source_last_verified,
+    `${label} top match should include last verified source metadata`
+  )
+  assert.ok(
+    response.matched_documents[0].evidence_anchors?.length > 0,
+    `${label} top match should include evidence anchors`
+  )
+  assert.equal(
+    response.matched_documents[0].provenance_status,
+    'seeded',
+    `${label} top match should expose provenance status`
+  )
+}
+
 const { module: providerless, cleanup } = await loadProviderlessModule()
 
 try {
@@ -113,6 +133,30 @@ try {
     'seeded',
     'exact citation top match should expose provenance status'
   )
+
+  const exactEprCitation = runLocalResearch({
+    query: 'What does RA 11898 require for plastic packaging and EPR reporting?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactEprCitation, 'RA 11898', '11898', 'exact RA 11898 citation')
+
+  const exactPaymentSystemCitation = runLocalResearch({
+    query: 'What does RA 11127 require for an operator of a payment system?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactPaymentSystemCitation, 'RA 11127', '11127', 'exact RA 11127 citation')
+
+  const exactCftCitation = runLocalResearch({
+    query: 'What does RA 10168 require for terrorism financing and asset freeze controls?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactCftCitation, 'RA 10168', '10168', 'exact RA 10168 citation')
+
+  const exactAntiTerrorismCitation = runLocalResearch({
+    query: 'What does RA 11479 require for Anti-Terrorism Council designation safeguards?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactAntiTerrorismCitation, 'RA 11479', '11479', 'exact RA 11479 citation')
 
   const citationVariant = runLocalResearch({
     query: 'What controls apply under R.A. No. 10173 and RA No. 8792 for online consent records?',
@@ -148,6 +192,39 @@ try {
     'direct securities topic should not be pushed out by broad expansion terms'
   )
 
+  const eprTopic = runLocalResearch({
+    query: 'What EPR controls apply to plastic packaging footprint, producer responsibility organization, recovery targets, third party audit, and DENR reporting?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(eprTopic, 'RA 11898', 'EPR plastic packaging topic')
+  assert.equal(statutes(eprTopic)[0], 'RA 11898', 'EPR topic should rank RA 11898 first')
+  assert.ok(
+    eprTopic.summary.includes('Environmental Operations and Facility Controls Stack'),
+    'EPR topic should include the environmental operations framework section'
+  )
+
+  const paymentSystemsTopic = runLocalResearch({
+    query: 'What payment system operator controls apply to QR payment settlement and remittance rails?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(paymentSystemsTopic, 'RA 11127', 'payment systems topic')
+  assert.equal(statutes(paymentSystemsTopic)[0], 'RA 11127', 'payment systems topic should rank RA 11127 first')
+  assert.ok(
+    paymentSystemsTopic.summary.includes('Payment Systems, CFT, and Sanctions Controls Stack'),
+    'payment systems topic should include its framework section'
+  )
+
+  const sanctionsTopic = runLocalResearch({
+    query: 'What sanctions screening and asset-freeze controls apply to a donation transfer flagged for terrorism financing?',
+    user_id: 'golden',
+  })
+  assertCompletedMatches(sanctionsTopic, ['RA 10168', 'RA 11479'], 'CFT sanctions topic')
+  assert.equal(statutes(sanctionsTopic)[0], 'RA 10168', 'CFT sanctions topic should rank RA 10168 first')
+  assert.ok(
+    sanctionsTopic.summary.includes('Payment Systems, CFT, and Sanctions Controls Stack'),
+    'CFT sanctions topic should include the payment systems CFT framework section'
+  )
+
   const crossLawWorkflow = runLocalResearch({
     query: 'What controls apply to BSP supervision, bank loans, lending companies, financing companies, insurance claims, pre-need plans, PDIC deposit insurance, AML, bank secrecy, credit reports, and borrower privacy?',
     user_id: 'golden',
@@ -159,6 +236,21 @@ try {
   assert.ok(
     crossLawWorkflow.summary.includes('Banking, Lending, Insurance, and Financial Institutions Stack'),
     'financial workflow should include its framework section'
+  )
+
+  const paymentCftSanctionsWorkflow = runLocalResearch({
+    query: 'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AML suspicious transactions, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, customer privacy, and consumer remediation?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    paymentCftSanctionsWorkflow,
+    ['RA 11127', 'RA 9160', 'RA 10168', 'RA 11479', 'RA 12010', 'RA 11765', 'RA 8484'],
+    'payment systems CFT sanctions workflow'
+  )
+  assert.ok(
+    paymentCftSanctionsWorkflow.summary.includes('Payment Systems, CFT, and Sanctions Controls Stack'),
+    'payment systems CFT sanctions workflow should include its framework section'
   )
 
   const publicAccountabilityWorkflow = runLocalResearch({
@@ -325,6 +417,17 @@ try {
     use_deep_search: true,
   })
   assertCompletedMatches(agricultureFoodSafetyWorkflow, ['RA 10611', 'RA 10068', 'RA 8435'], 'agriculture and food safety workflow')
+
+  const eprPlasticPackagingWorkflow = runLocalResearch({
+    query: 'What EPR controls apply to a retailer with plastic packaging footprint, producer responsibility organization, recovery targets, recycling partners, third party audit, DENR reporting, and consumer takeback claims?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(eprPlasticPackagingWorkflow, ['RA 11898', 'RA 9003'], 'EPR plastic packaging workflow')
+  assert.ok(
+    eprPlasticPackagingWorkflow.summary.includes('Environmental Operations and Facility Controls Stack'),
+    'EPR plastic packaging workflow should include its framework section'
+  )
 
   const environmentalImpactWildlifeForestryWorkflow = runLocalResearch({
     query: 'What ECC, EIS, environmental impact assessment, wildlife permit, threatened species habitat, tree cutting, timber transport, forest land, watershed, mitigation, consultation, monitoring, and LGU coordination controls apply?',

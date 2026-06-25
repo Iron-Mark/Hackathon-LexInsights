@@ -103,6 +103,11 @@ const scenarios = [
     p95Limit: 18,
   },
   {
+    label: 'payment system exact citation',
+    params: { query: 'What does RA 11127 require for an operator of a payment system?', user_id: 'performance' },
+    p95Limit: 22,
+  },
+  {
     label: 'AI governance',
     params: {
       query: 'What privacy and governance controls apply to AI chatbots that process personal data in the Philippines?',
@@ -115,6 +120,26 @@ const scenarios = [
     params: {
       query:
         'What controls apply to BSP supervision, bank loans, lending companies, financing companies, insurance claims, pre-need plans, PDIC deposit insurance, AML, bank secrecy, credit reports, and borrower privacy?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 55,
+  },
+  {
+    label: 'payment CFT sanctions workflow',
+    params: {
+      query:
+        'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AML suspicious transactions, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, customer privacy, and consumer remediation?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 65,
+  },
+  {
+    label: 'EPR plastic packaging workflow',
+    params: {
+      query:
+        'What EPR controls apply to a retailer with plastic packaging footprint, producer responsibility organization, recovery targets, recycling partners, third party audit, DENR reporting, and consumer takeback claims?',
       user_id: 'performance',
       use_deep_search: true,
     },

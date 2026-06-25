@@ -137,8 +137,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 196, 'Local corpus should include at least 196 authorities')
-  assert.ok(frameworks.length >= 36, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 202, 'Local corpus should include at least 202 authorities')
+  assert.ok(frameworks.length >= 37, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -146,6 +146,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'financial-account-scam-response'),
     'Frameworks should include financial account scam response'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'payment-systems-cft-and-sanctions-controls'),
+    'Frameworks should include payment systems, CFT, and sanctions controls'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'business-tax-registration-invoicing-and-incentives'),
@@ -269,6 +273,7 @@ try {
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11898'), 'Corpus should include RA 11898')
   assert.ok(
     corpus.some((document) => document.statute === 'NPC Advisory No. 2024-04'),
     'Corpus should include NPC AI privacy advisory'
@@ -283,6 +288,8 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10175'), 'Corpus should include RA 10175')
   assert.ok(corpus.some((document) => document.statute === 'RA 9775'), 'Corpus should include RA 9775')
   assert.ok(corpus.some((document) => document.statute === 'RA 9160'), 'Corpus should include RA 9160')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10168'), 'Corpus should include RA 10168')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11479'), 'Corpus should include RA 11479')
   assert.ok(corpus.some((document) => document.statute === 'RA 7394'), 'Corpus should include RA 7394')
   assert.ok(corpus.some((document) => document.statute === 'RA 10667'), 'Corpus should include RA 10667')
   assert.ok(corpus.some((document) => document.statute === 'RA 11765'), 'Corpus should include RA 11765')
@@ -436,6 +443,7 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10361'), 'Corpus should include RA 10361')
   assert.ok(corpus.some((document) => document.statute === 'RA 10606'), 'Corpus should include RA 10606')
   assert.ok(corpus.some((document) => document.statute === 'RA 8484'), 'Corpus should include RA 8484')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11127'), 'Corpus should include RA 11127')
   assert.ok(corpus.some((document) => document.statute === 'RA 4200'), 'Corpus should include RA 4200')
   assert.ok(corpus.some((document) => document.statute === 'BP 22'), 'Corpus should include BP 22')
   assert.ok(corpus.some((document) => document.statute === 'RA 9285'), 'Corpus should include RA 9285')
@@ -471,6 +479,22 @@ try {
     ),
     'RA 9003',
     'solid waste query'
+  )
+
+  const eprCitationResponse = runLocalResearch(
+    {
+      query: 'What does RA 11898 require for plastic packaging and EPR reporting?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(eprCitationResponse, 'RA 11898', 'EPR exact citation query')
+  assert.deepEqual(eprCitationResponse.retrieval_metadata?.citation_numbers, ['11898'], 'EPR exact citation metadata')
+  assertMatchedTerm(
+    eprCitationResponse,
+    'RA 11898',
+    'explicit citation: RA 11898',
+    'EPR exact citation query'
   )
 
   assertResearchMatch(
@@ -929,6 +953,81 @@ try {
     financialInstitutionsFrameworkResponse.summary,
     'Banking, Lending, Insurance, and Financial Institutions Stack',
     'Financial institutions framework title'
+  )
+
+  const paymentCftCitationResponse = runLocalResearch(
+    {
+      query: 'What controls apply under RA 11127, RA 10168, and RA 11479 for payment-system CFT sanctions screening?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(paymentCftCitationResponse, 'RA 11127', 'payment systems exact citation query')
+  assertResearchMatch(paymentCftCitationResponse, 'RA 10168', 'CFT exact citation query')
+  assertResearchMatch(paymentCftCitationResponse, 'RA 11479', 'anti-terrorism exact citation query')
+  assertMatchedTerm(
+    paymentCftCitationResponse,
+    'RA 11127',
+    'explicit citation: RA 11127',
+    'payment systems exact citation query'
+  )
+  assertMatchedTerm(
+    paymentCftCitationResponse,
+    'RA 10168',
+    'explicit citation: RA 10168',
+    'CFT exact citation query'
+  )
+  assertMatchedTerm(
+    paymentCftCitationResponse,
+    'RA 11479',
+    'explicit citation: RA 11479',
+    'anti-terrorism exact citation query'
+  )
+
+  const paymentSystemsTopicResponse = runLocalResearch(
+    {
+      query: 'What payment system operator controls apply to QR payment settlement and remittance rails?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(paymentSystemsTopicResponse, 'RA 11127', 'payment systems topic query')
+  assertIncludes(
+    paymentSystemsTopicResponse.summary,
+    'Payment Systems, CFT, and Sanctions Controls Stack',
+    'Payment systems topic framework title'
+  )
+
+  const sanctionsTopicResponse = runLocalResearch(
+    {
+      query: 'What sanctions screening and asset-freeze controls apply to a donation transfer flagged for terrorism financing?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(sanctionsTopicResponse, 'RA 10168', 'CFT sanctions topic query')
+  assertResearchMatch(sanctionsTopicResponse, 'RA 11479', 'anti-terrorism sanctions topic query')
+
+  const paymentSystemsCftWorkflowResponse = runLocalResearch(
+    {
+      query: 'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AML suspicious transactions, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, customer privacy, and consumer remediation?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 11127', 'payment systems CFT workflow payment-system query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 9160', 'payment systems CFT workflow AML query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 10168', 'payment systems CFT workflow CFT query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 11479', 'payment systems CFT workflow anti-terrorism query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 12010', 'payment systems CFT workflow scam query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 11765', 'payment systems CFT workflow financial consumer query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 8484', 'payment systems CFT workflow access device query')
+  assertIncludes(
+    paymentSystemsCftWorkflowResponse.summary,
+    'Payment Systems, CFT, and Sanctions Controls Stack',
+    'Payment systems CFT workflow framework title'
   )
 
   assertResearchMatch(
@@ -1449,6 +1548,32 @@ try {
     environmentalFrameworkResponse.summary,
     'Environmental Operations and Facility Controls Stack',
     'Environmental framework title'
+  )
+
+  const eprTopicResponse = runLocalResearch(
+    {
+      query: 'What EPR controls apply to plastic packaging footprint, producer responsibility organization, recovery targets, third party audit, and DENR reporting?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(eprTopicResponse, 'RA 11898', 'EPR plastic packaging topic query')
+  assertResearchMatch(eprTopicResponse, 'RA 9003', 'EPR solid waste topic query')
+
+  const eprPlasticPackagingWorkflowResponse = runLocalResearch(
+    {
+      query: 'What EPR controls apply to a retailer with plastic packaging footprint, producer responsibility organization, recovery targets, recycling partners, third party audit, DENR reporting, and consumer takeback claims?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(eprPlasticPackagingWorkflowResponse, 'RA 11898', 'EPR plastic packaging workflow query')
+  assertResearchMatch(eprPlasticPackagingWorkflowResponse, 'RA 9003', 'EPR solid waste workflow query')
+  assertIncludes(
+    eprPlasticPackagingWorkflowResponse.summary,
+    'Environmental Operations and Facility Controls Stack',
+    'EPR plastic packaging workflow framework title'
   )
 
   const environmentalImpactWildlifeForestryResponse = runLocalResearch(
