@@ -288,6 +288,36 @@ try {
   })
   assertCompletedMatches(agricultureFoodSafetyWorkflow, ['RA 10611', 'RA 10068', 'RA 8435'], 'agriculture and food safety workflow')
 
+  const environmentalImpactWildlifeForestryWorkflow = runLocalResearch({
+    query: 'What ECC, EIS, environmental impact assessment, wildlife permit, threatened species habitat, tree cutting, timber transport, forest land, watershed, mitigation, consultation, monitoring, and LGU coordination controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    environmentalImpactWildlifeForestryWorkflow,
+    ['PD 1586', 'RA 9147', 'PD 705'],
+    'environmental impact wildlife forestry workflow'
+  )
+  assert.ok(
+    environmentalImpactWildlifeForestryWorkflow.summary.includes('Environmental Impact, Wildlife, and Forestry Controls Stack'),
+    'environmental impact wildlife forestry workflow should include its framework section'
+  )
+
+  const tourismHospitalityWorkflow = runLocalResearch({
+    query: 'What DOT accreditation, hotel resort guest intake, tour operator safety, sanitation, fire safety, accessibility, refund, complaint, online booking record, and tourist privacy controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    tourismHospitalityWorkflow,
+    ['RA 9593', 'PD 856', 'RA 9514', 'RA 11967'],
+    'tourism hospitality events and travel services workflow'
+  )
+  assert.ok(
+    tourismHospitalityWorkflow.summary.includes('Tourism, Hospitality, Events, and Travel Services Stack'),
+    'tourism hospitality workflow should include its framework section'
+  )
+
   const realEstateHousingWorkflow = runLocalResearch({
     query: 'What controls apply to subdivision and condominium buyers, license to sell, contract to sell, homeowners association HOA dues, residential rent control, Maceda installment cancellation, title verification, and real estate service broker referrals?',
     user_id: 'golden',
@@ -393,7 +423,7 @@ try {
   )
 
   const publicSectorAutomationQuery = runLocalResearch({
-    query: 'What controls should a government AI system use for automated public service decisions, human review, privacy impact assessment, and citizen complaints?',
+    query: 'What e-governance and digital public service controls should a government AI system use for automated public service decisions, human review, privacy impact assessment, and citizen complaints?',
     user_id: 'golden',
     use_deep_search: true,
   })
