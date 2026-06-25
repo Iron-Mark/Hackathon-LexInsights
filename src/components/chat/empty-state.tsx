@@ -11,9 +11,10 @@ import { UploadedFilesList } from './uploaded-files-list'
 
 interface EmptyStateProps {
   onPromptSelect: (prompt: string) => void
+  compact?: boolean
 }
 
-export function EmptyState({ onPromptSelect }: EmptyStateProps) {
+export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps) {
   const { user } = useAuthStore()
   const { mode } = useChatModeStore()
   const { uploadedFiles } = useFileUploadStore()
@@ -121,7 +122,7 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
   } as const
 
   return (
-    <div className="pointer-events-auto mx-auto w-full max-w-3xl px-4 text-center">
+    <div className={cn('pointer-events-auto mx-auto w-full px-4 text-center', compact ? 'max-w-md' : 'max-w-3xl')}>
       {/* Minimal Greeting */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -133,7 +134,10 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="text-3xl font-bold leading-[1.05] text-slate-950 drop-shadow-[0_1px_0_rgba(255,255,255,0.78)] sm:text-4xl dark:text-slate-100 dark:drop-shadow-none"
+          className={cn(
+            'font-bold leading-[1.05] text-slate-950 drop-shadow-[0_1px_0_rgba(255,255,255,0.78)] dark:text-slate-100 dark:drop-shadow-none',
+            compact ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+          )}
         >
           {greeting}, {userName}
         </motion.h1>
@@ -174,82 +178,84 @@ export function EmptyState({ onPromptSelect }: EmptyStateProps) {
       )}
 
       {/* Suggested prompt briefs */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="mt-9 grid gap-3"
-      >
-        {suggestedPrompts.map(({ prompt, eyebrow, scope, icon: Icon, tone }, index) => {
-          const styles = toneStyles[tone as keyof typeof toneStyles]
+      {!compact && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-9 grid gap-3"
+        >
+          {suggestedPrompts.map(({ prompt, eyebrow, scope, icon: Icon, tone }, index) => {
+            const styles = toneStyles[tone as keyof typeof toneStyles]
 
-          return (
-          <motion.button
-            key={index}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 + index * 0.035, duration: 0.2 }}
-            whileHover={{ y: -2 }}
-            whileTap={{ scale: 0.985 }}
-            onClick={() => onPromptSelect(prompt)}
-            disabled={!isHydrated}
-            className={cn(
-              'group relative flex min-h-16 w-full gap-3 overflow-hidden rounded-md border px-3.5 py-3 text-left shadow-sm ring-1 ring-white/70 backdrop-blur transition-all duration-200',
-              'hover:-translate-y-0.5 hover:shadow-md hover:shadow-iris-950/10 active:translate-y-0 active:shadow-sm',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
-              'disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-sm',
-              styles.card
-            )}
-          >
-            <span
+            return (
+            <motion.button
+              key={index}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + index * 0.035, duration: 0.2 }}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.985 }}
+              onClick={() => onPromptSelect(prompt)}
+              disabled={!isHydrated}
               className={cn(
-                'flex h-10 w-10 shrink-0 items-center justify-center rounded-md ring-1 transition-all duration-200 group-hover:scale-105 max-[430px]:hidden',
-                styles.icon
+                'group relative flex min-h-16 w-full gap-3 overflow-hidden rounded-md border px-3.5 py-3 text-left shadow-sm ring-1 ring-white/70 backdrop-blur transition-all duration-200',
+                'hover:-translate-y-0.5 hover:shadow-md hover:shadow-iris-950/10 active:translate-y-0 active:shadow-sm',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
+                'disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-sm',
+                styles.card
               )}
-            aria-hidden="true"
             >
-              <Icon className="h-[18px] w-[18px]" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="flex min-w-0 items-center gap-2 max-[430px]:flex-wrap max-[430px]:gap-x-1.5 max-[430px]:gap-y-1">
-                <span className="truncate text-[11px] font-bold uppercase leading-4 text-slate-600 max-[430px]:basis-full dark:text-slate-400">
-                  {eyebrow}
-                </span>
-                <span
-                  className={cn(
-                    'hidden h-7 w-7 shrink-0 items-center justify-center rounded-md ring-1 max-[430px]:flex',
-                    styles.icon
-                  )}
-                  aria-hidden="true"
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                </span>
-                <span
-                  className={cn(
-                    'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold leading-4 ring-1',
-                    styles.chip
-                  )}
-                >
-                  {scope}
-                </span>
-              </span>
-              <span className="mt-1 block text-sm font-semibold leading-5 text-slate-900 dark:text-slate-50">
-                {prompt}
-              </span>
-            </span>
-            <span
-              className={cn(
-                'ml-2 flex h-10 w-10 shrink-0 self-center items-center justify-center opacity-75 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 max-[430px]:ml-1 max-[430px]:h-8 max-[430px]:w-8',
-                styles.arrow
-              )}
+              <span
+                className={cn(
+                  'flex h-10 w-10 shrink-0 items-center justify-center rounded-md ring-1 transition-all duration-200 group-hover:scale-105 max-[430px]:hidden',
+                  styles.icon
+                )}
               aria-hidden="true"
-            >
-              <ArrowRight className="h-6 w-6" strokeWidth={1.9} />
-            </span>
-          </motion.button>
-          )
-        })}
-      </motion.div>
+              >
+                <Icon className="h-[18px] w-[18px]" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex min-w-0 items-center gap-2 max-[430px]:flex-wrap max-[430px]:gap-x-1.5 max-[430px]:gap-y-1">
+                  <span className="truncate text-[11px] font-bold uppercase leading-4 text-slate-600 max-[430px]:basis-full dark:text-slate-400">
+                    {eyebrow}
+                  </span>
+                  <span
+                    className={cn(
+                      'hidden h-7 w-7 shrink-0 items-center justify-center rounded-md ring-1 max-[430px]:flex',
+                      styles.icon
+                    )}
+                    aria-hidden="true"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </span>
+                  <span
+                    className={cn(
+                      'shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold leading-4 ring-1',
+                      styles.chip
+                    )}
+                  >
+                    {scope}
+                  </span>
+                </span>
+                <span className="mt-1 block text-sm font-semibold leading-5 text-slate-900 dark:text-slate-50">
+                  {prompt}
+                </span>
+              </span>
+              <span
+                className={cn(
+                  'ml-2 flex h-10 w-10 shrink-0 self-center items-center justify-center opacity-75 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 max-[430px]:ml-1 max-[430px]:h-8 max-[430px]:w-8',
+                  styles.arrow
+                )}
+                aria-hidden="true"
+              >
+                <ArrowRight className="h-6 w-6" strokeWidth={1.9} />
+              </span>
+            </motion.button>
+            )
+          })}
+        </motion.div>
+      )}
     </div>
   )
 }

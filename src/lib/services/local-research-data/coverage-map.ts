@@ -46,6 +46,9 @@ const GOLDEN_AUTHORITY_IDS = new Set([
   'ra-11479',
   'ra-8424',
   'ra-11976',
+  'ra-12023',
+  'bir-rr-2025-03',
+  'bir-rmc-2025-47',
   'ra-10963',
   'ra-11534',
   'ra-12066',
@@ -151,6 +154,8 @@ const DRAFT_CHECK_AUTHORITY_IDS = new Set([
   'ra-10070',
   'ra-10524',
   'ra-10754',
+  'ra-12023',
+  'bir-rr-2025-03',
 ])
 
 const FRAMEWORK_IDS_BY_AUTHORITY_ID = COMPLIANCE_FRAMEWORKS.reduce((index, framework) => {

@@ -1173,7 +1173,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
-    '- Include a Republic Act number or official issuance, such as RA 10173, NPC Circular 16-03, NPC Circular 2023-06, NPC Circular 2022-04, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 8479, RA 11592, RA 9367, RA 7638, RA 10667, RA 11765, RA 11934, RA 11976, RA 7277, RA 9442, RA 10070, RA 10524, or RA 10754.',
+    '- Include a Republic Act number or official issuance, such as RA 10173, NPC Circular 16-03, NPC Circular 2023-06, NPC Circular 2022-04, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 8479, RA 11592, RA 9367, RA 7638, RA 10667, RA 11765, RA 11934, RA 11976, RA 12023, RR 3-2025, RA 7277, RA 9442, RA 10070, RA 10524, or RA 10754.',
     '- Add the regulated activity, agency, permit, affected sector, and location.',
     '- Ask for a narrower compliance checklist, for example "solid waste requirements for a barangay ordinance".',
     '',
@@ -3456,6 +3456,37 @@ function applyTopicSpecificDraftChecks(
           [
             referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8424') || LEGAL_CORPUS[0]),
             referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11976') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(digital service|digital services|digital service provider|nonresident digital|nrdsp|online subscription|streaming subscription|streaming service|cloud service|app store|digital goods|online advertising|digital platform tax|marketplace vat|vat on digital|vds portal|reverse charge vat|bir form 2550-ds|bir form 1600-vt)\b/.test(normalizedDraft)) {
+    const hasDigitalServiceClassification = /\b(digital service provider|resident|nonresident|nrdsp|online marketplace|e-marketplace|platform|b2b|b2c|vat registered buyer|philippine consumer|buyer classification|customer classification)\b/.test(normalizedDraft)
+    const hasDigitalVatRegistration = /\b(bir registration|vds portal|certificate of registration|taxpayer identification|tin|revenue regulation|revenue memorandum|rr 3-2025|rmc 47-2025|current bir)\b/.test(normalizedDraft)
+    const hasDigitalVatInvoice = /\b(digital sales invoice|commercial invoice|invoice|receipt|transaction reference|gross amount|vat amount|buyer tin|customer tin)\b/.test(normalizedDraft)
+    const hasDigitalVatRemittance = /\b(vat return|remittance|withholding|reverse charge|bir form 2550-ds|bir form 1600-vt|proof of payment|filing deadline|payment deadline)\b/.test(normalizedDraft)
+    const hasDigitalVatRecords = /\b(recordkeeping|retention|books of account|audit trail|seller record|buyer record|customer record|privacy|access control|bir correspondence)\b/.test(normalizedDraft)
+
+    if (!(
+      hasDigitalServiceClassification &&
+      hasDigitalVatRegistration &&
+      hasDigitalVatInvoice &&
+      hasDigitalVatRemittance &&
+      hasDigitalVatRecords
+    )) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Digital services VAT controls are incomplete',
+          'Digital-service, subscription, streaming, cloud, app-store, marketplace VAT, NRDSP, VDS portal, or reverse-charge VAT language was detected without enough provider classification, BIR registration, invoicing, return, remittance, marketplace, or record controls.',
+          'Add resident or nonresident DSP classification, marketplace or platform role, B2B/B2C and buyer VAT status, BIR registration or VDS portal route, digital sales or commercial invoice fields, VAT return or withholding/remittance process, transaction references, records custody, privacy safeguards, and a current-BIR-issuance verification step.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-12023') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'bir-rr-2025-03') || LEGAL_CORPUS[0]),
           ]
         )
       )

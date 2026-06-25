@@ -145,7 +145,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 231, 'Local corpus should include at least 231 authorities')
+  assert.ok(corpus.length >= 232, 'Local corpus should include at least 232 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -340,6 +340,7 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10963'), 'Corpus should include RA 10963')
   assert.ok(corpus.some((document) => document.statute === 'RA 11534'), 'Corpus should include RA 11534')
   assert.ok(corpus.some((document) => document.statute === 'RA 12066'), 'Corpus should include RA 12066')
+  assert.ok(corpus.some((document) => document.id === 'ra-12023'), 'Corpus should include RA 12023 digital services VAT')
   assert.ok(corpus.some((document) => document.statute === 'RA 11055'), 'Corpus should include RA 11055')
   assert.ok(corpus.some((document) => document.statute === 'RA 11038'), 'Corpus should include RA 11038')
   assert.ok(corpus.some((document) => document.statute === 'EO 292, s. 1987'), 'Corpus should include EO 292')
@@ -2063,13 +2064,42 @@ try {
     'CREATE Act query'
   )
 
-  const businessTaxFrameworkResponse = runLocalResearch(
-    { query: 'What BIR registration, invoices, receipts, withholding certificates, VAT, corporate income tax, CREATE MORE incentives, and tax-return controls should a registered business enterprise keep?', user_id: 'self-test' },
+  const digitalServicesVatCitationResponse = runLocalResearch(
+    {
+      query: 'What does RA 12023 require for VAT on Digital Services, NRDSP BIR registration, invoicing, and remittance?',
+      user_id: 'self-test',
+    },
     'simulated remote outage'
   )
-  assertResearchMatch(businessTaxFrameworkResponse, 'RA 8424', 'business tax framework NIRC query')
-  assertResearchMatch(businessTaxFrameworkResponse, 'RA 11976', 'business tax framework EOPT query')
+  assertResearchMatch(digitalServicesVatCitationResponse, 'RA 12023', 'digital services VAT exact citation query')
+  assert.deepEqual(
+    digitalServicesVatCitationResponse.retrieval_metadata?.citation_numbers,
+    ['12023'],
+    'digital services VAT exact citation metadata'
+  )
+  assertMatchedTerm(
+    digitalServicesVatCitationResponse,
+    'RA 12023',
+    'explicit citation: RA 12023',
+    'digital services VAT exact citation query'
+  )
+
+  const businessTaxFrameworkResponse = runLocalResearch(
+    { query: 'What BIR registration, invoices, receipts, withholding certificates, VAT, NRDSP digital services VAT remittance, corporate income tax, CREATE MORE incentives, and tax-return controls should a registered business enterprise keep?', user_id: 'self-test' },
+    'simulated remote outage'
+  )
   assertResearchMatch(businessTaxFrameworkResponse, 'RA 12066', 'business tax framework CREATE MORE query')
+  assertResearchMatch(businessTaxFrameworkResponse, 'RA 12023', 'business tax framework digital services VAT query')
+  assertIncludes(
+    businessTaxFrameworkResponse.summary,
+    'RA 8424',
+    'business tax framework NIRC query summary'
+  )
+  assertIncludes(
+    businessTaxFrameworkResponse.summary,
+    'RA 11976',
+    'business tax framework EOPT query summary'
+  )
   assertIncludes(
     businessTaxFrameworkResponse.summary,
     'Business Tax Registration, Invoicing, and Incentives Stack',
@@ -3415,6 +3445,44 @@ This policy takes effect 30 days after publication.`
   )
   assert.equal(thinBusinessTaxDraftResponse.status, 'success', 'Business tax draft check should succeed locally')
   assertFinding(thinBusinessTaxDraftResponse, 'amber', 'Business tax and invoicing')
+
+  const thinDigitalServicesVatDraft = `# Digital Services VAT Controls Policy
+
+## Purpose
+This policy handles VAT on digital services, nonresident digital service providers, NRDSP marketplace collections, BIR registration, invoicing, and remittance.
+
+## Legal Basis
+Pursuant to RA 12023.
+
+## Scope
+This applies to digital service providers, online platforms, and payment collectors offering digital services to Philippine customers.
+
+## Responsible Office
+The tax compliance office shall implement this policy.
+
+## Requirements
+Providers and platforms shall submit digital service and payment documents when requested.
+
+## Monitoring
+The office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinDigitalServicesVatDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinDigitalServicesVatDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(
+    thinDigitalServicesVatDraftResponse.status,
+    'success',
+    'Digital services VAT draft check should succeed locally'
+  )
+  assertFinding(
+    thinDigitalServicesVatDraftResponse,
+    'amber',
+    'Digital services VAT controls are incomplete'
+  )
 
   const thinImmigrationCitizenshipDraft = `# Immigration, Passport, Citizenship, and OFW Records Policy
 

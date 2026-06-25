@@ -386,6 +386,71 @@
     linear-gradient(135deg, #171322 0%, #211a35 48%, #120d1f 100%);
 }
 
+* {
+  scrollbar-color: rgba(90, 79, 207, 0.55) rgba(224, 222, 250, 0.42);
+  scrollbar-width: thin;
+}
+
+html.dark *,
+[data-theme='dark'] * {
+  scrollbar-color: rgba(158, 151, 227, 0.72) rgba(23, 19, 34, 0.68);
+}
+
+*::-webkit-scrollbar {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(224, 222, 250, 0.42);
+}
+
+*::-webkit-scrollbar-thumb {
+  min-height: 2.5rem;
+  min-width: 2.5rem;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+  background-color: rgba(90, 79, 207, 0.58);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(63, 51, 189, 0.76);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background-color: rgba(51, 42, 153, 0.88);
+}
+
+*::-webkit-scrollbar-corner {
+  background: rgba(224, 222, 250, 0.42);
+}
+
+html.dark *::-webkit-scrollbar-track,
+[data-theme='dark'] *::-webkit-scrollbar-track {
+  background: rgba(23, 19, 34, 0.68);
+}
+
+html.dark *::-webkit-scrollbar-thumb,
+[data-theme='dark'] *::-webkit-scrollbar-thumb {
+  background-color: rgba(158, 151, 227, 0.72);
+}
+
+html.dark *::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] *::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(191, 187, 237, 0.86);
+}
+
+html.dark *::-webkit-scrollbar-thumb:active,
+[data-theme='dark'] *::-webkit-scrollbar-thumb:active {
+  background-color: rgba(224, 222, 250, 0.94);
+}
+
+html.dark *::-webkit-scrollbar-corner,
+[data-theme='dark'] *::-webkit-scrollbar-corner {
+  background: rgba(23, 19, 34, 0.68);
+}
+
 /* WCAG 2.1 AA Accessibility Utilities */
 @layer utilities {
 

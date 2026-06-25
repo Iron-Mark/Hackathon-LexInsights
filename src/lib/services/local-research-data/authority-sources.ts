@@ -17,6 +17,9 @@ const PROVENANCE_NOTES: Partial<Record<string, string>> = {
   'ra-10070': 'Official Lawphil PDAO local implementation statute in the bundled local corpus.',
   'ra-10524': 'Official Lawphil PWD employment amendment in the bundled local corpus.',
   'ra-10754': 'Official Lawphil PWD benefits and VAT-exemption statute in the bundled local corpus.',
+  'ra-12023': 'Official Lawphil VAT on digital services statute in the bundled local corpus.',
+  'bir-rr-2025-03': 'Official BIR implementing regulations for VAT on digital services; verify against current BIR issuances before relying on operational details.',
+  'bir-rmc-2025-47': 'Official BIR circular guidance for digital-services VAT implementation; verify against current BIR issuances before relying on form or portal details.',
 }
 
 function getAuthorityType(document: LocalLegalDocument): NonNullable<LocalLegalDocument['authorityType']> {

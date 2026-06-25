@@ -17,7 +17,7 @@ import { useSidebarStore } from '@/lib/store/sidebar-store'
 import type { Message } from '@/types'
 import type { DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { checkDraft, type DraftCheckerResponse, type Finding } from '@/lib/services/rag-api'
-import { AlertCircle, ChevronDown, FileText } from 'lucide-react'
+import { AlertCircle, ChevronDown, FileText, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { DragDropOverlay } from './drag-drop-overlay'
@@ -1003,7 +1003,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                     transition={{ duration: 0.3 }}
                   >
                     {/* 1. Greeting and assistant text */}
-                    <EmptyState onPromptSelect={handlePromptSelect} />
+                    <EmptyState onPromptSelect={handlePromptSelect} compact={Boolean(isComplianceWithCanvas)} />
 
                     {/* 2. Bottom composer with disclaimer */}
                     <div className="pointer-events-none sticky bottom-0 mt-auto w-full pb-[calc(env(safe-area-inset-bottom)+0.875rem)] pt-5">
@@ -1052,25 +1052,21 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
               onClick={toggleCanvas}
-              className="fixed right-4 top-20 z-30 rounded-full bg-iris-600 p-2.5 text-white shadow-md transition-all hover:bg-iris-700 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2"
+              className="fixed right-[calc(env(safe-area-inset-right)+1rem)] top-[calc(env(safe-area-inset-top)+1rem)] z-50 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-iris-600 text-white shadow-md shadow-iris-950/20 transition-all hover:bg-iris-700 hover:shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:shadow-iris-950/40 dark:focus-visible:ring-offset-[#171322] lg:right-4 lg:top-20"
               aria-label={showCanvas ? 'Close compliance analysis' : 'Open compliance analysis'}
               title={showCanvas ? 'Close Analysis' : 'View Analysis'}
             >
               <AnimatePresence mode="wait">
                 {showCanvas ? (
-                  <motion.svg 
+                  <motion.span
                     key="close"
                     initial={{ rotate: -90, opacity: 0 }}
                     animate={{ rotate: 0, opacity: 1 }}
                     exit={{ rotate: 90, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="h-4 w-4" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </motion.svg>
+                    <X className="h-4 w-4" aria-hidden="true" />
+                  </motion.span>
                 ) : (
                   <motion.div
                     key="open"
@@ -1095,7 +1091,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative hidden shrink-0 lg:flex lg:w-[var(--canvas-pane-width)]"
+              className="fixed inset-0 z-40 flex min-w-0 bg-white dark:bg-[#171322] lg:relative lg:inset-auto lg:z-auto lg:w-[var(--canvas-pane-width)] lg:shrink-0"
             >
               <div
                 role="separator"
@@ -1110,7 +1106,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 onKeyDown={handleCanvasResizeKeyDown}
                 data-chat-no-background-focus
                 className={cn(
-                  'group relative z-50 flex w-3 shrink-0 cursor-col-resize touch-none items-center justify-center bg-iris-500/[0.03] outline-none transition-colors hover:bg-iris-500/10 dark:bg-iris-300/[0.04] dark:hover:bg-iris-300/10',
+                  'group relative z-50 hidden w-3 shrink-0 cursor-col-resize touch-none items-center justify-center bg-iris-500/[0.03] outline-none transition-colors hover:bg-iris-500/10 dark:bg-iris-300/[0.04] dark:hover:bg-iris-300/10 lg:flex',
                   'focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#171322]'
                 )}
               >
