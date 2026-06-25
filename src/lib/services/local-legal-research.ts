@@ -1173,7 +1173,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
-    '- Include a Republic Act number, such as RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, RA 10667, RA 11765, RA 11934, or RA 11976.',
+    '- Include a Republic Act number, such as RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 10667, RA 11765, RA 11934, or RA 11976.',
     '- Add the regulated activity, agency, permit, affected sector, and location.',
     '- Ask for a narrower compliance checklist, for example "solid waste requirements for a barangay ordinance".',
     '',
@@ -1842,6 +1842,39 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (
+    /\b(extended producer responsibility|epr|plastic packaging|packaging footprint|obliged enterprise|producer responsibility|recovery target|take back|takeback|waste recovery)\b/.test(
+      normalizedDraft
+    )
+  ) {
+    const hasEprScope = /\b(obliged enterprise|producer|brand owner|plastic packaging|packaging footprint|covered product|epr program)\b/.test(
+      normalizedDraft
+    )
+    const hasEprRecoveryControls = /\b(recovery target|diversion target|recycling target|take back|takeback|collection partner|waste diversion|recovery program)\b/.test(
+      normalizedDraft
+    )
+    const hasEprEvidenceControls = /\b(report|denr|audit|third party audit|verification|certificate|records|traceability|greenwashing)\b/.test(
+      normalizedDraft
+    )
+
+    if (!(hasEprScope && hasEprRecoveryControls && hasEprEvidenceControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'EPR packaging controls need more detail',
+          'Extended-producer-responsibility or plastic-packaging language was detected without enough covered-enterprise scope, recovery targets, verification, or DENR-facing reporting controls.',
+          'Add obliged-enterprise scope, plastic-packaging footprint, EPR program owner, recovery or diversion target, collection or recycler partner controls, third-party audit or verification evidence, DENR reporting, and greenwashing safeguards.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11898') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9003') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
   if (/\b(e-governance|egovernance|government portal|online government service|digital public service|government data exchange|interoperability|dict|ict system|public ict|digital permit|digital benefit)\b/.test(normalizedDraft)) {
     const hasDigitalServiceOwner = /\b(service owner|system owner|data owner|responsible office|ict office|administrator|dict)\b/.test(normalizedDraft)
     const hasDigitalAccessControls = /\b(authentication|access control|audit log|audit trail|interoperability|data sharing|lawful basis|privacy notice|consent)\b/.test(normalizedDraft)
@@ -2289,6 +2322,41 @@ function applyTopicSpecificDraftChecks(
           'Add covered-person scope, customer due diligence, beneficial ownership, transaction monitoring, covered and suspicious transaction reporting, confidentiality, recordkeeping, and AMLC escalation.',
           7,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9160') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (
+    /\b(payment system|national payment system|operator of payment system|ops|payment operator|payment switch|clearing|settlement|e-money|electronic money|wallet|qr payment|remittance|payment participant|sanctions|watchlist|asset freeze|freeze order|terrorism financing|terrorist financing|counter terrorism financing|cft|designated person|anti terrorism council|atc)\b/.test(
+      normalizedDraft
+    )
+  ) {
+    const hasPaymentSystemControls = /\b(bsp|bangko sentral|operator of payment system|ops|registration|designation|participant|settlement|clearing|reconciliation|operational risk|business continuity)\b/.test(
+      normalizedDraft
+    )
+    const hasCftControls = /\b(sanctions|watchlist|screening|terrorism financing|terrorist financing|cft|designated person|asset freeze|freeze order|amlc|anti terrorism council|atc)\b/.test(
+      normalizedDraft
+    )
+    const hasEscalationOrSafeguards = /\b(reporting|escalation|confidentiality|tipping off|recordkeeping|retention|audit trail|lawful authority|due process|privacy)\b/.test(
+      normalizedDraft
+    )
+
+    if (!(hasPaymentSystemControls && hasCftControls && hasEscalationOrSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Payment and CFT controls need more detail',
+          'Payment-system, wallet, remittance, sanctions, watchlist, asset-freeze, or terrorism-financing language was detected without enough BSP, AMLC, CFT, settlement, reporting, confidentiality, or due-process controls.',
+          'Add operator or participant classification, BSP registration or designation where relevant, clearing and settlement reconciliation, fraud and operational-risk monitoring, sanctions/watchlist screening, AMLC or ATC escalation route, freeze-order handling, confidentiality, recordkeeping, privacy limits, and lawful-authority review.',
+          8,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11127') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9160') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10168') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11479') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }
