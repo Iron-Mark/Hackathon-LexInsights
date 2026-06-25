@@ -106,6 +106,37 @@ const PRIVACY_OPERATIONS_AUTHORITY_TYPES = new Map([
   ['npc-advisory-2025-02', 'advisory'],
 ])
 
+const ACCESSIBILITY_BENEFITS_LAW_IDS = [
+  'ra-9994',
+  'ra-7277',
+  'ra-9442',
+  'ra-10070',
+  'ra-10524',
+  'ra-10754',
+  'bp-344',
+]
+
+const ACCESSIBILITY_BENEFITS_STATUTES = [
+  'RA 9994',
+  'RA 7277',
+  'RA 9442',
+  'RA 10070',
+  'RA 10524',
+  'RA 10754',
+  'BP 344',
+]
+
+const ACCESSIBILITY_BENEFITS_DRAFT_IDS = [
+  'ra-9994',
+  'ra-7277',
+  'ra-9442',
+  'ra-10070',
+  'ra-10524',
+  'ra-10754',
+]
+
+const ACCESSIBILITY_BENEFITS_FRAMEWORK_ID = 'health-welfare-and-accessibility'
+
 async function loadLocalResearchData() {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
@@ -330,6 +361,62 @@ try {
       coverageById.get(lawId)?.frameworkIds.includes(CHILD_ADOPTION_STATUS_FRAMEWORK_ID),
       `${lawId} coverage should reference ${CHILD_ADOPTION_STATUS_FRAMEWORK_ID}`
     )
+  }
+
+  for (const [index, lawId] of ACCESSIBILITY_BENEFITS_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `Accessibility and benefits corpus should include ${ACCESSIBILITY_BENEFITS_STATUTES[index]}`
+    )
+  }
+
+  const accessibilityBenefitsFramework = data.frameworks.find((framework) => (
+    framework.id === ACCESSIBILITY_BENEFITS_FRAMEWORK_ID
+  ))
+
+  assert.ok(
+    accessibilityBenefitsFramework,
+    `${ACCESSIBILITY_BENEFITS_FRAMEWORK_ID} framework should exist`
+  )
+  assert.ok(
+    ACCESSIBILITY_BENEFITS_LAW_IDS.every((lawId) => accessibilityBenefitsFramework.lawIds.includes(lawId)),
+    `${ACCESSIBILITY_BENEFITS_FRAMEWORK_ID} should include ${ACCESSIBILITY_BENEFITS_STATUTES.join(', ')}`
+  )
+
+  const accessibilityBenefitsFrameworkText = [
+    accessibilityBenefitsFramework.title,
+    accessibilityBenefitsFramework.summary,
+    ...accessibilityBenefitsFramework.triggers,
+    ...accessibilityBenefitsFramework.sequence,
+    ...accessibilityBenefitsFramework.checkpoints,
+  ].join(' ').toLowerCase()
+
+  for (const requiredTopic of ['pwd', 'pdao', 'discount', 'vat', 'employment', 'accommodation']) {
+    assert.ok(
+      accessibilityBenefitsFrameworkText.includes(requiredTopic),
+      `${ACCESSIBILITY_BENEFITS_FRAMEWORK_ID} should cover ${requiredTopic}`
+    )
+  }
+
+  for (const lawId of ACCESSIBILITY_BENEFITS_LAW_IDS) {
+    const coverage = coverageById.get(lawId)
+    const source = sourcesById.get(lawId)
+
+    assert.ok(
+      coverage?.frameworkIds.includes(ACCESSIBILITY_BENEFITS_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${ACCESSIBILITY_BENEFITS_FRAMEWORK_ID}`
+    )
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.ok(source, `${lawId} should have an authority source record`)
+    assert.equal(source.sourceTier, 'official-primary', `${lawId} should use official primary source tier`)
+    assert.ok(
+      source.sourceName === 'Lawphil' || source.sourceName === 'Supreme Court E-Library',
+      `${lawId} should use an official Philippine legal source`
+    )
+  }
+
+  for (const lawId of ACCESSIBILITY_BENEFITS_DRAFT_IDS) {
+    assert.equal(coverageById.get(lawId)?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
   }
 
   for (const [index, lawId] of PRIVACY_OPERATIONS_LAW_IDS.entries()) {
