@@ -1,7 +1,5 @@
 'use client'
 
-'use client'
-
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -582,7 +580,31 @@ export function RAGTestComponent() {
                           </strong>
                         </span>
                       )}
+                      {response.retrieval_metadata.provenance_coverage && (
+                        <span className="rounded border border-emerald-100 bg-emerald-50 px-2.5 py-2 md:col-span-2">
+                          Provenance:{' '}
+                          <strong>
+                            {Object.entries(response.retrieval_metadata.provenance_coverage)
+                              .map(([status, count]) => `${status}: ${count}`)
+                              .join(', ') || 'none'}
+                          </strong>
+                        </span>
+                      )}
                     </div>
+                    {response.retrieval_metadata.relation_paths && response.retrieval_metadata.relation_paths.length > 0 && (
+                      <div className="mt-2 rounded border border-iris-100 bg-white p-2 text-xs text-neutral-700">
+                        <strong>Relation paths:</strong>{' '}
+                        {response.retrieval_metadata.relation_paths
+                          .map((path) => `${path.source} -> ${path.target} (${path.relation_type})`)
+                          .join('; ')}
+                      </div>
+                    )}
+                    {response.retrieval_metadata.coverage_warnings && response.retrieval_metadata.coverage_warnings.length > 0 && (
+                      <div className="mt-2 rounded border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
+                        <strong>Coverage warnings:</strong>{' '}
+                        {response.retrieval_metadata.coverage_warnings.join(' ')}
+                      </div>
+                    )}
                     {response.retrieval_metadata.local_corpus_limitations && (
                       <p className="mt-2 text-xs text-neutral-600">
                         {response.retrieval_metadata.local_corpus_limitations[0]}
@@ -626,12 +648,40 @@ export function RAGTestComponent() {
                                 {document.source_tier}
                               </span>
                             )}
+                            {document.source_last_verified && (
+                              <span className="rounded border border-neutral-200 bg-neutral-50 px-2 py-0.5">
+                                {document.provenance_status === 'verified' ? 'Verified' : 'Cataloged'}{' '}
+                                {document.source_last_verified}
+                              </span>
+                            )}
+                            {document.provenance_status && (
+                              <span className="rounded border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-emerald-800">
+                                {document.provenance_status}
+                              </span>
+                            )}
                             {document.supporting_fields && document.supporting_fields.length > 0 && (
                               <span className="rounded border border-neutral-200 bg-white px-2 py-0.5">
                                 Fields: {document.supporting_fields.join(', ')}
                               </span>
                             )}
                           </div>
+                          {document.evidence_anchors && document.evidence_anchors.length > 0 && (
+                            <div className="mt-2 space-y-1 text-xs text-neutral-600">
+                              {document.evidence_anchors.slice(0, 2).map((anchor) => (
+                                <p key={anchor.label}>
+                                  <span className="font-medium text-neutral-800">{anchor.label}:</span> {anchor.note}
+                                </p>
+                              ))}
+                            </div>
+                          )}
+                          {document.related_authorities && document.related_authorities.length > 0 && (
+                            <p className="mt-2 text-xs text-neutral-600">
+                              Related: {document.related_authorities
+                                .slice(0, 3)
+                                .map((authority) => `${authority.statute} (${authority.relation_type})`)
+                                .join(', ')}
+                            </p>
+                          )}
                         </div>
                       ))}
                     </div>

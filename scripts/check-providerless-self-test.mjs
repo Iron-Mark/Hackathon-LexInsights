@@ -90,7 +90,16 @@ async function loadProviderlessModule() {
     writeFileSync(outputPath, transpiled.outputText, 'utf8')
   }
 
-  for (const fileName of ['types.ts', 'corpus.ts', 'topic-expansions.ts', 'compliance-frameworks.ts']) {
+  for (const fileName of [
+    'types.ts',
+    'corpus.ts',
+    'topic-expansions.ts',
+    'compliance-frameworks.ts',
+    'authority-sources.ts',
+    'evidence-anchors.ts',
+    'authority-relations.ts',
+    'coverage-map.ts',
+  ]) {
     const inputPath = path.join(dataSourceDir, fileName)
     const outputPath = path.join(tempDataDir, fileName.replace(/\.ts$/, '.js'))
 
@@ -128,8 +137,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 190, 'Local corpus should include at least 190 authorities')
-  assert.ok(frameworks.length >= 32, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 196, 'Local corpus should include at least 196 authorities')
+  assert.ok(frameworks.length >= 36, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -201,6 +210,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'tourism-hospitality-events-and-travel-services'),
     'Frameworks should include tourism, hospitality, events, and travel services'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'aviation-maritime-ports-and-seafarer-operations'),
+    'Frameworks should include aviation, maritime, ports, and seafarer operations'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'health-facility-emergency-care-and-patient-rights'),
@@ -364,6 +377,12 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 8550'), 'Corpus should include RA 8550')
   assert.ok(corpus.some((document) => document.statute === 'RA 7942'), 'Corpus should include RA 7942')
   assert.ok(corpus.some((document) => document.statute === 'RA 9593'), 'Corpus should include RA 9593')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9295'), 'Corpus should include RA 9295')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10635'), 'Corpus should include RA 10635')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9993'), 'Corpus should include RA 9993')
+  assert.ok(corpus.some((document) => document.statute === 'RA 12021'), 'Corpus should include RA 12021')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9497'), 'Corpus should include RA 9497')
+  assert.ok(corpus.some((document) => document.statute === 'PD 857'), 'Corpus should include PD 857')
   assert.ok(corpus.some((document) => document.statute === 'RA 10533'), 'Corpus should include RA 10533')
   assert.ok(corpus.some((document) => document.statute === 'RA 10931'), 'Corpus should include RA 10931')
   assert.ok(corpus.some((document) => document.statute === 'RA 7279'), 'Corpus should include RA 7279')
@@ -1932,6 +1951,80 @@ try {
 
   assertResearchMatch(
     runLocalResearch(
+      { query: 'What domestic shipping operator, ferry route, vessel safety, passenger manifest, and MARINA controls apply under RA 9295?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9295',
+    'domestic shipping query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What STCW certificate, seafarer training, MARINA assessment, and crew qualification controls apply under RA 10635?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 10635',
+    'seafarer STCW query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What Coast Guard marine safety, search and rescue, oil spill, maritime security, and incident report controls apply under RA 9993?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9993',
+    'coast guard maritime safety query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What shipboard employment, repatriation, welfare, grievance, and seafarer rights controls apply under RA 12021?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 12021',
+    'seafarer welfare query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What CAAP air operator, aircraft, airport, flight safety, passenger handling, and aviation records controls apply under RA 9497?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'RA 9497',
+    'civil aviation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
+      { query: 'What port authority, terminal operations, berth, cargo handling, port fees, and PPA controls apply under PD 857?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'PD 857',
+    'port authority query'
+  )
+
+  const maritimeAviationFrameworkResponse = runLocalResearch(
+    {
+      query: 'What domestic shipping, ferry route, port cargo handling, Coast Guard incident, seafarer STCW and welfare, airport, aircraft, air operator, flight safety, passenger record, cargo manifest, and privacy controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(maritimeAviationFrameworkResponse, 'RA 9295', 'maritime aviation framework shipping query')
+  assertResearchMatch(maritimeAviationFrameworkResponse, 'RA 10635', 'maritime aviation framework STCW query')
+  assertResearchMatch(maritimeAviationFrameworkResponse, 'RA 9993', 'maritime aviation framework Coast Guard query')
+  assertResearchMatch(maritimeAviationFrameworkResponse, 'RA 12021', 'maritime aviation framework seafarer welfare query')
+  assertResearchMatch(maritimeAviationFrameworkResponse, 'RA 9497', 'maritime aviation framework aviation query')
+  assertResearchMatch(maritimeAviationFrameworkResponse, 'PD 857', 'maritime aviation framework port query')
+  assertIncludes(
+    maritimeAviationFrameworkResponse.summary,
+    'Aviation, Maritime, Ports, and Seafarer Operations Stack',
+    'Aviation maritime ports framework title'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
       { query: 'What Labor Code controls apply to wage, overtime, rest day, and termination policies?', user_id: 'self-test' },
       'simulated remote outage'
     ),
@@ -3337,6 +3430,36 @@ This policy takes effect 30 days after publication.`
   )
   assert.equal(thinTourismHospitalityDraftResponse.status, 'success', 'Tourism hospitality draft check should succeed locally')
   assertFinding(thinTourismHospitalityDraftResponse, 'amber', 'Tourism and hospitality controls')
+
+  const thinMaritimeAviationDraft = `# Port, Ferry, Seafarer, and Airport Service Policy
+
+## Purpose
+This policy covers domestic shipping, ferry routes, vessels, port terminals, cargo handling, Coast Guard incidents, seafarer STCW certificates, manning agency coordination, seafarer welfare, aircraft, airports, air operator support, flight operations, and passenger records.
+
+## Legal Basis
+Pursuant to RA 9295, RA 10635, RA 9993, RA 12021, RA 9497, PD 857, and RA 10173.
+
+## Scope
+This applies to passengers, cargo handlers, seafarers, port users, and air transport users.
+
+## Responsible Office
+The transport desk shall implement this policy.
+
+## Requirements
+Operators shall submit documents when requested.
+
+## Monitoring
+The transport desk shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinMaritimeAviationDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinMaritimeAviationDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinMaritimeAviationDraftResponse.status, 'success', 'Maritime aviation draft check should succeed locally')
+  assertFinding(thinMaritimeAviationDraftResponse, 'amber', 'Aviation, maritime, port, or seafarer controls')
 
   const thinCompetitionDraft = `# Exclusive Supplier Accreditation Ordinance
 

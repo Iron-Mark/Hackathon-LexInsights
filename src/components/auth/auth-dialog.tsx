@@ -28,8 +28,8 @@ const authDialogAppearance = {
   elements: {
     ...authFormAppearance.elements,
     rootBox: 'w-full',
-    cardBox: 'w-full shadow-none',
-    card: 'w-full border-0 bg-transparent shadow-none',
+    cardBox: 'w-full !shadow-none',
+    card: 'w-full !border-0 !bg-transparent !shadow-none',
     headerTitle: 'sr-only',
     headerSubtitle: 'sr-only',
     logoBox: 'hidden',

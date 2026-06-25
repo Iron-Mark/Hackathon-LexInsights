@@ -900,7 +900,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   } as CSSProperties
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[linear-gradient(180deg,rgba(224,222,250,0.56)_0%,rgba(248,250,252,0.98)_18rem,#f8fafc_100%)] text-slate-900 dark:bg-transparent dark:text-slate-100">
+    <div className="chat-viewport-surface flex h-full min-h-0 flex-col text-slate-900 dark:text-slate-100">
       {/* Drag and Drop Overlay */}
       <DragDropOverlay onFileDrop={handleFileDrop} maxFiles={3} />
       

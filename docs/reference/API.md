@@ -109,8 +109,8 @@ Response shape used by the app:
   "search_queries_used": ["string"],
   "documents_found": 3,
   "processing_time_seconds": 1.2,
-  "provider_mode": "remote-rag",
-  "fallback_used": false,
+  "provider_mode": "local-providerless",
+  "fallback_used": true,
   "confidence_score": 0.91,
   "retrieval_metadata": {
     "result_limit": 6,
@@ -123,15 +123,46 @@ Response shape used by the app:
     "source_type_counts": {
       "statute": 6
     },
+    "provenance_coverage": {
+      "seeded": 5,
+      "verified": 1
+    },
+    "relation_paths": [
+      {
+        "source": "RA 9003",
+        "relation_type": "workflow_related_to",
+        "target": "RA 7160",
+        "label": "Local solid waste planning and LGU implementation workflow"
+      }
+    ],
+    "coverage_warnings": [
+      "Local results are deterministic and should be checked against current official issuances."
+    ],
     "local_corpus_limitations": [
       "Bundled local corpus only; no live web, agency-site crawl, court-decision crawl, or embedding provider was used."
     ],
     "processing_ms": 8
-  }
+  },
+  "matched_documents": [
+    {
+      "title": "RA 9003 - Ecological Solid Waste Management Act of 2000",
+      "statute": "RA 9003",
+      "source_name": "Lawphil",
+      "source_url": "https://lawphil.net/statutes/repacts/ra2001/ra_9003_2001.html",
+      "relevance_score": 0.95,
+      "matched_terms": ["RA 9003", "solid waste"],
+      "support_level": "direct",
+      "authority_type": "statute",
+      "source_tier": "official-primary",
+      "source_last_verified": "2026-06-25",
+      "provenance_status": "seeded",
+      "supporting_fields": ["citation", "title", "topics"]
+    }
+  ]
 }
 ```
 
-When local fallback is used, `provider_mode` is `local-providerless`, `fallback_used` is `true`, and `fallback_reason` may describe the remote failure. Local responses may include `retrieval_metadata` so diagnostics can show candidate count, result limits, top score, score threshold, normalized citation numbers, known or unknown citation coverage, source type counts, local corpus limits, and local processing time. `matched_documents` may also include local-only trust fields such as `support_level`, `authority_type`, `source_tier`, and `supporting_fields`.
+When local fallback is used, `provider_mode` is `local-providerless`, `fallback_used` is `true`, and `fallback_reason` may describe the remote failure. Local responses may include `retrieval_metadata` so diagnostics can show candidate count, result limits, top score, score threshold, normalized citation numbers, known or unknown citation coverage, source type counts, provenance coverage, relation paths, coverage warnings, local corpus limits, and local processing time. `matched_documents` may also include local-only trust fields such as `support_level`, `authority_type`, `source_tier`, `source_last_verified`, `provenance_status`, `evidence_anchors`, `related_authorities`, and `supporting_fields`.
 
 ### Deep Search
 

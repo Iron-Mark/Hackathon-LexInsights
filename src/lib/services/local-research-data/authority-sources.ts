@@ -1,0 +1,45 @@
+import { LEGAL_CORPUS } from './corpus'
+import type { LocalAuthoritySource, LocalLegalDocument, LocalProvenanceStatus } from './types'
+
+const DEFAULT_LAST_VERIFIED = '2026-06-25'
+
+const PROVENANCE_NOTES: Partial<Record<string, string>> = {
+  'npc-advisory-2024-04': 'Official NPC guidance source in the bundled local corpus.',
+  'sc-ai-governance-framework-2026': 'Official Supreme Court publication summarized as local providerless guidance.',
+}
+
+function getAuthorityType(document: LocalLegalDocument): NonNullable<LocalLegalDocument['authorityType']> {
+  return document.authorityType || 'statute'
+}
+
+function getSourceTier(document: LocalLegalDocument): NonNullable<LocalLegalDocument['sourceTier']> {
+  return document.sourceTier || 'official-primary'
+}
+
+function getProvenanceStatus(document: LocalLegalDocument): LocalProvenanceStatus {
+  if (document.lastVerified || document.sourceTier === 'official-guidance' || document.sourceTier === 'official-summary') {
+    return 'verified'
+  }
+
+  return 'seeded'
+}
+
+function getCatalogTags(document: LocalLegalDocument) {
+  return [
+    getAuthorityType(document),
+    getSourceTier(document),
+    ...document.topics.slice(0, 4),
+  ]
+}
+
+export const AUTHORITY_SOURCES: LocalAuthoritySource[] = LEGAL_CORPUS.map((document) => ({
+  authorityId: document.id,
+  sourceName: document.sourceName,
+  sourceUrl: document.sourceUrl,
+  authorityType: getAuthorityType(document),
+  sourceTier: getSourceTier(document),
+  lastVerified: document.lastVerified || DEFAULT_LAST_VERIFIED,
+  provenanceStatus: getProvenanceStatus(document),
+  catalogTags: getCatalogTags(document),
+  provenanceNotes: PROVENANCE_NOTES[document.id],
+}))

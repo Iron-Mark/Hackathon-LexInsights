@@ -35,7 +35,16 @@ async function loadProviderlessModule() {
     writeFileSync(outputPath, transpiled.outputText, 'utf8')
   }
 
-  for (const fileName of ['types.ts', 'corpus.ts', 'topic-expansions.ts', 'compliance-frameworks.ts']) {
+  for (const fileName of [
+    'types.ts',
+    'corpus.ts',
+    'topic-expansions.ts',
+    'compliance-frameworks.ts',
+    'authority-sources.ts',
+    'evidence-anchors.ts',
+    'authority-relations.ts',
+    'coverage-map.ts',
+  ]) {
     const inputPath = path.join(dataSourceDir, fileName)
     const outputPath = path.join(tempDataDir, fileName.replace(/\.ts$/, '.js'))
 
@@ -90,6 +99,20 @@ try {
   assertCompletedMatch(exactCitation, 'RA 10173', 'exact RA citation', 0.55)
   assert.equal(statutes(exactCitation)[0], 'RA 10173', 'exact citation should be the top match')
   assert.deepEqual(exactCitation.retrieval_metadata.citation_numbers, ['10173'], 'exact citation metadata')
+  assert.ok(exactCitation.retrieval_metadata.provenance_coverage, 'exact citation should include provenance coverage')
+  assert.ok(
+    exactCitation.matched_documents[0].source_last_verified,
+    'exact citation top match should include last verified source metadata'
+  )
+  assert.ok(
+    exactCitation.matched_documents[0].evidence_anchors?.length > 0,
+    'exact citation top match should include evidence anchors'
+  )
+  assert.equal(
+    exactCitation.matched_documents[0].provenance_status,
+    'seeded',
+    'exact citation top match should expose provenance status'
+  )
 
   const citationVariant = runLocalResearch({
     query: 'What controls apply under R.A. No. 10173 and RA No. 8792 for online consent records?',
@@ -98,6 +121,21 @@ try {
   })
   assertCompletedMatch(citationVariant, 'RA 10173', 'citation variant privacy')
   assertCompletedMatch(citationVariant, 'RA 8792', 'citation variant e-commerce')
+
+  const relationExpansion = runLocalResearch({
+    query: 'What does RA 10172 require for civil registry correction?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatch(relationExpansion, 'RA 10172', 'civil registry relation source')
+  assertCompletedMatch(relationExpansion, 'RA 9048', 'civil registry relation target')
+  assert.equal(statutes(relationExpansion)[0], 'RA 10172', 'related authority should not outrank exact citation')
+  assert.ok(
+    relationExpansion.retrieval_metadata.relation_paths.some((path) => (
+      path.source === 'RA 10172' && path.target === 'RA 9048'
+    )),
+    'civil registry relation path should be reported'
+  )
 
   const directTopic = runLocalResearch({
     query: 'What copyright, software license, trademark, and investment offer controls should an online product launch check?',
@@ -318,6 +356,22 @@ try {
     'tourism hospitality workflow should include its framework section'
   )
 
+  const aviationMaritimeWorkflow = runLocalResearch({
+    query: 'What domestic shipping, ferry route, vessel safety, Coast Guard search and rescue, oil spill response, port cargo handling, seafarer STCW certificate, seafarer welfare, airport, aircraft, air operator, flight safety, passenger manifest, cargo log, and privacy controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    aviationMaritimeWorkflow,
+    ['RA 9295', 'RA 10635', 'RA 9993', 'RA 12021', 'RA 9497', 'PD 857'],
+    'aviation maritime ports and seafarer workflow',
+    0.25
+  )
+  assert.ok(
+    aviationMaritimeWorkflow.summary.includes('Aviation, Maritime, Ports, and Seafarer Operations Stack'),
+    'aviation maritime workflow should include its framework section'
+  )
+
   const realEstateHousingWorkflow = runLocalResearch({
     query: 'What controls apply to subdivision and condominium buyers, license to sell, contract to sell, homeowners association HOA dues, residential rent control, Maceda installment cancellation, title verification, and real estate service broker referrals?',
     user_id: 'golden',
@@ -402,9 +456,26 @@ try {
   const unknownCitation = runLocalResearch({ query: 'What is RA 999999 about?', user_id: 'golden' })
   assert.equal(unknownCitation.status, 'no_results', 'unknown RA citation should return no_results')
   assert.deepEqual(unknownCitation.retrieval_metadata.citation_numbers, ['999999'], 'unknown RA citation metadata')
+  assert.deepEqual(unknownCitation.retrieval_metadata.relation_paths, [], 'unknown citation should not invent relation paths')
+  assert.deepEqual(
+    unknownCitation.retrieval_metadata.provenance_coverage,
+    {},
+    'unknown citation should not invent provenance coverage'
+  )
+  assert.ok(
+    unknownCitation.retrieval_metadata.coverage_warnings.some((warning) => warning.includes('RA 999999')),
+    'unknown citation should include a coverage warning'
+  )
   assert.ok(
     unknownCitation.summary.includes('RA 999999 was cited but is not in the bundled local corpus'),
     'unknown RA citation should be explained in citation coverage'
+  )
+
+  const seededCoverage = runLocalResearch({ query: 'What is RA 12254 about?', user_id: 'golden' })
+  assertCompletedMatch(seededCoverage, 'RA 12254', 'seeded source coverage warning', 0.5)
+  assert.ok(
+    seededCoverage.retrieval_metadata.coverage_warnings.some((warning) => warning.includes('RA 12254')),
+    'seeded source should expose coverage warning'
   )
 
   const aiGovernanceQuery = runLocalResearch({

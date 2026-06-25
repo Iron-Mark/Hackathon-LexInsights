@@ -85,7 +85,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
 
       <main
         className={cn(
-          'flex min-w-0 flex-1 flex-col overflow-hidden bg-[linear-gradient(180deg,rgba(224,222,250,0.56)_0%,rgba(248,250,252,0.98)_18rem,#f8fafc_100%)] transition-all duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.12),transparent_28rem),linear-gradient(135deg,#171322_0%,#211a35_48%,#120d1f_100%)]',
+          'chat-viewport-surface flex min-w-0 flex-1 flex-col overflow-hidden transition-all duration-300',
           !isMobile && !isOpen && 'ml-16',
           !isMobile && isOpen && 'ml-[344px]'
         )}

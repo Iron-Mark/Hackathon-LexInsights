@@ -12,7 +12,16 @@ import type {
 import { LEGAL_CORPUS } from './local-research-data/corpus'
 import { COMPLIANCE_FRAMEWORKS } from './local-research-data/compliance-frameworks'
 import { TOPIC_EXPANSIONS } from './local-research-data/topic-expansions'
-import type { LocalLegalDocument } from './local-research-data/types'
+import { AUTHORITY_SOURCES } from './local-research-data/authority-sources'
+import { EVIDENCE_ANCHORS } from './local-research-data/evidence-anchors'
+import { AUTHORITY_RELATIONS } from './local-research-data/authority-relations'
+import { AUTHORITY_COVERAGE } from './local-research-data/coverage-map'
+import type {
+  LocalAuthorityRelation,
+  LocalAuthoritySource,
+  LocalEvidenceAnchor,
+  LocalLegalDocument,
+} from './local-research-data/types'
 
 type RankedDocument = {
   document: LocalLegalDocument
@@ -56,6 +65,20 @@ type QueryAnalysis = {
   directTokens: string[]
   expansionTokens: string[]
   raNumbers: string[]
+}
+
+type AuthorityRelationPath = {
+  source: string
+  relation_type: string
+  target: string
+  label: string
+}
+
+type RelatedAuthoritySummary = {
+  statute: string
+  title: string
+  relation_type: string
+  label: string
 }
 
 const LOCAL_PROVIDER_SERVICE = 'providerless-local-legal-research'
@@ -379,6 +402,26 @@ const NORMALIZED_COMPLIANCE_FRAMEWORKS = COMPLIANCE_FRAMEWORKS.map((framework) =
   triggers: framework.triggers.map((trigger) => normalizeText(trigger)),
 }))
 const RANK_CACHE = new Map<string, RankedDocument[]>()
+const AUTHORITY_SOURCE_BY_ID = new Map(AUTHORITY_SOURCES.map((source) => [source.authorityId, source]))
+const EVIDENCE_ANCHORS_BY_AUTHORITY_ID = EVIDENCE_ANCHORS.reduce((index, anchor) => {
+  const anchors = index.get(anchor.authorityId) || []
+  anchors.push(anchor)
+  index.set(anchor.authorityId, anchors)
+  return index
+}, new Map<string, LocalEvidenceAnchor[]>())
+const AUTHORITY_COVERAGE_BY_ID = new Map(AUTHORITY_COVERAGE.map((coverage) => [coverage.authorityId, coverage]))
+const AUTHORITY_RELATIONS_BY_SOURCE_ID = AUTHORITY_RELATIONS.reduce((index, relation) => {
+  const relations = index.get(relation.sourceId) || []
+  relations.push(relation)
+  index.set(relation.sourceId, relations)
+  return index
+}, new Map<string, LocalAuthorityRelation[]>())
+const AUTHORITY_RELATIONS_BY_TARGET_ID = AUTHORITY_RELATIONS.reduce((index, relation) => {
+  const relations = index.get(relation.targetId) || []
+  relations.push(relation)
+  index.set(relation.targetId, relations)
+  return index
+}, new Map<string, LocalAuthorityRelation[]>())
 
 function analyzeQuery(query: string): QueryAnalysis {
   const baseTokens = tokenize(query)
@@ -627,6 +670,116 @@ function getDocumentById(id: string) {
   return DOCUMENT_BY_ID.get(id)
 }
 
+function getAuthoritySource(document: LocalLegalDocument): LocalAuthoritySource {
+  return AUTHORITY_SOURCE_BY_ID.get(document.id) || {
+    authorityId: document.id,
+    sourceName: document.sourceName,
+    sourceUrl: document.sourceUrl,
+    authorityType: getAuthorityType(document),
+    sourceTier: getSourceTier(document),
+    lastVerified: document.lastVerified || 'unverified',
+    provenanceStatus: 'needs-review',
+    catalogTags: [getAuthorityType(document), getSourceTier(document)],
+    provenanceNotes: 'No canonical source registry record was found for this authority.',
+  }
+}
+
+function getEvidenceAnchors(document: LocalLegalDocument) {
+  return EVIDENCE_ANCHORS_BY_AUTHORITY_ID.get(document.id) || []
+}
+
+function getAuthorityCoverage(document: LocalLegalDocument) {
+  return AUTHORITY_COVERAGE_BY_ID.get(document.id)
+}
+
+function getRelationsForAuthority(authorityId: string) {
+  return [
+    ...(AUTHORITY_RELATIONS_BY_SOURCE_ID.get(authorityId) || []),
+    ...(AUTHORITY_RELATIONS_BY_TARGET_ID.get(authorityId) || []),
+  ].sort((left, right) => right.weight - left.weight)
+}
+
+function getRelatedAuthoritySummaries(document: LocalLegalDocument, limit = 4): RelatedAuthoritySummary[] {
+  const seen = new Set<string>()
+  const relatedAuthorities: RelatedAuthoritySummary[] = []
+
+  for (const relation of getRelationsForAuthority(document.id)) {
+    const relatedId = relation.sourceId === document.id ? relation.targetId : relation.sourceId
+    const relatedDocument = getDocumentById(relatedId)
+
+    if (!relatedDocument || seen.has(relatedDocument.id)) {
+      continue
+    }
+
+    seen.add(relatedDocument.id)
+    relatedAuthorities.push({
+      statute: relatedDocument.statute,
+      title: relatedDocument.shortTitle,
+      relation_type: relation.type,
+      label: relation.label,
+    })
+
+    if (relatedAuthorities.length >= limit) {
+      break
+    }
+  }
+
+  return relatedAuthorities
+}
+
+function formatRelationPath(relation: LocalAuthorityRelation): AuthorityRelationPath | null {
+  const sourceDocument = getDocumentById(relation.sourceId)
+  const targetDocument = getDocumentById(relation.targetId)
+
+  if (!sourceDocument || !targetDocument) {
+    return null
+  }
+
+  return {
+    source: sourceDocument.statute,
+    relation_type: relation.type,
+    target: targetDocument.statute,
+    label: relation.label,
+  }
+}
+
+function getRelationPathsForMatches(matches: RankedDocument[], limit = 8): AuthorityRelationPath[] {
+  const matchedDocumentIds = new Set(matches.map((match) => match.document.id))
+  const seen = new Set<string>()
+  const paths: AuthorityRelationPath[] = []
+
+  for (const match of matches) {
+    for (const relation of getRelationsForAuthority(match.document.id)) {
+      const relatedId = relation.sourceId === match.document.id ? relation.targetId : relation.sourceId
+
+      if (!matchedDocumentIds.has(relatedId)) {
+        continue
+      }
+
+      const path = formatRelationPath(relation)
+
+      if (!path) {
+        continue
+      }
+
+      const key = `${path.source}:${path.relation_type}:${path.target}:${path.label}`
+
+      if (seen.has(key)) {
+        continue
+      }
+
+      seen.add(key)
+      paths.push(path)
+
+      if (paths.length >= limit) {
+        return paths
+      }
+    }
+  }
+
+  return paths
+}
+
 function getFrameworkMatches(query: string, rankedDocuments: RankedDocument[]) {
   const normalizedQuery = normalizeText(query)
   const rankedDocumentIds = rankedDocuments.slice(0, 12).map((match) => match.document.id)
@@ -705,6 +858,53 @@ function addFrameworkDocumentsForDeepSearch(query: string, rankedDocuments: Rank
     .sort((left, right) => right.score - left.score)
 }
 
+function addRelationDocumentsForDeepSearch(rankedDocuments: RankedDocument[]) {
+  if (rankedDocuments.length === 0) {
+    return rankedDocuments
+  }
+
+  const existingDocumentIds = new Set(rankedDocuments.map((match) => match.document.id))
+  const topScore = rankedDocuments[0]?.score || MINIMUM_SCORE
+  const relationDocuments: RankedDocument[] = []
+
+  for (const match of rankedDocuments.slice(0, 6)) {
+    for (const relation of getRelationsForAuthority(match.document.id)) {
+      const relatedId = relation.sourceId === match.document.id ? relation.targetId : relation.sourceId
+      const relatedDocument = getDocumentById(relatedId)
+
+      if (!relatedDocument || existingDocumentIds.has(relatedDocument.id)) {
+        continue
+      }
+
+      existingDocumentIds.add(relatedDocument.id)
+      relationDocuments.push({
+        document: relatedDocument,
+        score: Math.max(MINIMUM_SCORE + relation.weight, topScore * 0.32),
+        relevance: 0.34,
+        matchedTerms: unique([`relation: ${relation.type}`, relation.label]),
+        supportingFields: [],
+        supportLevel: 'related',
+        directEvidenceScore: WEAK_MATCH_MINIMUM_DIRECT_EVIDENCE,
+        directMatchCount: MINIMUM_DIRECT_TERM_MATCHES,
+      })
+
+      if (relationDocuments.length >= 6) {
+        break
+      }
+    }
+
+    if (relationDocuments.length >= 6) {
+      break
+    }
+  }
+
+  if (relationDocuments.length === 0) {
+    return rankedDocuments
+  }
+
+  return [...rankedDocuments, ...relationDocuments]
+}
+
 function prioritizeFrameworkDocuments(query: string, rankedDocuments: RankedDocument[]) {
   const frameworkDocumentIds = new Set(
     getFrameworkMatches(query, rankedDocuments).flatMap((match) => match.framework.lawIds)
@@ -751,10 +951,46 @@ function getSourceTier(document: LocalLegalDocument) {
 
 function getSourceTypeCounts(matches: RankedDocument[]) {
   return matches.reduce<Record<string, number>>((counts, match) => {
-    const authorityType = getAuthorityType(match.document)
+    const authorityType = getAuthoritySource(match.document).authorityType
     counts[authorityType] = (counts[authorityType] || 0) + 1
     return counts
   }, {})
+}
+
+function getProvenanceCoverage(matches: RankedDocument[]) {
+  return matches.reduce<Record<string, number>>((counts, match) => {
+    const source = getAuthoritySource(match.document)
+    counts[source.provenanceStatus] = (counts[source.provenanceStatus] || 0) + 1
+    return counts
+  }, {})
+}
+
+function getCoverageWarnings(matches: RankedDocument[], unknownCitationNumbers: string[]) {
+  const warnings = new Set<string>()
+
+  for (const unknownCitationNumber of unknownCitationNumbers) {
+    warnings.add(`RA ${unknownCitationNumber} is not in the bundled local corpus; verify it against current official sources.`)
+  }
+
+  for (const match of matches.slice(0, 6)) {
+    const source = getAuthoritySource(match.document)
+    const coverage = getAuthorityCoverage(match.document)
+
+    if (source.provenanceStatus !== 'verified') {
+      warnings.add(`${match.document.statute} is ${source.provenanceStatus} in the local provenance registry.`)
+    }
+
+    if (!coverage) {
+      warnings.add(`${match.document.statute} has no local coverage record.`)
+      continue
+    }
+
+    if (coverage.coverageStatus === 'seeded') {
+      warnings.add(`${match.document.statute} is seeded coverage; add a direct golden query before treating it as a primary authority.`)
+    }
+  }
+
+  return [...warnings].slice(0, 6)
 }
 
 function formatSupportLevel(value: RankedDocument['supportLevel']) {
@@ -779,9 +1015,37 @@ function buildSourceSupportSection(rankedDocuments: RankedDocument[]) {
   return [
     '## Source Support',
     '',
-    ...topMatches.map((match) => (
-      `- ${match.document.statute} (${match.document.shortTitle}) - ${formatSupportLevel(match.supportLevel)} from ${getSourceTier(match.document)} source.`
-    )),
+    ...topMatches.map((match) => {
+      const source = getAuthoritySource(match.document)
+      return `- ${match.document.statute} (${match.document.shortTitle}) - ${formatSupportLevel(match.supportLevel)} from ${source.sourceTier} source.`
+    }),
+    '',
+  ]
+}
+
+function buildProvenanceVerificationSection(rankedDocuments: RankedDocument[]) {
+  const topMatches = rankedDocuments.slice(0, 5)
+
+  if (topMatches.length === 0) {
+    return []
+  }
+
+  return [
+    '## Provenance & Verification',
+    '',
+    ...topMatches.map((match) => {
+      const source = getAuthoritySource(match.document)
+      const coverage = getAuthorityCoverage(match.document)
+      const evidenceLabels = getEvidenceAnchors(match.document)
+        .slice(0, 2)
+        .map((anchor) => anchor.label)
+        .join('; ')
+      const coverageLabel = coverage?.coverageStatus || 'missing coverage'
+
+      const verificationLabel = source.provenanceStatus === 'verified' ? 'verified' : 'cataloged'
+
+      return `- ${match.document.statute}: ${source.sourceTier}, ${source.provenanceStatus}, ${verificationLabel} ${source.lastVerified}; coverage ${coverageLabel}; anchors: ${evidenceLabels || 'none'}.`
+    }),
     '',
   ]
 }
@@ -792,8 +1056,9 @@ function buildRelatedAuthorityPathSection(query: string, rankedDocuments: Ranked
   }
 
   const frameworkMatches = getFrameworkMatches(query, rankedDocuments)
+  const relationPaths = getRelationPathsForMatches(rankedDocuments.slice(0, 10), 8)
 
-  if (frameworkMatches.length === 0) {
+  if (frameworkMatches.length === 0 && relationPaths.length === 0) {
     return []
   }
 
@@ -809,6 +1074,9 @@ function buildRelatedAuthorityPathSection(query: string, rankedDocuments: Ranked
 
       return `- ${match.framework.title}: ${laws.join(' -> ')}`
     }),
+    ...relationPaths.map((path) => (
+      `- ${path.source} ${path.relation_type.replace(/_/g, ' ')} ${path.target}: ${path.label}`
+    )),
     '',
   ]
 }
@@ -946,6 +1214,7 @@ function buildResearchSummary(query: string, rankedDocuments: RankedDocument[], 
     '',
     ...buildCitationCoverageSection(query),
     ...buildSourceSupportSection(topMatches),
+    ...buildProvenanceVerificationSection(topMatches),
     ...buildRelatedAuthorityPathSection(query, rankedDocuments, deepSearchUsed),
     ...buildFrameworkSection(query, rankedDocuments),
     '## Likely Relevant Authorities',
@@ -970,9 +1239,12 @@ export function runLocalResearch(params: RAGQuery, fallbackReason?: string): RAG
   const startedAt = Date.now()
   const query = params.query.trim()
   const rankedDocuments = rankLegalCorpus(query)
-  const researchDocuments = params.use_deep_search
+  const frameworkExpandedDocuments = params.use_deep_search
     ? addFrameworkDocumentsForDeepSearch(query, rankedDocuments)
     : rankedDocuments
+  const researchDocuments = params.use_deep_search
+    ? addRelationDocumentsForDeepSearch(frameworkExpandedDocuments)
+    : frameworkExpandedDocuments
   const resultDocuments = params.use_deep_search
     ? prioritizeFrameworkDocuments(query, researchDocuments)
     : researchDocuments
@@ -981,6 +1253,7 @@ export function runLocalResearch(params: RAGQuery, fallbackReason?: string): RAG
   const matchedDocuments = resultDocuments.slice(0, resultLimit)
   const topRelevance = matchedDocuments[0]?.relevance || 0
   const citationAnalysis = getCitationAnalysis(query)
+  const relationPaths = getRelationPathsForMatches(matchedDocuments)
   const retrievalMetadata = {
     result_limit: resultLimit,
     total_candidates: researchDocuments.length,
@@ -990,6 +1263,9 @@ export function runLocalResearch(params: RAGQuery, fallbackReason?: string): RAG
     known_citation_numbers: citationAnalysis.knownNumbers,
     unknown_citation_numbers: citationAnalysis.unknownNumbers,
     source_type_counts: getSourceTypeCounts(matchedDocuments),
+    provenance_coverage: getProvenanceCoverage(matchedDocuments),
+    relation_paths: relationPaths,
+    coverage_warnings: getCoverageWarnings(matchedDocuments, citationAnalysis.unknownNumbers),
     local_corpus_limitations: LOCAL_CORPUS_LIMITATIONS,
     processing_ms: Date.now() - startedAt,
   }
@@ -1046,18 +1322,30 @@ export function runLocalResearch(params: RAGQuery, fallbackReason?: string): RAG
     fallback_reason: fallbackReason,
     confidence_score: topRelevance,
     retrieval_metadata: retrievalMetadata,
-    matched_documents: matchedDocuments.map((match) => ({
-      title: `${match.document.statute} - ${match.document.shortTitle}`,
-      statute: match.document.statute,
-      source_name: match.document.sourceName,
-      source_url: match.document.sourceUrl,
-      relevance_score: match.relevance,
-      matched_terms: match.matchedTerms.slice(0, 10),
-      support_level: match.supportLevel,
-      authority_type: getAuthorityType(match.document),
-      source_tier: getSourceTier(match.document),
-      supporting_fields: match.supportingFields,
-    })),
+    matched_documents: matchedDocuments.map((match) => {
+      const source = getAuthoritySource(match.document)
+
+      return {
+        title: `${match.document.statute} - ${match.document.shortTitle}`,
+        statute: match.document.statute,
+        source_name: source.sourceName,
+        source_url: source.sourceUrl,
+        relevance_score: match.relevance,
+        matched_terms: match.matchedTerms.slice(0, 10),
+        support_level: match.supportLevel,
+        authority_type: source.authorityType,
+        source_tier: source.sourceTier,
+        source_last_verified: source.lastVerified,
+        provenance_status: source.provenanceStatus,
+        evidence_anchors: getEvidenceAnchors(match.document).slice(0, 3).map((anchor) => ({
+          label: anchor.label,
+          supports: anchor.supports,
+          note: anchor.note,
+        })),
+        related_authorities: getRelatedAuthoritySummaries(match.document, 4),
+        supporting_fields: match.supportingFields,
+      }
+    }),
   }
 }
 
@@ -3038,6 +3326,35 @@ function applyTopicSpecificDraftChecks(
             referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9136') || LEGAL_CORPUS[0]),
             referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7925') || LEGAL_CORPUS[0]),
             referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-198-water-districts') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (/\b(maritime|domestic shipping|shipping operator|vessel|ship|ferry|ro-ro|passenger vessel|cargo vessel|port|terminal|cargo handling|berthing|stevedoring|coast guard|marine safety|maritime security|oil spill|search and rescue|seafarer|stcw|manning agency|shipboard employment|aviation|airport|aircraft|air operator|flight operation|caap)\b/.test(normalizedDraft)) {
+    const hasTransportAuthority = /\b(marina|pcg|coast guard|ppa|philippine ports authority|caap|civil aviation authority|customs|immigration|certificate|permit|license|authorization|accreditation|regulator)\b/.test(normalizedDraft)
+    const hasOperationalScope = /\b(vessel|ship|ferry|route|port|terminal|cargo|passenger|crew|seafarer|aircraft|airport|flight|operator|facility|voyage|manifest)\b/.test(normalizedDraft)
+    const hasSafetyIncidentControls = /\b(safety|inspection|emergency|incident|search and rescue|pollution|oil spill|fire safety|security|medical|evacuation|airworthiness|maintenance|drill|corrective action)\b/.test(normalizedDraft)
+    const hasCredentialOrWelfareControls = /\b(stcw|certificate of competency|certificate of proficiency|training|assessment|employment contract|wage|benefit|repatriation|grievance|welfare|medical examination|crew roster)\b/.test(normalizedDraft)
+    const hasTransportRecords = /\b(record|manifest|cargo log|voyage log|flight record|crew record|passenger record|privacy|retention|access control|incident report|inspection report|authorized disclosure|audit trail)\b/.test(normalizedDraft)
+
+    if (!(hasTransportAuthority && hasOperationalScope && hasSafetyIncidentControls && (hasCredentialOrWelfareControls || /\b(airport|aircraft|flight|cargo|port|terminal|vessel|ship|ferry)\b/.test(normalizedDraft)) && hasTransportRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Aviation, maritime, port, or seafarer controls are incomplete',
+          'Shipping, port, Coast Guard, seafarer, manning, aviation, airport, aircraft, cargo, or transport-operator language was detected without enough regulator, operator, safety, incident, credential, welfare, cargo/passenger-record, or privacy controls.',
+          'Add the responsible regulator and office; operator, vessel, aircraft, port, route, crew, or facility scope; certificate or authorization checks; safety inspection, emergency, search-and-rescue, pollution, or aviation incident steps; seafarer STCW, contract, wage, welfare, repatriation, and grievance controls where relevant; passenger, cargo, voyage, flight, crew, CCTV, and incident-record retention and authorized disclosure.',
+          8,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9295') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10635') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9993') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-12021') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9497') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-857') || LEGAL_CORPUS[0]),
           ]
         )
       )
