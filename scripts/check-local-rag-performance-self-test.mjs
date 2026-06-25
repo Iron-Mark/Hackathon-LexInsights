@@ -186,6 +186,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'child adoption foundling civil status workflow',
+    params: {
+      query:
+        'What adoption, administrative adoption, alternative child care, NACC, simulated birth rectification, foundling recognition, birth certificate, civil registry, child identity, social welfare, and confidentiality controls should a child services desk check?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 65,
+  },
+  {
     label: 'unrelated no-result',
     params: { query: 'How do I bake sourdough bread at high altitude?', user_id: 'performance' },
     p95Limit: 12,

@@ -60,6 +60,20 @@ const PUBLIC_LAND_AGRARIAN_STATUTES = [
 
 const PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID = 'public-land-free-patent-and-agrarian-reform'
 
+const CHILD_ADOPTION_STATUS_LAW_IDS = [
+  'ra-11642',
+  'ra-11222',
+  'ra-11767',
+]
+
+const CHILD_ADOPTION_STATUS_STATUTES = [
+  'RA 11642',
+  'RA 11222',
+  'RA 11767',
+]
+
+const CHILD_ADOPTION_STATUS_FRAMEWORK_ID = 'child-adoption-foundling-and-civil-status'
+
 async function loadLocalResearchData() {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
@@ -239,6 +253,50 @@ try {
     assert.ok(
       coverageById.get(lawId)?.frameworkIds.includes(PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID),
       `${lawId} coverage should reference ${PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID}`
+    )
+  }
+
+  for (const [index, lawId] of CHILD_ADOPTION_STATUS_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `Child adoption and civil-status corpus should include ${CHILD_ADOPTION_STATUS_STATUTES[index]}`
+    )
+  }
+
+  const childAdoptionStatusFramework = data.frameworks.find((framework) => (
+    framework.id === CHILD_ADOPTION_STATUS_FRAMEWORK_ID
+  ))
+
+  assert.ok(
+    childAdoptionStatusFramework,
+    `${CHILD_ADOPTION_STATUS_FRAMEWORK_ID} framework should exist`
+  )
+  assert.ok(
+    CHILD_ADOPTION_STATUS_LAW_IDS.every((lawId) => childAdoptionStatusFramework.lawIds.includes(lawId)),
+    `${CHILD_ADOPTION_STATUS_FRAMEWORK_ID} should include ${CHILD_ADOPTION_STATUS_STATUTES.join(', ')}`
+  )
+
+  const childAdoptionStatusFrameworkText = [
+    childAdoptionStatusFramework.title,
+    childAdoptionStatusFramework.summary,
+    ...childAdoptionStatusFramework.triggers,
+  ].join(' ').toLowerCase()
+
+  assert.ok(
+    childAdoptionStatusFrameworkText.includes('child'),
+    `${CHILD_ADOPTION_STATUS_FRAMEWORK_ID} should be child-facing`
+  )
+  assert.ok(
+    childAdoptionStatusFrameworkText.includes('adoption') ||
+      childAdoptionStatusFrameworkText.includes('foundling') ||
+      childAdoptionStatusFrameworkText.includes('civil status'),
+    `${CHILD_ADOPTION_STATUS_FRAMEWORK_ID} should cover adoption, foundling, or civil-status workflows`
+  )
+
+  for (const lawId of CHILD_ADOPTION_STATUS_LAW_IDS) {
+    assert.ok(
+      coverageById.get(lawId)?.frameworkIds.includes(CHILD_ADOPTION_STATUS_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${CHILD_ADOPTION_STATUS_FRAMEWORK_ID}`
     )
   }
 

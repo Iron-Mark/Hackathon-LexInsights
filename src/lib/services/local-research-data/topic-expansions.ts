@@ -1005,6 +1005,18 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['prohibition of child marriage', 'age verification', 'child protection referral', 'confidentiality'],
   },
   {
+    triggers: ['adoption', 'administrative adoption', 'domestic adoption', 'alternative child care', 'child placement', 'nacc'],
+    expansions: ['domestic administrative adoption', 'national authority for child care', 'social case study', 'child best interest', 'post adoption confidentiality'],
+  },
+  {
+    triggers: ['simulated birth', 'birth simulation', 'birth rectification', 'simulated birth certificate'],
+    expansions: ['simulated birth rectification', 'civil registry correction', 'adoption-linked rectification', 'child identity confidentiality'],
+  },
+  {
+    triggers: ['foundling', 'abandoned child', 'deserted child', 'unknown parentage', 'foundling birth certificate'],
+    expansions: ['foundling recognition', 'birth registration', 'child protection referral', 'identity record confidentiality', 'service access'],
+  },
+  {
     triggers: ['renewable energy', 'solar', 'wind', 'biomass', 'net metering', 'green energy'],
     expansions: ['renewable energy act', 'renewable energy project', 'doe', 'net metering'],
   },

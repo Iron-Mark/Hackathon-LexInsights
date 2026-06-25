@@ -255,6 +255,24 @@ try {
   })
   assertExactCitationMatch(exactAgrarianEmancipationCitation, 'RA 11953', '11953', 'exact RA 11953 citation')
 
+  const exactAdministrativeAdoptionCitation = runLocalResearch({
+    query: 'What does RA 11642 require for domestic administrative adoption and alternative child care?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactAdministrativeAdoptionCitation, 'RA 11642', '11642', 'exact RA 11642 citation')
+
+  const exactSimulatedBirthCitation = runLocalResearch({
+    query: 'What does RA 11222 require for simulated birth rectification and birth certificate records?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactSimulatedBirthCitation, 'RA 11222', '11222', 'exact RA 11222 citation')
+
+  const exactFoundlingCitation = runLocalResearch({
+    query: 'What does RA 11767 require for foundling recognition, birth registration, and child identity protection?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactFoundlingCitation, 'RA 11767', '11767', 'exact RA 11767 citation')
+
   const citationVariant = runLocalResearch({
     query: 'What controls apply under R.A. No. 10173 and RA No. 8792 for online consent records?',
     user_id: 'golden',
@@ -695,6 +713,22 @@ try {
   assert.ok(
     publicLandAgrarianWorkflow.summary.includes('Public Land, Free Patent, and Agrarian Reform Stack'),
     'public land free patent agrarian reform workflow should include its framework section'
+  )
+
+  const childAdoptionFoundlingWorkflow = runLocalResearch({
+    query: 'What adoption, administrative adoption, alternative child care, NACC, simulated birth rectification, foundling recognition, birth certificate, civil registry, child identity, social welfare, and confidentiality controls should a child services desk check?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    childAdoptionFoundlingWorkflow,
+    ['RA 11642', 'RA 11222', 'RA 11767', 'RA 10173'],
+    'child adoption foundling civil status workflow',
+    0.25
+  )
+  assert.ok(
+    childAdoptionFoundlingWorkflow.summary.includes('Child Adoption, Foundling, and Civil Status Stack'),
+    'child adoption foundling civil status workflow should include its framework section'
   )
 
   const roadSafetyWorkflow = runLocalResearch({
