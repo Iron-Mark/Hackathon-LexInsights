@@ -146,7 +146,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 233, 'Local corpus should include at least 233 authorities')
+  assert.ok(corpus.length >= 234, 'Local corpus should include at least 234 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -325,6 +325,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10175'), 'Corpus should include RA 10175')
   assert.ok(corpus.some((document) => document.statute === 'RA 9775'), 'Corpus should include RA 9775')
   assert.ok(corpus.some((document) => document.statute === 'RA 9160'), 'Corpus should include RA 9160')
+  assert.ok(
+    corpus.some((document) => document.id === 'amlc-irr-2018' && document.statute === '2018 AMLA IRR'),
+    'Corpus should include 2018 AMLA IRR'
+  )
   assert.ok(corpus.some((document) => document.statute === 'RA 10168'), 'Corpus should include RA 10168')
   assert.ok(corpus.some((document) => document.statute === 'RA 11479'), 'Corpus should include RA 11479')
   assert.ok(corpus.some((document) => document.statute === 'RA 7394'), 'Corpus should include RA 7394')
@@ -1027,6 +1031,17 @@ try {
     'anti-money laundering query'
   )
 
+  const amlaIrrResponse = runLocalResearch(
+    {
+      query:
+        'What does the 2018 AMLA IRR require for covered-person classification, customer due diligence, beneficial ownership, covered transactions, suspicious transaction reports, recordkeeping, confidentiality, and AMLC compliance programs?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(amlaIrrResponse, '2018 AMLA IRR', '2018 AMLA IRR implementation query')
+  assertResearchMatch(amlaIrrResponse, 'RA 9160', '2018 AMLA IRR parent-law query')
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What consumer warranty and labeling controls apply to local product sellers?', user_id: 'self-test' },
@@ -1237,6 +1252,7 @@ try {
   assertResearchMatch(bspVaspGuidelinesResponse, 'BSP Circular No. 1108, s. 2021', 'BSP Circular 1108 VASP query')
   assertResearchMatch(bspVaspGuidelinesResponse, 'RA 11127', 'BSP Circular 1108 payment-system relationship query')
   assertResearchMatch(bspVaspGuidelinesResponse, 'RA 9160', 'BSP Circular 1108 AML relationship query')
+  assertResearchMatch(bspVaspGuidelinesResponse, '2018 AMLA IRR', 'BSP Circular 1108 AMLA IRR relationship query')
 
   const sanctionsTopicResponse = runLocalResearch(
     {
@@ -1258,6 +1274,7 @@ try {
   )
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 11127', 'payment systems CFT workflow payment-system query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 9160', 'payment systems CFT workflow AML query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, '2018 AMLA IRR', 'payment systems CFT workflow AMLA IRR query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 10168', 'payment systems CFT workflow CFT query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 11479', 'payment systems CFT workflow anti-terrorism query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 12010', 'payment systems CFT workflow scam query')
