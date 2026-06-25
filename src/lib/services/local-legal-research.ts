@@ -224,6 +224,14 @@ function uniqueByNormalized(values: string[]) {
   return result
 }
 
+function includesNormalizedTrigger(normalizedText: string, normalizedTrigger: string) {
+  if (normalizedTrigger.includes(' ')) {
+    return normalizedText.includes(normalizedTrigger)
+  }
+
+  return normalizedText.split(' ').includes(normalizedTrigger)
+}
+
 function extractRaNumbers(value: string) {
   const matches = value.matchAll(
     /\b(?:r\.?\s*a\.?|republic\s+act)(?:\s+(?:no|number)\.?)?\s*(\d{3,6})\b/gi
@@ -376,11 +384,11 @@ function analyzeQuery(query: string): QueryAnalysis {
   const baseTokens = tokenize(query)
   const normalizedQuery = normalizeText(query)
   const synonymTokens = NORMALIZED_DIRECT_QUERY_SYNONYMS.flatMap((synonym) => {
-    const matchesTrigger = synonym.triggers.some((trigger) => normalizedQuery.includes(trigger))
+    const matchesTrigger = synonym.triggers.some((trigger) => includesNormalizedTrigger(normalizedQuery, trigger))
     return matchesTrigger ? synonym.terms : []
   })
   const expansionTokens = NORMALIZED_TOPIC_EXPANSIONS.flatMap((expansion) => {
-    const matchesTrigger = expansion.triggers.some((trigger) => normalizedQuery.includes(trigger))
+    const matchesTrigger = expansion.triggers.some((trigger) => includesNormalizedTrigger(normalizedQuery, trigger))
     return matchesTrigger ? expansion.expansionTokens : []
   })
   const directTokens = unique([...baseTokens, ...synonymTokens])
@@ -606,7 +614,7 @@ function rankLegalCorpus(query: string): RankedDocument[] {
 function generateLocalSearchQueries(query: string, rankedDocuments: RankedDocument[]) {
   const normalizedQuery = normalizeText(query)
   const expansions = NORMALIZED_TOPIC_EXPANSIONS.flatMap((expansion) => {
-    const matchesTrigger = expansion.triggers.some((trigger) => normalizedQuery.includes(trigger))
+    const matchesTrigger = expansion.triggers.some((trigger) => includesNormalizedTrigger(normalizedQuery, trigger))
     return matchesTrigger ? expansion.expansions : []
   })
   const raQueries = extractRaNumbers(query).map((number) => `RA ${number}`)
@@ -625,7 +633,7 @@ function getFrameworkMatches(query: string, rankedDocuments: RankedDocument[]) {
   const citedDocumentIds = getCitationAnalysis(query).citedDocuments.map((document) => document.id)
 
   return NORMALIZED_COMPLIANCE_FRAMEWORKS.map(({ framework, triggers }) => {
-    const triggerMatches = triggers.filter((trigger) => normalizedQuery.includes(trigger))
+    const triggerMatches = triggers.filter((trigger) => includesNormalizedTrigger(normalizedQuery, trigger))
     const rankedMatches = framework.lawIds.filter((lawId) => rankedDocumentIds.includes(lawId))
     const citationMatches = framework.lawIds.filter((lawId) => citedDocumentIds.includes(lawId))
     const score = triggerMatches.length * 4 + rankedMatches.length * 2 + citationMatches.length * 5
@@ -638,7 +646,14 @@ function getFrameworkMatches(query: string, rankedDocuments: RankedDocument[]) {
       citationMatches,
     }
   })
-    .filter((match) => match.score >= 2)
+    .filter((match) => (
+      match.score >= 2 &&
+      (
+        match.triggerMatches.length > 0 ||
+        match.citationMatches.length > 0 ||
+        match.rankedMatches.length >= 2
+      )
+    ))
     .sort((left, right) => right.score - left.score)
     .slice(0, 2)
 }
@@ -1619,6 +1634,30 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(barangay complaint|barangay dispute|barangay conciliation|katarungang pambarangay|lupon|pangkat|amicable settlement|certificate to file action|barangay blotter|neighborhood dispute)\b/.test(normalizedDraft)) {
+    const hasBarangayCoverage = /\b(venue|covered dispute|exception|excluded case|party|resident|same city|same municipality|jurisdiction)\b/.test(normalizedDraft)
+    const hasBarangayProcess = /\b(lupon|pangkat|summons|notice|appearance|conciliation|mediation|settlement|certificate to file action|non settlement)\b/.test(normalizedDraft)
+    const hasBarangaySafeguards = /\b(referral|police|prosecutor|court|dswd|women and children|child protection|privacy|confidential|record|retention)\b/.test(normalizedDraft)
+
+    if (!(hasBarangayCoverage && hasBarangayProcess && hasBarangaySafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Barangay complaint routing needs lupon and referral controls',
+          'Barangay complaint, dispute, conciliation, lupon, pangkat, blotter, settlement, or certificate-to-file-action language was detected without enough coverage, exception, notice, settlement, referral, privacy, or record controls.',
+          'Add covered and excluded dispute types, venue and party rules, lupon or pangkat process, notice and appearance steps, settlement or non-settlement records, certificate-to-file-action handling, urgent referral paths, privacy, retention, and authorized disclosure rules.',
+          6,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7160') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9285') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10173') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
   if (/\b(graft|corruption|corrupt practice|conflict of interest|kickback|unwarranted benefit|undue injury|manifestly disadvantageous|private interest)\b/.test(normalizedDraft)) {
     const hasConflictControls = /\b(disclosure|conflict check|recusal|inhibit|private interest|financial interest|gift rule)\b/.test(normalizedDraft)
     const hasObjectiveCriteria = /\b(objective criteria|eligibility|selection criteria|evaluation|approval basis|written justification)\b/.test(normalizedDraft)
@@ -1733,6 +1772,30 @@ function applyTopicSpecificDraftChecks(
           'Add legal basis, salary grade or position classification, eligible positions, funding source, approval office, DBM or compensation review where relevant, payroll records, privacy, retention, and audit trail.',
           7,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-6758') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(civil service|civil service commission|csc|government employee|public employee|personnel action|administrative case|administrative discipline|preventive suspension|formal charge|appointing authority|service record|reassignment|promotion|detail)\b/.test(normalizedDraft)) {
+    const hasPersonnelAuthority = /\b(appointing authority|civil service|csc|qualification|eligibility|position|plantilla|legal basis|delegated authority)\b/.test(normalizedDraft)
+    const hasPersonnelDueProcess = /\b(complaint|notice|formal charge|answer|hearing|written decision|appeal|reconsideration|review)\b/.test(normalizedDraft)
+    const hasPersonnelRecords = /\b(service record|personnel file|appointment paper|record|retention|confidential|privacy|authorized disclosure|redaction)\b/.test(normalizedDraft)
+
+    if (!(hasPersonnelAuthority && hasPersonnelDueProcess && hasPersonnelRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Civil-service personnel controls need detail',
+          'Civil-service, government-employee, personnel-action, appointment, promotion, reassignment, service-record, administrative-case, formal-charge, or preventive-suspension language was detected without enough authority, merit, due-process, records, or appeal controls.',
+          'Add appointing authority, qualification and eligibility basis, position or plantilla reference, complaint intake, notice or formal charge, answer or hearing route, written decision, appeal or reconsideration path, service-record custody, privacy, retention, and authorized disclosure rules.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-807') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'eo-292-1987') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-6713') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }
@@ -2890,17 +2953,25 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(tax|taxpayer|bir|invoice|receipt|vat|withholding|tax return|filing|payment of tax)\b/.test(normalizedDraft)) {
-    if (!/\b(registration|invoice|receipt|filing|payment|withholding|vat|recordkeeping|bir|taxpayer rights|tax return)\b/.test(normalizedDraft)) {
+  if (/\b(tax|taxpayer|bir|nirc|tax code|invoice|receipt|vat|withholding|tax return|filing|payment of tax|income tax|percentage tax|excise tax|train|create|create more|tax incentive|registered business enterprise)\b/.test(normalizedDraft)) {
+    const hasTaxIdentityControls = /\b(taxpayer classification|taxpayer type|bir registration|certificate of registration|registered business enterprise|rbe classification|investment promotion agency|ipa|firb|incentive period)\b/.test(normalizedDraft)
+    const hasTaxFilingPaymentControls = /\b(filing deadline|payment deadline|filing and payment|tax return|withholding certificate|proof of payment|payment confirmation|remittance|return filing)\b/.test(normalizedDraft)
+    const hasTaxRecordControls = /\b(recordkeeping|retention|books of account|audit trail|supporting documents|bir correspondence|current bir|revenue regulation|revenue memorandum|tax records)\b/.test(normalizedDraft)
+    const hasTaxTreatmentControls = /\b(vat|withholding|income tax|percentage tax|excise tax|tax rate|rate|threshold|fiscal incentive|tax incentive|enhanced deduction|vat zero rating)\b/.test(normalizedDraft)
+
+    if (!(hasTaxIdentityControls && hasTaxFilingPaymentControls && hasTaxRecordControls && hasTaxTreatmentControls)) {
       findings.amber.push(
         createFinding(
           'amber',
           'gap',
-          'Tax administration controls are missing',
-          'Tax, invoice, receipt, VAT, withholding, filing, or payment language was detected without enough registration, invoicing, filing, payment, or tax-record controls.',
-          'Add taxpayer classification, BIR registration or coordination, invoice or receipt workflow, filing and payment timelines, VAT or withholding treatment, and records retention.',
+          'Business tax and invoicing controls need detail',
+          'Tax, BIR, invoice, receipt, VAT, withholding, income-tax, percentage-tax, excise-tax, or incentive language was detected without enough registration, classification, invoicing, filing, payment, incentive, or tax-record controls.',
+          'Add taxpayer classification, BIR registration or coordination, invoice or receipt workflow, books and records, filing and payment timelines, VAT or withholding treatment, certificates, incentive authority if relevant, and retention. Verify current BIR issuances before relying on fixed rates or thresholds.',
           6,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11976') || LEGAL_CORPUS[0])]
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8424') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11976') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }
@@ -2922,21 +2993,27 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(traffic|transport|driver license|vehicle registration|road safety|parking|traffic violation|terminal|route)\b/.test(normalizedDraft)) {
-    const hasTransportScope = /\b(vehicle|driver|operator|route|terminal|parking|road safety|regulated area)\b/.test(normalizedDraft)
-    const hasTransportEnforcement = /\b(enforcement|citation|apprehension|impound|evidence|notice|appeal|hearing)\b/.test(normalizedDraft)
-    const hasTransportRecords = /\b(record|registry|privacy|retention|access control|accident report|violation log)\b/.test(normalizedDraft)
+  if (/\b(traffic|transport|driver license|drivers license|license renewal|vehicle registration|road safety|parking|traffic violation|terminal|route|seat belt|seatbelt|motorcycle helmet|helmet law|drunk driving|drugged driving|distracted driving|mobile phone while driving|electronic device while driving|child car seat|child restraint|field sobriety|breath analyzer)\b/.test(normalizedDraft)) {
+    const hasTransportScope = /\b(vehicle|driver|operator|rider|passenger|child|route|terminal|parking|road safety|regulated area|covered vehicle|covered driver|fleet|school transport)\b/.test(normalizedDraft)
+    const hasTransportSafetyControls = /\b(seat belt|seatbelt|helmet|child restraint|child car seat|sobriety|breath analyzer|chemical test|mobile phone|electronic device|license validity|medical examination|inspection|safety device|product standard)\b/.test(normalizedDraft)
+    const hasTransportEnforcement = /\b(enforcement|citation|apprehension|impound|evidence|notice|appeal|hearing|penalty|authorized officer|testing|inspection)\b/.test(normalizedDraft)
+    const hasTransportRecords = /\b(record|registry|privacy|retention|access control|accident report|violation log|medical record|toxicology|photo|video|child record|authorized disclosure)\b/.test(normalizedDraft)
 
-    if (!(hasTransportScope && hasTransportEnforcement && hasTransportRecords)) {
+    if (!(hasTransportScope && hasTransportSafetyControls && hasTransportEnforcement && hasTransportRecords)) {
       findings.amber.push(
         createFinding(
           'amber',
           'gap',
-          'Transport and traffic controls are incomplete',
-          'Traffic, transport, driver, vehicle, parking, route, terminal, or road-safety language was detected without enough scope, enforcement, evidence, appeal, record, or privacy controls.',
-          'Add covered vehicles or drivers, operator duties, enforcement authority, citation or impoundment evidence, notice and appeal, accident or violation records, privacy, and retention rules.',
+          'Transport and road-safety controls are incomplete',
+          'Traffic, transport, driver, vehicle, parking, route, terminal, seat-belt, helmet, DUI, distracted-driving, child-restraint, or road-safety language was detected without enough scope, safety-device, enforcement, evidence, appeal, record, or privacy controls.',
+          'Add covered vehicles, drivers, riders, passengers, or children; LTO/LTFRB/DTI coordination where relevant; safety-device or testing requirements; citation or impoundment evidence; notice and appeal; accident, violation, medical, toxicology, photo, video, or child-passenger record safeguards; privacy and retention rules.',
           6,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-4136') || LEGAL_CORPUS[0])]
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-4136') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10586') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10913') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11229') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }
@@ -3635,6 +3712,29 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(subdivision project|condominium|condo|license to sell|contract to sell|homeowners association|hoa|association dues|rent control|tenant|lessor|lessee|residential lease|maceda|installment buyer|real estate broker|real estate salesperson|appraiser|broker commission)\b/.test(normalizedDraft)) {
+    const hasPropertyAuthority = /\b(license to sell|project registration|dhsud|title|bylaws|lease contract|licensed broker|prc|authority|registration)\b/.test(normalizedDraft)
+    const hasPropertyTransactionRecords = /\b(contract|receipt|payment history|rental ledger|dues record|notice|approved plan|listing agreement|commission|appraisal|records)\b/.test(normalizedDraft)
+    const hasPropertyRemedy = /\b(complaint|grievance|refund|cash surrender|grace period|cancellation notice|deposit|turnover|dispute|appeal|privacy|retention)\b/.test(normalizedDraft)
+
+    if (!(hasPropertyAuthority && hasPropertyTransactionRecords && hasPropertyRemedy)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Real estate and housing transaction controls need detail',
+          'Subdivision, condominium, HOA, rent-control, realty installment, broker, salesperson, or appraisal language was detected without enough authority, transaction records, notice, remedy, complaint, or privacy controls.',
+          'Add project registration or license-to-sell checks, title or contract terms, licensed practitioner verification where relevant, receipts or payment history, HOA or lease authority, refund or cancellation route, complaint handling, retention, and privacy safeguards.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-957') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9646') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
   if (/\b(4ps|pantawid|conditional cash transfer|cash assistance|household grant|education grant|health grant|social assistance)\b/.test(normalizedDraft)) {
     const hasAssistanceEligibility = /\b(eligibility|qualified|beneficiary|household|validation|criteria)\b/.test(normalizedDraft)
     const hasAssistanceBenefit = /\b(condition|grant|payment|benefit|education|health|monitoring)\b/.test(normalizedDraft)
@@ -3691,21 +3791,28 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(building permit|occupancy permit|construction|renovation|structural|building official|fit out|facility use)\b/.test(normalizedDraft)) {
+  if (/\b(building permit|occupancy permit|construction|renovation|structural|building official|fit out|facility use|contractor license|licensed contractor|architect|civil engineer|electrical engineer|mechanical engineer|master plumber|signed plans|sealed plans|plumbing plan|electrical plan|mechanical plan|architectural plan)\b/.test(normalizedDraft)) {
     const hasBuildingPermitControls = /\b(building permit|plan review|building official|zoning)\b/.test(normalizedDraft)
+    const hasLicensedRoleControls = /\b(licensed contractor|contractor license|pcab|registered architect|architect|civil engineer|electrical engineer|mechanical engineer|master plumber|signed plans|sealed plans|professional seal|responsible professional)\b/.test(normalizedDraft)
     const hasOccupancyOrInspectionControls = /\b(occupancy permit|inspection|final inspection|certificate of occupancy)\b/.test(normalizedDraft)
-    const hasBuildingSafetyControls = /\b(structural|fire safety|accessibility|stop use|correction order|appeal)\b/.test(normalizedDraft)
+    const hasBuildingSafetyControls = /\b(structural|fire safety|accessibility|stop use|correction order|appeal|electrical|mechanical|plumbing|sanitary|maintenance|as built|as-built)\b/.test(normalizedDraft)
+    const hasConstructionRecords = /\b(record|custodian|retention|version control|change order|variation order|completion|as built|as-built|test report|inspection report|maintenance log)\b/.test(normalizedDraft)
 
-    if (!(hasBuildingPermitControls && hasOccupancyOrInspectionControls && hasBuildingSafetyControls)) {
+    if (!(hasBuildingPermitControls && hasLicensedRoleControls && hasOccupancyOrInspectionControls && hasBuildingSafetyControls && hasConstructionRecords)) {
       findings.amber.push(
         createFinding(
           'amber',
           'gap',
-          'Building and occupancy controls are incomplete',
-          'Construction, renovation, facility-use, or occupancy language was detected without enough building permit, plan review, inspection, occupancy, zoning, accessibility, or safety controls.',
-          'Add building permit and plan-review requirements, inspection cadence, occupancy approval, building official role, fire and accessibility checks, correction orders, and stop-use or appeal process.',
+          'Building, occupancy, and licensed-construction controls are incomplete',
+          'Construction, renovation, facility-use, contractor, signed-plan, professional design, or occupancy language was detected without enough building permit, licensed contractor/professional role, plan review, inspection, occupancy, zoning, accessibility, safety, or records controls.',
+          'Add building permit and plan-review requirements; licensed contractor and registered professional responsibilities; signed/sealed architectural, engineering, electrical, mechanical, or plumbing plans where relevant; inspection cadence; occupancy approval; building official role; fire, accessibility, sanitation, and OSH checks; correction orders; stop-use or appeal process; and project record custody.',
           7,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-1096') || LEGAL_CORPUS[0])]
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-1096') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-4566') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9266') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-544') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }

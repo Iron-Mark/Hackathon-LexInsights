@@ -59,6 +59,67 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['local government code', 'public hearing', 'local authority', 'business permit'],
   },
   {
+    triggers: [
+      'barangay complaint',
+      'barangay dispute',
+      'barangay conciliation',
+      'katarungang pambarangay',
+      'lupon',
+      'pangkat',
+      'amicable settlement',
+      'certificate to file action',
+      'blotter',
+      'neighbor dispute',
+    ],
+    expansions: [
+      'local government code',
+      'barangay justice',
+      'lupon conciliation',
+      'pangkat settlement',
+      'certificate to file action',
+      'privacy referral safeguards',
+    ],
+  },
+  {
+    triggers: [
+      'civil service',
+      'csc',
+      'government employee',
+      'public employee',
+      'appointment',
+      'promotion',
+      'reassignment',
+      'detail',
+      'personnel action',
+      'service record',
+    ],
+    expansions: [
+      'civil service decree',
+      'administrative code',
+      'appointing authority',
+      'qualification eligibility',
+      'personnel records',
+    ],
+  },
+  {
+    triggers: [
+      'administrative case',
+      'administrative discipline',
+      'preventive suspension',
+      'formal charge',
+      'disciplinary action',
+      'removal from service',
+      'public employee suspension',
+      'csc appeal',
+    ],
+    expansions: [
+      'civil service discipline',
+      'notice hearing appeal',
+      'formal charge answer decision',
+      'personnel file confidentiality',
+    ],
+  },
+  {
     triggers: ['corporation', 'company', 'board', 'stockholder', 'sec', 'bylaws'],
     expansions: ['revised corporation code', 'corporate governance', 'sec reportorial requirements'],
   },
@@ -388,8 +449,65 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['customs modernization and tariff act', 'customs declaration', 'valuation classification'],
   },
   {
-    triggers: ['tax', 'taxpayer', 'bir', 'invoice', 'receipt', 'vat', 'withholding', 'tax return'],
-    expansions: ['ease of paying taxes act', 'taxpayer rights', 'invoicing', 'filing payment'],
+    triggers: [
+      'tax',
+      'taxpayer',
+      'bir',
+      'nirc',
+      'tax code',
+      'invoice',
+      'receipt',
+      'vat',
+      'withholding',
+      'tax return',
+      'income tax',
+      'percentage tax',
+    ],
+    expansions: [
+      'national internal revenue code',
+      'ease of paying taxes act',
+      'taxpayer rights',
+      'invoicing',
+      'filing payment',
+      'withholding certificate',
+      'books of account',
+    ],
+  },
+  {
+    triggers: [
+      'train',
+      'train law',
+      'excise tax',
+      'personal income tax',
+      'documentary stamp tax',
+      'estate tax',
+      'donor tax',
+    ],
+    expansions: ['tax reform for acceleration and inclusion', 'nirc amendment', 'vat threshold', 'excise tax', 'withholding'],
+  },
+  {
+    triggers: [
+      'create',
+      'create act',
+      'create more',
+      'corporate income tax',
+      'tax incentive',
+      'tax incentives',
+      'registered business enterprise',
+      'rbe',
+      'peza',
+      'boi',
+      'firb',
+      'investment promotion agency',
+    ],
+    expansions: [
+      'corporate recovery and tax incentives',
+      'corporate income tax',
+      'registered business enterprise',
+      'fiscal incentives',
+      'investment promotion agency',
+      'incentive period',
+    ],
   },
   {
     triggers: ['philsys', 'philid', 'national id', 'psn', 'pcn', 'identity verification'],
@@ -397,7 +515,31 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
   },
   {
     triggers: ['traffic', 'transport', 'driver license', 'vehicle registration', 'road safety', 'parking', 'traffic violation'],
-    expansions: ['land transportation and traffic code', 'driver licensing', 'vehicle registration', 'traffic enforcement'],
+    expansions: ['land transportation and traffic code', 'driver licensing', 'vehicle registration', 'traffic enforcement', 'road safety'],
+  },
+  {
+    triggers: ['license renewal', 'driver license validity', 'drivers license validity', 'lto license', 'lto renewal'],
+    expansions: ['driver license validity', 'land transportation office', 'license renewal', 'traffic violation record'],
+  },
+  {
+    triggers: ['seat belt', 'seatbelt', 'passenger safety', 'front seat passenger', 'vehicle safety'],
+    expansions: ['seat belts use act', 'motor vehicle passenger safety', 'driver and front seat passenger duty'],
+  },
+  {
+    triggers: ['motorcycle helmet', 'helmet law', 'standard protective helmet', 'rider helmet', 'back rider'],
+    expansions: ['motorcycle helmet act', 'standard protective motorcycle helmet', 'rider and passenger safety', 'product standard'],
+  },
+  {
+    triggers: ['drunk driving', 'drugged driving', 'dui', 'driving under the influence', 'field sobriety', 'breath analyzer'],
+    expansions: ['anti drunk and drugged driving', 'field sobriety test', 'chemical test', 'traffic accident evidence'],
+  },
+  {
+    triggers: ['distracted driving', 'mobile phone while driving', 'cellphone while driving', 'electronic device while driving'],
+    expansions: ['anti distracted driving act', 'mobile phone', 'electronic device', 'driver device use'],
+  },
+  {
+    triggers: ['child car seat', 'child restraint', 'child passenger', 'child safety in motor vehicles'],
+    expansions: ['child safety in motor vehicles', 'child restraint system', 'child passenger safety', 'product standard'],
   },
   {
     triggers: ['public service', 'public utility', 'franchise', 'transport operator', 'telecom operator', 'critical infrastructure'],
@@ -521,7 +663,31 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
   },
   {
     triggers: ['building permit', 'occupancy permit', 'construction', 'renovation', 'structural', 'building official'],
-    expansions: ['national building code', 'building permit', 'occupancy permit', 'inspection', 'building official'],
+    expansions: ['national building code', 'building permit', 'occupancy permit', 'inspection', 'building official', 'signed plans'],
+  },
+  {
+    triggers: ['contractor license', 'licensed contractor', 'pcab', 'construction contractor', 'fit out contractor'],
+    expansions: ['contractors license law', 'contractor qualification', 'project supervision', 'construction records'],
+  },
+  {
+    triggers: ['architect', 'architectural plan', 'architectural plans', 'signed plans', 'sealed plans', 'building design'],
+    expansions: ['architecture act', 'registered architect', 'architectural plans', 'professional seal'],
+  },
+  {
+    triggers: ['civil engineer', 'structural engineer', 'structural plan', 'civil works', 'structural safety'],
+    expansions: ['civil engineering law', 'registered civil engineer', 'structural plans', 'engineering inspection'],
+  },
+  {
+    triggers: ['electrical engineer', 'electrical plan', 'electrical fit out', 'wiring', 'power system'],
+    expansions: ['new electrical engineering law', 'electrical plans', 'electrical installation', 'testing inspection'],
+  },
+  {
+    triggers: ['mechanical engineer', 'mechanical plan', 'hvac', 'elevator', 'boiler', 'pressure vessel'],
+    expansions: ['mechanical engineering act', 'mechanical plans', 'equipment inspection', 'maintenance records'],
+  },
+  {
+    triggers: ['master plumber', 'plumbing plan', 'plumbing', 'water supply', 'drainage', 'septic'],
+    expansions: ['plumbing law', 'registered master plumber', 'plumbing plans', 'sanitary plumbing'],
   },
   {
     triggers: ['sanitary permit', 'sanitation', 'food establishment', 'health certificate', 'sewage', 'public toilet'],
@@ -614,6 +780,26 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
   {
     triggers: ['dhsud', 'human settlements', 'homeowners association', 'subdivision', 'settlement planning', 'land use'],
     expansions: ['department of human settlements and urban development', 'housing regulation', 'settlement planning', 'complaint handling'],
+  },
+  {
+    triggers: ['subdivision buyer', 'condominium buyer', 'condo buyer', 'license to sell', 'contract to sell', 'developer turnover'],
+    expansions: ['subdivision and condominium buyers protective decree', 'developer obligations', 'approved plan', 'buyer remedies'],
+  },
+  {
+    triggers: ['homeowners association', 'hoa', 'association dues', 'homeowner dues', 'subdivision association', 'common area'],
+    expansions: ['magna carta for homeowners', 'homeowners association', 'bylaws', 'board election', 'association records'],
+  },
+  {
+    triggers: ['rent control', 'tenant', 'lessor', 'lessee', 'rental increase', 'residential lease', 'eviction'],
+    expansions: ['rent control act', 'residential unit', 'rental increase', 'deposit advance rent', 'tenant notices'],
+  },
+  {
+    triggers: ['maceda', 'maceda law', 'installment buyer', 'real estate installment', 'cash surrender value', 'notice of cancellation'],
+    expansions: ['realty installment buyer protection', 'grace period', 'cancellation notice', 'refund cash surrender value'],
+  },
+  {
+    triggers: ['real estate broker', 'real estate salesperson', 'appraiser', 'real estate service', 'broker commission', 'listing agreement'],
+    expansions: ['real estate service act', 'licensed broker', 'salesperson accreditation', 'professional regulation commission'],
   },
   {
     triggers: ['4ps', 'pantawid', 'cash assistance', 'conditional cash transfer', 'household grant', 'social assistance'],

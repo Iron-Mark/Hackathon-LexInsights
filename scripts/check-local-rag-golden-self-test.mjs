@@ -139,6 +139,36 @@ try {
     'public accountability workflow should include a relevant framework section'
   )
 
+  const publicPersonnelWorkflow = runLocalResearch({
+    query: 'What controls apply to civil service appointments, promotions, reassignment, preventive suspension, administrative cases, service records, personnel files, and CSC appeals?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    publicPersonnelWorkflow,
+    ['PD 807', 'EO 292, s. 1987'],
+    'public personnel appointment and discipline workflow'
+  )
+  assert.ok(
+    publicPersonnelWorkflow.summary.includes('Public Personnel Appointment and Discipline Stack'),
+    'public personnel workflow should include its framework section'
+  )
+
+  const barangayJusticeWorkflow = runLocalResearch({
+    query: 'What barangay justice, lupon conciliation, pangkat settlement, certificate to file action, local mediation, privacy, and referral controls apply to neighborhood disputes?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    barangayJusticeWorkflow,
+    ['RA 7160', 'RA 9285'],
+    'barangay justice and local complaint workflow'
+  )
+  assert.ok(
+    barangayJusticeWorkflow.summary.includes('Barangay Justice and Local Complaint Routing Stack'),
+    'barangay justice workflow should include its framework section'
+  )
+
   const civilRegistryWorkflow = runLocalResearch({
     query: 'How can a wrong first name, clerical error, or birth certificate entry be corrected at the local civil registrar?',
     user_id: 'golden',
@@ -180,6 +210,21 @@ try {
     use_deep_search: true,
   })
   assertCompletedMatches(financialAccountScamWorkflow, ['RA 12010', 'RA 11765', 'RA 9160'], 'financial account scam workflow')
+
+  const businessTaxWorkflow = runLocalResearch({
+    query: 'What BIR registration, NIRC income tax, VAT, withholding certificates, EOPT invoices, tax returns, TRAIN excise tax, CREATE Act corporate incentives, and CREATE MORE registered business enterprise controls should a small platform business keep?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    businessTaxWorkflow,
+    ['RA 8424', 'RA 11976', 'RA 10963', 'RA 11534', 'RA 12066'],
+    'business tax registration and incentives workflow'
+  )
+  assert.ok(
+    businessTaxWorkflow.summary.includes('Business Tax Registration, Invoicing, and Incentives Stack'),
+    'business tax workflow should include its framework section'
+  )
 
   const digitalGovernmentWorkflow = runLocalResearch({
     query: 'What e-governance, government portal, online government transaction, interoperability, data exchange, DICT, cybersecurity, accessibility, and records controls apply to a digital permit service?',
@@ -227,6 +272,66 @@ try {
     use_deep_search: true,
   })
   assertCompletedMatches(agricultureFoodSafetyWorkflow, ['RA 10611', 'RA 10068', 'RA 8435'], 'agriculture and food safety workflow')
+
+  const realEstateHousingWorkflow = runLocalResearch({
+    query: 'What controls apply to subdivision and condominium buyers, license to sell, contract to sell, homeowners association HOA dues, residential rent control, Maceda installment cancellation, title verification, and real estate service broker referrals?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    realEstateHousingWorkflow,
+    ['PD 957', 'RA 9904', 'RA 9653', 'RA 6552', 'RA 9646'],
+    'real estate housing buyer and tenant workflow'
+  )
+  assert.ok(
+    realEstateHousingWorkflow.summary.includes('Real Estate, Housing Buyer, HOA, and Tenant Protection Stack'),
+    'real estate housing workflow should include its framework section'
+  )
+
+  const roadSafetyWorkflow = runLocalResearch({
+    query: 'What driver license renewal, seat belt, motorcycle helmet, drunk driving, distracted driving, child restraint, traffic accident evidence, and vehicle record controls should an LGU road safety program check?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    roadSafetyWorkflow,
+    ['RA 4136', 'RA 10930', 'RA 8750', 'RA 10054', 'RA 10586', 'RA 10913', 'RA 11229'],
+    'road safety driver and vehicle compliance workflow'
+  )
+  assert.ok(
+    roadSafetyWorkflow.summary.includes('Road Safety, Driver, and Vehicle Compliance Stack'),
+    'road safety workflow should include its framework section'
+  )
+
+  const builtEnvironmentPermitWorkflow = runLocalResearch({
+    query: 'What building permit, licensed contractor, registered architect signed plans, civil engineer structural review, sanitary permit, occupancy, and accessibility controls apply to a public market renovation?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    builtEnvironmentPermitWorkflow,
+    ['PD 1096', 'RA 4566', 'RA 9266', 'RA 544', 'PD 856', 'BP 344'],
+    'built environment permit and licensed professional workflow'
+  )
+  assert.ok(
+    builtEnvironmentPermitWorkflow.summary.includes('Built Environment, Sanitation, Accessibility, and Public Facilities Stack'),
+    'built environment permit workflow should include its framework section'
+  )
+
+  const buildingSystemsProfessionalWorkflow = runLocalResearch({
+    query: 'What electrical engineer wiring plan, mechanical engineer HVAC equipment, master plumber drainage plan, testing, inspection, maintenance, and signed plan records apply to a facility fit-out?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    buildingSystemsProfessionalWorkflow,
+    ['RA 7920', 'RA 8495', 'RA 1378'],
+    'building systems licensed professional workflow'
+  )
+  assert.ok(
+    buildingSystemsProfessionalWorkflow.summary.includes('Built Environment, Sanitation, Accessibility, and Public Facilities Stack'),
+    'building systems workflow should include its framework section'
+  )
 
   const noResult = runLocalResearch({ query: 'How do I bake sourdough bread at high altitude?', user_id: 'golden' })
   assert.equal(noResult.status, 'no_results', 'unrelated query should return no_results')
