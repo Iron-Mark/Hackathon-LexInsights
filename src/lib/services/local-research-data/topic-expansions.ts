@@ -235,6 +235,10 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['revised corporation code', 'corporate governance', 'sec reportorial requirements'],
   },
   {
+    triggers: ['sec official email', 'official email address', 'official cellphone number', 'official mobile number', 'mc28 portal', 'sec mc 28'],
+    expansions: ['sec memorandum circular 28-2020', 'corporate contact', 'authorized representative', 'sec transactions', 'portal confirmation'],
+  },
+  {
     triggers: ['harassment', 'gender', 'safe', 'spaces', 'complaint', 'retaliation'],
     expansions: ['safe spaces act', 'gender-based harassment', 'complaint mechanism', 'non-retaliation'],
   },
@@ -819,6 +823,18 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
   {
     triggers: ['labor', 'employee', 'wage', 'overtime', 'termination', 'dismissal', 'rest day', 'holiday pay'],
     expansions: ['labor code', 'working conditions', 'wages', 'termination procedure', 'dole nlrc'],
+  },
+  {
+    triggers: ['just cause termination', 'authorized cause termination', 'twin notice', 'notice to explain', 'preventive suspension', 'separation pay'],
+    expansions: ['dole department order 147-15', 'labor code termination irr', 'due process', 'hearing or conference', 'final pay records'],
+  },
+  {
+    triggers: ['labor-only contracting', 'job contracting', 'contractor registration', 'subcontracting rules', 'outsourcing workers', 'principal contractor'],
+    expansions: ['dole department order 174-17', 'contracting and subcontracting rules', 'service agreement', 'worker deployment', 'supervision boundary'],
+  },
+  {
+    triggers: ['osh program', 'safety officer', 'safety committee', 'workplace accident report', 'dole inspection', 'worker safety training'],
+    expansions: ['dole department order 198-18', 'osh law irr', 'safety and health program', 'incident reporting', 'corrective action'],
   },
   {
     triggers: ['telecommuting', 'remote work', 'work from home', 'hybrid work', 'flexible work'],

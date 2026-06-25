@@ -353,6 +353,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10028'), 'Corpus should include RA 10028')
   assert.ok(corpus.some((document) => document.statute === 'RA 10911'), 'Corpus should include RA 10911')
   assert.ok(corpus.some((document) => document.statute === 'RA 11036'), 'Corpus should include RA 11036')
+  assert.ok(corpus.some((document) => document.id === 'dole-do-147-15'), 'Corpus should include DOLE Department Order No. 147-15')
+  assert.ok(corpus.some((document) => document.id === 'dole-do-174-17'), 'Corpus should include DOLE Department Order No. 174-17')
+  assert.ok(corpus.some((document) => document.id === 'dole-do-198-18'), 'Corpus should include DOLE Department Order No. 198-18')
+  assert.ok(corpus.some((document) => document.id === 'sec-mc-28-2020'), 'Corpus should include SEC Memorandum Circular No. 28, s. 2020')
   assert.ok(corpus.some((document) => document.statute === 'RA 9262'), 'Corpus should include RA 9262')
   assert.ok(corpus.some((document) => document.statute === 'RA 10364'), 'Corpus should include RA 10364')
   assert.ok(corpus.some((document) => document.statute === 'RA 8293'), 'Corpus should include RA 8293')
@@ -859,6 +863,24 @@ try {
     workplacePayFlexFrameworkResponse.summary,
     'Workplace Pay, Flexible Work, and Family Support Stack',
     'Workplace pay flexible work framework title'
+  )
+
+  const laborImplementationFallbackResponse = runLocalResearch(
+    {
+      query:
+        'What workplace controls apply to termination twin notice, notice to explain, outsourcing labor-only contracting, contractor registration, OSH program, safety officer, telecommuting, service charge distribution, wage orders, and payroll privacy?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(laborImplementationFallbackResponse, 'DOLE Department Order No. 147-15', 'labor termination guidance fallback query')
+  assertResearchMatch(laborImplementationFallbackResponse, 'DOLE Department Order No. 174-17', 'labor contracting guidance fallback query')
+  assertResearchMatch(laborImplementationFallbackResponse, 'DOLE Department Order No. 198-18', 'labor OSH guidance fallback query')
+  assertIncludes(
+    laborImplementationFallbackResponse.summary,
+    'Workplace Pay, Flexible Work, and Family Support Stack',
+    'Labor implementation fallback framework title'
   )
 
   const publicAccountabilityFrameworkResponse = runLocalResearch(
@@ -1500,6 +1522,23 @@ try {
     businessMarketEntryFrameworkResponse.summary,
     'Business Market Entry, Ownership, Cooperative, and Secured Finance Stack',
     'Business market entry framework title'
+  )
+
+  const secContactFallbackResponse = runLocalResearch(
+    {
+      query:
+        'What SEC MC 28 official email address, official cellphone number, authorized representative, MC28 portal, corporate contact, notice, reportorial records, and Revised Corporation Code context should a corporation maintain?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(secContactFallbackResponse, 'SEC Memorandum Circular No. 28, s. 2020', 'SEC MC28 fallback query')
+  assertResearchMatch(secContactFallbackResponse, 'RA 11232', 'SEC MC28 corporation code fallback query')
+  assertIncludes(
+    secContactFallbackResponse.summary,
+    'Business Market Entry, Ownership, Cooperative, and Secured Finance Stack',
+    'SEC MC28 fallback framework title'
   )
 
   assertResearchMatch(
@@ -3058,6 +3097,8 @@ try {
   assert.equal(noResultsResponse.status, 'no_results', 'Unrelated query should return no_results')
   assert.equal(noResultsResponse.documents_found, 0, 'Unrelated query should not find documents')
   assertIncludes(noResultsResponse.summary, 'No strong match', 'No-results summary')
+  assertIncludes(noResultsResponse.summary, 'DOLE Department Order 147-15', 'No-results labor example')
+  assertIncludes(noResultsResponse.summary, 'SEC MC 28 s. 2020', 'No-results SEC example')
 
   const riskyDraft = `# Barangay Resident Registry Ordinance
 
