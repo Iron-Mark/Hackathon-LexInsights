@@ -86,7 +86,7 @@ const MINIMUM_SCORE = 1.25
 const BM25_K1 = 1.2
 const BM25_B = 0.75
 const STANDARD_RESULT_LIMIT = 6
-const DEEP_RESULT_LIMIT = 10
+const DEEP_RESULT_LIMIT = 12
 const EXPANSION_SCORE_WEIGHT = 0.35
 const EXPANSION_SCORE_CAP = 8
 const WEAK_MATCH_MINIMUM_DIRECT_EVIDENCE = 0.8
@@ -1173,7 +1173,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
-    '- Include a Republic Act number, such as RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 10667, RA 11765, RA 11934, or RA 11976.',
+    '- Include a Republic Act number, such as RA 10173, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 8479, RA 11592, RA 9367, RA 7638, RA 10667, RA 11765, RA 11934, or RA 11976.',
     '- Add the regulated activity, agency, permit, affected sector, and location.',
     '- Ask for a narrower compliance checklist, for example "solid waste requirements for a barangay ordinance".',
     '',
@@ -3394,6 +3394,41 @@ function applyTopicSpecificDraftChecks(
             referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9136') || LEGAL_CORPUS[0]),
             referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7925') || LEGAL_CORPUS[0]),
             referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-198-water-districts') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
+  if (
+    /\b(downstream oil|oil industry|petroleum product|petroleum dealer|fuel retailer|fuel retail|gasoline station|service station|diesel|gasoline|kerosene|fuel price|price adjustment|fuel quality|fuel marking|fuel inventory|fuel stock|lpg|liquefied petroleum gas|lpg cylinder|lpg refill|lpg refilling|lpg dealer|lpg distributor|biofuel|biofuels|biodiesel|bioethanol|fuel blend|blend mandate|department of energy|doe monitoring|energy regulator)\b/.test(
+      normalizedDraft
+    )
+  ) {
+    const hasFuelAuthorityControls = /\b(doe|department of energy|permit|license|registration|accreditation|authorized dealer|retailer|refiller|distributor|operator|responsible office)\b/.test(
+      normalizedDraft
+    )
+    const hasFuelOperationsControls = /\b(inventory|stock|supply|quality|standard|testing|inspection|price|posting|label|cylinder|refill|seal|safety|storage|transport|blend|biodiesel|bioethanol)\b/.test(
+      normalizedDraft
+    )
+    const hasFuelReportingOrConsumerControls = /\b(report|monitoring|recordkeeping|audit|complaint|consumer|recall|corrective action|incident|emergency|environmental|retention)\b/.test(
+      normalizedDraft
+    )
+
+    if (!(hasFuelAuthorityControls && hasFuelOperationsControls && hasFuelReportingOrConsumerControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Fuel, LPG, or biofuel controls need more detail',
+          'Fuel-retail, petroleum, LPG, biofuel, fuel-price, fuel-quality, inventory, or DOE language was detected without enough authority, license, quality, safety, stock, reporting, consumer, or records controls.',
+          'Add DOE or responsible regulator coordination, covered product and operator classification, permit or registration route, fuel quality and price-posting controls, inventory or stock reporting, LPG cylinder/refilling safety and traceability where relevant, biofuel blend compliance where relevant, incident response, consumer complaints, audit records, and retention.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7638') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-8479') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11592') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9367') || LEGAL_CORPUS[0]),
           ]
         )
       )

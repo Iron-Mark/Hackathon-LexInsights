@@ -156,6 +156,16 @@ const scenarios = [
     p95Limit: 60,
   },
   {
+    label: 'downstream fuel LPG biofuel workflow',
+    params: {
+      query:
+        'What controls apply to a city fuel and LPG inspection workflow covering gasoline station petroleum price display, fuel quality sampling, LPG refilling plants, cylinders, dealers, biofuel blend compliance, DOE energy monitoring, supply coordination, consumer complaints, and local regulator referrals?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 65,
+  },
+  {
     label: 'unrelated no-result',
     params: { query: 'How do I bake sourdough bread at high altitude?', user_id: 'performance' },
     p95Limit: 12,
