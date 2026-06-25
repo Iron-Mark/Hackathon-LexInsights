@@ -3164,6 +3164,30 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(environmental impact assessment|environmental impact statement|eis|environmental compliance certificate|ecc|environmentally critical project|environmentally critical area|wildlife permit|threatened species|habitat|tree cutting|timber|forest land|forestry permit|watershed)\b/.test(normalizedDraft)) {
+    const hasEnvironmentalScreening = /\b(environmentally critical|site screening|project screening|impact assessment|scoping|eis|iee|ecc|emb|denr)\b/.test(normalizedDraft)
+    const hasResourceControls = /\b(wildlife|species|habitat|tree inventory|timber inventory|forest land|watershed|protected area|resource boundary|mitigation|restoration)\b/.test(normalizedDraft)
+    const hasEnvironmentalRecords = /\b(inspection|consultation|permit record|transport document|compliance report|corrective action|retention|grievance)\b/.test(normalizedDraft)
+
+    if (!(hasEnvironmentalScreening && hasResourceControls && hasEnvironmentalRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Environmental impact, wildlife, and forestry controls are incomplete',
+          'ECC, EIS, environmental impact, wildlife, habitat, tree-cutting, timber, forest-land, forestry, or watershed language was detected without enough project screening, resource safeguards, monitoring, consultation, or records controls.',
+          'Add ECP/ECA or site screening, EMB or DENR coordination, EIS/IEE/ECC route, wildlife or forest-resource inventory, mitigation and restoration duties, consultation, monitoring, transport or custody records, corrective action, and grievance handling.',
+          8,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-1586') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9147') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-705') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+  }
+
   if (/\b(protected area|buffer zone|biodiversity|pamb|nipas|enipas|ecotourism|wildlife habitat|strict protection)\b/.test(normalizedDraft)) {
     if (!/\b(pamb|denr|zoning|buffer zone|biodiversity|carrying capacity|consultation|restoration|environmental assessment|monitoring)\b/.test(normalizedDraft)) {
       findings.amber.push(
@@ -3175,6 +3199,31 @@ function applyTopicSpecificDraftChecks(
           'Add protected-area zoning, PAMB and DENR coordination, biodiversity safeguards, carrying-capacity or mitigation controls, consultation, monitoring, and restoration duties.',
           7,
           [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11038') || LEGAL_CORPUS[0])]
+        )
+      )
+    }
+  }
+
+  if (/\b(tourism|tourist|hotel|resort|guesthouse|lodging|homestay|short-term rental|travel agency|tour operator|tour guide|tourist transport|visitor safety|guest registration|dot accreditation|tourism accreditation|tourism enterprise|event venue)\b/.test(normalizedDraft)) {
+    const hasTourismAuthority = /\b(dot|department of tourism|tourism office|tourism accreditation|accreditation|permit|license|business permit|mayor'?s permit|lgu|tourism enterprise|standard)\b/.test(normalizedDraft)
+    const hasGuestSafetyControls = /\b(safety|sanitation|fire safety|emergency|accessibility|incident|insurance|consumer|complaint|refund|cancellation|disclosure)\b/.test(normalizedDraft)
+    const hasGuestRecords = /\b(guest record|guest registration|booking|reservation|privacy|personal data|retention|access control|authorized disclosure|audit|recordkeeping)\b/.test(normalizedDraft)
+
+    if (!(hasTourismAuthority && hasGuestSafetyControls && hasGuestRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Tourism and hospitality controls need detail',
+          'Tourism, hotel, resort, travel-service, tour-operation, guest-registration, or visitor-safety language was detected without enough accreditation, safety, complaint, refund, guest-record, or privacy controls.',
+          'Add DOT or local tourism accreditation and permit route, covered tourism enterprise type, guest safety and sanitation checks, fire safety, accessibility, complaint and refund handling, incident response, guest-record privacy, retention, and authorized disclosure.',
+          7,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9593') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7394') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-856') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10173') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }

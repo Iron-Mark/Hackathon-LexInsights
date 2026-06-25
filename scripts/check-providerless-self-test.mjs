@@ -128,8 +128,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 186, 'Local corpus should include at least 186 authorities')
-  assert.ok(frameworks.length >= 30, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 190, 'Local corpus should include at least 190 authorities')
+  assert.ok(frameworks.length >= 32, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -149,6 +149,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'environmental-operations'),
     'Frameworks should include environmental operations'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'environmental-impact-wildlife-and-forestry'),
+    'Frameworks should include environmental impact, wildlife, and forestry controls'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'health-welfare-and-accessibility'),
@@ -193,6 +197,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'critical-utilities-energy-telecom-and-water-services'),
     'Frameworks should include critical utilities, energy, telecom, and water services'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'tourism-hospitality-events-and-travel-services'),
+    'Frameworks should include tourism, hospitality, events, and travel services'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'health-facility-emergency-care-and-patient-rights'),
@@ -294,6 +302,9 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 8799'), 'Corpus should include RA 8799')
   assert.ok(corpus.some((document) => document.statute === 'RA 9711'), 'Corpus should include RA 9711')
   assert.ok(corpus.some((document) => document.statute === 'RA 11223'), 'Corpus should include RA 11223')
+  assert.ok(corpus.some((document) => document.statute === 'PD 1586'), 'Corpus should include PD 1586')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9147'), 'Corpus should include RA 9147')
+  assert.ok(corpus.some((document) => document.statute === 'PD 705'), 'Corpus should include PD 705')
   assert.ok(corpus.some((document) => document.statute === 'RA 10932'), 'Corpus should include RA 10932')
   assert.ok(corpus.some((document) => document.statute === 'RA 8344'), 'Corpus should include RA 8344')
   assert.ok(corpus.some((document) => document.statute === 'RA 9439'), 'Corpus should include RA 9439')
@@ -352,6 +363,7 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 9729'), 'Corpus should include RA 9729')
   assert.ok(corpus.some((document) => document.statute === 'RA 8550'), 'Corpus should include RA 8550')
   assert.ok(corpus.some((document) => document.statute === 'RA 7942'), 'Corpus should include RA 7942')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9593'), 'Corpus should include RA 9593')
   assert.ok(corpus.some((document) => document.statute === 'RA 10533'), 'Corpus should include RA 10533')
   assert.ok(corpus.some((document) => document.statute === 'RA 10931'), 'Corpus should include RA 10931')
   assert.ok(corpus.some((document) => document.statute === 'RA 7279'), 'Corpus should include RA 7279')
@@ -1420,6 +1432,23 @@ try {
     'Environmental framework title'
   )
 
+  const environmentalImpactWildlifeForestryResponse = runLocalResearch(
+    {
+      query: 'What ECC, EIS, environmental impact assessment, wildlife permit, threatened species habitat, tree cutting, timber transport, forest land, watershed, mitigation, consultation, monitoring, and LGU coordination controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(environmentalImpactWildlifeForestryResponse, 'PD 1586', 'environmental impact assessment query')
+  assertResearchMatch(environmentalImpactWildlifeForestryResponse, 'RA 9147', 'wildlife resources query')
+  assertResearchMatch(environmentalImpactWildlifeForestryResponse, 'PD 705', 'forestry controls query')
+  assertIncludes(
+    environmentalImpactWildlifeForestryResponse.summary,
+    'Environmental Impact, Wildlife, and Forestry Controls Stack',
+    'Environmental impact wildlife forestry framework title'
+  )
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What energy efficiency audit and conservation officer controls apply to public buildings?', user_id: 'self-test' },
@@ -1882,6 +1911,23 @@ try {
     ),
     'RA 11038',
     'protected areas query'
+  )
+
+  const tourismHospitalityFrameworkResponse = runLocalResearch(
+    {
+      query: 'What DOT accreditation, hotel resort guest registration, tour operator safety, sanitation, fire safety, accessibility, refund, complaint, booking record, and tourism enterprise controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(tourismHospitalityFrameworkResponse, 'RA 9593', 'tourism hospitality framework query')
+  assertResearchMatch(tourismHospitalityFrameworkResponse, 'PD 856', 'tourism hospitality sanitation query')
+  assertResearchMatch(tourismHospitalityFrameworkResponse, 'RA 9514', 'tourism hospitality fire safety query')
+  assertIncludes(
+    tourismHospitalityFrameworkResponse.summary,
+    'Tourism, Hospitality, Events, and Travel Services Stack',
+    'Tourism hospitality framework title'
   )
 
   assertResearchMatch(
@@ -3223,6 +3269,74 @@ This ordinance takes effect 30 days after publication.`
   )
   assert.equal(thinHazardousWasteDraftResponse.status, 'success', 'Hazardous waste draft check should succeed locally')
   assertFinding(thinHazardousWasteDraftResponse, 'amber', 'Hazardous substance controls')
+
+  const thinEnvironmentalImpactWildlifeForestryDraft = `# Eco-Tourism Access and Clearing Policy
+
+## Purpose
+This policy covers ECC, EIS, environmental impact assessment, wildlife permit, threatened species habitat, tree cutting, timber transport, forest land, and watershed concerns.
+
+## Legal Basis
+Pursuant to PD 1586, RA 9147, PD 705, RA 11038, and RA 7160.
+
+## Scope
+This applies to tourism trails, visitor access, tree clearing, and support facilities.
+
+## Responsible Office
+The environment office shall implement this policy.
+
+## Requirements
+Operators shall submit project information before access is approved.
+
+## Monitoring
+The environment office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinEnvironmentalImpactWildlifeForestryDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinEnvironmentalImpactWildlifeForestryDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(
+    thinEnvironmentalImpactWildlifeForestryDraftResponse.status,
+    'success',
+    'Environmental impact wildlife forestry draft check should succeed locally'
+  )
+  assertFinding(
+    thinEnvironmentalImpactWildlifeForestryDraftResponse,
+    'amber',
+    'Environmental impact, wildlife, and forestry controls'
+  )
+
+  const thinTourismHospitalityDraft = `# Tourism Guest Access Policy
+
+## Purpose
+This policy covers tourism enterprises, hotels, resorts, tour operators, tour guides, tourist transport, and visitor safety.
+
+## Legal Basis
+Pursuant to RA 9593, RA 7160, RA 7394, PD 856, RA 9514, and RA 10173.
+
+## Scope
+This applies to tourism sites, accommodation establishments, event venues, and guided visitor services.
+
+## Responsible Office
+The tourism office shall implement this policy.
+
+## Requirements
+Operators shall submit a list of services before visitors are accepted.
+
+## Monitoring
+The tourism office shall submit annual reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinTourismHospitalityDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinTourismHospitalityDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinTourismHospitalityDraftResponse.status, 'success', 'Tourism hospitality draft check should succeed locally')
+  assertFinding(thinTourismHospitalityDraftResponse, 'amber', 'Tourism and hospitality controls')
 
   const thinCompetitionDraft = `# Exclusive Supplier Accreditation Ordinance
 
