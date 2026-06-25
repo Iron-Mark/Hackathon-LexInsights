@@ -78,11 +78,26 @@ jobs:
       - name: Providerless research self-test
         run: npm run check:providerless:self-test
 
+      - name: Local RAG golden-query self-test
+        run: npm run check:local-rag:golden
+
+      - name: Local RAG performance self-test
+        run: npm run check:local-rag:performance
+
+      - name: Document text self-test
+        run: npm run check:document-text:self-test
+
+      - name: Document extraction self-test
+        run: npm run check:document-extraction:self-test
+
       - name: Release integrity self-test
         run: npm run check:release:self-test
 
       - name: Release integrity check
         run: npm run check:release
+
+      - name: PWA readiness check
+        run: npm run check:pwa
 
       - name: Build
         run: npm run build

@@ -3019,21 +3019,26 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(public service|public utility|franchise|certificate of public convenience|transport operator|telecom operator|critical infrastructure)\b/.test(normalizedDraft)) {
-    const hasPublicServiceAuthorization = /\b(franchise|certificate|regulator|ltfrb|ntc|authorization|license)\b/.test(normalizedDraft)
-    const hasPublicServiceUserControls = /\b(complaint|service continuity|rate|charge|disclosure|consumer|public notice)\b/.test(normalizedDraft)
-    const hasPublicServiceRecords = /\b(record|reporting|audit|privacy|retention|incident|regulatory filing)\b/.test(normalizedDraft)
+  if (/\b(public service|public utility|franchise|certificate of public convenience|transport operator|telecom operator|telecommunications|internet service provider|broadband|electric utility|electricity distribution|power interruption|distribution utility|electric cooperative|water district|water utility|water service|critical infrastructure)\b/.test(normalizedDraft)) {
+    const hasPublicServiceAuthorization = /\b(franchise|certificate|regulator|ltfrb|ntc|erc|doe|lwua|authorization|license|service area)\b/.test(normalizedDraft)
+    const hasPublicServiceUserControls = /\b(complaint|service continuity|outage|interruption|connection|disconnection|rate|charge|tariff|disclosure|consumer|customer|subscriber|public notice)\b/.test(normalizedDraft)
+    const hasPublicServiceRecords = /\b(record|reporting|audit|privacy|retention|incident|regulatory filing|meter|billing|subscriber|outage log|service log)\b/.test(normalizedDraft)
 
     if (!(hasPublicServiceAuthorization && hasPublicServiceUserControls && hasPublicServiceRecords)) {
       findings.amber.push(
         createFinding(
           'amber',
           'gap',
-          'Public-service operation controls need regulator detail',
-          'Public-service, public-utility, franchise, operator, telecom, transport, or critical-infrastructure language was detected without enough regulator, certificate, continuity, complaint, reporting, or records controls.',
-          'Add service classification, franchise or certificate path, regulator coordination, user complaints, continuity, rates or charges where relevant, incident reporting, records retention, and privacy safeguards.',
+          'Utility and public-service controls need regulator detail',
+          'Public-service, public-utility, franchise, transport, telecom, electricity, water-service, or critical-infrastructure language was detected without enough regulator, certificate, continuity, complaint, rate, outage, disconnection, reporting, or records controls.',
+          'Add service classification, franchise or certificate path, sector regulator coordination, service area, customer complaints, continuity, outage or interruption handling, rates or charges where relevant, connection or disconnection notices, incident reporting, records retention, and privacy safeguards.',
           7,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11659') || LEGAL_CORPUS[0])]
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11659') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-9136') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-7925') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'pd-198-water-districts') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }

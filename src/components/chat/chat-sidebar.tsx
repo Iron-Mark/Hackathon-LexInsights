@@ -9,6 +9,7 @@ import { ChatList } from './chat-list'
 import { ResourcesDialog } from '@/components/help/resources-dialog'
 import { AttributionDialog } from '@/components/about/attribution-dialog'
 import { useTheme } from '@/components/providers/theme-provider'
+import { InstallAppButton } from '@/components/pwa/install-app-button'
 
 interface ChatSidebarProps {
   className?: string
@@ -60,6 +61,8 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
               App controls
             </p>
             <div className="mt-3 grid grid-cols-3 gap-2">
+              <InstallAppButton />
+
               <button
                 onClick={toggleTheme}
                 className="flex min-h-16 cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border border-iris-100 bg-white/85 px-2 py-2 text-xs font-semibold text-slate-700 shadow-sm shadow-iris-950/5 transition-all hover:border-iris-300 hover:bg-iris-50 hover:text-iris-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:border-iris-300/15 dark:bg-[#241f32]/80 dark:text-iris-100/75 dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"

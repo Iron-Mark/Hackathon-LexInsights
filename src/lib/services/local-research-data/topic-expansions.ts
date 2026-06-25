@@ -546,6 +546,18 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['public service act', 'public utility', 'franchise certificate', 'regulator oversight'],
   },
   {
+    triggers: ['electric utility', 'electricity', 'power outage', 'power interruption', 'electricity bill', 'distribution utility', 'electric cooperative'],
+    expansions: ['electric power industry reform act', 'epira', 'erc regulation', 'distribution utility', 'electricity rates'],
+  },
+  {
+    triggers: ['telecommunications', 'telecom', 'internet service provider', 'broadband', 'network outage', 'spectrum', 'frequency'],
+    expansions: ['public telecommunications policy act', 'ntc', 'telecom franchise', 'network interconnection', 'subscriber service'],
+  },
+  {
+    triggers: ['water district', 'water utility', 'water service', 'water connection', 'water disconnection', 'water rate', 'water meter'],
+    expansions: ['provincial water utilities act', 'local water district', 'water service rates', 'customer complaint', 'water quality'],
+  },
+  {
     triggers: ['land title', 'property registration', 'torrens', 'register of deeds', 'certificate of title', 'survey plan'],
     expansions: ['property registration decree', 'certificate of title', 'register of deeds', 'survey verification'],
   },

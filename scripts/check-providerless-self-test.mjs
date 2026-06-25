@@ -128,8 +128,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 179, 'Local corpus should include at least 179 authorities')
-  assert.ok(frameworks.length >= 28, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 182, 'Local corpus should include at least 182 authorities')
+  assert.ok(frameworks.length >= 29, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -189,6 +189,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'road-safety-driver-and-vehicle-compliance'),
     'Frameworks should include road safety, driver, and vehicle compliance'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'critical-utilities-energy-telecom-and-water-services'),
+    'Frameworks should include critical utilities, energy, telecom, and water services'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'public-accountability-and-government-funds'),
@@ -370,6 +374,9 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 10913'), 'Corpus should include RA 10913')
   assert.ok(corpus.some((document) => document.statute === 'RA 11229'), 'Corpus should include RA 11229')
   assert.ok(corpus.some((document) => document.statute === 'RA 11659'), 'Corpus should include RA 11659')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9136'), 'Corpus should include RA 9136')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7925'), 'Corpus should include RA 7925')
+  assert.ok(corpus.some((document) => document.statute === 'PD 198'), 'Corpus should include PD 198')
   assert.ok(corpus.some((document) => document.statute === 'RA 8371'), 'Corpus should include RA 8371')
   assert.ok(corpus.some((document) => document.statute === 'PD 1529'), 'Corpus should include PD 1529')
   assert.ok(corpus.some((document) => document.statute === 'RA 8435'), 'Corpus should include RA 8435')
@@ -1780,6 +1787,24 @@ try {
     'public service query'
   )
 
+  const utilitiesFrameworkResponse = runLocalResearch(
+    {
+      query: 'What electric utility power interruption, telecom network outage, water district disconnection, rates, complaints, regulator reporting, and customer record controls apply to critical utility services?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(utilitiesFrameworkResponse, 'RA 11659', 'utilities public service query')
+  assertResearchMatch(utilitiesFrameworkResponse, 'RA 9136', 'electric power utility query')
+  assertResearchMatch(utilitiesFrameworkResponse, 'RA 7925', 'telecommunications utility query')
+  assertResearchMatch(utilitiesFrameworkResponse, 'PD 198', 'water district utility query')
+  assertIncludes(
+    utilitiesFrameworkResponse.summary,
+    'Critical Utilities, Energy, Telecom, and Water Services Stack',
+    'Critical utilities framework title'
+  )
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What land title, Torrens, register of deeds, encumbrance, and survey plan checks apply to a relocation project?', user_id: 'self-test' },
@@ -2742,13 +2767,43 @@ This program takes effect 30 days after publication.`
   )
   assert.equal(thinMobilityLandAgriDraftResponse.status, 'success', 'Mobility land agriculture draft check should succeed locally')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Transport and road-safety controls')
-  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Public-service operation')
+  assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Utility and public-service controls')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Land-title verification')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'FPIC and indigenous-community')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Agriculture support')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Organic agriculture')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Food-safety')
   assertFinding(thinMobilityLandAgriDraftResponse, 'amber', 'Sagip Saka')
+
+  const thinUtilityDraft = `# Critical Utility Customer Service Policy
+
+## Purpose
+This policy covers electric utility power interruption notices, telecom network outage reports, internet service provider complaints, water district water disconnection, water service rates, and critical infrastructure customer records.
+
+## Legal Basis
+Pursuant to RA 11659, RA 9136, RA 7925, and PD 198.
+
+## Scope
+This applies to customers, subscribers, service applicants, and utility operators.
+
+## Responsible Office
+The service office shall handle all utility matters.
+
+## Requirements
+Customers shall submit account details when requested.
+
+## Monitoring
+The service office shall prepare annual reports.
+
+## Effectivity
+This policy takes effect immediately.`
+
+  const thinUtilityDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinUtilityDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinUtilityDraftResponse.status, 'success', 'Critical utility draft check should succeed locally')
+  assertFinding(thinUtilityDraftResponse, 'amber', 'Utility and public-service controls')
 
   const thinCyberDraft = `# Online Safety Incident Ordinance
 

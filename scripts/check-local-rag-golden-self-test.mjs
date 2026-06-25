@@ -333,6 +333,21 @@ try {
     'building systems workflow should include its framework section'
   )
 
+  const utilitiesWorkflow = runLocalResearch({
+    query: 'What public utility, electric power distribution, telecom network outage, water district disconnection, rates, consumer complaint, regulator reporting, and customer record controls apply to critical utility services?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    utilitiesWorkflow,
+    ['RA 11659', 'RA 9136', 'RA 7925', 'PD 198'],
+    'critical utilities energy telecom and water workflow'
+  )
+  assert.ok(
+    utilitiesWorkflow.summary.includes('Critical Utilities, Energy, Telecom, and Water Services Stack'),
+    'critical utilities workflow should include its framework section'
+  )
+
   const noResult = runLocalResearch({ query: 'How do I bake sourdough bread at high altitude?', user_id: 'golden' })
   assert.equal(noResult.status, 'no_results', 'unrelated query should return no_results')
   assert.equal(noResult.documents_found, 0, 'unrelated query should not report documents')
