@@ -158,6 +158,30 @@ try {
   })
   assertExactCitationMatch(exactAntiTerrorismCitation, 'RA 11479', '11479', 'exact RA 11479 citation')
 
+  const exactDownstreamOilCitation = runLocalResearch({
+    query: 'What does RA 8479 require for downstream oil industry fuel retail pricing and petroleum product quality?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactDownstreamOilCitation, 'RA 8479', '8479', 'exact RA 8479 citation')
+
+  const exactLpgCitation = runLocalResearch({
+    query: 'What does RA 11592 require for LPG refilling plants, cylinders, dealers, and retail outlets?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactLpgCitation, 'RA 11592', '11592', 'exact RA 11592 citation')
+
+  const exactBiofuelsCitation = runLocalResearch({
+    query: 'What does RA 9367 require for biofuel blends, biodiesel, bioethanol, and fuel labeling compliance?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactBiofuelsCitation, 'RA 9367', '9367', 'exact RA 9367 citation')
+
+  const exactDoeCitation = runLocalResearch({
+    query: 'What does RA 7638 require for DOE energy planning, monitoring, and coordination?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactDoeCitation, 'RA 7638', '7638', 'exact RA 7638 citation')
+
   const citationVariant = runLocalResearch({
     query: 'What controls apply under R.A. No. 10173 and RA No. 8792 for online consent records?',
     user_id: 'golden',
@@ -548,6 +572,65 @@ try {
   assert.ok(
     utilitiesWorkflow.summary.includes('Critical Utilities, Energy, Telecom, and Water Services Stack'),
     'critical utilities workflow should include its framework section'
+  )
+
+  const fuelRetailPetroleumWorkflow = runLocalResearch({
+    query: 'What fuel retail, gasoline station, petroleum price display, oil product quality, and fair market competition controls apply to a local fuel station?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(fuelRetailPetroleumWorkflow, 'RA 8479', 'fuel retail petroleum pricing and quality topic')
+  assert.equal(statutes(fuelRetailPetroleumWorkflow)[0], 'RA 8479', 'fuel retail topic should rank RA 8479 first')
+  assert.ok(
+    fuelRetailPetroleumWorkflow.summary.includes('Downstream Fuel, LPG, and Biofuel Controls Stack'),
+    'fuel retail topic should include the downstream fuels framework section'
+  )
+
+  const lpgRefillingWorkflow = runLocalResearch({
+    query: 'What LPG refilling plant, cylinder safety, dealer, retail outlet, seal, weighing, and consumer complaint controls apply?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(lpgRefillingWorkflow, 'RA 11592', 'LPG refilling cylinders and dealers topic')
+  assert.equal(statutes(lpgRefillingWorkflow)[0], 'RA 11592', 'LPG topic should rank RA 11592 first')
+  assert.ok(
+    lpgRefillingWorkflow.summary.includes('Downstream Fuel, LPG, and Biofuel Controls Stack'),
+    'LPG topic should include the downstream fuels framework section'
+  )
+
+  const biofuelBlendsWorkflow = runLocalResearch({
+    query: 'What biofuel blend, biodiesel, bioethanol, fuel supplier, quality testing, and pump labeling controls apply?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(biofuelBlendsWorkflow, 'RA 9367', 'biofuel blends topic')
+  assert.equal(statutes(biofuelBlendsWorkflow)[0], 'RA 9367', 'biofuel blends topic should rank RA 9367 first')
+  assert.ok(
+    biofuelBlendsWorkflow.summary.includes('Downstream Fuel, LPG, and Biofuel Controls Stack'),
+    'biofuel blends topic should include the downstream fuels framework section'
+  )
+
+  const doeEnergyCoordinationWorkflow = runLocalResearch({
+    query: 'What DOE energy monitoring, energy planning, supply coordination, petroleum data, and local energy office reporting controls apply?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(doeEnergyCoordinationWorkflow, 'RA 7638', 'DOE energy monitoring and coordination topic')
+  assert.equal(statutes(doeEnergyCoordinationWorkflow)[0], 'RA 7638', 'DOE coordination topic should rank RA 7638 first')
+  assert.ok(
+    doeEnergyCoordinationWorkflow.summary.includes('Downstream Fuel, LPG, and Biofuel Controls Stack'),
+    'DOE coordination topic should include the downstream fuels framework section'
+  )
+
+  const downstreamFuelsWorkflow = runLocalResearch({
+    query: 'What controls apply to a city fuel and LPG inspection workflow covering gasoline station petroleum price display, fuel quality sampling, LPG refilling plants, cylinders, dealers, biofuel blend compliance, DOE energy monitoring, supply coordination, consumer complaints, and local regulator referrals?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    downstreamFuelsWorkflow,
+    ['RA 8479', 'RA 11592', 'RA 9367', 'RA 7638'],
+    'downstream fuels LPG biofuels and DOE coordination workflow'
+  )
+  assert.ok(
+    downstreamFuelsWorkflow.summary.includes('Downstream Fuel, LPG, and Biofuel Controls Stack'),
+    'downstream fuels workflow should include its framework section'
   )
 
   const noResult = runLocalResearch({ query: 'How do I bake sourdough bread at high altitude?', user_id: 'golden' })

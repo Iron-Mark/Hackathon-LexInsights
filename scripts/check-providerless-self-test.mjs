@@ -137,8 +137,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 202, 'Local corpus should include at least 202 authorities')
-  assert.ok(frameworks.length >= 37, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 206, 'Local corpus should include at least 206 authorities')
+  assert.ok(frameworks.length >= 38, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -210,6 +210,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'critical-utilities-energy-telecom-and-water-services'),
     'Frameworks should include critical utilities, energy, telecom, and water services'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'downstream-fuel-lpg-and-biofuel-controls'),
+    'Frameworks should include downstream fuel, LPG, and biofuel controls'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'tourism-hospitality-events-and-travel-services'),
@@ -423,6 +427,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 9136'), 'Corpus should include RA 9136')
   assert.ok(corpus.some((document) => document.statute === 'RA 7925'), 'Corpus should include RA 7925')
   assert.ok(corpus.some((document) => document.statute === 'PD 198'), 'Corpus should include PD 198')
+  assert.ok(corpus.some((document) => document.statute === 'RA 8479'), 'Corpus should include RA 8479')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11592'), 'Corpus should include RA 11592')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9367'), 'Corpus should include RA 9367')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7638'), 'Corpus should include RA 7638')
   assert.ok(corpus.some((document) => document.statute === 'RA 8371'), 'Corpus should include RA 8371')
   assert.ok(corpus.some((document) => document.statute === 'PD 1529'), 'Corpus should include PD 1529')
   assert.ok(corpus.some((document) => document.statute === 'RA 8435'), 'Corpus should include RA 8435')
@@ -1984,6 +1992,122 @@ try {
     utilitiesFrameworkResponse.summary,
     'Critical Utilities, Energy, Telecom, and Water Services Stack',
     'Critical utilities framework title'
+  )
+
+  const downstreamOilCitationResponse = runLocalResearch(
+    {
+      query: 'What does RA 8479 require for downstream oil industry fuel retail pricing and petroleum product quality?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(downstreamOilCitationResponse, 'RA 8479', 'downstream oil exact citation query')
+  assert.deepEqual(
+    downstreamOilCitationResponse.retrieval_metadata?.citation_numbers,
+    ['8479'],
+    'downstream oil exact citation metadata'
+  )
+  assertMatchedTerm(
+    downstreamOilCitationResponse,
+    'RA 8479',
+    'explicit citation: RA 8479',
+    'downstream oil exact citation query'
+  )
+
+  const lpgCitationResponse = runLocalResearch(
+    {
+      query: 'What does RA 11592 require for LPG refilling plants, cylinders, dealers, and retail outlets?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(lpgCitationResponse, 'RA 11592', 'LPG exact citation query')
+  assert.deepEqual(lpgCitationResponse.retrieval_metadata?.citation_numbers, ['11592'], 'LPG exact citation metadata')
+  assertMatchedTerm(lpgCitationResponse, 'RA 11592', 'explicit citation: RA 11592', 'LPG exact citation query')
+
+  const biofuelsCitationResponse = runLocalResearch(
+    {
+      query: 'What does RA 9367 require for biofuel blends, biodiesel, bioethanol, and fuel labeling compliance?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(biofuelsCitationResponse, 'RA 9367', 'biofuels exact citation query')
+  assert.deepEqual(
+    biofuelsCitationResponse.retrieval_metadata?.citation_numbers,
+    ['9367'],
+    'biofuels exact citation metadata'
+  )
+  assertMatchedTerm(
+    biofuelsCitationResponse,
+    'RA 9367',
+    'explicit citation: RA 9367',
+    'biofuels exact citation query'
+  )
+
+  const doeCitationResponse = runLocalResearch(
+    {
+      query: 'What does RA 7638 require for DOE energy planning, monitoring, and coordination?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(doeCitationResponse, 'RA 7638', 'DOE exact citation query')
+  assert.deepEqual(doeCitationResponse.retrieval_metadata?.citation_numbers, ['7638'], 'DOE exact citation metadata')
+  assertMatchedTerm(doeCitationResponse, 'RA 7638', 'explicit citation: RA 7638', 'DOE exact citation query')
+
+  const fuelRetailTopicResponse = runLocalResearch(
+    {
+      query: 'What fuel retail, gasoline station, petroleum price display, oil product quality, and fair market competition controls apply to a local fuel station?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(fuelRetailTopicResponse, 'RA 8479', 'fuel retail petroleum pricing and quality query')
+
+  const lpgTopicResponse = runLocalResearch(
+    {
+      query: 'What LPG refilling plant, cylinder safety, dealer, retail outlet, seal, weighing, and consumer complaint controls apply?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(lpgTopicResponse, 'RA 11592', 'LPG refilling cylinders and dealers query')
+
+  const biofuelsTopicResponse = runLocalResearch(
+    {
+      query: 'What biofuel blend, biodiesel, bioethanol, fuel supplier, quality testing, and pump labeling controls apply?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(biofuelsTopicResponse, 'RA 9367', 'biofuel blends query')
+
+  const doeEnergyCoordinationResponse = runLocalResearch(
+    {
+      query: 'What DOE energy monitoring, energy planning, supply coordination, petroleum data, and local energy office reporting controls apply?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(doeEnergyCoordinationResponse, 'RA 7638', 'DOE energy monitoring and coordination query')
+
+  const downstreamFuelsWorkflowResponse = runLocalResearch(
+    {
+      query: 'What controls apply to a city fuel and LPG inspection workflow covering gasoline station petroleum price display, fuel quality sampling, LPG refilling plants, cylinders, dealers, biofuel blend compliance, DOE energy monitoring, supply coordination, consumer complaints, and local regulator referrals?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(downstreamFuelsWorkflowResponse, 'RA 8479', 'downstream fuels workflow oil deregulation query')
+  assertResearchMatch(downstreamFuelsWorkflowResponse, 'RA 11592', 'downstream fuels workflow LPG query')
+  assertResearchMatch(downstreamFuelsWorkflowResponse, 'RA 9367', 'downstream fuels workflow biofuels query')
+  assertResearchMatch(downstreamFuelsWorkflowResponse, 'RA 7638', 'downstream fuels workflow DOE query')
+  assertIncludes(
+    downstreamFuelsWorkflowResponse.summary,
+    'Downstream Fuel, LPG, and Biofuel Controls Stack',
+    'Downstream fuels framework title'
   )
 
   assertResearchMatch(
