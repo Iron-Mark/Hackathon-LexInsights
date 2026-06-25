@@ -329,6 +329,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 7394'), 'Corpus should include RA 7394')
   assert.ok(corpus.some((document) => document.statute === 'RA 10667'), 'Corpus should include RA 10667')
   assert.ok(corpus.some((document) => document.statute === 'RA 11765'), 'Corpus should include RA 11765')
+  assert.ok(corpus.some((document) => document.id === 'bsp-circular-1160-2022'), 'Corpus should include BSP Circular No. 1160, s. 2022')
+  assert.ok(corpus.some((document) => document.id === 'bsp-circular-1169-2023'), 'Corpus should include BSP Circular No. 1169, s. 2023')
+  assert.ok(corpus.some((document) => document.id === 'bsp-circular-1140-2022'), 'Corpus should include BSP Circular No. 1140, s. 2022')
+  assert.ok(corpus.some((document) => document.id === 'bsp-circular-1108-2021'), 'Corpus should include BSP Circular No. 1108, s. 2021')
   assert.ok(corpus.some((document) => document.statute === 'RA 6969'), 'Corpus should include RA 6969')
   assert.ok(corpus.some((document) => document.statute === 'RA 11285'), 'Corpus should include RA 11285')
   assert.ok(corpus.some((document) => document.statute === 'RA 11934'), 'Corpus should include RA 11934')
@@ -1172,6 +1176,55 @@ try {
     'Payment Systems, CFT, and Sanctions Controls Stack',
     'Payment systems topic framework title'
   )
+
+  const bspFinancialConsumerRegulationsResponse = runLocalResearch(
+    {
+      query:
+        'What does BSP Circular 1160 require for financial consumer protection regulations, market conduct, transparent pricing, complaint handling, fraud response, and consumer data protection?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(bspFinancialConsumerRegulationsResponse, 'BSP Circular No. 1160, s. 2022', 'BSP Circular 1160 financial consumer query')
+  assertResearchMatch(bspFinancialConsumerRegulationsResponse, 'RA 11765', 'BSP Circular 1160 RA 11765 relationship query')
+
+  const bspConsumerAssistanceResponse = runLocalResearch(
+    {
+      query:
+        'What does BSP Circular 1169 require for consumer assistance mechanism, complaint intake, acknowledgment, resolution timeline, escalation, root cause analysis, and remediation?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(bspConsumerAssistanceResponse, 'BSP Circular No. 1169, s. 2023', 'BSP Circular 1169 consumer assistance query')
+  assertResearchMatch(bspConsumerAssistanceResponse, 'BSP Circular No. 1160, s. 2022', 'BSP Circular 1169 financial consumer relationship query')
+
+  const bspFraudManagementResponse = runLocalResearch(
+    {
+      query:
+        'What does BSP Circular 1140 require for a robust fraud management system, fraud monitoring, transaction monitoring, customer authentication, account takeover, incident response, and fraud reporting?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(bspFraudManagementResponse, 'BSP Circular No. 1140, s. 2022', 'BSP Circular 1140 fraud management query')
+  assertResearchMatch(bspFraudManagementResponse, 'RA 12010', 'BSP Circular 1140 fraud law relationship query')
+
+  const bspVaspGuidelinesResponse = runLocalResearch(
+    {
+      query:
+        'What does BSP Circular 1108 require for virtual asset service providers, VASP registration, crypto exchange custody, wallet-address records, customer due diligence, transaction monitoring, cybersecurity, and consumer disclosure?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(bspVaspGuidelinesResponse, 'BSP Circular No. 1108, s. 2021', 'BSP Circular 1108 VASP query')
+  assertResearchMatch(bspVaspGuidelinesResponse, 'RA 11127', 'BSP Circular 1108 payment-system relationship query')
+  assertResearchMatch(bspVaspGuidelinesResponse, 'RA 9160', 'BSP Circular 1108 AML relationship query')
 
   const sanctionsTopicResponse = runLocalResearch(
     {

@@ -568,6 +568,14 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['financial products and services consumer protection', 'financial consumer', 'disclosure', 'complaint handling'],
   },
   {
+    triggers: ['bsp circular 1160', 'financial consumer protection regulations', 'market conduct', 'consumer protection risk management system'],
+    expansions: ['bsp financial consumer protection regulations', 'ra 11765 implementing regulations', 'transparent pricing', 'consumer data protection'],
+  },
+  {
+    triggers: ['bsp circular 1169', 'consumer assistance mechanism', 'cam rules', 'financial consumer complaint', 'complaint resolution timeline'],
+    expansions: ['bsp consumer assistance mechanism', 'complaint intake', 'acknowledgment', 'root cause analysis', 'consumer remediation'],
+  },
+  {
     triggers: [
       'money mule',
       'mule account',
@@ -579,6 +587,14 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
       'unauthorized transfer',
     ],
     expansions: ['anti financial account scamming', 'financial account', 'fraud report', 'evidence preservation'],
+  },
+  {
+    triggers: ['bsp circular 1140', 'fraud management system', 'robust fraud management', 'fraud monitoring', 'transaction monitoring'],
+    expansions: ['bsp fraud management guidelines', 'fraud risk management', 'customer authentication', 'fraud alerts', 'incident response'],
+  },
+  {
+    triggers: ['bsp circular 1108', 'virtual asset service provider', 'vasp', 'crypto exchange', 'virtual asset custody', 'digital asset transfer'],
+    expansions: ['bsp vasp guidelines', 'virtual asset', 'customer due diligence', 'transaction monitoring', 'cybersecurity', 'consumer disclosure'],
   },
   {
     triggers: ['hazardous', 'toxic', 'chemical', 'spill', 'nuclear', 'waste transport', 'medical waste'],
