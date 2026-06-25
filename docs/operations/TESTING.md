@@ -49,9 +49,10 @@ npm run check:release
 ```
 
 The providerless self-test covers the local legal research and draft-checking engine directly, without network or browser dependencies.
-The local RAG golden-query check covers exact citations, citation variants, AI governance guidance, cross-law workflows, EPR/plastic-packaging workflows, payment-system operator and settlement workflows, CFT/sanctions and AMLC asset-freeze workflows, anti-terrorism designation/proscription safeguards, aviation/maritime/ports/seafarer workflows, downstream fuels/local energy workflows, ranking diagnostics, source trust metadata, and no-result behavior.
-The local RAG performance check covers uncached exact-citation, AI-governance, deep-workflow, payment-system/CFT workflow, aviation/maritime workflow, downstream-fuels/local-energy workflow, unrelated no-result, and warm-cache local queries.
+The local RAG golden-query check covers exact citations, citation variants, AI governance guidance, cross-law workflows, EPR/plastic-packaging workflows, payment-system operator and settlement workflows, CFT/sanctions and AMLC asset-freeze workflows, anti-terrorism designation/proscription safeguards, aviation/maritime/ports/seafarer workflows, downstream fuels/local energy workflows, education governance/inclusive-learning workflows, ranking diagnostics, source trust metadata, and no-result behavior.
+The local RAG performance check covers uncached exact-citation, AI-governance, deep-workflow, payment-system/CFT workflow, aviation/maritime workflow, downstream-fuels/local-energy workflow, education-governance/inclusive-learning workflow, unrelated no-result, and warm-cache local queries.
 The local RAG governance check validates corpus source records, evidence anchors, authority relations, framework references, and coverage-map records.
+For education/inclusive-learning updates, include exact-citation probes for RA 9155, RA 10157, RA 12199, RA 10650, and RA 11650. Include RA 10410 only as a superseded historical-context probe if the local corpus keeps prior Early Years Act references.
 The document text self-test covers browser-readable Markdown and text normalization plus unsupported, oversized, empty, and unknown-file handling.
 The document extraction self-test generates deterministic PDF and DOCX fixtures and verifies server-side text extraction before draft checking.
 The release integrity check verifies SemVer formatting, package-lock version sync, and release-tag consistency.

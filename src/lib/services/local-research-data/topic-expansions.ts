@@ -543,6 +543,18 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['anti bullying act', 'school bullying policy', 'reporting intervention'],
   },
   {
+    triggers: ['deped governance', 'school governance', 'shared governance', 'school improvement plan', 'learning center', 'division superintendent'],
+    expansions: ['governance of basic education', 'shared governance', 'school head accountability', 'deped field offices'],
+  },
+  {
+    triggers: ['kindergarten', 'mandatory kindergarten', 'compulsory kindergarten', 'grade 1 readiness', 'early childhood enrollment'],
+    expansions: ['kindergarten education act', 'mandatory kindergarten', 'basic education entry', 'learner readiness records'],
+  },
+  {
+    triggers: ['eccd', 'early childhood care', 'early years', 'child development center', 'day care center', 'child development worker', 'parent education'],
+    expansions: ['early childhood care and development system act', 'current ECCD law', 'child development center', 'parent education', 'child find coordination'],
+  },
+  {
     triggers: ['basic education', 'k to 12', 'k-12', 'curriculum', 'learner', 'enrollment', 'school operations'],
     expansions: ['enhanced basic education act', 'k to 12', 'learner records', 'deped implementation'],
   },
@@ -553,6 +565,14 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
   {
     triggers: ['alternative learning', 'als', 'out of school youth', 'adult learner', 'literacy', 'community learning center'],
     expansions: ['alternative learning system', 'out of school youth', 'learning facilitator', 'accreditation equivalency'],
+  },
+  {
+    triggers: ['open distance learning', 'odl', 'distance education', 'online college', 'flexible learning', 'virtual classroom', 'learning management system'],
+    expansions: ['open distance learning act', 'ched tesda authorization', 'student support', 'odl quality assurance'],
+  },
+  {
+    triggers: ['inclusive education', 'learner with disability', 'learners with disabilities', 'ilrc', 'iep', 'individualized education plan', 'child find', 'reasonable accommodation at school'],
+    expansions: ['inclusive education for learners with disabilities', 'child find system', 'individualized education plan', 'inclusive learning resource center', 'reasonable accommodation'],
   },
   {
     triggers: ['customs', 'import', 'export', 'tariff', 'duties', 'valuation', 'broker'],

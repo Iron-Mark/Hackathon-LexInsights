@@ -70,6 +70,8 @@ If local mode does not return a result, try a narrower query with a statute numb
 
 For the expanded local workflow packs, try `RA 11898` for EPR and plastic-packaging recovery, `RA 11127` for operators of payment systems, `RA 10168` for CFT/sanctions and AMLC asset-freeze workflows, `RA 11479` for anti-terrorism designation and proscription safeguards, `RA 8479` for downstream oil and fuel retail, `RA 11592` for LPG cylinders/refilling/dealers, `RA 9367` for biofuel blends, or `RA 7638` for DOE coordination/monitoring.
 
+For the education/inclusive-learning slice, try `RA 9155` for basic education governance, `RA 10157` for kindergarten, `RA 12199` for current early childhood/ECCD, `RA 10650` for open distance learning, or `RA 11650` for inclusive learning and learners with disabilities. Use `RA 10410` only for historical Early Years Act context; it was repealed by RA 12199. Verify current ECCD answers against current DepEd, CHED, TESDA, ECCD Council, and LGU issuances because providerless mode does not search live agency updates.
+
 For draft checks, upload Markdown, plain text, PDF, DOCX, or DOC files up to 5MB. Markdown and text files are read in the browser. PDF and Word files are posted to `/api/document-text` for server-side extraction before their text is reviewed.
 
 ## Document Extraction Fails

@@ -22,6 +22,14 @@ function assertIncludes(source, expected, label) {
   )
 }
 
+function assertIncludesAny(source, expectedOptions, label) {
+  assert.equal(
+    expectedOptions.some((expected) => source.includes(expected)),
+    true,
+    `${label} must include one of: ${expectedOptions.join(', ')}`
+  )
+}
+
 function assertFinding(response, status, titleFragment) {
   const findings = [
     ...response.analysis.green_findings,
@@ -137,8 +145,8 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 206, 'Local corpus should include at least 206 authorities')
-  assert.ok(frameworks.length >= 38, 'Local corpus should include compliance framework bundles')
+  assert.ok(corpus.length >= 211, 'Local corpus should include at least 211 authorities')
+  assert.ok(frameworks.length >= 39, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
     'Frameworks should include data incident response'
@@ -194,6 +202,10 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'education-housing-records-and-benefits'),
     'Frameworks should include education, housing, records, and benefits'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'basic-education-governance-and-inclusive-learning'),
+    'Frameworks should include basic education governance and inclusive learning'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'real-estate-housing-buyer-and-tenant-protection'),
@@ -394,8 +406,13 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 12021'), 'Corpus should include RA 12021')
   assert.ok(corpus.some((document) => document.statute === 'RA 9497'), 'Corpus should include RA 9497')
   assert.ok(corpus.some((document) => document.statute === 'PD 857'), 'Corpus should include PD 857')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9155'), 'Corpus should include RA 9155')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10157'), 'Corpus should include RA 10157')
+  assert.ok(corpus.some((document) => document.statute === 'RA 12199'), 'Corpus should include RA 12199')
   assert.ok(corpus.some((document) => document.statute === 'RA 10533'), 'Corpus should include RA 10533')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10650'), 'Corpus should include RA 10650')
   assert.ok(corpus.some((document) => document.statute === 'RA 10931'), 'Corpus should include RA 10931')
+  assert.ok(corpus.some((document) => document.statute === 'RA 11650'), 'Corpus should include RA 11650')
   assert.ok(corpus.some((document) => document.statute === 'RA 7279'), 'Corpus should include RA 7279')
   assert.ok(corpus.some((document) => document.statute === 'RA 11201'), 'Corpus should include RA 11201')
   assert.ok(corpus.some((document) => document.statute === 'PD 957'), 'Corpus should include PD 957')
@@ -1737,6 +1754,28 @@ try {
     educationBenefitsFrameworkResponse.summary,
     'Education, Housing, Records, and Social Benefits Stack',
     'Education benefits framework title'
+  )
+
+  const educationGovernanceFrameworkResponse = runLocalResearch(
+    {
+      query: 'What DepEd basic education governance, school division, school head, kindergarten, ECCD, open distance learning, and inclusive education safeguards for learners with disabilities should a school program check?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(educationGovernanceFrameworkResponse, 'RA 9155', 'education governance framework DepEd query')
+  assertResearchMatch(educationGovernanceFrameworkResponse, 'RA 10157', 'education governance framework kindergarten query')
+  assertResearchMatch(educationGovernanceFrameworkResponse, 'RA 12199', 'education governance framework ECCD query')
+  assertResearchMatch(educationGovernanceFrameworkResponse, 'RA 10650', 'education governance framework open distance learning query')
+  assertResearchMatch(educationGovernanceFrameworkResponse, 'RA 11650', 'education governance framework inclusive education query')
+  assertIncludesAny(
+    educationGovernanceFrameworkResponse.summary,
+    [
+      'Education Governance and Inclusive Learning Stack',
+      'Education, Housing, Records, and Social Benefits Stack',
+    ],
+    'Education governance framework title'
   )
 
   assertResearchMatch(
@@ -4344,6 +4383,45 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Social-assistance controls')
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Solo-parent benefit controls')
   assertFinding(thinCivicServicesDraftResponse, 'amber', 'Child-marriage prevention')
+
+  const thinEducationGovernanceDraft = `# School Services and Inclusive Learning Desk Policy
+
+## Purpose
+This policy handles DepEd governance, school division coordination, school head accountability, school improvement plan routing, basic education services, kindergarten, ECCD, child development center referrals, open distance learning, LMS access, and inclusive education for learners with disabilities.
+
+## Legal Basis
+Pursuant to RA 9155, RA 10533, RA 10157, RA 10410, RA 10650, and RA 11650.
+
+## Scope
+This applies to school services.
+
+## Responsible Office
+The education desk shall implement this policy.
+
+## Requirements
+Learners shall submit documents when requested.
+
+## Monitoring
+The desk shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinEducationGovernanceDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinEducationGovernanceDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(
+    thinEducationGovernanceDraftResponse.status,
+    'success',
+    'Education governance draft check should succeed locally'
+  )
+  assertFinding(thinEducationGovernanceDraftResponse, 'amber', 'DepEd governance controls')
+  assertFinding(thinEducationGovernanceDraftResponse, 'amber', 'Basic-education controls')
+  assertFinding(thinEducationGovernanceDraftResponse, 'amber', 'Kindergarten and ECCD controls')
+  assertFinding(thinEducationGovernanceDraftResponse, 'amber', 'ECCD authority may be superseded')
+  assertFinding(thinEducationGovernanceDraftResponse, 'amber', 'Open-distance-learning controls')
+  assertFinding(thinEducationGovernanceDraftResponse, 'amber', 'Inclusive-education controls')
 
   const thinRealEstateDraft = `# Real Estate Assistance Desk Policy
 

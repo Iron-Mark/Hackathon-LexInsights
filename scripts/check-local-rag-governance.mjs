@@ -24,6 +24,22 @@ const DATA_FILES = [
   'coverage-map.ts',
 ]
 
+const EDUCATION_GOVERNANCE_LAW_IDS = [
+  'ra-9155',
+  'ra-10157',
+  'ra-12199',
+  'ra-10650',
+  'ra-11650',
+]
+
+const EDUCATION_GOVERNANCE_STATUTES = [
+  'RA 9155',
+  'RA 10157',
+  'RA 12199',
+  'RA 10650',
+  'RA 11650',
+]
+
 async function loadLocalResearchData() {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
@@ -120,6 +136,47 @@ try {
     index.set(anchor.authorityId, anchors)
     return index
   }, new Map())
+
+  for (const [index, lawId] of EDUCATION_GOVERNANCE_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `Education governance corpus should include ${EDUCATION_GOVERNANCE_STATUTES[index]}`
+    )
+  }
+
+  const educationGovernanceFramework = data.frameworks.find((framework) => (
+    EDUCATION_GOVERNANCE_LAW_IDS.every((lawId) => framework.lawIds.includes(lawId))
+  ))
+
+  assert.ok(
+    educationGovernanceFramework,
+    `A single education governance framework should include ${EDUCATION_GOVERNANCE_STATUTES.join(', ')}`
+  )
+
+  const educationGovernanceFrameworkText = [
+    educationGovernanceFramework.title,
+    educationGovernanceFramework.summary,
+    ...educationGovernanceFramework.triggers,
+  ].join(' ').toLowerCase()
+
+  assert.ok(
+    educationGovernanceFrameworkText.includes('education'),
+    `${educationGovernanceFramework.id} should be education-facing`
+  )
+  assert.ok(
+    educationGovernanceFrameworkText.includes('inclusive') ||
+      educationGovernanceFrameworkText.includes('learning') ||
+      educationGovernanceFrameworkText.includes('disability') ||
+      educationGovernanceFrameworkText.includes('deped'),
+    `${educationGovernanceFramework.id} should cover inclusive learning or DepEd governance`
+  )
+
+  for (const lawId of EDUCATION_GOVERNANCE_LAW_IDS) {
+    assert.ok(
+      coverageById.get(lawId)?.frameworkIds.includes(educationGovernanceFramework.id),
+      `${lawId} coverage should reference ${educationGovernanceFramework.id}`
+    )
+  }
 
   for (const document of data.corpus) {
     const source = sourcesById.get(document.id)

@@ -166,6 +166,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'education governance inclusive workflow',
+    params: {
+      query:
+        'What controls apply to DepEd governance, school divisions, kindergarten and ECCD, open distance learning, inclusive education for learners with disabilities, learner records, parent participation, accommodations, referrals, and privacy?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 65,
+  },
+  {
     label: 'unrelated no-result',
     params: { query: 'How do I bake sourdough bread at high altitude?', user_id: 'performance' },
     p95Limit: 12,
