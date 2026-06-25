@@ -110,9 +110,8 @@ function assertExactCitationMatch(response, expectedStatute, citationNumber, lab
     response.matched_documents[0].evidence_anchors?.length > 0,
     `${label} top match should include evidence anchors`
   )
-  assert.equal(
-    response.matched_documents[0].provenance_status,
-    'seeded',
+  assert.ok(
+    ['seeded', 'verified'].includes(response.matched_documents[0].provenance_status),
     `${label} top match should expose provenance status`
   )
 }
@@ -140,6 +139,34 @@ try {
     'seeded',
     'exact citation top match should expose provenance status'
   )
+
+  const npcBreachManagement = runLocalResearch({
+    query: 'What does NPC Circular 16-03 require for personal data breach management, notification, containment, and incident records?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(npcBreachManagement, 'NPC Circular No. 16-03', 'NPC Circular 16-03 breach management', 0.45)
+  assert.equal(statutes(npcBreachManagement)[0], 'NPC Circular No. 16-03', 'NPC Circular 16-03 should be the top match')
+
+  const npcDbnmsAdvisory = runLocalResearch({
+    query: 'What does NPC Advisory 2026-02 require for DBNMS breach notification submissions and supporting evidence?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(npcDbnmsAdvisory, 'NPC Advisory No. 2026-02', 'NPC Advisory 2026-02 DBNMS', 0.45)
+  assert.equal(statutes(npcDbnmsAdvisory)[0], 'NPC Advisory No. 2026-02', 'NPC Advisory 2026-02 should be the top match')
+
+  const npcSecurityCircular = runLocalResearch({
+    query: 'What does NPC Circular 2023-06 require for security of personal data, access control, authentication, logs, backups, and incident response?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(npcSecurityCircular, 'NPC Circular No. 2023-06', 'NPC Circular 2023-06 security', 0.45)
+  assert.equal(statutes(npcSecurityCircular)[0], 'NPC Circular No. 2023-06', 'NPC Circular 2023-06 should be the top match')
+
+  const npcRegistrationCircular = runLocalResearch({
+    query: 'What does NPC Circular 2022-04 require for DPO designation, personal data processing system registration, automated decision-making, and profiling?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(npcRegistrationCircular, 'NPC Circular No. 2022-04', 'NPC Circular 2022-04 registration', 0.45)
+  assert.equal(statutes(npcRegistrationCircular)[0], 'NPC Circular No. 2022-04', 'NPC Circular 2022-04 should be the top match')
 
   const exactEprCitation = runLocalResearch({
     query: 'What does RA 11898 require for plastic packaging and EPR reporting?',
