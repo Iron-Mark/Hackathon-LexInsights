@@ -139,7 +139,7 @@ const scenarios = [
     label: 'payment CFT sanctions workflow',
     params: {
       query:
-        'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AML suspicious transactions, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, customer privacy, and consumer remediation?',
+        'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AMLA IRR customer due diligence, beneficial ownership, covered transaction reports, suspicious transaction reports, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, customer privacy, and consumer remediation?',
       user_id: 'performance',
       use_deep_search: true,
     },
@@ -159,7 +159,7 @@ const scenarios = [
     label: 'BSP consumer fraud and VASP workflow',
     params: {
       query:
-        'What controls apply to BSP Circular 1160 financial consumer protection, BSP Circular 1169 consumer assistance mechanism, BSP Circular 1140 fraud management system, BSP Circular 1108 virtual asset service provider registration, wallet fraud, unauthorized transfers, crypto custody, transaction monitoring, AML escalation, and consumer remediation?',
+        'What controls apply to BSP Circular 1160 financial consumer protection, BSP Circular 1169 consumer assistance mechanism, BSP Circular 1140 fraud management system, BSP Circular 1108 virtual asset service provider registration, wallet fraud, unauthorized transfers, crypto custody, transaction monitoring, AMLA IRR CDD, beneficial ownership, STR, CTR, tipping-off controls, AML escalation, and consumer remediation?',
       user_id: 'performance',
       use_deep_search: true,
     },

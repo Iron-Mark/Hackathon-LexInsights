@@ -161,6 +161,13 @@ const BUSINESS_TAX_STATUTES = [
 const BUSINESS_TAX_FRAMEWORK_ID = 'business-tax-registration-invoicing-and-incentives'
 const DIGITAL_SERVICES_VAT_LAW_ID = 'ra-12023'
 
+const AMLC_AMLA_IRR_ID = 'amlc-irr-2018'
+const AMLC_AMLA_IRR_FRAMEWORK_IDS = [
+  'payment-systems-cft-and-sanctions-controls',
+  'financial-account-scam-response',
+  'banking-lending-insurance-and-financial-institutions',
+]
+
 async function loadLocalResearchData() {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
@@ -561,6 +568,42 @@ try {
   assert.ok(
     digitalServicesVatEvidenceText.includes('digital') && digitalServicesVatEvidenceText.includes('vat'),
     `${DIGITAL_SERVICES_VAT_LAW_ID} evidence anchors should describe digital services VAT`
+  )
+
+  const amlaIrrDocument = data.corpus.find((document) => document.id === AMLC_AMLA_IRR_ID)
+  assert.ok(amlaIrrDocument, 'Corpus should include 2018 AMLA IRR document')
+  assert.equal(amlaIrrDocument?.statute, '2018 AMLA IRR', '2018 AMLA IRR statute label should be stable')
+
+  const amlaIrrCoverage = coverageById.get(AMLC_AMLA_IRR_ID)
+  const amlaIrrSource = sourcesById.get(AMLC_AMLA_IRR_ID)
+  const amlaIrrEvidenceText = (evidenceById.get(AMLC_AMLA_IRR_ID) || [])
+    .map((anchor) => `${anchor.label} ${anchor.note} ${anchor.supports.join(' ')}`)
+    .join(' ')
+    .toLowerCase()
+
+  for (const frameworkId of AMLC_AMLA_IRR_FRAMEWORK_IDS) {
+    assert.ok(
+      amlaIrrCoverage?.frameworkIds.includes(frameworkId),
+      `${AMLC_AMLA_IRR_ID} coverage should reference ${frameworkId}`
+    )
+  }
+
+  assert.equal(amlaIrrCoverage?.coverageStatus, 'golden', `${AMLC_AMLA_IRR_ID} should have golden coverage`)
+  assert.equal(amlaIrrCoverage?.draftCheckCovered, true, `${AMLC_AMLA_IRR_ID} should be covered by draft checks`)
+  assert.ok(amlaIrrSource, `${AMLC_AMLA_IRR_ID} should have an authority source record`)
+  assert.equal(amlaIrrSource?.sourceName, 'Anti-Money Laundering Council', `${AMLC_AMLA_IRR_ID} should use AMLC as source`)
+  assert.equal(amlaIrrSource?.authorityType, 'regulation', `${AMLC_AMLA_IRR_ID} should be a regulation`)
+  assert.equal(amlaIrrSource?.sourceTier, 'official-guidance', `${AMLC_AMLA_IRR_ID} should use official guidance source tier`)
+  assert.equal(amlaIrrSource?.provenanceStatus, 'verified', `${AMLC_AMLA_IRR_ID} should have verified provenance`)
+  assert.ok(amlaIrrSource?.sourceUrl.startsWith('https://www.amlc.gov.ph/'), `${AMLC_AMLA_IRR_ID} should link to AMLC`)
+  assert.ok(amlaIrrSource?.provenanceNotes?.includes('Official AMLC'), `${AMLC_AMLA_IRR_ID} should have explicit AMLC provenance notes`)
+  assert.ok(
+    amlaIrrEvidenceText.includes('customer due diligence'),
+    `${AMLC_AMLA_IRR_ID} evidence should cover customer due diligence`
+  )
+  assert.ok(
+    amlaIrrEvidenceText.includes('suspicious transaction'),
+    `${AMLC_AMLA_IRR_ID} evidence should cover suspicious transaction reporting`
   )
 
   for (const [index, lawId] of PRIVACY_OPERATIONS_LAW_IDS.entries()) {

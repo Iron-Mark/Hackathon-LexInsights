@@ -214,6 +214,13 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
   },
   {
     sourceId: 'bsp-circular-1108-2021',
+    targetId: 'amlc-irr-2018',
+    type: 'workflow_related_to',
+    label: 'VASP guidance depends on AMLA IRR-style customer due diligence and transaction monitoring controls',
+    weight: 0.95,
+  },
+  {
+    sourceId: 'bsp-circular-1108-2021',
     targetId: 'ra-10173',
     type: 'workflow_related_to',
     label: 'Virtual-asset service provider customer data and privacy relationship',
@@ -379,6 +386,34 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     type: 'cross_references',
     label: 'CFT controls share AMLC reporting framework',
     weight: 1.2,
+  },
+  {
+    sourceId: 'amlc-irr-2018',
+    targetId: 'ra-9160',
+    type: 'implements',
+    label: 'AMLA implementing rules for RA 9160 covered-person and reporting controls',
+    weight: 1.3,
+  },
+  {
+    sourceId: 'amlc-irr-2018',
+    targetId: 'ra-10168',
+    type: 'workflow_related_to',
+    label: 'AMLA IRR supports CFT escalation and AMLC coordination',
+    weight: 1.05,
+  },
+  {
+    sourceId: 'amlc-irr-2018',
+    targetId: 'ra-12010',
+    type: 'workflow_related_to',
+    label: 'AMLA IRR supports financial-account scam suspicious-transaction escalation',
+    weight: 1,
+  },
+  {
+    sourceId: 'bsp-circular-1140-2022',
+    targetId: 'amlc-irr-2018',
+    type: 'workflow_related_to',
+    label: 'Fraud-management alerts can trigger AML suspicious-transaction escalation',
+    weight: 0.9,
   },
   {
     sourceId: 'ra-10168',

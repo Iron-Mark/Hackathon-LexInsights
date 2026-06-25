@@ -27,6 +27,7 @@ const PROVENANCE_NOTES: Partial<Record<string, string>> = {
   'bsp-circular-1140-2022': 'Official BSP fraud-management system guidance in the bundled local corpus; verify current BSP technology-risk and fraud-reporting expectations before operational use.',
   'bsp-circular-1160-2022': 'Official BSP financial consumer protection implementing regulations in the bundled local corpus; verify current Manual of Regulations amendments and BSP issuances before operational use.',
   'bsp-circular-1169-2023': 'Official BSP consumer assistance mechanism guidance in the bundled local corpus; verify current BSP complaint categories, reporting forms, and supervisory expectations before operational use.',
+  'amlc-irr-2018': 'Official AMLC 2018 AMLA implementing rules, using the January 2021 amendment PDF, in the bundled local corpus; verify current AMLC issuances, portal procedures, covered-person registration, and reporting rules before operational use.',
   'ra-12023': 'Official Lawphil VAT on digital services statute in the bundled local corpus.',
   'bir-rr-2025-03': 'Official BIR implementing regulations for VAT on digital services; verify against current BIR issuances before relying on operational details.',
   'bir-rmc-2025-47': 'Official BIR circular guidance for digital-services VAT implementation; verify against current BIR issuances before relying on form or portal details.',

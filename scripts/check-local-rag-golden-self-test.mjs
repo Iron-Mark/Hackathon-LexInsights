@@ -148,6 +148,15 @@ try {
   assertCompletedMatch(dpaIrrImplementation, 'RA 10173', 'Data Privacy Act IRR related statute', 0.35)
   assert.equal(statutes(dpaIrrImplementation)[0], 'Data Privacy Act IRR', 'Data Privacy Act IRR should be the top implementation match')
 
+  const amlaIrrImplementation = runLocalResearch({
+    query:
+      'What does the 2018 AMLA IRR require for covered-person classification, customer due diligence, beneficial ownership, covered and suspicious transaction reporting, recordkeeping, confidentiality, and AMLC compliance program controls?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(amlaIrrImplementation, '2018 AMLA IRR', '2018 AMLA IRR implementation', 0.45)
+  assertCompletedMatch(amlaIrrImplementation, 'RA 9160', '2018 AMLA IRR related statute', 0.35)
+  assert.equal(statutes(amlaIrrImplementation)[0], '2018 AMLA IRR', '2018 AMLA IRR should be the top implementation match')
+
   const npcBreachManagement = runLocalResearch({
     query: 'What does NPC Circular 16-03 require for personal data breach management, notification, containment, and incident records?',
     user_id: 'golden',
@@ -438,7 +447,7 @@ try {
   })
   assertCompletedMatches(
     bspVaspGuidelines,
-    ['BSP Circular No. 1108, s. 2021', 'RA 11127', 'RA 9160'],
+    ['BSP Circular No. 1108, s. 2021', 'RA 11127', 'RA 9160', '2018 AMLA IRR'],
     'BSP Circular 1108 VASP workflow',
     0.25
   )
@@ -475,7 +484,7 @@ try {
   })
   assertCompletedMatches(
     paymentCftSanctionsWorkflow,
-    ['RA 11127', 'RA 9160', 'RA 10168', 'RA 11479', 'RA 12010', 'RA 11765', 'RA 8484'],
+    ['RA 11127', 'RA 9160', '2018 AMLA IRR', 'RA 10168', 'RA 11479', 'RA 12010', 'RA 11765', 'RA 8484'],
     'payment systems CFT sanctions workflow'
   )
   assert.ok(
@@ -601,7 +610,11 @@ try {
     user_id: 'golden',
     use_deep_search: true,
   })
-  assertCompletedMatches(financialAccountScamWorkflow, ['RA 12010', 'RA 11765', 'RA 9160'], 'financial account scam workflow')
+  assertCompletedMatches(
+    financialAccountScamWorkflow,
+    ['RA 12010', 'RA 11765', 'RA 9160', '2018 AMLA IRR'],
+    'financial account scam workflow'
+  )
 
   const exactDigitalServicesVatCitation = runLocalResearch({
     query: 'What does RA 12023 require for VAT on Digital Services, NRDSP BIR registration, invoicing, and remittance?',
