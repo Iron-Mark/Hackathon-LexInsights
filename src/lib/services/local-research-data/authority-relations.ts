@@ -3,6 +3,13 @@ import type { LocalAuthorityRelation } from './types'
 
 const CURATED_RELATIONS: LocalAuthorityRelation[] = [
   {
+    sourceId: 'npc-irr-2016',
+    targetId: 'ra-10173',
+    type: 'implements',
+    label: 'Data Privacy Act implementing rules for RA 10173',
+    weight: 1.3,
+  },
+  {
     sourceId: 'npc-advisory-2024-04',
     targetId: 'ra-10173',
     type: 'agency_guidance_for',
@@ -15,6 +22,13 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     type: 'agency_guidance_for',
     label: 'NPC breach-management guidance for Data Privacy Act compliance',
     weight: 1.2,
+  },
+  {
+    sourceId: 'npc-circular-16-03',
+    targetId: 'npc-irr-2016',
+    type: 'workflow_related_to',
+    label: 'Breach-management circular operationalizes Data Privacy Act IRR breach duties',
+    weight: 1,
   },
   {
     sourceId: 'npc-advisory-2026-02',
@@ -31,11 +45,25 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     weight: 1.2,
   },
   {
+    sourceId: 'npc-circular-2023-06',
+    targetId: 'npc-irr-2016',
+    type: 'workflow_related_to',
+    label: 'Security circular operationalizes Data Privacy Act IRR safeguard duties',
+    weight: 1,
+  },
+  {
     sourceId: 'npc-circular-2023-04',
     targetId: 'ra-10173',
     type: 'agency_guidance_for',
     label: 'NPC consent guidance for Data Privacy Act compliance',
     weight: 1.15,
+  },
+  {
+    sourceId: 'npc-circular-2023-04',
+    targetId: 'npc-irr-2016',
+    type: 'workflow_related_to',
+    label: 'Consent circular operationalizes Data Privacy Act IRR consent and notice duties',
+    weight: 0.98,
   },
   {
     sourceId: 'npc-circular-2022-04',
@@ -45,6 +73,13 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     weight: 1.15,
   },
   {
+    sourceId: 'npc-circular-2022-04',
+    targetId: 'npc-irr-2016',
+    type: 'workflow_related_to',
+    label: 'Registration and DPO circular operationalizes Data Privacy Act IRR accountability duties',
+    weight: 0.98,
+  },
+  {
     sourceId: 'npc-circular-2020-03',
     targetId: 'ra-10173',
     type: 'agency_guidance_for',
@@ -52,11 +87,25 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     weight: 1.15,
   },
   {
+    sourceId: 'npc-circular-2020-03',
+    targetId: 'npc-irr-2016',
+    type: 'workflow_related_to',
+    label: 'Data-sharing circular operationalizes Data Privacy Act IRR sharing and accountability duties',
+    weight: 0.98,
+  },
+  {
     sourceId: 'npc-advisory-2025-02',
     targetId: 'ra-10173',
     type: 'agency_guidance_for',
     label: 'NPC privacy-engineering guidance for Data Privacy Act compliance',
     weight: 1.1,
+  },
+  {
+    sourceId: 'npc-advisory-2025-02',
+    targetId: 'npc-irr-2016',
+    type: 'workflow_related_to',
+    label: 'Privacy-engineering advisory supports Data Privacy Act IRR privacy-by-design controls',
+    weight: 0.95,
   },
   {
     sourceId: 'npc-advisory-2025-02',

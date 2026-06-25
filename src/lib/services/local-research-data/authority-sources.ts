@@ -4,6 +4,7 @@ import type { LocalAuthoritySource, LocalLegalDocument, LocalProvenanceStatus } 
 const DEFAULT_LAST_VERIFIED = '2026-06-25'
 
 const PROVENANCE_NOTES: Partial<Record<string, string>> = {
+  'npc-irr-2016': 'Official NPC Data Privacy Act implementing rules in the bundled local corpus; verify current NPC circulars and portal procedures before operational use.',
   'npc-circular-16-03': 'Official NPC breach-management circular in the bundled local corpus.',
   'npc-advisory-2026-02': 'Official NPC DBNMS breach-notification advisory in the bundled local corpus.',
   'npc-circular-2023-06': 'Official NPC personal-data security circular in the bundled local corpus.',

@@ -139,6 +139,15 @@ try {
     'exact citation top match should expose provenance status'
   )
 
+  const dpaIrrImplementation = runLocalResearch({
+    query:
+      'What does the Data Privacy Act IRR require for PIC, PIP, lawful processing, privacy notice, data subject rights, security measures, DPO, registration, data sharing, outsourcing, and breach notification?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(dpaIrrImplementation, 'Data Privacy Act IRR', 'Data Privacy Act IRR implementation', 0.45)
+  assertCompletedMatch(dpaIrrImplementation, 'RA 10173', 'Data Privacy Act IRR related statute', 0.35)
+  assert.equal(statutes(dpaIrrImplementation)[0], 'Data Privacy Act IRR', 'Data Privacy Act IRR should be the top implementation match')
+
   const npcBreachManagement = runLocalResearch({
     query: 'What does NPC Circular 16-03 require for personal data breach management, notification, containment, and incident records?',
     user_id: 'golden',
@@ -1060,7 +1069,7 @@ try {
   )
 
   const privacyOperationsWorkflow = runLocalResearch({
-    query: 'What RA 10173, DPO, PIC, PIP, DPS registration, consent, data sharing agreement, DBNMS breach notification, personal data security, privacy engineering, AI personal data, automated decision-making, profiling, and data-subject rights controls should a privacy office check?',
+    query: 'What RA 10173 and Data Privacy Act IRR controls should a privacy office check for DPO, PIC, PIP, lawful processing, DPS registration, consent, data sharing agreement, outsourcing, DBNMS breach notification, personal data security, privacy engineering, AI personal data, automated decision-making, profiling, and data-subject rights?',
     user_id: 'golden',
     use_deep_search: true,
   })
@@ -1068,6 +1077,7 @@ try {
     privacyOperationsWorkflow,
     [
       'RA 10173',
+      'Data Privacy Act IRR',
       'NPC Circular No. 16-03',
       'NPC Advisory No. 2026-02',
       'NPC Circular No. 2023-06',

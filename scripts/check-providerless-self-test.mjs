@@ -146,7 +146,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 232, 'Local corpus should include at least 232 authorities')
+  assert.ok(corpus.length >= 233, 'Local corpus should include at least 233 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -302,6 +302,7 @@ try {
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9003'), 'Corpus should include RA 9003')
   assert.ok(corpus.some((document) => document.statute === 'RA 10173'), 'Corpus should include RA 10173')
+  assert.ok(corpus.some((document) => document.id === 'npc-irr-2016'), 'Corpus should include Data Privacy Act IRR')
   assert.ok(corpus.some((document) => document.id === 'npc-circular-16-03'), 'Corpus should include NPC Circular 16-03')
   assert.ok(corpus.some((document) => document.id === 'npc-advisory-2026-02'), 'Corpus should include NPC Advisory 2026-02')
   assert.ok(corpus.some((document) => document.id === 'npc-circular-2023-06'), 'Corpus should include NPC Circular 2023-06')
@@ -915,6 +916,15 @@ try {
 
   assertResearchMatch(
     runLocalResearch(
+      { query: 'What does the Data Privacy Act IRR require for PIC, PIP, lawful processing, privacy notice, data subject rights, security measures, DPO, registration, data sharing, outsourcing, and breach notification?', user_id: 'self-test' },
+      'simulated remote outage'
+    ),
+    'Data Privacy Act IRR',
+    'Data Privacy Act IRR implementation query'
+  )
+
+  assertResearchMatch(
+    runLocalResearch(
       { query: 'What does NPC Circular 16-03 require for personal data breach notification, breach reports, and incident records?', user_id: 'self-test' },
       'simulated remote outage'
     ),
@@ -978,13 +988,14 @@ try {
 
   const privacyOperationsFrameworkResponse = runLocalResearch(
     {
-      query: 'What RA 10173, DPO, PIC, PIP, DPS registration, consent, data sharing agreement, DBNMS breach notification, personal data security, privacy engineering, AI personal data, automated decision-making, profiling, and data-subject rights controls should a privacy office check?',
+      query: 'What RA 10173 and Data Privacy Act IRR controls should a privacy office check for DPO, PIC, PIP, lawful processing, DPS registration, consent, data sharing agreement, outsourcing, DBNMS breach notification, personal data security, privacy engineering, AI personal data, automated decision-making, profiling, and data-subject rights?',
       user_id: 'self-test',
       use_deep_search: true,
     },
     'simulated remote outage'
   )
   assertResearchMatch(privacyOperationsFrameworkResponse, 'RA 10173', 'privacy operations framework Data Privacy Act query')
+  assertResearchMatch(privacyOperationsFrameworkResponse, 'Data Privacy Act IRR', 'privacy operations framework Data Privacy Act IRR query')
   assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Circular No. 16-03', 'privacy operations framework breach query')
   assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Advisory No. 2026-02', 'privacy operations framework DBNMS query')
   assertResearchMatch(privacyOperationsFrameworkResponse, 'NPC Circular No. 2023-06', 'privacy operations framework security query')

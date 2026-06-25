@@ -4,6 +4,7 @@ import type { LocalAuthorityCoverage, LocalCoverageStatus } from './types'
 
 const GOLDEN_AUTHORITY_IDS = new Set([
   'ra-10173',
+  'npc-irr-2016',
   'npc-circular-16-03',
   'npc-advisory-2026-02',
   'npc-circular-2023-06',
@@ -129,6 +130,7 @@ const DRAFT_CHECK_AUTHORITY_IDS = new Set([
   'ra-9003',
   'ra-11898',
   'ra-10173',
+  'npc-irr-2016',
   'npc-circular-16-03',
   'npc-advisory-2026-02',
   'npc-circular-2023-06',
