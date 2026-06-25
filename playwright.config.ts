@@ -4,12 +4,16 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3100'
 
 export default defineConfig({
   testDir: './tests/e2e',
+  outputDir: '.tmp/test-results',
   timeout: 30_000,
   expect: {
     timeout: 10_000,
   },
   fullyParallel: false,
-  reporter: [['list']],
+  reporter: [
+    ['list'],
+    ['html', { outputFolder: '.tmp/playwright-report', open: 'never' }],
+  ],
   use: {
     baseURL,
     trace: 'retain-on-failure',

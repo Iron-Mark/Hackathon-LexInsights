@@ -134,9 +134,8 @@ try {
     exactCitation.matched_documents[0].evidence_anchors?.length > 0,
     'exact citation top match should include evidence anchors'
   )
-  assert.equal(
-    exactCitation.matched_documents[0].provenance_status,
-    'seeded',
+  assert.ok(
+    ['seeded', 'verified'].includes(exactCitation.matched_documents[0].provenance_status),
     'exact citation top match should expose provenance status'
   )
 
@@ -875,6 +874,31 @@ try {
   assert.ok(
     downstreamFuelsWorkflow.summary.includes('Downstream Fuel, LPG, and Biofuel Controls Stack'),
     'downstream fuels workflow should include its framework section'
+  )
+
+  const privacyOperationsWorkflow = runLocalResearch({
+    query: 'What RA 10173, DPO, PIC, PIP, DPS registration, consent, data sharing agreement, DBNMS breach notification, personal data security, privacy engineering, AI personal data, automated decision-making, profiling, and data-subject rights controls should a privacy office check?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    privacyOperationsWorkflow,
+    [
+      'RA 10173',
+      'NPC Circular No. 16-03',
+      'NPC Advisory No. 2026-02',
+      'NPC Circular No. 2023-06',
+      'NPC Circular No. 2023-04',
+      'NPC Circular No. 2022-04',
+      'NPC Circular No. 2020-03',
+      'NPC Advisory No. 2025-02',
+    ],
+    'privacy operations and NPC compliance workflow',
+    0.25
+  )
+  assert.ok(
+    privacyOperationsWorkflow.summary.includes('Privacy Operations and NPC Compliance Stack'),
+    'privacy operations workflow should include its framework section'
   )
 
   const noResult = runLocalResearch({ query: 'How do I bake sourdough bread at high altitude?', user_id: 'golden' })

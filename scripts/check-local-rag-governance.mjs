@@ -74,6 +74,38 @@ const CHILD_ADOPTION_STATUS_STATUTES = [
 
 const CHILD_ADOPTION_STATUS_FRAMEWORK_ID = 'child-adoption-foundling-and-civil-status'
 
+const PRIVACY_OPERATIONS_LAW_IDS = [
+  'npc-circular-16-03',
+  'npc-advisory-2026-02',
+  'npc-circular-2023-06',
+  'npc-circular-2023-04',
+  'npc-circular-2022-04',
+  'npc-circular-2020-03',
+  'npc-advisory-2025-02',
+]
+
+const PRIVACY_OPERATIONS_STATUTES = [
+  'NPC Circular No. 16-03',
+  'NPC Advisory No. 2026-02',
+  'NPC Circular No. 2023-06',
+  'NPC Circular No. 2023-04',
+  'NPC Circular No. 2022-04',
+  'NPC Circular No. 2020-03',
+  'NPC Advisory No. 2025-02',
+]
+
+const PRIVACY_OPERATIONS_FRAMEWORK_ID = 'privacy-operations-and-npc-compliance'
+
+const PRIVACY_OPERATIONS_AUTHORITY_TYPES = new Map([
+  ['npc-circular-16-03', 'regulation'],
+  ['npc-advisory-2026-02', 'advisory'],
+  ['npc-circular-2023-06', 'regulation'],
+  ['npc-circular-2023-04', 'regulation'],
+  ['npc-circular-2022-04', 'regulation'],
+  ['npc-circular-2020-03', 'regulation'],
+  ['npc-advisory-2025-02', 'advisory'],
+])
+
 async function loadLocalResearchData() {
   const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
@@ -298,6 +330,74 @@ try {
       coverageById.get(lawId)?.frameworkIds.includes(CHILD_ADOPTION_STATUS_FRAMEWORK_ID),
       `${lawId} coverage should reference ${CHILD_ADOPTION_STATUS_FRAMEWORK_ID}`
     )
+  }
+
+  for (const [index, lawId] of PRIVACY_OPERATIONS_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `NPC privacy operations corpus should include ${PRIVACY_OPERATIONS_STATUTES[index]}`
+    )
+  }
+
+  const privacyOperationsFramework = data.frameworks.find((framework) => (
+    framework.id === PRIVACY_OPERATIONS_FRAMEWORK_ID
+  ))
+
+  assert.ok(
+    privacyOperationsFramework,
+    `${PRIVACY_OPERATIONS_FRAMEWORK_ID} framework should exist`
+  )
+  assert.ok(
+    privacyOperationsFramework.lawIds.includes('ra-10173'),
+    `${PRIVACY_OPERATIONS_FRAMEWORK_ID} should anchor to RA 10173`
+  )
+  assert.ok(
+    PRIVACY_OPERATIONS_LAW_IDS.every((lawId) => privacyOperationsFramework.lawIds.includes(lawId)),
+    `${PRIVACY_OPERATIONS_FRAMEWORK_ID} should include ${PRIVACY_OPERATIONS_STATUTES.join(', ')}`
+  )
+
+  const privacyOperationsFrameworkText = [
+    privacyOperationsFramework.title,
+    privacyOperationsFramework.summary,
+    ...privacyOperationsFramework.triggers,
+    ...privacyOperationsFramework.sequence,
+    ...privacyOperationsFramework.checkpoints,
+  ].join(' ').toLowerCase()
+
+  assert.ok(
+    privacyOperationsFrameworkText.includes('privacy'),
+    `${PRIVACY_OPERATIONS_FRAMEWORK_ID} should be privacy-facing`
+  )
+
+  for (const requiredTopic of ['breach', 'dpo', 'registration', 'consent', 'data sharing', 'privacy engineering']) {
+    assert.ok(
+      privacyOperationsFrameworkText.includes(requiredTopic),
+      `${PRIVACY_OPERATIONS_FRAMEWORK_ID} should cover ${requiredTopic}`
+    )
+  }
+
+  for (const lawId of PRIVACY_OPERATIONS_LAW_IDS) {
+    const coverage = coverageById.get(lawId)
+    const source = sourcesById.get(lawId)
+
+    assert.ok(
+      coverage?.frameworkIds.includes(PRIVACY_OPERATIONS_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${PRIVACY_OPERATIONS_FRAMEWORK_ID}`
+    )
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.equal(coverage?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
+
+    assert.ok(source, `${lawId} should have an authority source record`)
+    assert.equal(source.sourceName, 'National Privacy Commission', `${lawId} should use NPC as source`)
+    assert.equal(source.sourceTier, 'official-guidance', `${lawId} should be official NPC guidance`)
+    assert.equal(source.provenanceStatus, 'verified', `${lawId} should have verified provenance`)
+    assert.equal(
+      source.authorityType,
+      PRIVACY_OPERATIONS_AUTHORITY_TYPES.get(lawId),
+      `${lawId} authority type should match issuance type`
+    )
+    assert.ok(source.sourceUrl.startsWith('https://privacy.gov.ph/'), `${lawId} should link to privacy.gov.ph`)
+    assert.ok(source.provenanceNotes?.includes('Official NPC'), `${lawId} should have explicit NPC provenance notes`)
   }
 
   for (const document of data.corpus) {

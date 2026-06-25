@@ -129,8 +129,8 @@ async function testDataPrivacyQuery() {
     console.log('\nResponse Status:', response.status)
     console.log('Documents Found:', response.documents_found)
 
-    fs.mkdirSync('./test-results', { recursive: true })
-    const outputPath = './test-results/rag-test-output.txt'
+    fs.mkdirSync('./.tmp/test-results', { recursive: true })
+    const outputPath = './.tmp/test-results/rag-test-output.txt'
     fs.writeFileSync(outputPath, response.summary)
     log(`\nOK: Full summary saved to: ${outputPath}`, 'green')
 
