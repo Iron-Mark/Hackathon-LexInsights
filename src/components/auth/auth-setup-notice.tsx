@@ -45,9 +45,9 @@ export function AuthSetupNotice({
           aria-hidden="true"
         />
         <div className="min-w-0">
-          <p className="text-base font-extrabold leading-6 text-slate-950 dark:text-white">
+          <h1 className="text-base font-extrabold leading-6 text-slate-950 dark:text-white">
             {title}
-          </p>
+          </h1>
           <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-iris-100/72">
             {message}
           </p>

@@ -3,8 +3,8 @@ import { expect, test, type Page } from '@playwright/test'
 const protectedRoutes = ['/documents']
 const isManagedLocalWebServer = !process.env.PLAYWRIGHT_BASE_URL
 const diagnosticsExpected = isManagedLocalWebServer || process.env.ENABLE_DIAGNOSTIC_ROUTES === 'true'
-const authRouteHeading = /Sign in to LexInSight|Clerk setup required/
-const signupRouteHeading = /Create your LexInSight account|Clerk setup required/
+const authRouteHeading = /Sign in to LexInSight|Account sign-in is unavailable/
+const signupRouteHeading = /Create your LexInSight account|Account sign-in is unavailable/
 
 function authAction(page: Page, name: 'Sign in' | 'Sign up') {
   return page
@@ -15,6 +15,14 @@ function authAction(page: Page, name: 'Sign in' | 'Sign up') {
 
 function chatInput(page: Page) {
   return page.getByRole('textbox', { name: /Ask about (PH law|Philippine law|Philippine legal compliance)/ })
+}
+
+function chatHistory(page: Page) {
+  return page.getByRole('navigation', { name: 'Chat history' })
+}
+
+function collapseChatHistoryButton(page: Page) {
+  return chatHistory(page).getByRole('button', { name: 'Collapse chat history' })
 }
 
 test.describe('LexInSight smoke checks', () => {
@@ -76,9 +84,9 @@ test.describe('LexInSight smoke checks', () => {
     await expect(page.getByText('LexInSight').first()).toBeVisible()
     await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(chatInput(page)).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeVisible()
-    await page.getByRole('button', { name: 'Collapse chat history' }).click()
-    await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeHidden()
+    await expect(collapseChatHistoryButton(page)).toBeVisible()
+    await collapseChatHistoryButton(page).click()
+    await expect(collapseChatHistoryButton(page)).toBeHidden()
 
     await page.getByRole('button', { name: /^New Chat$/ }).click()
     await expect(page).toHaveURL(/\/chat\/guest_/)
@@ -137,7 +145,7 @@ test.describe('LexInSight smoke checks', () => {
     expect(initialLayout.hasHorizontalOverflow).toBe(false)
 
     await page.getByRole('button', { name: 'Open sidebar menu' }).click()
-    await expect(page.getByRole('button', { name: 'Collapse chat history' })).toBeVisible()
+    await expect(collapseChatHistoryButton(page)).toBeVisible()
     await page.evaluate(() => {
       const installPromptEvent = new Event('beforeinstallprompt', { cancelable: true })
 
@@ -149,7 +157,7 @@ test.describe('LexInSight smoke checks', () => {
       window.dispatchEvent(installPromptEvent)
     })
     await expect(page.getByRole('button', { name: 'Install LexInSight' })).toBeVisible()
-    await page.getByRole('button', { name: 'Collapse chat history' }).click()
+    await collapseChatHistoryButton(page).click()
     await expect.poll(async () => {
       return page.evaluate(() => {
         const history = document.querySelector<HTMLElement>('[aria-label="Chat history"]')
@@ -210,7 +218,7 @@ test.describe('LexInSight smoke checks', () => {
 
     await expect(completedAssistantMessage).toBeVisible({ timeout: 75_000 })
     await expect(page.getByRole('heading', { name: 'Providerless Local Research Brief' })).toBeVisible()
-    await expect(page.getByText('Ecological Solid Waste Management Act of 2000')).toBeVisible()
+    await expect(completedAssistantMessage.getByText('Ecological Solid Waste Management Act of 2000').first()).toBeVisible()
     await expect(page.getByRole('button', { name: 'Run deep research' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Send standard message' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Mode: General' })).toBeVisible()
@@ -270,8 +278,8 @@ test.describe('LexInSight smoke checks', () => {
 
     await page.goto('/auth/login')
 
-    await expect(page.getByRole('heading', { name: 'Clerk setup required' })).toBeVisible()
-    await expect(page.getByText('Add Clerk publishable and secret keys')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Account sign-in is unavailable' })).toBeVisible()
+    await expect(page.getByText('Add the Clerk publishable and secret keys')).toBeVisible()
   })
 
   for (const route of protectedRoutes) {
