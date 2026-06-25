@@ -176,6 +176,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'EOPT BIR implementation workflow',
+    params: {
+      query:
+        'What controls apply to BIR RR 7-2024, RR 11-2024, RMC 77-2024, EOPT registration, COR, invoices, official receipt transition, unused official receipts, ATP serial numbers, VAT, filing, payment, refund, reduced penalties, and taxpayer classification?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'professional pharmacy housing agri workflow',
     params: {
       query:

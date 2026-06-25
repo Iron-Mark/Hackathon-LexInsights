@@ -159,6 +159,43 @@ const BUSINESS_TAX_STATUTES = [
 ]
 
 const BUSINESS_TAX_FRAMEWORK_ID = 'business-tax-registration-invoicing-and-incentives'
+const EOPT_IMPLEMENTATION_LAW_IDS = [
+  'bir-rr-2024-03',
+  'bir-rr-2024-04',
+  'bir-rr-2024-05',
+  'bir-rr-2024-06',
+  'bir-rr-2024-07',
+  'bir-rr-2024-08',
+  'bir-rr-2024-11',
+  'bir-rmc-2024-77',
+]
+
+const EOPT_IMPLEMENTATION_STATUTES = [
+  'RR 3-2024',
+  'RR 4-2024',
+  'RR 5-2024',
+  'RR 6-2024',
+  'RR 7-2024',
+  'RR 8-2024',
+  'RR 11-2024',
+  'RMC 77-2024',
+]
+
+const EOPT_IMPLEMENTATION_AUTHORITY_TYPES = new Map([
+  ['bir-rmc-2024-77', 'advisory'],
+])
+
+const EOPT_IMPLEMENTATION_REQUIRED_TERMS = new Map([
+  ['bir-rr-2024-03', ['vat', 'percentage tax']],
+  ['bir-rr-2024-04', ['filing', 'payment']],
+  ['bir-rr-2024-05', ['refund']],
+  ['bir-rr-2024-06', ['penalty', 'micro']],
+  ['bir-rr-2024-07', ['invoice', 'official receipt']],
+  ['bir-rr-2024-08', ['taxpayer classification']],
+  ['bir-rr-2024-11', ['transitory', 'unused official receipt']],
+  ['bir-rmc-2024-77', ['invoice', 'clarification']],
+])
+
 const DIGITAL_SERVICES_VAT_LAW_ID = 'ra-12023'
 
 const AMLC_AMLA_IRR_ID = 'amlc-irr-2018'
@@ -492,11 +529,78 @@ try {
     businessTaxFrameworkText.includes('invoice') || businessTaxFrameworkText.includes('invoicing'),
     `${BUSINESS_TAX_FRAMEWORK_ID} should cover invoicing`
   )
+  for (const requiredTopic of ['taxpayer classification', 'official receipt', 'refund', 'unused-form']) {
+    assert.ok(
+      businessTaxFrameworkText.includes(requiredTopic),
+      `${BUSINESS_TAX_FRAMEWORK_ID} should cover EOPT ${requiredTopic}`
+    )
+  }
   assert.ok(
     businessTaxFrameworkText.includes('nrdsp') ||
       businessTaxFrameworkText.includes('nonresident digital service provider'),
     `${BUSINESS_TAX_FRAMEWORK_ID} should cover NRDSP workflows`
   )
+
+  for (const [index, lawId] of EOPT_IMPLEMENTATION_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `EOPT implementation corpus should include ${EOPT_IMPLEMENTATION_STATUTES[index]}`
+    )
+    assert.ok(
+      businessTaxFramework.lawIds.includes(lawId),
+      `${BUSINESS_TAX_FRAMEWORK_ID} should include ${EOPT_IMPLEMENTATION_STATUTES[index]}`
+    )
+
+    const document = data.corpus.find((corpusDocument) => corpusDocument.id === lawId)
+    const coverage = coverageById.get(lawId)
+    const source = sourcesById.get(lawId)
+    const evidenceText = (evidenceById.get(lawId) || [])
+      .map((anchor) => `${anchor.label} ${anchor.note} ${anchor.supports.join(' ')}`)
+      .join(' ')
+      .toLowerCase()
+    const documentText = [
+      document?.statute || '',
+      document?.title || '',
+      document?.shortTitle || '',
+      document?.summary || '',
+      ...(document?.aliases || []),
+      ...(document?.topics || []),
+      ...(document?.keywords || []),
+      ...(document?.obligations || []),
+      ...(document?.commonGaps || []),
+    ].join(' ').toLowerCase()
+
+    assert.ok(document, `${lawId} should have a corpus document`)
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.equal(coverage?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
+    assert.ok(
+      coverage?.frameworkIds.includes(BUSINESS_TAX_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${BUSINESS_TAX_FRAMEWORK_ID}`
+    )
+    assert.ok(source, `${lawId} should have an authority source record`)
+    assert.equal(source?.sourceName, 'Bureau of Internal Revenue', `${lawId} should use BIR as source`)
+    assert.equal(
+      source?.authorityType,
+      EOPT_IMPLEMENTATION_AUTHORITY_TYPES.get(lawId) || 'regulation',
+      `${lawId} should have the expected authority type`
+    )
+    assert.equal(source?.sourceTier, 'official-guidance', `${lawId} should use official BIR guidance`)
+    assert.equal(source?.provenanceStatus, 'verified', `${lawId} should have verified provenance`)
+    assert.ok(source?.sourceUrl.startsWith('https://bir-cdn.bir.gov.ph/'), `${lawId} should link to a BIR-hosted PDF`)
+    assert.ok(source?.provenanceNotes?.includes('Official BIR'), `${lawId} should have explicit BIR provenance notes`)
+    assert.ok(documentText.includes('eopt') || documentText.includes('ease of paying taxes'), `${lawId} should mention EOPT`)
+
+    for (const requiredTerm of EOPT_IMPLEMENTATION_REQUIRED_TERMS.get(lawId) || []) {
+      assert.ok(
+        documentText.includes(requiredTerm),
+        `${lawId} should cover ${requiredTerm}`
+      )
+    }
+    assert.ok(
+      evidenceText.length > 0 && (evidenceText.includes('eopt') || evidenceText.includes('tax')),
+      `${lawId} evidence anchors should describe EOPT or tax support`
+    )
+  }
 
   const digitalServicesVatDocument = data.corpus.find((document) => document.id === DIGITAL_SERVICES_VAT_LAW_ID)
   assert.ok(digitalServicesVatDocument, 'Corpus should include RA 12023 digital services VAT document')
