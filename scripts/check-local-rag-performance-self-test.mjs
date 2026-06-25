@@ -166,6 +166,16 @@ const scenarios = [
     p95Limit: 70,
   },
   {
+    label: 'labor implementation and SEC contact workflow',
+    params: {
+      query:
+        'What controls apply to DOLE termination twin notice, labor-only contracting, contractor registration, OSH program safety officer, workplace accident reports, SEC MC28 official email, official cellphone number, corporate contact records, and Revised Corporation Code context?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'EPR plastic packaging workflow',
     params: {
       query:

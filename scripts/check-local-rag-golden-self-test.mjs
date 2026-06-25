@@ -669,6 +669,69 @@ try {
     'workplace pay and flexible work workflow should include its framework section'
   )
 
+  const terminationDueProcessWorkflow = runLocalResearch({
+    query:
+      'What DOLE Department Order 147-15, twin notice, notice to explain, hearing, just cause, authorized cause, separation pay, final pay, and dismissal records apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    terminationDueProcessWorkflow,
+    ['DOLE Department Order No. 147-15', 'PD 442'],
+    'labor termination due process workflow',
+    0.25
+  )
+  assert.equal(statutes(terminationDueProcessWorkflow)[0], 'DOLE Department Order No. 147-15', 'termination workflow should rank DOLE DO 147-15 first')
+  assert.ok(
+    terminationDueProcessWorkflow.summary.includes('Workplace Pay, Flexible Work, and Family Support Stack'),
+    'termination workflow should include the workplace pay and labor framework section'
+  )
+
+  const contractingWorkflow = runLocalResearch({
+    query:
+      'What DOLE Department Order 174-17, labor-only contracting, contractor registration, service agreement, principal contractor, worker deployment, supervision boundary, payroll, and benefits records apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    contractingWorkflow,
+    ['DOLE Department Order No. 174-17', 'PD 442'],
+    'labor contracting and subcontracting workflow',
+    0.25
+  )
+  assert.equal(statutes(contractingWorkflow)[0], 'DOLE Department Order No. 174-17', 'contracting workflow should rank DOLE DO 174-17 first')
+
+  const oshIrrWorkflow = runLocalResearch({
+    query:
+      'What DOLE Department Order 198-18, OSH program, safety officer, safety committee, worker safety training, PPE, workplace accident report, DOLE inspection, and corrective action controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(oshIrrWorkflow, ['DOLE Department Order No. 198-18', 'RA 11058'], 'OSH IRR workflow', 0.25)
+  assert.equal(statutes(oshIrrWorkflow)[0], 'DOLE Department Order No. 198-18', 'OSH IRR workflow should rank DOLE DO 198-18 first')
+  assert.ok(
+    oshIrrWorkflow.summary.includes('Workplace, School, Public Safety, and Protection Stack'),
+    'OSH IRR workflow should include the workplace safety framework section'
+  )
+
+  const secContactWorkflow = runLocalResearch({
+    query:
+      'What SEC MC 28 official email address, official cellphone number, authorized representative, MC28 portal, corporate contact, notice, reportorial records, and Revised Corporation Code context should a corporation maintain?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    secContactWorkflow,
+    ['SEC Memorandum Circular No. 28, s. 2020', 'RA 11232'],
+    'SEC official email and mobile number workflow',
+    0.25
+  )
+  assert.equal(statutes(secContactWorkflow)[0], 'SEC Memorandum Circular No. 28, s. 2020', 'SEC contact workflow should rank SEC MC28 first')
+  assert.ok(
+    secContactWorkflow.summary.includes('Business Market Entry, Ownership, Cooperative, and Secured Finance Stack'),
+    'SEC contact workflow should include the business market-entry framework section'
+  )
+
   const immigrationWorkflow = runLocalResearch({
     query: 'What authority applies to foreign visitor admission, visa status, passport handling, reacquired citizenship, and overseas Filipino records?',
     user_id: 'golden',
@@ -1084,6 +1147,11 @@ try {
   assert.equal(noResult.documents_found, 0, 'unrelated query should not report documents')
   assert.equal(noResult.confidence_score, 0, 'unrelated query should have zero confidence')
   assert.ok(noResult.summary.includes('No strong match was found'), 'unrelated query should explain no local match')
+  assert.ok(
+    noResult.summary.includes('DOLE Department Order 147-15') &&
+      noResult.summary.includes('SEC MC 28 s. 2020'),
+    'unrelated query should suggest current labor and SEC local corpus examples'
+  )
 
   const unknownCitation = runLocalResearch({ query: 'What is RA 999999 about?', user_id: 'golden' })
   assert.equal(unknownCitation.status, 'no_results', 'unknown RA citation should return no_results')
