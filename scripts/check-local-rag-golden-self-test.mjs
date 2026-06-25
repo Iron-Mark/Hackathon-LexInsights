@@ -90,6 +90,13 @@ function assertCompletedMatches(response, expectedStatutes, label, minConfidence
   assert.ok(response.retrieval_metadata, `${label} should include retrieval metadata`)
 }
 
+function assertSummaryIncludesAny(response, expectedFragments, label) {
+  assert.ok(
+    expectedFragments.some((fragment) => response.summary.includes(fragment)),
+    `${label} should include one of: ${expectedFragments.join(', ')}`
+  )
+}
+
 function assertExactCitationMatch(response, expectedStatute, citationNumber, label, minConfidence = 0.55) {
   assertCompletedMatch(response, expectedStatute, label, minConfidence)
   assert.equal(statutes(response)[0], expectedStatute, `${label} should be the top match`)
@@ -181,6 +188,36 @@ try {
     user_id: 'golden',
   })
   assertExactCitationMatch(exactDoeCitation, 'RA 7638', '7638', 'exact RA 7638 citation')
+
+  const exactEducationGovernanceCitation = runLocalResearch({
+    query: 'What does RA 9155 require for DepEd basic education governance, school divisions, and school heads?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactEducationGovernanceCitation, 'RA 9155', '9155', 'exact RA 9155 citation')
+
+  const exactKindergartenCitation = runLocalResearch({
+    query: 'What does RA 10157 require for kindergarten education and learner admission?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactKindergartenCitation, 'RA 10157', '10157', 'exact RA 10157 citation')
+
+  const exactEccdCitation = runLocalResearch({
+    query: 'What does RA 12199 require for ECCD, early childhood care, child development centers, and LGU coordination?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactEccdCitation, 'RA 12199', '12199', 'exact RA 12199 citation')
+
+  const exactOpenDistanceLearningCitation = runLocalResearch({
+    query: 'What does RA 10650 require for open learning, distance education, and flexible learning delivery?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactOpenDistanceLearningCitation, 'RA 10650', '10650', 'exact RA 10650 citation')
+
+  const exactInclusiveEducationCitation = runLocalResearch({
+    query: 'What does RA 11650 require for inclusive education services for learners with disabilities?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactInclusiveEducationCitation, 'RA 11650', '11650', 'exact RA 11650 citation')
 
   const citationVariant = runLocalResearch({
     query: 'What controls apply under R.A. No. 10173 and RA No. 8792 for online consent records?',
@@ -412,6 +449,100 @@ try {
     use_deep_search: true,
   })
   assertCompletedMatches(pppWorkflow, ['RA 11966', 'RA 12009'], 'PPP infrastructure workflow')
+
+  const basicEducationGovernanceWorkflow = runLocalResearch({
+    query: 'What DepEd basic education governance controls apply to school divisions, school heads, school operations, learner enrollment, K to 12 curriculum, learner records, and parent or guardian notices?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    basicEducationGovernanceWorkflow,
+    ['RA 9155', 'RA 10533'],
+    'DepEd basic education governance workflow'
+  )
+  assertSummaryIncludesAny(
+    basicEducationGovernanceWorkflow,
+    [
+      'Education Governance and Inclusive Learning Stack',
+      'Education, Housing, Records, and Social Benefits Stack',
+    ],
+    'DepEd basic education governance workflow'
+  )
+
+  const kindergartenEccdWorkflow = runLocalResearch({
+    query: 'What kindergarten, ECCD, early childhood care, child development center, learner admission, parent consent, health referral, and child record controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    kindergartenEccdWorkflow,
+    ['RA 10157', 'RA 12199'],
+    'kindergarten and ECCD workflow'
+  )
+  assertSummaryIncludesAny(
+    kindergartenEccdWorkflow,
+    [
+      'Education Governance and Inclusive Learning Stack',
+      'Education, Housing, Records, and Social Benefits Stack',
+    ],
+    'kindergarten and ECCD workflow'
+  )
+
+  const openDistanceLearningWorkflow = runLocalResearch({
+    query: 'What open distance learning, flexible learning delivery, distance education module, learner assessment, technology access, and learner record controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatch(openDistanceLearningWorkflow, 'RA 10650', 'open distance learning workflow')
+  assert.equal(statutes(openDistanceLearningWorkflow)[0], 'RA 10650', 'open distance learning workflow should rank RA 10650 first')
+  assertSummaryIncludesAny(
+    openDistanceLearningWorkflow,
+    [
+      'Education Governance and Inclusive Learning Stack',
+      'Education, Housing, Records, and Social Benefits Stack',
+    ],
+    'open distance learning workflow'
+  )
+
+  const inclusiveEducationWorkflow = runLocalResearch({
+    query: 'What inclusive education, learner with disability, individualized education plan, accommodation, accessibility, referral, parent participation, and confidential learner record controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    inclusiveEducationWorkflow,
+    ['RA 11650', 'RA 7277'],
+    'inclusive education learners with disabilities workflow'
+  )
+  assert.equal(statutes(inclusiveEducationWorkflow)[0], 'RA 11650', 'inclusive education workflow should rank RA 11650 first')
+  assertSummaryIncludesAny(
+    inclusiveEducationWorkflow,
+    [
+      'Education Governance and Inclusive Learning Stack',
+      'Education, Housing, Records, and Social Benefits Stack',
+    ],
+    'inclusive education learners with disabilities workflow'
+  )
+
+  const educationGovernanceInclusiveWorkflow = runLocalResearch({
+    query: 'What controls apply to DepEd governance, school division authority, kindergarten, ECCD, open distance learning, inclusive education for learners with disabilities, learner records, parent participation, accommodations, referrals, and privacy?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    educationGovernanceInclusiveWorkflow,
+    ['RA 9155', 'RA 10157', 'RA 12199', 'RA 10650', 'RA 11650'],
+    'education governance and inclusive learning workflow',
+    0.25
+  )
+  assertSummaryIncludesAny(
+    educationGovernanceInclusiveWorkflow,
+    [
+      'Education Governance and Inclusive Learning Stack',
+      'Education, Housing, Records, and Social Benefits Stack',
+    ],
+    'education governance and inclusive learning workflow'
+  )
 
   const workplacePayFlexWorkflow = runLocalResearch({
     query: 'What workplace controls apply to telecommuting work from home, service charge distribution, minimum wage orders, lactation stations, payroll records, employee privacy, and safety?',

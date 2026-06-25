@@ -1392,6 +1392,10 @@ function referenceFor(document: LocalLegalDocument) {
   return `${document.statute} - ${document.shortTitle} (${document.sourceName}: ${document.sourceUrl})`
 }
 
+function referenceForId(documentId: string) {
+  return referenceFor(LEGAL_CORPUS.find((document) => document.id === documentId) || LEGAL_CORPUS[0])
+}
+
 function genericDraftingReference() {
   return 'Providerless drafting checklist: authority, scope, implementing office, procedure, due process, effectivity, monitoring, and review.'
 }
@@ -3233,6 +3237,26 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(deped governance|shared governance|school governance|school head|school division|division superintendent|school improvement plan|learning center|education service contracting)\b/.test(normalizedDraft)) {
+    const hasGovernanceOwner = /\b(deped|central office|regional office|division|district|school head|school governing council|responsible office)\b/.test(normalizedDraft)
+    const hasGovernanceRecords = /\b(school improvement plan|monitoring|reporting|feedback|audit|records|performance indicator|accountability)\b/.test(normalizedDraft)
+    const hasCommunityParticipation = /\b(parent|guardian|community|consultation|participation|stakeholder|complaint|grievance)\b/.test(normalizedDraft)
+
+    if (!(hasGovernanceOwner && hasGovernanceRecords && hasCommunityParticipation)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'DepEd governance controls need accountability detail',
+          'DepEd governance, school-division, school-head, learning-center, or school-improvement language was detected without enough field-office ownership, accountability records, feedback, or community participation controls.',
+          'Map DepEd central, regional, division, district, school, and learning-center roles; name the school head or responsible office; add school-improvement evidence, feedback or complaint channels, monitoring, and record retention.',
+          6,
+          [referenceForId('ra-9155'), referenceForId('ra-10533')]
+        )
+      )
+    }
+  }
+
   if (/\b(basic education|k to 12|k-12|curriculum|enrollment|learner record|school operation|student record)\b/.test(normalizedDraft)) {
     const hasEducationEligibility = /\b(eligibility|enrollment|admission|covered learner|coverage|criteria)\b/.test(normalizedDraft)
     const hasEducationRecords = /\b(learner record|student record|privacy|retention|access control|confidential)\b/.test(normalizedDraft)
@@ -3247,7 +3271,81 @@ function applyTopicSpecificDraftChecks(
           'Basic-education, curriculum, enrollment, or learner-record language was detected without enough eligibility, records, accommodation, parent or guardian, grievance, or privacy controls.',
           'Add covered learners, enrollment or admission criteria, responsible school office, learner-record access and retention, parent or guardian notification, accommodation review, and grievance or appeal route.',
           6,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10533') || LEGAL_CORPUS[0])]
+          [referenceForId('ra-9155'), referenceForId('ra-10533')]
+        )
+      )
+    }
+  }
+
+  if (/\b(kindergarten|mandatory kindergarten|compulsory kindergarten|eccd|early childhood|early years|child development center|day care center|child development worker|parent education)\b/.test(normalizedDraft)) {
+    const hasChildEligibility = /\b(age|below five|zero to eight|eligibility|admission|enrollment|assessment|child find|screening)\b/.test(normalizedDraft)
+    const hasServiceCoordination = /\b(eccd council|lgu|deped|dilg|dswd|doh|nnc|child development center|kindergarten transition|referral)\b/.test(normalizedDraft)
+    const hasChildRecordSafeguards = /\b(parent|guardian|consent|privacy|confidential|retention|health|nutrition|disability|records)\b/.test(normalizedDraft)
+
+    if (!(hasChildEligibility && hasServiceCoordination && hasChildRecordSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Kindergarten and ECCD controls need transition detail',
+          'Kindergarten, ECCD, early-childhood, child-development, or parent-education language was detected without enough child eligibility, service coordination, transition, referral, privacy, or child-record controls.',
+          'Add child age or eligibility criteria, kindergarten or ECCD transition path, responsible school or LGU/ECCD office, parent or guardian notice, health or nutrition referral, child-record privacy, and retention safeguards.',
+          6,
+          [referenceForId('ra-10157'), referenceForId('ra-12199')]
+        )
+      )
+    }
+  }
+
+  if (/\bra 10410\b/.test(normalizedDraft) && !/\bra 12199\b/.test(normalizedDraft)) {
+    findings.amber.push(
+      createFinding(
+        'amber',
+        'gap',
+        'ECCD authority may be superseded',
+        'The draft cites RA 10410 for ECCD or early-childhood duties without citing RA 12199, the 2025 ECCD System Act that repealed RA 10410.',
+        'Use RA 12199 as the current ECCD authority, keep RA 10410 only for historical or transition context, and verify current ECCD Council, DepEd, LGU, and partner-agency issuances.',
+        7,
+        [referenceForId('ra-10410'), referenceForId('ra-12199')]
+      )
+    )
+  }
+
+  if (/\b(open distance learning|odl|distance education|online college|flexible learning|virtual classroom|learning management system|lms|courseware)\b/.test(normalizedDraft)) {
+    const hasOdlAuthority = /\b(ched|tesda|upou|program authority|authorization|accreditation|quality assurance|peer review)\b/.test(normalizedDraft)
+    const hasOdlSupport = /\b(student support|learner support|accessibility|materials|assessment|progress monitoring|faculty|tutor|help desk)\b/.test(normalizedDraft)
+    const hasOdlRecords = /\b(records|privacy|retention|courseware|learning management system|data|access control|audit)\b/.test(normalizedDraft)
+
+    if (!(hasOdlAuthority && hasOdlSupport && hasOdlRecords)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Open-distance-learning controls are incomplete',
+          'Open-distance, flexible, online tertiary, or LMS-based learning language was detected without enough CHED/TESDA authority, quality assurance, learner support, assessment, accessibility, or learning-record controls.',
+          'Add CHED/TESDA or program authorization, delivery mode, learner support, accessible materials, assessment and progress monitoring, quality review, courseware ownership, learner-record privacy, and retention.',
+          6,
+          [referenceForId('ra-10650'), referenceForId('ra-10173')]
+        )
+      )
+    }
+  }
+
+  if (/\b(inclusive education|learner with disability|learners with disabilities|children with disabilities|child find|ilrc|inclusive learning resource center|individualized education plan|iep|reasonable accommodation at school|special education|sped)\b/.test(normalizedDraft)) {
+    const hasInclusiveIdentification = /\b(child find|screening|assessment|referral|eligibility|learner need|functional assessment)\b/.test(normalizedDraft)
+    const hasInclusiveSupport = /\b(iep|individualized education plan|reasonable accommodation|assistive|accessible|related service|support plan|ilrc|resource center)\b/.test(normalizedDraft)
+    const hasInclusiveSafeguards = /\b(parent|guardian|participation|consent|privacy|confidential|grievance|appeal|records|retention)\b/.test(normalizedDraft)
+
+    if (!(hasInclusiveIdentification && hasInclusiveSupport && hasInclusiveSafeguards)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Inclusive-education controls need learner-support detail',
+          'Inclusive-education or learner-with-disability language was detected without enough Child Find, assessment, IEP, accommodation, related-service, parent participation, grievance, or confidential-record controls.',
+          'Add Child Find or referral steps, learner assessment, IEP or support-plan owner, reasonable accommodation, accessible materials, related services, parent or guardian participation, grievance route, and confidential learner-record safeguards.',
+          7,
+          [referenceForId('ra-11650'), referenceForId('ra-7277'), referenceForId('bp-344')]
         )
       )
     }
