@@ -1,6 +1,7 @@
 'use client'
 
-import { ExternalLink, GitBranch, Sparkles, UsersRound, Wrench } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { BrainCircuit, ExternalLink, FileCheck2, GitBranch, Palette, ServerCog, Sparkles, UsersRound, Wrench } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -15,11 +16,36 @@ interface AttributionDialogProps {
 }
 
 const AUTHORS = [
-  { name: 'Jam Emmanuel Villarosa', role: 'AI Engineer & Lead Developer' },
-  { name: 'Ken Patrick Garcia', role: 'Backend & API Developer' },
-  { name: 'Mark Siazon', role: 'UI/UX Product Design & Front-end Developer' },
-  { name: 'Ashlyn Torres', role: 'QA & Project Assistant Manager' },
-]
+  {
+    name: 'Jam Emmanuel Villarosa',
+    role: 'AI Engineer & Lead Developer',
+    href: 'https://ph.linkedin.com/in/jamthedev2004',
+    Icon: BrainCircuit,
+  },
+  {
+    name: 'Ken Patrick Garcia',
+    role: 'Backend & API Developer',
+    href: 'https://ph.linkedin.com/in/ken-patrick-garcia',
+    Icon: ServerCog,
+  },
+  {
+    name: 'Mark Siazon',
+    role: 'UI/UX Product Design & Front-end Developer',
+    href: 'https://ph.linkedin.com/in/mark-siazon',
+    Icon: Palette,
+  },
+  {
+    name: 'Ashlyn Torres',
+    role: 'QA & Project Assistant Manager',
+    href: 'https://ph.linkedin.com/in/ashlyn-torres-120354329',
+    Icon: FileCheck2,
+  },
+] satisfies Array<{
+  name: string
+  role: string
+  href: string
+  Icon: LucideIcon
+}>
 
 const PROJECT_FACTS = [
   { label: 'Built for', value: 'Devkada Codekada 2025' },
@@ -64,11 +90,26 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
               Hackathon Team
             </h3>
             <div className="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
-              {AUTHORS.map((author) => (
-                <div key={author.name} className="min-w-0 border-b border-slate-100 pb-3 dark:border-iris-300/10">
-                  <p className="text-sm font-semibold text-slate-950 dark:text-slate-100">{author.name}</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{author.role}</p>
-                </div>
+              {AUTHORS.map(({ Icon, ...author }) => (
+                <a
+                  key={author.name}
+                  href={author.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group -mx-2 block min-w-0 rounded-lg px-2 py-2 transition-all duration-200 hover:bg-iris-50/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-iris-300/10 dark:focus-visible:ring-offset-[#171322]"
+                  aria-label={`Open ${author.name} on LinkedIn`}
+                >
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="truncate text-sm font-semibold text-slate-950 transition-colors group-hover:text-iris-700 dark:text-slate-100 dark:group-hover:text-iris-100">
+                      {author.name}
+                    </span>
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-iris-500/80 transition-colors group-hover:text-iris-700 dark:text-iris-200/70 dark:group-hover:text-iris-100" aria-hidden="true" />
+                    <ExternalLink className="h-3.5 w-3.5 shrink-0 text-slate-400 opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:opacity-100 dark:text-iris-200/55" aria-hidden="true" />
+                  </span>
+                  <span className="mt-1 block text-xs leading-5 text-slate-500 transition-colors group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200">
+                    {author.role}
+                  </span>
+                </a>
               ))}
             </div>
           </section>

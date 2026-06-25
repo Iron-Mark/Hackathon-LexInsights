@@ -43,8 +43,11 @@ Keep generated and local-only files out of git:
 
 - `node_modules/`
 - `.next/`
-- `test-results/`
-- `playwright-report/`
+- `.tmp/`
+- `.tmp/test-results/`
+- `.tmp/playwright-report/`
+- legacy root `test-results/`
+- legacy root `playwright-report/`
 - `.vercel/`
 - `*.tsbuildinfo`
 - `next-env.d.ts`

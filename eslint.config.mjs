@@ -18,6 +18,7 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     // Generated local verification artifacts:
+    ".tmp/**",
     "coverage/**",
     "test-results/**",
     "playwright-report/**",

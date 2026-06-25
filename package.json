@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "node scripts/build-with-metadata.mjs",
     "start": "next start",
+    "clean": "node scripts/clean-generated.mjs",
     "lint": "eslint",
     "check:docs": "node scripts/check-markdown-links.mjs",
     "check:docs:self-test": "node scripts/check-markdown-links-self-test.mjs",

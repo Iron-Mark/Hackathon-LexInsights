@@ -4,7 +4,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const IGNORED_DIRECTORIES = new Set(['.git', '.next', 'node_modules', 'test-results'])
+const IGNORED_DIRECTORIES = new Set(['.git', '.next', '.tmp', 'node_modules', 'playwright-report', 'test-results'])
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
 const appRoot = resolve(scriptDir, '..')
