@@ -1272,4 +1272,58 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     triggers: ['aviation', 'airport', 'aircraft', 'air operator', 'flight operation', 'caap'],
     expansions: ['civil aviation authority act', 'aviation safety', 'airworthiness', 'airport safety'],
   },
+  {
+    triggers: ['condominium', 'condo', 'condominium corporation', 'master deed', 'common area', 'unit owner'],
+    expansions: ['condominium act', 'master deed', 'declaration of restrictions', 'common areas', 'unit title', 'condominium corporation'],
+  },
+  {
+    triggers: ['bp 220', 'economic housing', 'socialized housing standards', 'low cost housing', 'housing standards'],
+    expansions: ['economic and socialized housing', 'housing project standards', 'site development', 'beneficiary records', 'dhsud'],
+  },
+  {
+    triggers: [
+      'prc license',
+      'professional license',
+      'regulated profession',
+      'prc license renewal',
+      'professional license renewal',
+      'professional board',
+      'signed and sealed plans',
+      'prc professional seal',
+    ],
+    expansions: ['prc modernization act', 'professional regulation commission', 'license verification', 'professional board', 'professional seal', 'regulated practice'],
+  },
+  {
+    triggers: ['cpd units', 'continuing professional development', 'prc cpd', 'cpd provider', 'cpd accredited provider'],
+    expansions: ['continuing professional development act', 'cpd provider accreditation', 'license renewal', 'professional competency', 'cpd records'],
+  },
+  {
+    triggers: ['pharmacy', 'pharmacist', 'drugstore', 'medicine dispensing', 'drug dispensing', 'pharmacy dispensing', 'prescription dispensing', 'online pharmacy', 'e-pharmacy'],
+    expansions: ['philippine pharmacy act', 'responsible pharmacist', 'medicine dispensing', 'prescription handling', 'patient counseling', 'pharmacy records'],
+  },
+  {
+    triggers: ['cheaper medicines', 'medicine access', 'drug price', 'generic medicine', 'quality medicines', 'medicine affordability'],
+    expansions: ['cheaper medicines act', 'quality affordable medicines', 'drug pricing', 'generic substitution', 'medicine access controls'],
+  },
+  {
+    triggers: ['graphic health warning', 'tobacco warning', 'cigarette package', 'tobacco packaging', 'picture warning'],
+    expansions: ['graphic health warnings law', 'tobacco packaging', 'public health warning', 'consumer disclosure', 'packaging records'],
+  },
+  {
+    triggers: [
+      'agricultural smuggling',
+      'agricultural economic sabotage',
+      'anti agricultural sabotage',
+      'agri smuggling',
+      'rice hoarding',
+      'agricultural profiteering',
+      'food profiteering',
+      'agri cartel',
+      'food cartel',
+      'agricultural customs documents',
+      'food customs documents',
+      'rice shipment customs documents',
+    ],
+    expansions: ['anti agricultural economic sabotage act', 'agricultural smuggling', 'hoarding', 'profiteering', 'cartel', 'customs records', 'agricultural inventory chain of custody'],
+  },
 ]

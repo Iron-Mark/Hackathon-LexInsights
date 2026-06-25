@@ -1173,7 +1173,7 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
     ...buildCitationCoverageSection(query),
     '## What You Can Try',
     '',
-    '- Include a Republic Act number or official issuance, such as RA 10173, NPC Circular 16-03, NPC Circular 2023-06, NPC Circular 2022-04, RA 10175, RA 9775, RA 9160, RA 9003, RA 11898, RA 11127, RA 10168, RA 11479, RA 8479, RA 11592, RA 9367, RA 7638, RA 10667, RA 11765, RA 11934, RA 11976, RA 12023, RR 3-2025, RA 7277, RA 9442, RA 10070, RA 10524, or RA 10754.',
+    '- Include a Republic Act number or official issuance, such as RA 10173, RA 9160, RA 9003, or NPC Circular 16-03.',
     '- Add the regulated activity, agency, permit, affected sector, and location.',
     '- Ask for a narrower compliance checklist, for example "solid waste requirements for a barangay ordinance".',
     '',

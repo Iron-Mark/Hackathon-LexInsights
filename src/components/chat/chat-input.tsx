@@ -287,8 +287,8 @@ export function ChatInput() {
             aria-describedby="message-hint"
             className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-2 py-2 text-base leading-6 text-slate-900 placeholder-slate-500 transition-opacity focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
-              minHeight: '48px',
-              maxHeight: '120px',
+              minHeight: 'clamp(48px, 7dvh, 72px)',
+              maxHeight: '160px',
               overflowY: 'hidden',
             }}
           />
