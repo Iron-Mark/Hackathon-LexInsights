@@ -342,6 +342,12 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 11058'), 'Corpus should include RA 11058')
   assert.ok(corpus.some((document) => document.statute === 'RA 12009'), 'Corpus should include RA 12009')
   assert.ok(corpus.some((document) => document.statute === 'RA 11032'), 'Corpus should include RA 11032')
+  assert.ok(corpus.some((document) => document.statute === 'RA 3019'), 'Corpus should include RA 3019')
+  assert.ok(corpus.some((document) => document.statute === 'RA 6713'), 'Corpus should include RA 6713')
+  assert.ok(corpus.some((document) => document.statute === 'PD 1445'), 'Corpus should include PD 1445')
+  assert.ok(corpus.some((document) => document.statute === 'RA 7080'), 'Corpus should include RA 7080')
+  assert.ok(corpus.some((document) => document.statute === 'RA 9470'), 'Corpus should include RA 9470')
+  assert.ok(corpus.some((document) => document.statute === 'EO 2, s. 2016'), 'Corpus should include EO 2, s. 2016')
   assert.ok(corpus.some((document) => document.statute === 'RA 10175'), 'Corpus should include RA 10175')
   assert.ok(
     corpus.some((document) => document.id === 'cybercrime-irr-2015' && document.statute === 'Cybercrime Prevention Act IRR'),

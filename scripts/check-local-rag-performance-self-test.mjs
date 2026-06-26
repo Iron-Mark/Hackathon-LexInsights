@@ -134,6 +134,16 @@ const scenarios = [
     p95Limit: 28,
   },
   {
+    label: 'public accountability FOI records workflow',
+    params: {
+      query:
+        'What controls apply to public procurement BAC awards, conflict of interest, SALN, gifts, unwarranted benefits, COA cash advance liquidation, notice of disallowance, plunder red flags, FOI request intake, redaction, records retention, archives, and document disposal?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'privacy operations NPC workflow',
     params: {
       query:
@@ -394,6 +404,20 @@ try {
     customsSmoke.matched_documents?.some((document) => document.statute === 'RA 10863'),
     'Customs formal entry performance smoke should include RA 10863'
   )
+
+  const publicAccountabilityScenario = scenarios.find((scenario) => (
+    scenario.label === 'public accountability FOI records workflow'
+  ))
+  assert.ok(publicAccountabilityScenario, 'Public accountability performance scenario should exist')
+  const publicAccountabilitySmoke = runLocalResearch(publicAccountabilityScenario.params)
+
+  assert.equal(publicAccountabilitySmoke.status, 'completed', 'Public accountability performance smoke should complete')
+  for (const expectedStatute of ['RA 3019', 'PD 1445', 'RA 9470', 'EO 2, s. 2016']) {
+    assert.ok(
+      publicAccountabilitySmoke.matched_documents?.some((document) => document.statute === expectedStatute),
+      `Public accountability performance smoke should include ${expectedStatute}`
+    )
+  }
 
   const results = scenarios.map((scenario) => ({
     scenario,
