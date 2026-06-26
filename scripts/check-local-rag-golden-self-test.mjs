@@ -157,6 +157,19 @@ try {
   assertCompletedMatch(amlaIrrImplementation, 'RA 9160', '2018 AMLA IRR related statute', 0.35)
   assert.equal(statutes(amlaIrrImplementation)[0], '2018 AMLA IRR', '2018 AMLA IRR should be the top implementation match')
 
+  const cybercrimeIrrImplementation = runLocalResearch({
+    query:
+      'What does the Cybercrime Prevention Act IRR require for law enforcement authorities, preservation orders, service providers, traffic data, content data, subscriber information, computer data, DOJ Office of Cybercrime, CICC, CERT, electronic evidence, cyber warrants, and chain of custody?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(cybercrimeIrrImplementation, 'Cybercrime Prevention Act IRR', 'Cybercrime Prevention Act IRR implementation', 0.45)
+  assertCompletedMatch(cybercrimeIrrImplementation, 'RA 10175', 'Cybercrime Prevention Act IRR related statute', 0.35)
+  assert.equal(
+    statutes(cybercrimeIrrImplementation)[0],
+    'Cybercrime Prevention Act IRR',
+    'Cybercrime Prevention Act IRR should be the top implementation match'
+  )
+
   const secBeneficialOwnershipImplementation = runLocalResearch({
     query:
       'What does SEC MC 15 s. 2025 require for beneficial ownership disclosure, HARBOR portal filing, GIS records, authorized filers, nominees, control persons, privacy safeguards, and corporate secretary review?',
@@ -496,13 +509,13 @@ try {
   )
 
   const paymentCftSanctionsWorkflow = runLocalResearch({
-    query: 'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AML suspicious transactions, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, customer privacy, and consumer remediation?',
+    query: 'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AML suspicious transactions, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, preservation orders, service-provider coordination, traffic data, customer privacy, and consumer remediation?',
     user_id: 'golden',
     use_deep_search: true,
   })
   assertCompletedMatches(
     paymentCftSanctionsWorkflow,
-    ['RA 11127', 'RA 9160', '2018 AMLA IRR', 'RA 10168', 'RA 11479', 'RA 12010', 'RA 11765', 'RA 8484'],
+    ['RA 11127', 'RA 9160', '2018 AMLA IRR', 'RA 10168', 'RA 11479', 'RA 12010', 'RA 11765', 'RA 8484', 'RA 10175', 'Cybercrime Prevention Act IRR'],
     'payment systems CFT sanctions workflow'
   )
   assert.ok(
@@ -624,13 +637,13 @@ try {
   )
 
   const financialAccountScamWorkflow = runLocalResearch({
-    query: 'What money mule, mule account, phishing, social engineering, account takeover, transaction hold, suspicious transaction, and evidence preservation controls apply to a wallet scam response?',
+    query: 'What money mule, mule account, phishing, social engineering, account takeover, transaction hold, suspicious transaction, preservation order, service-provider traffic data, and evidence preservation controls apply to a wallet scam response?',
     user_id: 'golden',
     use_deep_search: true,
   })
   assertCompletedMatches(
     financialAccountScamWorkflow,
-    ['RA 12010', 'RA 11765', 'RA 9160', '2018 AMLA IRR'],
+    ['RA 12010', 'RA 11765', 'RA 9160', '2018 AMLA IRR', 'RA 10175', 'Cybercrime Prevention Act IRR'],
     'financial account scam workflow'
   )
 
@@ -678,11 +691,11 @@ try {
   )
 
   const digitalGovernmentWorkflow = runLocalResearch({
-    query: 'What e-governance, government portal, online government transaction, interoperability, data exchange, DICT, cybersecurity, accessibility, and records controls apply to a digital permit service?',
+    query: 'What e-governance, government portal, online government transaction, interoperability, data exchange, DICT, cybersecurity, incident logs, computer data, accessibility, and records controls apply to a digital permit service?',
     user_id: 'golden',
     use_deep_search: true,
   })
-  assertCompletedMatches(digitalGovernmentWorkflow, ['RA 12254', 'RA 10844', 'RA 10173'], 'digital government workflow')
+  assertCompletedMatches(digitalGovernmentWorkflow, ['RA 12254', 'RA 10844', 'RA 10173', 'RA 10175', 'Cybercrime Prevention Act IRR'], 'digital government workflow')
   assert.ok(
     digitalGovernmentWorkflow.summary.includes('Digital Government, E-Governance, and Public ICT Stack'),
     'digital government workflow should include its framework section'
