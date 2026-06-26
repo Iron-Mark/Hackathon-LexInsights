@@ -264,14 +264,15 @@ This slice treats child-status questions as sensitive multi-office workflows rat
 
 Providerless local mode can connect these authorities to NACC, DSWD, local social welfare, local civil registrar, LGU/barangay, school, passport, benefits, family-status, civil-registry, privacy, and child-protection workflows when the query or draft supplies direct evidence. It does not verify an actual child case, eligibility, consent, custody, matching, court or administrative order, civil-registry status, agency case status, passport eligibility, school enrollment status, or service entitlement; users should verify outputs with NACC, DSWD, the local civil registrar, the relevant LGU, official agency issuances, and qualified counsel.
 
-## Cybercrime Prevention Act IRR Slice
+## Cybercrime IRR and Warrant Procedure Slice
 
-This slice treats the DOJ-DILG-DOST Cybercrime Prevention Act IRR as implementation guidance for RA 10175 rather than a live law-enforcement or court-process check:
+This slice treats the DOJ-DILG-DOST Cybercrime Prevention Act IRR and A.M. No. 17-11-03-SC Rule on Cybercrime Warrants as implementation and court-process guidance for RA 10175 rather than a live law-enforcement check:
 
 - The IRR covers law-enforcement authorities, computer data, traffic data, content data, subscriber information, preservation and disclosure workflows, service-provider coordination, search and seizure, cyber warrants, electronic evidence, Office of Cybercrime, CICC, CERT coordination, and privacy safeguards.
-- Providerless local mode connects the IRR to cyber incident response, financial-account scam evidence, payment-system fraud escalation, digital-government/public-ICT services, privacy operations, AI governance, service-provider coordination, and electronic-record workflows when the query supplies direct implementation evidence.
+- The Rule on Cybercrime Warrants covers WDCD, WICD, WSSECD, and WECD routing, probable cause, service-provider disclosure, interception, search, seizure, examination, forensic image handling, inventory, return, chain of custody, retention, destruction, confidentiality, and remedies.
+- Providerless local mode connects the IRR and warrant rule to cyber incident response, financial-account scam evidence, payment-system fraud escalation, digital-government/public-ICT services, privacy operations, AI governance, service-provider coordination, electronic-record workflows, and court-process safeguards when the query supplies direct implementation evidence.
 
-Providerless mode does not verify current DOJ Office of Cybercrime, CICC, PNP, NBI, prosecutor, court-rule, warrant, preservation-order, service-provider, evidence-custody, or case-specific facts. Users should verify outputs with DOJ/OOC, CICC, the relevant law-enforcement or court process, service-provider records, official issuances, incident evidence, privacy counsel, and qualified legal counsel.
+Providerless mode does not verify current DOJ Office of Cybercrime, CICC, PNP, NBI, prosecutor, cybercrime court, warrant form, provider response, evidence-custody, preservation-order, or case-specific facts. Users should verify outputs with DOJ/OOC, CICC, the relevant law-enforcement or court process, service-provider records, official court issuances, incident evidence, privacy counsel, and qualified legal counsel.
 
 ## AMLC 2018 AMLA IRR Slice
 
@@ -355,6 +356,7 @@ The local corpus intentionally stays small and auditable:
 - [RA 11032 - Ease of Doing Business and Efficient Government Service Delivery Act of 2018](https://lawphil.net/statutes/repacts/ra2018/ra_11032_2018.html)
 - [RA 10175 - Cybercrime Prevention Act of 2012](https://lawphil.net/statutes/repacts/ra2012/ra_10175_2012.html)
 - [Cybercrime Prevention Act IRR - DOJ-DILG-DOST Rules Implementing RA 10175](https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/10/71685)
+- [A.M. No. 17-11-03-SC - Rule on Cybercrime Warrants](https://oca.judiciary.gov.ph/wp-content/uploads/A.M.-No.-17-11-03-SC.pdf)
 - [RA 7394 - Consumer Act of the Philippines](https://lawphil.net/statutes/repacts/ra1992/ra_7394_1992.html)
 - [RA 10667 - Philippine Competition Act](https://lawphil.net/statutes/repacts/ra2015/ra_10667_2015.html)
 - [Joint Administrative Order No. 24-03, s. 2024 - Internet Transactions Act IRR](https://dtiwebfiles.s3.ap-southeast-1.amazonaws.com/e-commerce/JAO-24-03+RA11967+IRR.pdf)

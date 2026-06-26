@@ -29,6 +29,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'npc-circular-2023-06',
       'ra-10175',
       'cybercrime-irr-2015',
+      'am-17-11-03-sc',
       'ra-11934',
       'ra-8792',
       'ra-9995',
@@ -92,6 +93,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'npc-advisory-2024-04',
       'ra-10175',
       'cybercrime-irr-2015',
+      'am-17-11-03-sc',
       'ra-12254',
     ],
     summary:
@@ -140,6 +142,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'ra-8484',
       'ra-10175',
       'cybercrime-irr-2015',
+      'am-17-11-03-sc',
       'ra-10173',
     ],
     summary:
@@ -206,6 +209,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'ra-8484',
       'ra-10175',
       'cybercrime-irr-2015',
+      'am-17-11-03-sc',
       'ra-10173',
     ],
     summary:
@@ -239,7 +243,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'public ict',
       'digital public service',
     ],
-    lawIds: ['ra-12254', 'ra-10844', 'ra-8792', 'ra-10173', 'ra-10175', 'cybercrime-irr-2015', 'ra-9470', 'eo-2-2016', 'ra-11032'],
+    lawIds: ['ra-12254', 'ra-10844', 'ra-8792', 'ra-10173', 'ra-10175', 'cybercrime-irr-2015', 'am-17-11-03-sc', 'ra-9470', 'eo-2-2016', 'ra-11032'],
     summary:
       'Use this when public offices move services, records, payments, permits, benefits, or data exchange into digital channels.',
     sequence: [
@@ -282,6 +286,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'ra-10844',
       'ra-10175',
       'cybercrime-irr-2015',
+      'am-17-11-03-sc',
       'ra-8792',
       'ra-11032',
     ],
@@ -1494,6 +1499,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'bp-880',
       'ra-9745',
       'rules-of-court-evidence',
+      'am-17-11-03-sc',
       'ra-10173',
       'ra-7160',
     ],
