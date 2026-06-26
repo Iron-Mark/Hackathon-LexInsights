@@ -1001,6 +1001,54 @@ try {
     'real estate housing workflow should include its framework section'
   )
 
+  const rpvaraExactCitation = runLocalResearch({
+    query:
+      'What does RA 12001 require for real property valuation, schedule of market values, assessor, treasurer, tax declaration, assessment roll, taxpayer notice, and assessment appeal?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(
+    rpvaraExactCitation,
+    'RA 12001',
+    '12001',
+    'RA 12001 real property valuation exact citation',
+    0.55
+  )
+
+  const rpvaraIrrImplementation = runLocalResearch({
+    query:
+      'What does BLGF MC No. 001-2025 RPVARA IRR require for SMV adoption, valuation database, tax declarations, publication, assessment roll, appeals, and property-record custody?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(
+    rpvaraIrrImplementation,
+    'BLGF MC No. 001-2025',
+    'RPVARA IRR implementation',
+    0.45
+  )
+  assertCompletedMatch(rpvaraIrrImplementation, 'RA 12001', 'RPVARA IRR related statute', 0.35)
+  assert.equal(
+    statutes(rpvaraIrrImplementation)[0],
+    'BLGF MC No. 001-2025',
+    'RPVARA IRR should be the top implementation match'
+  )
+
+  const realPropertyValuationWorkflow = runLocalResearch({
+    query:
+      'What real property tax, RPT, Local Government Code RA 7160, assessor, schedule of market values, tax declaration, assessment roll, local treasurer, delinquency, appeal, property record, privacy, and citizen charter controls apply?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    realPropertyValuationWorkflow,
+    ['RA 12001', 'BLGF MC No. 001-2025', 'RA 7160'],
+    'real property valuation RPT local assessment workflow',
+    0.25
+  )
+  assert.ok(
+    realPropertyValuationWorkflow.summary.includes('Real Property Valuation, RPT, and Local Assessment Stack'),
+    'real property valuation workflow should include its framework section'
+  )
+
   const publicLandAgrarianWorkflow = runLocalResearch({
     query: 'What public land, imperfect title, incomplete title, residential free patent, agricultural free patent, alienable and disposable land, DENR CENRO, CARP, CARPER, CLOA, ARB, DAR clearance, debt condonation, agrarian emancipation, and register of deeds controls apply?',
     user_id: 'golden',
