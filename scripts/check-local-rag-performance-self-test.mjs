@@ -134,6 +134,16 @@ const scenarios = [
     p95Limit: 28,
   },
   {
+    label: 'identity subscriber SIM PhilSys workflow',
+    params: {
+      query:
+        'What controls apply to SIM registration, mobile number fraud reports, subscriber data, authorized disclosure, subpoena, deactivation, reactivation, PhilSys national ID, PSN, PCN, biometric data, alternative proof, correction, privacy, retention, access control, and service access?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'privacy operations NPC workflow',
     params: {
       query:
@@ -393,6 +403,22 @@ try {
   assert.ok(
     customsSmoke.matched_documents?.some((document) => document.statute === 'RA 10863'),
     'Customs formal entry performance smoke should include RA 10863'
+  )
+
+  const identitySubscriberScenario = scenarios.find((scenario) => (
+    scenario.label === 'identity subscriber SIM PhilSys workflow'
+  ))
+  assert.ok(identitySubscriberScenario, 'Identity subscriber performance scenario should exist')
+  const identitySubscriberSmoke = runLocalResearch(identitySubscriberScenario.params)
+
+  assert.equal(identitySubscriberSmoke.status, 'completed', 'Identity subscriber performance smoke should complete')
+  assert.ok(
+    identitySubscriberSmoke.matched_documents?.some((document) => document.statute === 'RA 11934'),
+    'Identity subscriber performance smoke should include RA 11934'
+  )
+  assert.ok(
+    identitySubscriberSmoke.matched_documents?.some((document) => document.statute === 'RA 11055'),
+    'Identity subscriber performance smoke should include RA 11055'
   )
 
   const results = scenarios.map((scenario) => ({

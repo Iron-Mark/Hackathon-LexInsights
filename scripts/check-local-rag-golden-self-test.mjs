@@ -241,6 +241,36 @@ try {
   })
   assertExactCitationMatch(exactPaymentSystemCitation, 'RA 11127', '11127', 'exact RA 11127 citation')
 
+  const exactSimRegistrationCitation = runLocalResearch({
+    query: 'What does RA 11934 require for SIM registration, subscriber data, mobile number fraud reports, and deactivation?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactSimRegistrationCitation, 'RA 11934', '11934', 'exact RA 11934 citation')
+
+  const simRegistrationIrr = runLocalResearch({
+    query:
+      'What does NTC Memorandum Circular No. 001-12-2022 SIM Registration Act IRR require for subscriber verification, deactivation, reactivation, correction, authorized disclosure, subpoena, and law enforcement requests?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(
+    simRegistrationIrr,
+    'NTC Memorandum Circular No. 001-12-2022',
+    'SIM Registration Act IRR implementation',
+    0.45
+  )
+  assertCompletedMatch(simRegistrationIrr, 'RA 11934', 'SIM Registration Act IRR related statute', 0.35)
+  assert.equal(
+    statutes(simRegistrationIrr)[0],
+    'NTC Memorandum Circular No. 001-12-2022',
+    'SIM Registration Act IRR should be the top implementation match'
+  )
+
+  const exactPhilSysCitation = runLocalResearch({
+    query: 'What does RA 11055 require for PhilSys, PhilID, PSN, PCN, biometric data, and proof of identity?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactPhilSysCitation, 'RA 11055', '11055', 'exact RA 11055 citation')
+
   const exactCftCitation = runLocalResearch({
     query: 'What does RA 10168 require for terrorism financing and asset freeze controls?',
     user_id: 'golden',
@@ -1180,6 +1210,24 @@ try {
   assert.ok(
     utilitiesWorkflow.summary.includes('Critical Utilities, Energy, Telecom, and Water Services Stack'),
     'critical utilities workflow should include its framework section'
+  )
+
+  const identitySubscriberWorkflow = runLocalResearch({
+    query:
+      'What controls apply to SIM registration, mobile number fraud reports, subscriber data, authorized disclosure, subpoena, deactivation, reactivation, PhilSys national ID, PSN, PCN, biometric data, alternative proof, correction, privacy, retention, access control, and service access?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    identitySubscriberWorkflow,
+    ['RA 11934', 'NTC Memorandum Circular No. 001-12-2022', 'RA 11055', 'RA 10173'],
+    'SIM registration and PhilSys identity subscriber data workflow',
+    0.2
+  )
+  assert.ok(
+    identitySubscriberWorkflow.summary.includes('Data, Cyber, and Mobile Incident Response Stack') &&
+      identitySubscriberWorkflow.summary.includes('Privacy Operations and NPC Compliance Stack'),
+    'identity subscriber workflow should include data incident and privacy framework sections'
   )
 
   const fuelRetailPetroleumWorkflow = runLocalResearch({

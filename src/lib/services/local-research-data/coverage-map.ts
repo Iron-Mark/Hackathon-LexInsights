@@ -135,6 +135,8 @@ const GOLDEN_AUTHORITY_IDS = new Set([
   'ra-12022',
   'ra-10863',
   'boc-cao-09-2020',
+  'ra-11934',
+  'ntc-mc-001-12-2022-sim-irr',
   'ra-11642',
   'ra-11222',
   'ra-11767',
@@ -144,6 +146,7 @@ const GOLDEN_AUTHORITY_IDS = new Set([
   'ra-11321',
   'sc-ai-governance-framework-2026',
   'npc-advisory-2024-04',
+  'ra-11055',
 ])
 
 const DRAFT_CHECK_AUTHORITY_IDS = new Set([
@@ -178,6 +181,9 @@ const DRAFT_CHECK_AUTHORITY_IDS = new Set([
   'pd-857',
   'ra-10863',
   'boc-cao-09-2020',
+  'ra-11934',
+  'ntc-mc-001-12-2022-sim-irr',
+  'ra-11055',
   'ra-11127',
   'ra-9160',
   'amlc-irr-2018',

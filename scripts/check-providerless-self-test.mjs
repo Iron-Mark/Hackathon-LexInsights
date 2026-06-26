@@ -370,6 +370,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 6969'), 'Corpus should include RA 6969')
   assert.ok(corpus.some((document) => document.statute === 'RA 11285'), 'Corpus should include RA 11285')
   assert.ok(corpus.some((document) => document.statute === 'RA 11934'), 'Corpus should include RA 11934')
+  assert.ok(
+    corpus.some((document) => document.id === 'ntc-mc-001-12-2022-sim-irr'),
+    'Corpus should include SIM Registration Act IRR'
+  )
   assert.ok(corpus.some((document) => document.statute === 'RA 9995'), 'Corpus should include RA 9995')
   assert.ok(corpus.some((document) => document.statute === 'RA 7877'), 'Corpus should include RA 7877')
   assert.ok(corpus.some((document) => document.statute === 'RA 10627'), 'Corpus should include RA 10627')
@@ -1977,14 +1981,17 @@ try {
     'energy efficiency query'
   )
 
-  assertResearchMatch(
-    runLocalResearch(
-      { query: 'What SIM registration and subscriber data safeguards apply to mobile number fraud reports?', user_id: 'self-test' },
-      'simulated remote outage'
-    ),
-    'RA 11934',
-    'sim registration query'
+  const simRegistrationResponse = runLocalResearch(
+    {
+      query:
+        'What SIM registration, subscriber data, authorized disclosure, deactivation, reactivation, correction, and lawful request safeguards apply to mobile number fraud reports?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
   )
+  assertResearchMatch(simRegistrationResponse, 'RA 11934', 'sim registration query')
+  assertResearchMatch(simRegistrationResponse, 'NTC Memorandum Circular No. 001-12-2022', 'sim registration IRR query')
 
   assertResearchMatch(
     runLocalResearch(
@@ -2492,14 +2499,17 @@ try {
     'Agricultural sabotage fallback framework title'
   )
 
-  assertResearchMatch(
-    runLocalResearch(
-      { query: 'What privacy safeguards apply when collecting PhilSys national ID and biometric data?', user_id: 'self-test' },
-      'simulated remote outage'
-    ),
-    'RA 11055',
-    'philsys query'
+  const philSysResponse = runLocalResearch(
+    {
+      query:
+        'What safeguards apply when collecting PhilSys national ID, PSN, PCN, biometric data, alternative proof, correction, authentication logs, and privacy controls?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
   )
+  assertResearchMatch(philSysResponse, 'RA 11055', 'philsys query')
+  assertResearchMatch(philSysResponse, 'RA 10173', 'philsys privacy relationship query')
 
   assertResearchMatch(
     runLocalResearch(
@@ -4721,6 +4731,36 @@ This policy takes effect 30 days after publication.`
   )
   assert.equal(thinSimDraftResponse.status, 'success', 'SIM draft check should succeed locally')
   assertFinding(thinSimDraftResponse, 'amber', 'SIM and mobile-number controls')
+
+  const thinPhilSysDraft = `# National ID Intake Policy
+
+## Purpose
+This policy collects PhilSys, PhilID, PSN, PCN, national ID, and biometric information for resident service requests.
+
+## Legal Basis
+Pursuant to RA 11055 and RA 10173.
+
+## Scope
+This applies to residents using city services.
+
+## Responsible Office
+The information office shall implement this policy.
+
+## Requirements
+Residents shall present proof of identity before receiving services.
+
+## Monitoring
+The office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinPhilSysDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinPhilSysDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinPhilSysDraftResponse.status, 'success', 'PhilSys draft check should succeed locally')
+  assertFinding(thinPhilSysDraftResponse, 'amber', 'National ID handling')
 
   const thinLaborDraft = `# Worker Scheduling Policy
 

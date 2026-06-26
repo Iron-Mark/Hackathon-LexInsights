@@ -31,6 +31,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'cybercrime-irr-2015',
       'am-17-11-03-sc',
       'ra-11934',
+      'ntc-mc-001-12-2022-sim-irr',
       'ra-8792',
       'ra-9995',
       'ra-11930',
@@ -94,6 +95,9 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'ra-10175',
       'cybercrime-irr-2015',
       'am-17-11-03-sc',
+      'ra-11934',
+      'ntc-mc-001-12-2022-sim-irr',
+      'ra-11055',
       'ra-12254',
     ],
     summary:
@@ -243,7 +247,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'public ict',
       'digital public service',
     ],
-    lawIds: ['ra-12254', 'ra-10844', 'ra-8792', 'ra-10173', 'ra-10175', 'cybercrime-irr-2015', 'am-17-11-03-sc', 'ra-9470', 'eo-2-2016', 'ra-11032'],
+    lawIds: ['ra-12254', 'ra-10844', 'ra-8792', 'ra-10173', 'ra-11055', 'ra-10175', 'cybercrime-irr-2015', 'am-17-11-03-sc', 'ra-9470', 'eo-2-2016', 'ra-11032'],
     summary:
       'Use this when public offices move services, records, payments, permits, benefits, or data exchange into digital channels.',
     sequence: [
@@ -966,6 +970,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'ra-9513',
       'ra-11285',
       'ra-11934',
+      'ntc-mc-001-12-2022-sim-irr',
       'ra-11765',
       'ra-10667',
       'ra-10173',

@@ -3245,7 +3245,7 @@ function applyTopicSpecificDraftChecks(
           'SIM, mobile-number, telco, OTP, or text-scam language was detected without clear identity-verification, subscriber-data, deactivation, privacy, or lawful-request controls.',
           'Add identity verification, subscriber-data protection, registration correction, deactivation or reactivation handling, fraud reporting, lawful disclosure rules, and audit trail.',
           6,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11934') || LEGAL_CORPUS[0])]
+          [referenceForId('ra-11934'), referenceForId('ntc-mc-001-12-2022-sim-irr'), referenceForId('ra-10173')]
         )
       )
     }
@@ -3566,7 +3566,11 @@ function applyTopicSpecificDraftChecks(
   }
 
   if (/\b(philsys|philid|national id|psn|pcn|identity verification|biometric|proof of identity)\b/.test(normalizedDraft)) {
-    if (!/\b(purpose|minimum data|alternative proof|authentication|access control|retention|correction|privacy|audit trail|authorized disclosure)\b/.test(normalizedDraft)) {
+    const hasIdentityPurpose = /\b(purpose|minimum data|data minimization|identity fields|service access|alternative proof)\b/.test(normalizedDraft)
+    const hasIdentitySecurity = /\b(authentication|access control|retention|audit trail|privacy|confidential|authorized disclosure)\b/.test(normalizedDraft)
+    const hasIdentityRemedy = /\b(correction|appeal|assistance|alternative proof|service access|complaint)\b/.test(normalizedDraft)
+
+    if (!(hasIdentityPurpose && hasIdentitySecurity && hasIdentityRemedy)) {
       findings.amber.push(
         createFinding(
           'amber',
@@ -3575,7 +3579,7 @@ function applyTopicSpecificDraftChecks(
           'PhilSys, PhilID, national ID, PSN, PCN, biometric, or identity-verification language was detected without clear purpose, minimization, correction, alternative proof, retention, or access controls.',
           'Add purpose limitation, minimum identity fields, authentication method, alternative proof route, correction process, access controls, retention, audit logs, and privacy safeguards.',
           7,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-11055') || LEGAL_CORPUS[0])]
+          [referenceForId('ra-11055'), referenceForId('ra-10173')]
         )
       )
     }

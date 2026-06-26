@@ -110,6 +110,23 @@ const CUSTOMS_IMPORT_STATUTES = [
 
 const CUSTOMS_IMPORT_FRAMEWORK_ID = 'imports-procurement-and-public-assets'
 
+const IDENTITY_SUBSCRIBER_LAW_IDS = [
+  'ra-11934',
+  'ntc-mc-001-12-2022-sim-irr',
+  'ra-11055',
+]
+
+const IDENTITY_SUBSCRIBER_STATUTES = [
+  'RA 11934',
+  'NTC Memorandum Circular No. 001-12-2022',
+  'RA 11055',
+]
+
+const IDENTITY_SUBSCRIBER_CORE_FRAMEWORK_IDS = [
+  'data-incident-response',
+  'privacy-operations-and-npc-compliance',
+]
+
 const PRIVACY_OPERATIONS_LAW_IDS = [
   'npc-irr-2016',
   'npc-circular-16-03',
@@ -1214,6 +1231,105 @@ try {
       cybercrimeWarrantRuleEvidenceText.includes('custody'),
     `${CYBERCRIME_WARRANT_RULE_ID} evidence should cover warrant, computer-data, and custody support`
   )
+
+  const identityFrameworks = new Set(IDENTITY_SUBSCRIBER_CORE_FRAMEWORK_IDS)
+
+  for (const [index, lawId] of IDENTITY_SUBSCRIBER_LAW_IDS.entries()) {
+    const document = data.corpus.find((corpusDocument) => corpusDocument.id === lawId)
+    const coverage = coverageById.get(lawId)
+    const source = sourcesById.get(lawId)
+    const documentText = [
+      document?.statute || '',
+      document?.title || '',
+      document?.shortTitle || '',
+      document?.summary || '',
+      ...(document?.aliases || []),
+      ...(document?.topics || []),
+      ...(document?.keywords || []),
+      ...(document?.obligations || []),
+      ...(document?.commonGaps || []),
+    ].join(' ').toLowerCase()
+    const evidenceText = (evidenceById.get(lawId) || [])
+      .map((anchor) => `${anchor.label} ${anchor.note} ${anchor.supports.join(' ')}`)
+      .join(' ')
+      .toLowerCase()
+
+    assert.ok(corpusIdSet.has(lawId), `Identity subscriber corpus should include ${IDENTITY_SUBSCRIBER_STATUTES[index]}`)
+    assert.ok(document, `${lawId} should have a corpus document`)
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.equal(coverage?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
+    assert.ok(source, `${lawId} should have an authority source record`)
+    assert.equal(source?.provenanceStatus, 'verified', `${lawId} should have verified provenance`)
+    assert.equal(source?.lastVerified, '2026-06-26', `${lawId} should have current source verification date`)
+
+    for (const frameworkId of identityFrameworks) {
+      assert.ok(
+        coverage?.frameworkIds.includes(frameworkId),
+        `${lawId} coverage should reference ${frameworkId}`
+      )
+    }
+
+    if (lawId === 'ra-11934') {
+      assert.equal(source?.sourceName, 'Lawphil', 'RA 11934 should use Lawphil as source')
+      assert.equal(source?.authorityType, 'statute', 'RA 11934 should be a statute')
+      assert.ok(documentText.includes('subscriber data'), 'RA 11934 should cover subscriber data')
+      assert.ok(documentText.includes('law enforcement request'), 'RA 11934 should cover lawful request handling')
+      assert.ok(evidenceText.includes('mobile-number') || evidenceText.includes('mobile number'), 'RA 11934 evidence should cover mobile-number workflow')
+      assert.ok(
+        coverage?.frameworkIds.includes('critical-utilities-energy-telecom-and-water-services'),
+        'RA 11934 coverage should reference the telecom utilities framework'
+      )
+    }
+
+    if (lawId === 'ntc-mc-001-12-2022-sim-irr') {
+      assert.equal(source?.sourceName, 'Supreme Court E-Library', 'SIM IRR should use Supreme Court E-Library as source')
+      assert.equal(source?.authorityType, 'regulation', 'SIM IRR should be a regulation')
+      assert.equal(source?.sourceTier, 'official-guidance', 'SIM IRR should use official-guidance source tier')
+      assert.ok(documentText.includes('deactivation'), 'SIM IRR should cover deactivation')
+      assert.ok(documentText.includes('authorized disclosure'), 'SIM IRR should cover authorized disclosure')
+      assert.ok(evidenceText.includes('registration') && evidenceText.includes('subscriber'), 'SIM IRR evidence should cover registration and subscriber support')
+      assert.ok(
+        data.relations.some((relation) => (
+          relation.sourceId === lawId &&
+          relation.targetId === 'ra-11934' &&
+          relation.type === 'implements'
+        )),
+        'SIM IRR should implement RA 11934 through authority relations'
+      )
+    }
+
+    if (lawId === 'ra-11055') {
+      assert.equal(source?.sourceName, 'Lawphil', 'RA 11055 should use Lawphil as source')
+      assert.equal(source?.authorityType, 'statute', 'RA 11055 should be a statute')
+      assert.ok(documentText.includes('biometric'), 'RA 11055 should cover biometric data')
+      assert.ok(documentText.includes('alternative proof'), 'RA 11055 should cover alternative proof')
+      assert.ok(evidenceText.includes('national id') || evidenceText.includes('philid'), 'RA 11055 evidence should cover national ID handling')
+      assert.ok(
+        coverage?.frameworkIds.includes('digital-government-and-public-ict'),
+        'RA 11055 coverage should reference the digital government framework'
+      )
+    }
+  }
+
+  for (const [sourceId, targetId, type] of [
+    ['ra-11934', 'ra-10173', 'workflow_related_to'],
+    ['ra-11934', 'ra-7925', 'workflow_related_to'],
+    ['ra-11934', 'ra-10175', 'workflow_related_to'],
+    ['ra-11934', 'ra-11055', 'workflow_related_to'],
+    ['ra-11055', 'ra-10173', 'requires'],
+    ['ra-11055', 'ra-12254', 'workflow_related_to'],
+    ['ra-11055', 'ra-10844', 'workflow_related_to'],
+    ['ra-11055', 'ra-11032', 'workflow_related_to'],
+  ]) {
+    assert.ok(
+      data.relations.some((relation) => (
+        relation.sourceId === sourceId &&
+        relation.targetId === targetId &&
+        relation.type === type
+      )),
+      `${sourceId} should relate to ${targetId} as ${type}`
+    )
+  }
 
   const secBeneficialOwnershipFramework = data.frameworks.find((framework) => (
     framework.id === SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID
