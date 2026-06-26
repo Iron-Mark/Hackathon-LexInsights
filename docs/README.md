@@ -29,7 +29,7 @@ LexInSight is a Next.js app for Philippine legal compliance chat, Markdown/text/
 ### Supporting Material
 
 - [Specs](./specs) - historical product and implementation planning material. Use the guides, reference, and operations docs above as the current shipping source of truth.
-- [Sample barangay disaster plan](./samples/sample-barangay-disaster-plan.md) - sample Markdown input for compliance review.
+- [Sample barangay disaster plan](./samples/sample-barangay-disaster-plan.md) - sample Markdown input for DRRM and imminent-disaster compliance review.
 
 ## Current Repository Shape
 

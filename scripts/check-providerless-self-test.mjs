@@ -147,7 +147,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 269, 'Local corpus should include at least 269 authorities')
+  assert.ok(corpus.length >= 270, 'Local corpus should include at least 270 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -411,6 +411,8 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 8344'), 'Corpus should include RA 8344')
   assert.ok(corpus.some((document) => document.statute === 'RA 9439'), 'Corpus should include RA 9439')
   assert.ok(corpus.some((document) => document.statute === 'RA 4226'), 'Corpus should include RA 4226')
+  assert.ok(corpus.some((document) => document.statute === 'RA 10121'), 'Corpus should include RA 10121')
+  assert.ok(corpus.some((document) => document.statute === 'RA 12287'), 'Corpus should include RA 12287')
   assert.ok(corpus.some((document) => document.statute === 'RA 11332'), 'Corpus should include RA 11332')
   assert.ok(corpus.some((document) => document.statute === 'RA 9211'), 'Corpus should include RA 9211')
   assert.ok(corpus.some((document) => document.statute === 'RA 10643'), 'Corpus should include RA 10643')
@@ -621,6 +623,23 @@ try {
     ),
     'RA 11058',
     'workplace safety query'
+  )
+
+  const imminentDisasterResponse = runLocalResearch(
+    {
+      query:
+        'What RA 12287 state of imminent disaster, forecasted hazard, pre-disaster risk assessment, anticipatory action, pre-emptive evacuation, relief prepositioning, LDRRMF, OCD monitoring, and false hazard information controls should an LGU disaster plan include?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(imminentDisasterResponse, 'RA 12287', 'imminent disaster query')
+  assertResearchMatch(imminentDisasterResponse, 'RA 10121', 'imminent disaster DRRM framework query')
+  assertIncludes(
+    imminentDisasterResponse.summary,
+    'Workplace, School, Public Safety, and Protection Stack',
+    'Imminent disaster framework section'
   )
 
   const deepSearchResponse = runLocalResearch(
@@ -4472,6 +4491,69 @@ This policy takes effect 30 days after publication.`
     'amber',
     'Environmental impact, wildlife, and forestry controls'
   )
+
+  const thinImminentDisasterDraft = `# Barangay Anticipatory Action Protocol
+
+## Purpose
+This protocol covers imminent disaster, forecasted hazard, pre-emptive evacuation, and relief prepositioning.
+
+## Legal Basis
+Pursuant to RA 10121 and RA 12287.
+
+## Scope
+This applies to typhoon and flood response.
+
+## Responsible Office
+The disaster office shall implement this protocol.
+
+## Requirements
+Volunteers may issue advisories and move relief goods.
+
+## Monitoring
+The disaster office shall submit annual reports.
+
+## Effectivity
+This protocol takes effect immediately.`
+
+  const thinImminentDisasterDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinImminentDisasterDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinImminentDisasterDraftResponse.status, 'success', 'Imminent disaster draft check should succeed locally')
+  assertFinding(thinImminentDisasterDraftResponse, 'amber', 'Imminent-disaster controls')
+
+  const strongerImminentDisasterDraft = `# Barangay Anticipatory Action Protocol
+
+## Purpose
+This protocol covers imminent disaster, forecasted hazard, pre-disaster risk assessment, anticipatory action, and pre-emptive evacuation.
+
+## Legal Basis
+Pursuant to RA 10121 and RA 12287.
+
+## Scope
+This applies to typhoon, flood, and landslide hazards affecting vulnerable households.
+
+## Responsible Office
+The Municipal DRRM Council and Barangay DRRM Committee shall coordinate with the Regional DRRM Council and OCD.
+
+## Declaration Trigger
+The declaring authority shall act only after a forecast and pre-disaster risk assessment establish the covered area, expected severity, and lead time.
+
+## Funding and Logistics
+Actions shall use the LDRRMF, special trust fund, or national DRRM fund as authorized. Food and non-food items shall be procured, stored, distributed, and reported with inventory records.
+
+## Monitoring
+The disaster office shall report advisories, evacuation, vulnerable-group support, fund use, non-occurrence handling, and false hazard or manipulated assessment incidents.
+
+## Effectivity
+This protocol takes effect after approval.`
+
+  const strongerImminentDisasterDraftResponse = runLocalDraftCheck(
+    { draft_markdown: strongerImminentDisasterDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(strongerImminentDisasterDraftResponse.status, 'success', 'Stronger imminent disaster draft check should succeed locally')
+  assertNoFinding(strongerImminentDisasterDraftResponse, 'Imminent-disaster controls')
 
   const thinTourismHospitalityDraft = `# Tourism Guest Access Policy
 

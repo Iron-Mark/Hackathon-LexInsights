@@ -35,6 +35,8 @@ const PROVENANCE_NOTES: Partial<Record<string, string>> = {
   'am-17-11-03-sc': 'Official Judiciary/OCA PDF of the Supreme Court Rule on Cybercrime Warrants; verify current cybercrime court assignments, forms, court issuances, provider procedures, and case-specific evidence orders before operational use.',
   'ra-12001': 'Official Lawphil text of the Real Property Valuation and Assessment Reform Act; verify current BLGF, DOF, LGU assessor, treasurer, and appeal-board procedures before operational use.',
   'blgf-mc-001-2025-rpvara-irr': 'Official BLGF memorandum circular PDF containing the IRR of RA 12001; verify current BLGF issuances, LGU SMV adoption status, system deadlines, and appeal procedures before operational use.',
+  'ra-10121': 'Official Lawphil text of the Philippine Disaster Risk Reduction and Management Act; verify current NDRRMC, OCD, DILG, and LGU DRRM plans, advisories, and fund rules before operational use.',
+  'ra-12287': 'Official Lawphil text of the Declaration of State of Imminent Disaster Act; verify current NDRRMC, OCD, Regional DRRM Council, and LGU implementing rules before operational use.',
   'bir-rr-2024-03': 'Official BIR EOPT VAT and percentage-tax regulation in the bundled local corpus; verify current BIR forms, filing channels, rates, and later issuances before operational use.',
   'bir-rr-2024-04': 'Official BIR EOPT filing and payment regulation in the bundled local corpus; verify current eFPS/eBIRForms/payment channels, forms, deadlines, and later issuances before operational use.',
   'bir-rr-2024-05': 'Official BIR EOPT tax-refund regulation in the bundled local corpus; verify current documentary, portal, audit, and deadline requirements before filing a claim.',

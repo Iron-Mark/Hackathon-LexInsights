@@ -304,6 +304,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'imminent disaster anticipatory action workflow',
+    params: {
+      query:
+        'What controls apply to an LGU state of imminent disaster workflow covering forecasted hazard, pre-disaster risk assessment, anticipatory action, pre-emptive evacuation, relief prepositioning, LDRRMF, national DRRM fund, special trust fund, OCD monitoring, and false hazard information?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'child adoption foundling civil status workflow',
     params: {
       query:
@@ -339,6 +349,23 @@ try {
   assert.ok(
     rptSmoke.matched_documents?.some((document) => document.statute === 'BLGF MC No. 001-2025'),
     'RPT performance smoke should include the RPVARA IRR'
+  )
+
+  const imminentDisasterScenario = scenarios.find((scenario) => (
+    scenario.label === 'imminent disaster anticipatory action workflow'
+  ))
+  assert.ok(imminentDisasterScenario, 'Imminent disaster performance scenario should exist')
+  const imminentDisasterSmoke = runLocalResearch(imminentDisasterScenario.params)
+
+  assert.equal(imminentDisasterSmoke.status, 'completed', 'Imminent disaster performance smoke should complete')
+  assert.equal(
+    imminentDisasterSmoke.matched_documents?.[0]?.statute,
+    'RA 12287',
+    'Imminent disaster performance smoke should rank RA 12287 first'
+  )
+  assert.ok(
+    imminentDisasterSmoke.matched_documents?.some((document) => document.statute === 'RA 10121'),
+    'Imminent disaster performance smoke should include RA 10121'
   )
 
   const results = scenarios.map((scenario) => ({

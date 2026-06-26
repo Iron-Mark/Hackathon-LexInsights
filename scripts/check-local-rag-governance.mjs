@@ -40,6 +40,18 @@ const EDUCATION_GOVERNANCE_STATUTES = [
   'RA 11650',
 ]
 
+const DRRM_IMMINENT_DISASTER_LAW_IDS = [
+  'ra-10121',
+  'ra-12287',
+]
+
+const DRRM_IMMINENT_DISASTER_STATUTES = [
+  'RA 10121',
+  'RA 12287',
+]
+
+const PUBLIC_SAFETY_FRAMEWORK_ID = 'workplace-school-and-public-safety'
+
 const PUBLIC_LAND_AGRARIAN_LAW_IDS = [
   'ra-11573',
   'ra-10023',
@@ -384,6 +396,80 @@ try {
       `${lawId} coverage should reference ${educationGovernanceFramework.id}`
     )
   }
+
+  for (const [index, lawId] of DRRM_IMMINENT_DISASTER_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `DRRM imminent-disaster corpus should include ${DRRM_IMMINENT_DISASTER_STATUTES[index]}`
+    )
+  }
+
+  const publicSafetyFramework = data.frameworks.find((framework) => framework.id === PUBLIC_SAFETY_FRAMEWORK_ID)
+
+  assert.ok(publicSafetyFramework, `${PUBLIC_SAFETY_FRAMEWORK_ID} framework should exist`)
+  assert.ok(
+    DRRM_IMMINENT_DISASTER_LAW_IDS.every((lawId) => publicSafetyFramework.lawIds.includes(lawId)),
+    `${PUBLIC_SAFETY_FRAMEWORK_ID} should include ${DRRM_IMMINENT_DISASTER_STATUTES.join(', ')}`
+  )
+
+  const publicSafetyFrameworkText = [
+    publicSafetyFramework.title,
+    publicSafetyFramework.summary,
+    ...publicSafetyFramework.triggers,
+    ...publicSafetyFramework.sequence,
+    ...publicSafetyFramework.checkpoints,
+  ].join(' ').toLowerCase()
+
+  for (const expectedTerm of ['disaster', 'imminent disaster', 'anticipatory action', 'pre-disaster risk assessment', 'ldrrmf']) {
+    assert.ok(
+      publicSafetyFrameworkText.includes(expectedTerm),
+      `${PUBLIC_SAFETY_FRAMEWORK_ID} should mention ${expectedTerm}`
+    )
+  }
+
+  for (const lawId of DRRM_IMMINENT_DISASTER_LAW_IDS) {
+    const coverage = coverageById.get(lawId)
+
+    assert.ok(
+      coverage?.frameworkIds.includes(PUBLIC_SAFETY_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${PUBLIC_SAFETY_FRAMEWORK_ID}`
+    )
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.equal(coverage?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
+    assert.ok(coverage?.goldenQueryLabels.includes('local-rag-golden'), `${lawId} should list local golden coverage`)
+  }
+
+  const imminentDisasterSource = sourcesById.get('ra-12287')
+  assert.ok(imminentDisasterSource, 'ra-12287 should have an authority source record')
+  assert.equal(imminentDisasterSource.sourceName, 'Lawphil', 'ra-12287 should use Lawphil as source')
+  assert.equal(imminentDisasterSource.sourceTier, 'official-primary', 'ra-12287 should be official primary law')
+  assert.equal(imminentDisasterSource.provenanceStatus, 'verified', 'ra-12287 should have verified provenance')
+  assert.ok(imminentDisasterSource.sourceUrl.includes('/ra2025/ra_12287_2025.html'), 'ra-12287 should link to official RA 12287 text')
+  assert.ok(
+    imminentDisasterSource.provenanceNotes?.includes('Declaration of State of Imminent Disaster Act'),
+    'ra-12287 should have explicit imminent-disaster provenance notes'
+  )
+
+  const imminentDisasterEvidence = (evidenceById.get('ra-12287') || []).map((anchor) => anchor.note).join(' ').toLowerCase()
+  assert.ok(imminentDisasterEvidence.includes('imminent disaster'), 'ra-12287 evidence should mention imminent disaster')
+  assert.ok(imminentDisasterEvidence.includes('anticipatory'), 'ra-12287 evidence should mention anticipatory action')
+
+  assert.ok(
+    data.relations.some((relation) => (
+      relation.sourceId === 'ra-12287' &&
+      relation.targetId === 'ra-10121' &&
+      relation.type === 'workflow_related_to'
+    )),
+    'ra-12287 should relate to RA 10121 DRRM workflow'
+  )
+  assert.ok(
+    data.relations.some((relation) => (
+      relation.sourceId === 'ra-12287' &&
+      relation.targetId === 'ra-7160' &&
+      relation.type === 'workflow_related_to'
+    )),
+    'ra-12287 should relate to RA 7160 LGU workflow'
+  )
 
   for (const [index, lawId] of PUBLIC_LAND_AGRARIAN_LAW_IDS.entries()) {
     assert.ok(
