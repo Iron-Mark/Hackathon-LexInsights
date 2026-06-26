@@ -88,5 +88,5 @@ export const AUTHORITY_SOURCES: LocalAuthoritySource[] = LEGAL_CORPUS.map((docum
   lastVerified: document.lastVerified || DEFAULT_LAST_VERIFIED,
   provenanceStatus: getProvenanceStatus(document),
   catalogTags: getCatalogTags(document),
-  provenanceNotes: PROVENANCE_NOTES[document.id],
+  provenanceNotes: PROVENANCE_NOTES[document.id] || document.sourceNotes,
 }))

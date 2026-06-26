@@ -127,6 +127,28 @@ const IDENTITY_SUBSCRIBER_CORE_FRAMEWORK_IDS = [
   'privacy-operations-and-npc-compliance',
 ]
 
+const PUBLIC_ACCOUNTABILITY_LAW_IDS = [
+  'ra-3019',
+  'ra-6713',
+  'pd-1445',
+  'ra-7080',
+  'ra-9470',
+  'eo-2-2016',
+]
+
+const PUBLIC_ACCOUNTABILITY_STATUTES = [
+  'RA 3019',
+  'RA 6713',
+  'PD 1445',
+  'RA 7080',
+  'RA 9470',
+  'EO 2, s. 2016',
+]
+
+const PUBLIC_ACCOUNTABILITY_FRAMEWORK_ID = 'public-accountability-and-government-funds'
+const DIGITAL_GOVERNMENT_FRAMEWORK_ID = 'digital-government-and-public-ict'
+const RECORDS_BENEFITS_FRAMEWORK_ID = 'education-housing-records-and-benefits'
+
 const PRIVACY_OPERATIONS_LAW_IDS = [
   'npc-irr-2016',
   'npc-circular-16-03',
@@ -1320,6 +1342,131 @@ try {
     ['ra-11055', 'ra-12254', 'workflow_related_to'],
     ['ra-11055', 'ra-10844', 'workflow_related_to'],
     ['ra-11055', 'ra-11032', 'workflow_related_to'],
+  ]) {
+    assert.ok(
+      data.relations.some((relation) => (
+        relation.sourceId === sourceId &&
+        relation.targetId === targetId &&
+        relation.type === type
+      )),
+      `${sourceId} should relate to ${targetId} as ${type}`
+    )
+  }
+
+  const publicAccountabilityFramework = data.frameworks.find((framework) => (
+    framework.id === PUBLIC_ACCOUNTABILITY_FRAMEWORK_ID
+  ))
+  const digitalGovernmentFramework = data.frameworks.find((framework) => (
+    framework.id === DIGITAL_GOVERNMENT_FRAMEWORK_ID
+  ))
+  const recordsBenefitsFramework = data.frameworks.find((framework) => (
+    framework.id === RECORDS_BENEFITS_FRAMEWORK_ID
+  ))
+
+  assert.ok(publicAccountabilityFramework, `${PUBLIC_ACCOUNTABILITY_FRAMEWORK_ID} framework should exist`)
+  assert.ok(digitalGovernmentFramework, `${DIGITAL_GOVERNMENT_FRAMEWORK_ID} framework should exist`)
+  assert.ok(recordsBenefitsFramework, `${RECORDS_BENEFITS_FRAMEWORK_ID} framework should exist`)
+  assert.ok(
+    ['ra-3019', 'ra-6713', 'pd-1445', 'ra-7080'].every((lawId) => (
+      publicAccountabilityFramework.lawIds.includes(lawId)
+    )),
+    `${PUBLIC_ACCOUNTABILITY_FRAMEWORK_ID} should include anti-graft, ethics, audit, and plunder authorities`
+  )
+  assert.ok(
+    ['ra-9470', 'eo-2-2016'].every((lawId) => (
+      digitalGovernmentFramework.lawIds.includes(lawId) || recordsBenefitsFramework.lawIds.includes(lawId)
+    )),
+    'FOI and archives authorities should be wired into records/digital-government frameworks'
+  )
+
+  for (const [index, lawId] of PUBLIC_ACCOUNTABILITY_LAW_IDS.entries()) {
+    const document = data.corpus.find((corpusDocument) => corpusDocument.id === lawId)
+    const coverage = coverageById.get(lawId)
+    const source = sourcesById.get(lawId)
+    const evidenceText = (evidenceById.get(lawId) || [])
+      .map((anchor) => `${anchor.label} ${anchor.note} ${anchor.supports.join(' ')}`)
+      .join(' ')
+      .toLowerCase()
+    const documentText = [
+      document?.statute || '',
+      document?.title || '',
+      document?.shortTitle || '',
+      document?.summary || '',
+      ...(document?.aliases || []),
+      ...(document?.topics || []),
+      ...(document?.keywords || []),
+      ...(document?.obligations || []),
+      ...(document?.commonGaps || []),
+    ].join(' ').toLowerCase()
+
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `Public accountability corpus should include ${PUBLIC_ACCOUNTABILITY_STATUTES[index]}`
+    )
+    assert.ok(document, `${lawId} should have a corpus document`)
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.equal(coverage?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
+    assert.ok(source, `${lawId} should have an authority source record`)
+    assert.equal(source?.provenanceStatus, 'verified', `${lawId} should have verified provenance`)
+    assert.equal(source?.lastVerified, '2026-06-27', `${lawId} should have current source verification date`)
+    assert.ok(source?.sourceUrl.startsWith('https://lawphil.net/'), `${lawId} should link to Lawphil`)
+    assert.ok(source?.provenanceNotes?.includes('Official Lawphil'), `${lawId} should have explicit Lawphil provenance notes`)
+    assert.ok(evidenceText.length > 0, `${lawId} should expose evidence anchors`)
+
+    if (lawId === 'ra-3019') {
+      assert.ok(documentText.includes('unwarranted benefit'), 'RA 3019 should cover unwarranted benefits')
+      assert.ok(documentText.includes('ombudsman complaint'), 'RA 3019 should cover Ombudsman complaint routing')
+      assert.ok(coverage?.frameworkIds.includes(PUBLIC_ACCOUNTABILITY_FRAMEWORK_ID), 'RA 3019 should reference public accountability framework')
+    }
+
+    if (lawId === 'ra-6713') {
+      assert.ok(documentText.includes('saln'), 'RA 6713 should cover SALN')
+      assert.ok(documentText.includes('gift'), 'RA 6713 should cover gift controls')
+      assert.ok(coverage?.frameworkIds.includes('public-personnel-appointment-and-discipline'), 'RA 6713 should reference public personnel framework')
+    }
+
+    if (lawId === 'pd-1445') {
+      assert.ok(documentText.includes('notice of disallowance'), 'PD 1445 should cover audit disallowance')
+      assert.ok(documentText.includes('accountable officer'), 'PD 1445 should cover accountable officers')
+      assert.ok(coverage?.frameworkIds.includes(PUBLIC_ACCOUNTABILITY_FRAMEWORK_ID), 'PD 1445 should reference public accountability framework')
+    }
+
+    if (lawId === 'ra-7080') {
+      assert.ok(documentText.includes('ill gotten wealth'), 'RA 7080 should cover ill-gotten wealth')
+      assert.ok(documentText.includes('asset preservation'), 'RA 7080 should cover asset preservation')
+      assert.ok(coverage?.frameworkIds.includes(PUBLIC_ACCOUNTABILITY_FRAMEWORK_ID), 'RA 7080 should reference public accountability framework')
+    }
+
+    if (lawId === 'ra-9470') {
+      assert.ok(documentText.includes('retention schedule'), 'RA 9470 should cover retention schedules')
+      assert.ok(documentText.includes('authorized destruction'), 'RA 9470 should cover authorized destruction')
+      assert.ok(
+        coverage?.frameworkIds.includes(DIGITAL_GOVERNMENT_FRAMEWORK_ID) ||
+          coverage?.frameworkIds.includes(RECORDS_BENEFITS_FRAMEWORK_ID),
+        'RA 9470 should reference a records or digital-government framework'
+      )
+    }
+
+    if (lawId === 'eo-2-2016') {
+      assert.equal(source?.authorityType, 'executive-issuance', 'EO 2 should be an executive issuance')
+      assert.ok(documentText.includes('exceptions inventory'), 'EO 2 should cover exceptions inventory')
+      assert.ok(documentText.includes('written denial'), 'EO 2 should cover written denial')
+      assert.ok(coverage?.frameworkIds.includes(DIGITAL_GOVERNMENT_FRAMEWORK_ID), 'EO 2 should reference digital government framework')
+    }
+  }
+
+  for (const [sourceId, targetId, type] of [
+    ['ra-3019', 'ra-6713', 'requires'],
+    ['ra-3019', 'pd-1445', 'workflow_related_to'],
+    ['ra-3019', 'ra-12009', 'workflow_related_to'],
+    ['ra-6713', 'ra-9470', 'workflow_related_to'],
+    ['ra-6713', 'ra-10173', 'workflow_related_to'],
+    ['pd-1445', 'ra-9470', 'workflow_related_to'],
+    ['pd-1445', 'ra-12009', 'workflow_related_to'],
+    ['ra-7080', 'ra-3019', 'workflow_related_to'],
+    ['ra-7080', 'pd-1445', 'workflow_related_to'],
+    ['eo-2-2016', 'ra-9470', 'requires'],
+    ['eo-2-2016', 'ra-10173', 'workflow_related_to'],
   ]) {
     assert.ok(
       data.relations.some((relation) => (
