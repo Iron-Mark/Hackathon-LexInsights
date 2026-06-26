@@ -37,6 +37,8 @@ const PROVENANCE_NOTES: Partial<Record<string, string>> = {
   'blgf-mc-001-2025-rpvara-irr': 'Official BLGF memorandum circular PDF containing the IRR of RA 12001; verify current BLGF issuances, LGU SMV adoption status, system deadlines, and appeal procedures before operational use.',
   'ra-10121': 'Official Lawphil text of the Philippine Disaster Risk Reduction and Management Act; verify current NDRRMC, OCD, DILG, and LGU DRRM plans, advisories, and fund rules before operational use.',
   'ra-12287': 'Official Lawphil text of the Declaration of State of Imminent Disaster Act; verify current NDRRMC, OCD, Regional DRRM Council, and LGU implementing rules before operational use.',
+  'ra-10863': 'Official Lawphil text of the Customs Modernization and Tariff Act; verify current BOC memoranda, tariff treatment, electronic filing systems, commodity permits, and port-specific procedures before operational use.',
+  'boc-cao-09-2020': 'Official BOC customs administrative order for formal-entry import processing; verify current E2M/NSW systems, BOC issuances, commodity permits, and port instructions before filing or releasing goods.',
   'bir-rr-2024-03': 'Official BIR EOPT VAT and percentage-tax regulation in the bundled local corpus; verify current BIR forms, filing channels, rates, and later issuances before operational use.',
   'bir-rr-2024-04': 'Official BIR EOPT filing and payment regulation in the bundled local corpus; verify current eFPS/eBIRForms/payment channels, forms, deadlines, and later issuances before operational use.',
   'bir-rr-2024-05': 'Official BIR EOPT tax-refund regulation in the bundled local corpus; verify current documentary, portal, audit, and deadline requirements before filing a claim.',

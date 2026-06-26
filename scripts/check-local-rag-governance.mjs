@@ -98,6 +98,18 @@ const CHILD_ADOPTION_STATUS_STATUTES = [
 
 const CHILD_ADOPTION_STATUS_FRAMEWORK_ID = 'child-adoption-foundling-and-civil-status'
 
+const CUSTOMS_IMPORT_LAW_IDS = [
+  'ra-10863',
+  'boc-cao-09-2020',
+]
+
+const CUSTOMS_IMPORT_STATUTES = [
+  'RA 10863',
+  'BOC CAO No. 09-2020',
+]
+
+const CUSTOMS_IMPORT_FRAMEWORK_ID = 'imports-procurement-and-public-assets'
+
 const PRIVACY_OPERATIONS_LAW_IDS = [
   'npc-irr-2016',
   'npc-circular-16-03',
@@ -686,6 +698,90 @@ try {
     assert.ok(
       coverageById.get(lawId)?.frameworkIds.includes(CHILD_ADOPTION_STATUS_FRAMEWORK_ID),
       `${lawId} coverage should reference ${CHILD_ADOPTION_STATUS_FRAMEWORK_ID}`
+    )
+  }
+
+  for (const [index, lawId] of CUSTOMS_IMPORT_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `Customs import corpus should include ${CUSTOMS_IMPORT_STATUTES[index]}`
+    )
+  }
+
+  const customsImportFramework = data.frameworks.find((framework) => (
+    framework.id === CUSTOMS_IMPORT_FRAMEWORK_ID
+  ))
+
+  assert.ok(customsImportFramework, `${CUSTOMS_IMPORT_FRAMEWORK_ID} framework should exist`)
+  assert.ok(
+    CUSTOMS_IMPORT_LAW_IDS.every((lawId) => customsImportFramework.lawIds.includes(lawId)),
+    `${CUSTOMS_IMPORT_FRAMEWORK_ID} should include ${CUSTOMS_IMPORT_STATUTES.join(', ')}`
+  )
+
+  const customsImportFrameworkText = [
+    customsImportFramework.title,
+    customsImportFramework.summary,
+    ...customsImportFramework.triggers,
+    ...customsImportFramework.sequence,
+    ...customsImportFramework.checkpoints,
+  ].join(' ').toLowerCase()
+
+  for (const expectedTerm of [
+    'goods declaration',
+    'formal entry',
+    'valuation',
+    'classification',
+    'release',
+    'post-clearance',
+  ]) {
+    assert.ok(
+      customsImportFrameworkText.includes(expectedTerm),
+      `${CUSTOMS_IMPORT_FRAMEWORK_ID} should cover ${expectedTerm}`
+    )
+  }
+
+  for (const lawId of CUSTOMS_IMPORT_LAW_IDS) {
+    const coverage = coverageById.get(lawId)
+    const source = sourcesById.get(lawId)
+
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.ok(coverage?.goldenQueryLabels.includes('local-rag-golden'), `${lawId} should list local golden coverage`)
+    assert.equal(coverage?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
+    assert.ok(
+      coverage?.frameworkIds.includes(CUSTOMS_IMPORT_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${CUSTOMS_IMPORT_FRAMEWORK_ID}`
+    )
+    assert.ok(source, `${lawId} should have an authority source record`)
+    assert.equal(source?.provenanceStatus, 'verified', `${lawId} should have verified provenance`)
+  }
+
+  const cmtaSource = sourcesById.get('ra-10863')
+  assert.equal(cmtaSource?.sourceName, 'Lawphil', 'RA 10863 should use Lawphil as source')
+  assert.equal(cmtaSource?.sourceTier, 'official-primary', 'RA 10863 should use official primary source tier')
+  assert.ok(cmtaSource?.sourceUrl.includes('/ra2016/ra_10863_2016.html'), 'RA 10863 should link to official Lawphil text')
+
+  const formalEntrySource = sourcesById.get('boc-cao-09-2020')
+  assert.equal(formalEntrySource?.sourceName, 'Bureau of Customs', 'BOC CAO 09-2020 should use BOC as source')
+  assert.equal(formalEntrySource?.sourceTier, 'official-guidance', 'BOC CAO 09-2020 should use official guidance source tier')
+  assert.ok(
+    formalEntrySource?.sourceUrl.startsWith('https://customs.gov.ph/'),
+    'BOC CAO 09-2020 should link to customs.gov.ph'
+  )
+  assert.ok(formalEntrySource?.provenanceNotes?.includes('Official BOC'), 'BOC CAO 09-2020 should have explicit BOC provenance notes')
+
+  for (const [sourceId, targetId, type] of [
+    ['boc-cao-09-2020', 'ra-10863', 'implements'],
+    ['ra-10863', 'ra-12009', 'workflow_related_to'],
+    ['ra-10863', 'ra-10611', 'workflow_related_to'],
+    ['ra-10863', 'ra-9711', 'workflow_related_to'],
+  ]) {
+    assert.ok(
+      data.relations.some((relation) => (
+        relation.sourceId === sourceId &&
+        relation.targetId === targetId &&
+        relation.type === type
+      )),
+      `${sourceId} should relate to ${targetId} as ${type}`
     )
   }
 

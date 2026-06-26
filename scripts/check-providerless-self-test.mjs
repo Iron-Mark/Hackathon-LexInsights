@@ -374,6 +374,7 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 7877'), 'Corpus should include RA 7877')
   assert.ok(corpus.some((document) => document.statute === 'RA 10627'), 'Corpus should include RA 10627')
   assert.ok(corpus.some((document) => document.statute === 'RA 10863'), 'Corpus should include RA 10863')
+  assert.ok(corpus.some((document) => document.id === 'boc-cao-09-2020'), 'Corpus should include BOC CAO No. 09-2020')
   assert.ok(corpus.some((document) => document.statute === 'RA 11976'), 'Corpus should include RA 11976')
   assert.ok(corpus.some((document) => document.statute === 'RA 8424'), 'Corpus should include RA 8424')
   assert.ok(corpus.some((document) => document.statute === 'RA 10963'), 'Corpus should include RA 10963')
@@ -2322,6 +2323,22 @@ try {
     'customs query'
   )
 
+  const customsFormalEntryResponse = runLocalResearch(
+    {
+      query:
+        'What CMTA RA 10863 and BOC CAO 09-2020 controls apply to formal entry, goods declaration, valuation, classification, regulated-goods permits, customs broker responsibility, payment, examination, release, post-clearance audit, seizure, forfeiture, protest, and appeal for imported public equipment?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(customsFormalEntryResponse, 'RA 10863', 'customs formal entry CMTA query')
+  assertResearchMatch(customsFormalEntryResponse, 'BOC CAO No. 09-2020', 'customs formal entry CAO query')
+  assert.ok(
+    customsFormalEntryResponse.summary.includes('Imports, Public Procurement, Assets, and Audit Stack'),
+    'customs formal entry query should include imports/procurement framework'
+  )
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What invoice, receipt, VAT, filing, and taxpayer controls apply to local payment collection?', user_id: 'self-test' },
@@ -3852,6 +3869,36 @@ This policy takes effect 30 days after publication.`
     'SEC beneficial ownership draft check should succeed locally'
   )
   assertFinding(thinSecBeneficialOwnershipDraftResponse, 'amber', 'SEC beneficial ownership')
+
+  const thinCustomsDraft = `# Imported Public Equipment Receiving Policy
+
+## Purpose
+This policy covers customs, import, tariff, and imported equipment delivery for a public office.
+
+## Legal Basis
+Pursuant to RA 10863 and BOC CAO No. 09-2020.
+
+## Scope
+This applies to public equipment shipments, suppliers, brokers, warehouse staff, and receiving personnel.
+
+## Responsible Office
+The receiving office shall implement this policy.
+
+## Requirements
+The supplier shall deliver goods to the warehouse after import processing.
+
+## Monitoring
+The receiving office shall submit annual reports.
+
+## Effectivity
+This policy takes effect after publication.`
+
+  const thinCustomsDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinCustomsDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(thinCustomsDraftResponse.status, 'success', 'Customs draft check should succeed locally')
+  assertFinding(thinCustomsDraftResponse, 'amber', 'Customs controls')
 
   const thinBusinessTaxDraft = `# Small Business Tax and Incentives Policy
 

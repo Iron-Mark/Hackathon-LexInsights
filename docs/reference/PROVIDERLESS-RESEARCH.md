@@ -327,6 +327,15 @@ This slice treats online-commerce questions as role-based workflows rather than 
 
 Providerless local mode can connect these authorities to RA 7394 consumer protection, RA 8792 e-commerce records, RA 10173 privacy, RA 12023 digital-services VAT, logistics/payment evidence, tax invoices, and marketplace dispute workflows when the query or draft supplies direct evidence. It does not verify current DTI, E-Commerce Bureau, sector-agency, platform-registration, database, tax, seller-identity, complaint, delivery, or product-specific facts; users should verify outputs with DTI, the relevant regulator, official issuances, platform records, transaction documents, and qualified counsel.
 
+## Customs and Import Clearance Slice
+
+This slice treats import questions as a customs workflow rather than only a procurement or logistics lookup:
+
+- RA 10863 covers the Customs Modernization and Tariff Act, including import/export declarations, valuation, tariff classification, duties and taxes, customs brokers, bonded operations, enforcement, seizure, forfeiture, protest, appeal, and post-clearance records.
+- BOC CAO No. 09-2020 adds formal-entry workflow guidance for consumption import entries, goods declaration, supporting documents, assessment, examination, payment, regulated-goods controls, release, and audit-ready records.
+
+Providerless local mode can connect these authorities to public procurement, food safety, FDA-regulated products, agricultural economic sabotage, tax, asset acceptance, and audit workflows when the query or draft supplies direct evidence. It does not verify current BOC electronic-system behavior, port instructions, tariff treatment, commodity permits, shipment status, broker authority, or case-specific customs facts; users should verify outputs with the Bureau of Customs, relevant product regulators, shipment documents, current official issuances, qualified counsel, and licensed customs professionals.
+
 ## Draft Checker Algorithm
 
 The providerless draft checker uses structural and topic-specific heuristics:
@@ -438,6 +447,7 @@ The local corpus intentionally stays small and auditable:
 - [RA 10627 - Anti-Bullying Act of 2013](https://lawphil.net/statutes/repacts/ra2013/ra_10627_2013.html)
 - [RA 11930 - Anti-OSAEC and Anti-CSAEM Act](https://lawphil.net/statutes/repacts/ra2022/ra_11930_2022.html)
 - [RA 10863 - Customs Modernization and Tariff Act](https://lawphil.net/statutes/repacts/ra2016/ra_10863_2016.html)
+- [BOC CAO No. 09-2020 - Formal Entry Process for Consumption](https://customs.gov.ph/wp-content/uploads/2020/08/CAO-09-2020.pdf)
 - [RA 12022 - Anti-Agricultural Sabotage Act](https://lawphil.net/statutes/repacts/ra2024/ra_12022_2024.html)
 - [RA 11976 - Ease of Paying Taxes Act](https://lawphil.net/statutes/repacts/ra2024/ra_11976_2024.html)
 - [BIR RR 3-2024 - EOPT VAT and Percentage Tax Regulations](https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.3-%202024.pdf)
