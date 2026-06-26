@@ -241,6 +241,52 @@ try {
   })
   assertExactCitationMatch(exactPaymentSystemCitation, 'RA 11127', '11127', 'exact RA 11127 citation')
 
+  const exactAntiGraftCitation = runLocalResearch({
+    query: 'What does RA 3019 require for conflict of interest, unwarranted benefits, undue injury, kickbacks, and supplier selection?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactAntiGraftCitation, 'RA 3019', '3019', 'exact RA 3019 citation')
+
+  const exactEthicsCitation = runLocalResearch({
+    query: 'What does RA 6713 require for SALN, gifts, public officials, ethical standards, conflict disclosure, and financial interests?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactEthicsCitation, 'RA 6713', '6713', 'exact RA 6713 citation')
+
+  const exactPlunderCitation = runLocalResearch({
+    query: 'What does RA 7080 require for plunder, ill-gotten wealth, public funds conversion, kickbacks, commissions, and asset preservation?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactPlunderCitation, 'RA 7080', '7080', 'exact RA 7080 citation')
+
+  const exactArchivesCitation = runLocalResearch({
+    query: 'What does RA 9470 require for public records, records management, archives, retention schedules, disposal, and records custody?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactArchivesCitation, 'RA 9470', '9470', 'exact RA 9470 citation')
+
+  const governmentAuditCode = runLocalResearch({
+    query: 'What does PD 1445 require for COA audit, public funds, cash advances, liquidation, vouchers, accountable officers, and audit disallowance?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(governmentAuditCode, 'PD 1445', 'PD 1445 government auditing code', 0.45)
+  assert.equal(statutes(governmentAuditCode)[0], 'PD 1445', 'PD 1445 should rank first for government audit query')
+  assert.ok(
+    governmentAuditCode.matched_documents[0].source_last_verified,
+    'PD 1445 top match should include last verified source metadata'
+  )
+
+  const foiExecutiveOrder = runLocalResearch({
+    query: 'What does EO 2 s. 2016 require for FOI requests, information request intake, redaction, exceptions, written denial, appeal, and eFOI records?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(foiExecutiveOrder, 'EO 2, s. 2016', 'EO 2 FOI executive order', 0.45)
+  assert.equal(statutes(foiExecutiveOrder)[0], 'EO 2, s. 2016', 'EO 2 should rank first for FOI request query')
+  assert.ok(
+    foiExecutiveOrder.matched_documents[0].source_last_verified,
+    'EO 2 top match should include last verified source metadata'
+  )
+
   const exactCftCitation = runLocalResearch({
     query: 'What does RA 10168 require for terrorism financing and asset freeze controls?',
     user_id: 'golden',
@@ -543,19 +589,35 @@ try {
   )
 
   const publicAccountabilityWorkflow = runLocalResearch({
-    query: 'What controls apply to public procurement bidding, BAC award, contract implementation, COA audit trail, public funds, and conflict of interest?',
+    query: 'What controls apply to public procurement bidding, BAC award, contract implementation, COA audit trail, public funds, SALN, gifts, conflict of interest, unwarranted benefits, and plunder red flags?',
     user_id: 'golden',
     use_deep_search: true,
   })
   assertCompletedMatches(
     publicAccountabilityWorkflow,
-    ['RA 12009', 'PD 1445', 'RA 6713'],
+    ['RA 12009', 'PD 1445', 'RA 3019', 'RA 6713', 'RA 7080'],
     'public accountability workflow'
   )
   assert.ok(
     publicAccountabilityWorkflow.summary.includes('Public Accountability, Ethics, Audit, and Government Funds Stack') ||
       publicAccountabilityWorkflow.summary.includes('Imports, Public Procurement, Assets, and Audit Stack'),
     'public accountability workflow should include a relevant framework section'
+  )
+
+  const foiRecordsWorkflow = runLocalResearch({
+    query: 'What controls should an agency FOI manual include for eFOI request intake, public records, privacy redaction, exceptions, denial appeal, retention schedule, archives, and authorized document disposal?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    foiRecordsWorkflow,
+    ['EO 2, s. 2016', 'RA 9470', 'RA 10173'],
+    'FOI records archives privacy workflow'
+  )
+  assert.ok(
+    foiRecordsWorkflow.summary.includes('Digital Government, E-Governance, and Public ICT Stack') ||
+      foiRecordsWorkflow.summary.includes('Education, Housing, Records, and Social Benefits Stack'),
+    'FOI records workflow should include a relevant records framework section'
   )
 
   const publicPersonnelWorkflow = runLocalResearch({
