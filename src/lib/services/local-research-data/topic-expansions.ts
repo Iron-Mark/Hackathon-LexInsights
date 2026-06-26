@@ -837,8 +837,8 @@ export const TOPIC_EXPANSIONS: LocalTopicExpansion[] = [
     expansions: ['inclusive education for learners with disabilities', 'child find system', 'individualized education plan', 'inclusive learning resource center', 'reasonable accommodation'],
   },
   {
-    triggers: ['customs', 'import', 'export', 'tariff', 'duties', 'valuation', 'broker'],
-    expansions: ['customs modernization and tariff act', 'customs declaration', 'valuation classification'],
+    triggers: ['customs', 'import', 'export', 'tariff', 'duties', 'valuation', 'broker', 'formal entry', 'goods declaration', 'customs clearance'],
+    expansions: ['customs modernization and tariff act', 'customs declaration', 'valuation classification', 'formal entry process', 'import clearance', 'regulated goods'],
   },
   {
     triggers: [

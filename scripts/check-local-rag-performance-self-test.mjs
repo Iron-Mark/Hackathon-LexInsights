@@ -324,6 +324,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'customs formal entry imported public equipment workflow',
+    params: {
+      query:
+        'What controls apply to RA 10863 CMTA and BOC CAO 09-2020 formal entry, goods declaration, customs valuation, tariff classification, duties, product permits, customs broker responsibility, regulated goods, examination, release, post-clearance audit, seizure, forfeiture, protest, appeal, procurement acceptance, and imported public equipment records?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 70,
+  },
+  {
     label: 'unrelated no-result',
     params: { query: 'How do I bake sourdough bread at high altitude?', user_id: 'performance' },
     p95Limit: 12,
@@ -366,6 +376,23 @@ try {
   assert.ok(
     imminentDisasterSmoke.matched_documents?.some((document) => document.statute === 'RA 10121'),
     'Imminent disaster performance smoke should include RA 10121'
+  )
+
+  const customsScenario = scenarios.find((scenario) => (
+    scenario.label === 'customs formal entry imported public equipment workflow'
+  ))
+  assert.ok(customsScenario, 'Customs formal entry performance scenario should exist')
+  const customsSmoke = runLocalResearch(customsScenario.params)
+
+  assert.equal(customsSmoke.status, 'completed', 'Customs formal entry performance smoke should complete')
+  assert.equal(
+    customsSmoke.matched_documents?.[0]?.statute,
+    'BOC CAO No. 09-2020',
+    'Customs formal entry performance smoke should rank BOC formal-entry guidance first'
+  )
+  assert.ok(
+    customsSmoke.matched_documents?.some((document) => document.statute === 'RA 10863'),
+    'Customs formal entry performance smoke should include RA 10863'
   )
 
   const results = scenarios.map((scenario) => ({

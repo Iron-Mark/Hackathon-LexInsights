@@ -3473,17 +3473,17 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(customs|import|export|tariff|duties|valuation|classification|broker|bonded warehouse|declaration)\b/.test(normalizedDraft)) {
-    if (!/\b(customs declaration|valuation|classification|duties|taxes|permit|broker|recordkeeping|clearance|inspection|appeal)\b/.test(normalizedDraft)) {
+  if (/\b(customs|import|export|tariff|duties|valuation|classification|broker|bonded warehouse|declaration|formal entry|goods declaration|customs clearance|regulated goods|post clearance)\b/.test(normalizedDraft)) {
+    if (!/\b(customs declaration|goods declaration|formal entry|valuation|classification|duties|taxes|permit|broker|recordkeeping|clearance|inspection|examination|release|hold|post clearance|appeal)\b/.test(normalizedDraft)) {
       findings.amber.push(
         createFinding(
           'amber',
           'gap',
           'Customs controls are incomplete',
-          'Import, export, tariff, customs, broker, valuation, or goods-release language was detected without enough declaration, valuation, duties, permits, records, or appeal controls.',
-          'Add customs declaration, valuation and classification, duties and taxes, product permits, broker or accountable office, inspection, records, release controls, and appeal procedure.',
+          'Import, export, tariff, customs, broker, valuation, formal-entry, goods-declaration, or goods-release language was detected without enough declaration, valuation, duties, permits, records, release, or appeal controls.',
+          'Add goods declaration, formal-entry owner, valuation and classification, duties and taxes, product permits, broker or accountable office, examination or inspection, hold/release controls, post-clearance records, and appeal procedure.',
           6,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10863') || LEGAL_CORPUS[0])]
+          [referenceForId('ra-10863'), referenceForId('boc-cao-09-2020')]
         )
       )
     }

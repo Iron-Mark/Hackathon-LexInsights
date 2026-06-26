@@ -1398,6 +1398,28 @@ try {
     'agricultural sabotage workflow should include the agricultural economic sabotage framework section'
   )
 
+  const customsFormalEntryWorkflow = runLocalResearch({
+    query:
+      'What RA 10863 CMTA and BOC CAO 09-2020 controls apply to formal entry, goods declaration, customs valuation, tariff classification, duties and taxes, product permits, customs broker responsibility, regulated goods, examination, release, post-clearance audit, seizure, forfeiture, protest, and appeal for imported public equipment?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    customsFormalEntryWorkflow,
+    ['RA 10863', 'BOC CAO No. 09-2020'],
+    'customs formal entry and imported public equipment workflow',
+    0.2
+  )
+  assert.equal(
+    statutes(customsFormalEntryWorkflow)[0],
+    'BOC CAO No. 09-2020',
+    'customs formal-entry workflow should rank the BOC formal-entry guidance first'
+  )
+  assert.ok(
+    customsFormalEntryWorkflow.summary.includes('Imports, Public Procurement, Assets, and Audit Stack'),
+    'customs workflow should include the imports/procurement framework section'
+  )
+
   const noResult = runLocalResearch({ query: 'How do I bake sourdough bread at high altitude?', user_id: 'golden' })
   assert.equal(noResult.status, 'no_results', 'unrelated query should return no_results')
   assert.equal(noResult.documents_found, 0, 'unrelated query should not report documents')
