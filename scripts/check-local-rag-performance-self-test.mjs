@@ -108,6 +108,15 @@ const scenarios = [
     p95Limit: 22,
   },
   {
+    label: 'cybercrime IRR implementation',
+    params: {
+      query:
+        'What does the Cybercrime Prevention Act IRR require for preservation orders, service providers, traffic data, content data, subscriber information, Office of Cybercrime, CICC, electronic evidence, and chain of custody?',
+      user_id: 'performance',
+    },
+    p95Limit: 35,
+  },
+  {
     label: 'AI governance',
     params: {
       query: 'What privacy and governance controls apply to AI chatbots that process personal data in the Philippines?',
@@ -139,7 +148,7 @@ const scenarios = [
     label: 'payment CFT sanctions workflow',
     params: {
       query:
-        'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AMLA IRR customer due diligence, beneficial ownership, covered transaction reports, suspicious transaction reports, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, customer privacy, and consumer remediation?',
+        'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AMLA IRR customer due diligence, beneficial ownership, covered transaction reports, suspicious transaction reports, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, preservation orders, service-provider traffic data, customer privacy, and consumer remediation?',
       user_id: 'performance',
       use_deep_search: true,
     },

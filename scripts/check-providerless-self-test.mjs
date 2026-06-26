@@ -146,7 +146,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 245, 'Local corpus should include at least 245 authorities')
+  assert.ok(corpus.length >= 246, 'Local corpus should include at least 246 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -323,6 +323,10 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 12009'), 'Corpus should include RA 12009')
   assert.ok(corpus.some((document) => document.statute === 'RA 11032'), 'Corpus should include RA 11032')
   assert.ok(corpus.some((document) => document.statute === 'RA 10175'), 'Corpus should include RA 10175')
+  assert.ok(
+    corpus.some((document) => document.id === 'cybercrime-irr-2015' && document.statute === 'Cybercrime Prevention Act IRR'),
+    'Corpus should include Cybercrime Prevention Act IRR'
+  )
   assert.ok(corpus.some((document) => document.statute === 'RA 9775'), 'Corpus should include RA 9775')
   assert.ok(corpus.some((document) => document.statute === 'RA 9160'), 'Corpus should include RA 9160')
   assert.ok(
@@ -921,6 +925,17 @@ try {
     'cybercrime query'
   )
 
+  const cybercrimeIrrResponse = runLocalResearch(
+    {
+      query:
+        'What does the Cybercrime Prevention Act IRR require for preservation orders, service providers, traffic data, content data, subscriber information, computer data, cyber warrants, DOJ Office of Cybercrime, CICC, CERT, electronic evidence, and chain of custody?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(cybercrimeIrrResponse, 'Cybercrime Prevention Act IRR', 'Cybercrime Prevention Act IRR implementation query')
+  assertResearchMatch(cybercrimeIrrResponse, 'RA 10175', 'Cybercrime Prevention Act IRR parent-law query')
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What does the Data Privacy Act IRR require for PIC, PIP, lawful processing, privacy notice, data subject rights, security measures, DPO, registration, data sharing, outsourcing, and breach notification?', user_id: 'self-test' },
@@ -1269,7 +1284,7 @@ try {
 
   const paymentSystemsCftWorkflowResponse = runLocalResearch(
     {
-      query: 'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AML suspicious transactions, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, customer privacy, and consumer remediation?',
+      query: 'What controls apply to operator of payment system registration, wallet settlement, payment switch reconciliation, AML suspicious transactions, CFT sanctions screening, asset freeze, Anti-Terrorism Council referrals, fraud evidence, cybercrime escalation, preservation orders, service-provider coordination, traffic data, customer privacy, and consumer remediation?',
       user_id: 'self-test',
       use_deep_search: true,
     },
@@ -1283,6 +1298,8 @@ try {
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 12010', 'payment systems CFT workflow scam query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 11765', 'payment systems CFT workflow financial consumer query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 8484', 'payment systems CFT workflow access device query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 10175', 'payment systems CFT workflow cybercrime query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'Cybercrime Prevention Act IRR', 'payment systems CFT workflow cybercrime IRR query')
   assertIncludes(
     paymentSystemsCftWorkflowResponse.summary,
     'Payment Systems, CFT, and Sanctions Controls Stack',
@@ -3957,7 +3974,7 @@ This ordinance takes effect 30 days after publication.`
     'simulated draft checker outage'
   )
   assert.equal(thinCyberDraftResponse.status, 'success', 'Cyber draft check should succeed locally')
-  assertFinding(thinCyberDraftResponse, 'amber', 'Cyber incident controls')
+  assertFinding(thinCyberDraftResponse, 'amber', 'Cybercrime incident')
 
   const thinWomenGenderDraft = `# Women Protection and GAD Services Ordinance
 

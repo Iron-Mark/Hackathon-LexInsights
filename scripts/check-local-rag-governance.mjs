@@ -205,6 +205,16 @@ const AMLC_AMLA_IRR_FRAMEWORK_IDS = [
   'banking-lending-insurance-and-financial-institutions',
 ]
 
+const CYBERCRIME_IRR_ID = 'cybercrime-irr-2015'
+const CYBERCRIME_IRR_FRAMEWORK_IDS = [
+  'data-incident-response',
+  'privacy-operations-and-npc-compliance',
+  'financial-account-scam-response',
+  'payment-systems-cft-and-sanctions-controls',
+  'digital-government-and-public-ict',
+  'ai-governance-privacy-public-sector-automation',
+]
+
 const SEC_BENEFICIAL_OWNERSHIP_IDS = ['sec-mc-01-2021', 'sec-mc-15-2025', 'sec-harbor-2026']
 const SEC_BENEFICIAL_OWNERSHIP_STATUTES = [
   'SEC Memorandum Circular No. 1, s. 2021',
@@ -717,6 +727,76 @@ try {
   assert.ok(
     amlaIrrEvidenceText.includes('suspicious transaction'),
     `${AMLC_AMLA_IRR_ID} evidence should cover suspicious transaction reporting`
+  )
+
+  const cybercrimeIrrDocument = data.corpus.find((document) => document.id === CYBERCRIME_IRR_ID)
+  assert.ok(cybercrimeIrrDocument, 'Corpus should include Cybercrime Prevention Act IRR document')
+  assert.equal(
+    cybercrimeIrrDocument?.statute,
+    'Cybercrime Prevention Act IRR',
+    'Cybercrime Prevention Act IRR statute label should be stable'
+  )
+
+  const cybercrimeIrrCoverage = coverageById.get(CYBERCRIME_IRR_ID)
+  const cybercrimeIrrSource = sourcesById.get(CYBERCRIME_IRR_ID)
+  const cybercrimeIrrEvidenceText = (evidenceById.get(CYBERCRIME_IRR_ID) || [])
+    .map((anchor) => `${anchor.label} ${anchor.note} ${anchor.supports.join(' ')}`)
+    .join(' ')
+    .toLowerCase()
+  const cybercrimeIrrDocumentText = [
+    cybercrimeIrrDocument?.statute || '',
+    cybercrimeIrrDocument?.title || '',
+    cybercrimeIrrDocument?.shortTitle || '',
+    cybercrimeIrrDocument?.summary || '',
+    ...(cybercrimeIrrDocument?.aliases || []),
+    ...(cybercrimeIrrDocument?.topics || []),
+    ...(cybercrimeIrrDocument?.keywords || []),
+    ...(cybercrimeIrrDocument?.obligations || []),
+    ...(cybercrimeIrrDocument?.commonGaps || []),
+  ].join(' ').toLowerCase()
+
+  for (const frameworkId of CYBERCRIME_IRR_FRAMEWORK_IDS) {
+    assert.ok(
+      cybercrimeIrrCoverage?.frameworkIds.includes(frameworkId),
+      `${CYBERCRIME_IRR_ID} coverage should reference ${frameworkId}`
+    )
+  }
+
+  assert.equal(cybercrimeIrrCoverage?.coverageStatus, 'golden', `${CYBERCRIME_IRR_ID} should have golden coverage`)
+  assert.equal(cybercrimeIrrCoverage?.draftCheckCovered, true, `${CYBERCRIME_IRR_ID} should be covered by draft checks`)
+  assert.ok(cybercrimeIrrSource, `${CYBERCRIME_IRR_ID} should have an authority source record`)
+  assert.equal(cybercrimeIrrSource?.sourceName, 'Supreme Court E-Library', `${CYBERCRIME_IRR_ID} should use Supreme Court E-Library as source`)
+  assert.equal(cybercrimeIrrSource?.authorityType, 'regulation', `${CYBERCRIME_IRR_ID} should be a regulation`)
+  assert.equal(cybercrimeIrrSource?.sourceTier, 'official-guidance', `${CYBERCRIME_IRR_ID} should use official guidance source tier`)
+  assert.equal(cybercrimeIrrSource?.provenanceStatus, 'verified', `${CYBERCRIME_IRR_ID} should have verified provenance`)
+  assert.ok(
+    cybercrimeIrrSource?.sourceUrl.startsWith('https://elibrary.judiciary.gov.ph/'),
+    `${CYBERCRIME_IRR_ID} should link to the Supreme Court E-Library`
+  )
+  assert.ok(
+    cybercrimeIrrSource?.provenanceNotes?.includes('DOJ-DILG-DOST'),
+    `${CYBERCRIME_IRR_ID} should have explicit IRR provenance notes`
+  )
+  assert.ok(
+    data.relations.some((relation) => (
+      relation.sourceId === CYBERCRIME_IRR_ID &&
+      relation.targetId === 'ra-10175' &&
+      relation.type === 'implements'
+    )),
+    `${CYBERCRIME_IRR_ID} should implement RA 10175`
+  )
+
+  for (const requiredTopic of ['preservation', 'service provider', 'traffic data', 'content data', 'office of cybercrime', 'cicc', 'chain of custody']) {
+    assert.ok(
+      cybercrimeIrrDocumentText.includes(requiredTopic),
+      `${CYBERCRIME_IRR_ID} should cover ${requiredTopic}`
+    )
+  }
+  assert.ok(
+    cybercrimeIrrEvidenceText.includes('preservation') &&
+      cybercrimeIrrEvidenceText.includes('service') &&
+      (cybercrimeIrrEvidenceText.includes('office of cybercrime') || cybercrimeIrrEvidenceText.includes('cicc')),
+    `${CYBERCRIME_IRR_ID} evidence should cover preservation, service-provider, and OOC/CICC coordination`
   )
 
   const secBeneficialOwnershipFramework = data.frameworks.find((framework) => (

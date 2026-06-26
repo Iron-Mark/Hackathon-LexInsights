@@ -486,6 +486,27 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     weight: 0.95,
   },
   {
+    sourceId: 'cybercrime-irr-2015',
+    targetId: 'ra-10175',
+    type: 'implements',
+    label: 'Cybercrime Prevention Act implementing rules for RA 10175',
+    weight: 1.3,
+  },
+  {
+    sourceId: 'cybercrime-irr-2015',
+    targetId: 'ra-10173',
+    type: 'workflow_related_to',
+    label: 'Cybercrime evidence preservation and privacy-safeguards relationship',
+    weight: 0.95,
+  },
+  {
+    sourceId: 'cybercrime-irr-2015',
+    targetId: 'ra-8792',
+    type: 'workflow_related_to',
+    label: 'Cybercrime electronic evidence and electronic records relationship',
+    weight: 0.9,
+  },
+  {
     sourceId: 'ra-11479',
     targetId: 'ra-4200',
     type: 'cross_references',
