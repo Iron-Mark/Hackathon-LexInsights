@@ -147,7 +147,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 267, 'Local corpus should include at least 267 authorities')
+  assert.ok(corpus.length >= 269, 'Local corpus should include at least 269 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -220,6 +220,25 @@ try {
   assert.ok(
     frameworks.some((framework) => framework.id === 'real-estate-housing-buyer-and-tenant-protection'),
     'Frameworks should include real estate, housing buyer, HOA, and tenant protection'
+  )
+  assert.ok(
+    frameworks.some((framework) => framework.id === 'real-property-valuation-local-tax-and-assessment'),
+    'Frameworks should include real property valuation, RPT, and local assessment'
+  )
+  const rptFramework = frameworks.find((framework) => (
+    framework.id === 'real-property-valuation-local-tax-and-assessment'
+  ))
+  assert.ok(
+    ['ra-12001', 'blgf-mc-001-2025-rpvara-irr', 'ra-7160'].every((id) => (
+      rptFramework?.lawIds.includes(id)
+    )),
+    'Real property valuation framework should wire RA 12001, RPVARA IRR, and RA 7160'
+  )
+  assert.ok(
+    ['rpt', 'schedule of market values', 'tax declaration', 'local treasurer'].every((term) => (
+      rptFramework?.triggers.includes(term)
+    )),
+    'Real property valuation framework should include RPT workflow triggers'
   )
   assert.ok(
     frameworks.some((framework) => framework.id === 'mobility-land-agriculture-and-community-rights'),
@@ -518,6 +537,11 @@ try {
   assert.ok(corpus.some((document) => document.statute === 'RA 6657'), 'Corpus should include RA 6657')
   assert.ok(corpus.some((document) => document.statute === 'RA 9700'), 'Corpus should include RA 9700')
   assert.ok(corpus.some((document) => document.statute === 'RA 11953'), 'Corpus should include RA 11953')
+  assert.ok(corpus.some((document) => document.id === 'ra-12001'), 'Corpus should include RA 12001')
+  assert.ok(
+    corpus.some((document) => document.id === 'blgf-mc-001-2025-rpvara-irr'),
+    'Corpus should include BLGF RPVARA IRR guidance'
+  )
   assert.ok(corpus.some((document) => document.statute === 'RA 8435'), 'Corpus should include RA 8435')
   assert.ok(corpus.some((document) => document.statute === 'RA 10068'), 'Corpus should include RA 10068')
   assert.ok(corpus.some((document) => document.statute === 'RA 10611'), 'Corpus should include RA 10611')
@@ -2181,6 +2205,57 @@ try {
     ),
     'RA 9646',
     'real estate service query'
+  )
+
+  const rpvaraCitationResponse = runLocalResearch(
+    {
+      query: 'What does RA 12001 require for real property valuation, schedule of market values, assessor, treasurer, tax declaration, assessment roll, and assessment appeal?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(rpvaraCitationResponse, 'RA 12001', 'RA 12001 real property valuation exact citation query')
+  assert.deepEqual(
+    rpvaraCitationResponse.retrieval_metadata?.citation_numbers,
+    ['12001'],
+    'RA 12001 exact citation metadata'
+  )
+  assertMatchedTerm(
+    rpvaraCitationResponse,
+    'RA 12001',
+    'explicit citation: RA 12001',
+    'RA 12001 exact citation query'
+  )
+
+  const rpvaraIrrResponse = runLocalResearch(
+    {
+      query: 'What does BLGF MC No. 001-2025 RPVARA IRR require for SMV adoption, valuation database, tax declarations, notice, publication, assessment roll, appeals, and property record custody?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(rpvaraIrrResponse, 'BLGF MC No. 001-2025', 'RPVARA IRR operational query')
+  assertResearchMatch(rpvaraIrrResponse, 'RA 12001', 'RPVARA IRR related statute query')
+
+  const realPropertyValuationFrameworkResponse = runLocalResearch(
+    {
+      query: 'What real property tax, RPT, Local Government Code RA 7160, assessor, schedule of market values, tax declaration, assessment roll, local treasurer, delinquency, appeal, property record, privacy, and citizen charter controls apply?',
+      user_id: 'self-test',
+      use_deep_search: true,
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(realPropertyValuationFrameworkResponse, 'RA 12001', 'real property valuation framework RA 12001 query')
+  assertResearchMatch(
+    realPropertyValuationFrameworkResponse,
+    'BLGF MC No. 001-2025',
+    'real property valuation framework RPVARA IRR query'
+  )
+  assertResearchMatch(realPropertyValuationFrameworkResponse, 'RA 7160', 'real property valuation framework local government query')
+  assertIncludes(
+    realPropertyValuationFrameworkResponse.summary,
+    'Real Property Valuation, RPT, and Local Assessment Stack',
+    'Real property valuation framework title'
   )
 
   assertResearchMatch(
@@ -5145,6 +5220,40 @@ This policy takes effect 30 days after publication.`
   assertFinding(thinLandTenureDraftResponse, 'amber', 'Land-title verification controls')
   assertFinding(thinLandTenureDraftResponse, 'amber', 'Public-land and free-patent controls')
   assertFinding(thinLandTenureDraftResponse, 'amber', 'Agrarian-reform land controls')
+
+  const thinRealPropertyValuationDraft = `# Real Property Tax Assessment Desk Policy
+
+## Purpose
+This policy handles real property tax, RPT, tax declaration, assessor, treasurer, schedule of market values, SMV, assessment roll, property valuation, and assessment appeal requests.
+
+## Legal Basis
+Pursuant to RA 12001, BLGF MC No. 001-2025, and RA 7160.
+
+## Scope
+This applies to property owners, administrators, and occupants.
+
+## Responsible Office
+The assessor office shall process requests.
+
+## Requirements
+Applicants shall submit property documents when requested.
+
+## Monitoring
+The assessor office shall submit quarterly reports.
+
+## Effectivity
+This policy takes effect 30 days after publication.`
+
+  const thinRealPropertyValuationDraftResponse = runLocalDraftCheck(
+    { draft_markdown: thinRealPropertyValuationDraft, user_id: 'self-test', include_summary: true },
+    'simulated draft checker outage'
+  )
+  assert.equal(
+    thinRealPropertyValuationDraftResponse.status,
+    'success',
+    'Real property valuation draft check should succeed locally'
+  )
+  assertFinding(thinRealPropertyValuationDraftResponse, 'amber', 'Real property valuation and RPT controls')
 
   const thinCivicServicesDraft = `# Civic Services Desk Policy
 

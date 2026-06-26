@@ -3466,6 +3466,27 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
+  if (/\b(real property tax|rpt|property tax|tax declaration|local assessor|city assessor|municipal assessor|provincial assessor|local treasurer|schedule of market values|smv|fair market value|assessed value|real property valuation|real property assessment|assessment roll|assessment appeal|local board of assessment appeals|central board of assessment appeals|rpvara)\b/.test(normalizedDraft)) {
+    const hasAssessmentAuthority = /\b(assessor|treasurer|sanggunian|blgf|dof|schedule of market values|smv|real property valuation|assessment roll|tax declaration|local board|central board)\b/.test(normalizedDraft)
+    const hasValuationBasis = /\b(property classification|market value|fair market value|assessed value|assessment level|valuation standard|valuation methodology|approved smv|current smv|tax declaration)\b/.test(normalizedDraft)
+    const hasTaxpayerNoticeOrAppeal = /\b(notice|publication|appeal|protest|local board of assessment appeals|central board of assessment appeals|correction|written decision|remedy)\b/.test(normalizedDraft)
+    const hasPropertyRecordControls = /\b(record|custody|retention|privacy|access control|redaction|authorized disclosure|audit trail|gis|title|payment|delinquency)\b/.test(normalizedDraft)
+
+    if (!(hasAssessmentAuthority && hasValuationBasis && hasTaxpayerNoticeOrAppeal && hasPropertyRecordControls)) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Real property valuation and RPT controls need detail',
+          'Real-property-tax, tax-declaration, assessor, treasurer, SMV, property-valuation, or assessment-appeal language was detected without enough authority, valuation basis, notice, appeal, collection, privacy, or records controls.',
+          'Add assessor and treasurer ownership, current approved SMV or valuation basis, property classification, assessment roll or tax-declaration workflow, taxpayer notice and publication, appeal route, payment or delinquency handling, property-record custody, privacy, retention, and BLGF/DOF or LGU verification.',
+          7,
+          [referenceForId('ra-12001'), referenceForId('blgf-mc-001-2025-rpvara-irr'), referenceForId('ra-7160')]
+        )
+      )
+    }
+  }
+
   if (/\b(tax|taxpayer|bir|nirc|tax code|invoice|receipt|vat|withholding|tax return|filing|payment of tax|income tax|percentage tax|excise tax|train|create|create more|tax incentive|registered business enterprise)\b/.test(normalizedDraft)) {
     const hasTaxIdentityControls = /\b(taxpayer classification|taxpayer type|bir registration|certificate of registration|registered business enterprise|rbe classification|investment promotion agency|ipa|firb|incentive period)\b/.test(normalizedDraft)
     const hasTaxFilingPaymentControls = /\b(filing deadline|payment deadline|filing and payment|tax return|withholding certificate|proof of payment|payment confirmation|remittance|return filing)\b/.test(normalizedDraft)

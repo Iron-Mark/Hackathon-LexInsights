@@ -60,6 +60,18 @@ const PUBLIC_LAND_AGRARIAN_STATUTES = [
 
 const PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID = 'public-land-free-patent-and-agrarian-reform'
 
+const REAL_PROPERTY_VALUATION_LAW_IDS = [
+  'ra-12001',
+  'blgf-mc-001-2025-rpvara-irr',
+]
+
+const REAL_PROPERTY_VALUATION_STATUTES = [
+  'RA 12001',
+  'BLGF MC No. 001-2025',
+]
+
+const REAL_PROPERTY_VALUATION_FRAMEWORK_ID = 'real-property-valuation-local-tax-and-assessment'
+
 const CHILD_ADOPTION_STATUS_LAW_IDS = [
   'ra-11642',
   'ra-11222',
@@ -414,6 +426,136 @@ try {
     assert.ok(
       coverageById.get(lawId)?.frameworkIds.includes(PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID),
       `${lawId} coverage should reference ${PUBLIC_LAND_AGRARIAN_FRAMEWORK_ID}`
+    )
+  }
+
+  for (const [index, lawId] of REAL_PROPERTY_VALUATION_LAW_IDS.entries()) {
+    assert.ok(
+      corpusIdSet.has(lawId),
+      `Real property valuation corpus should include ${REAL_PROPERTY_VALUATION_STATUTES[index]}`
+    )
+  }
+
+  const realPropertyValuationFramework = data.frameworks.find((framework) => (
+    framework.id === REAL_PROPERTY_VALUATION_FRAMEWORK_ID
+  ))
+
+  assert.ok(
+    realPropertyValuationFramework,
+    `${REAL_PROPERTY_VALUATION_FRAMEWORK_ID} framework should exist`
+  )
+  assert.ok(
+    REAL_PROPERTY_VALUATION_LAW_IDS.every((lawId) => realPropertyValuationFramework.lawIds.includes(lawId)),
+    `${REAL_PROPERTY_VALUATION_FRAMEWORK_ID} should include ${REAL_PROPERTY_VALUATION_STATUTES.join(', ')}`
+  )
+
+  const realPropertyValuationFrameworkText = [
+    realPropertyValuationFramework.title,
+    realPropertyValuationFramework.summary,
+    ...realPropertyValuationFramework.triggers,
+    ...realPropertyValuationFramework.checkpoints,
+  ].join(' ').toLowerCase()
+
+  for (const term of [
+    'real property',
+    'schedule of market values',
+    'assessor',
+    'treasurer',
+    'tax declaration',
+    'appeal',
+  ]) {
+    assert.ok(
+      realPropertyValuationFrameworkText.includes(term),
+      `${REAL_PROPERTY_VALUATION_FRAMEWORK_ID} should cover ${term}`
+    )
+  }
+
+  for (const lawId of REAL_PROPERTY_VALUATION_LAW_IDS) {
+    const coverage = coverageById.get(lawId)
+
+    assert.equal(coverage?.coverageStatus, 'golden', `${lawId} should have golden coverage`)
+    assert.ok(coverage?.goldenQueryLabels.includes('local-rag-golden'), `${lawId} should list local golden coverage`)
+    assert.equal(coverage?.draftCheckCovered, true, `${lawId} should be covered by draft checks`)
+    assert.ok(
+      coverage?.frameworkIds.includes(REAL_PROPERTY_VALUATION_FRAMEWORK_ID),
+      `${lawId} coverage should reference ${REAL_PROPERTY_VALUATION_FRAMEWORK_ID}`
+    )
+  }
+  assert.ok(
+    !realPropertyValuationFramework.lawIds.some((id) => id.startsWith('bir-') || id === 'ra-8424'),
+    `${REAL_PROPERTY_VALUATION_FRAMEWORK_ID} should not route RPT through national BIR tax authorities`
+  )
+
+  const rpvaraSource = sourcesById.get('ra-12001')
+  assert.equal(rpvaraSource?.authorityType, 'statute', 'RA 12001 authority type should be statute')
+  assert.equal(rpvaraSource?.sourceName, 'Lawphil', 'RA 12001 should use Lawphil as source')
+  assert.ok(
+    rpvaraSource?.sourceUrl.startsWith('https://lawphil.net/statutes/repacts/ra2024/ra_12001_2024.html'),
+    'RA 12001 should link to the official Lawphil text'
+  )
+  assert.equal(rpvaraSource?.sourceTier, 'official-primary', 'RA 12001 source tier should be official-primary')
+  assert.equal(rpvaraSource?.lastVerified, '2026-06-26', 'RA 12001 source should have current verification date')
+  assert.equal(rpvaraSource?.provenanceStatus, 'verified', 'RA 12001 should have verified provenance')
+  assert.ok(rpvaraSource?.provenanceNotes?.includes('Official Lawphil'), 'RA 12001 provenance should note Lawphil')
+
+  const rpvaraIrrSource = sourcesById.get('blgf-mc-001-2025-rpvara-irr')
+  assert.equal(
+    rpvaraIrrSource?.authorityType,
+    'regulation',
+    'RPVARA IRR authority type should be regulation'
+  )
+  assert.equal(
+    rpvaraIrrSource?.sourceName,
+    'Bureau of Local Government Finance',
+    'RPVARA IRR should use BLGF as source'
+  )
+  assert.ok(
+    rpvaraIrrSource?.sourceUrl.startsWith('https://blgf.gov.ph/'),
+    'RPVARA IRR should link to the official BLGF source'
+  )
+  assert.equal(
+    rpvaraIrrSource?.sourceTier,
+    'official-guidance',
+    'RPVARA IRR source tier should be official-guidance'
+  )
+  assert.equal(
+    rpvaraIrrSource?.lastVerified,
+    '2026-06-26',
+    'RPVARA IRR source should have current verification date'
+  )
+  assert.equal(rpvaraIrrSource?.provenanceStatus, 'verified', 'RPVARA IRR should have verified provenance')
+  assert.ok(rpvaraIrrSource?.provenanceNotes?.includes('Official BLGF'), 'RPVARA IRR provenance should note BLGF')
+
+  assert.ok(
+    data.relations.some((relation) => (
+      relation.sourceId === 'blgf-mc-001-2025-rpvara-irr' &&
+      relation.targetId === 'ra-12001' &&
+      relation.type === 'implements'
+    )),
+    'RPVARA IRR should implement RA 12001 through authority relations'
+  )
+  assert.ok(
+    data.relations.some((relation) => (
+      relation.sourceId === 'ra-12001' &&
+      relation.targetId === 'ra-7160'
+    )),
+    'RA 12001 should relate to Local Government Code workflows'
+  )
+  for (const [sourceId, targetId, type] of [
+    ['blgf-mc-001-2025-rpvara-irr', 'ra-7160', 'workflow_related_to'],
+    ['ra-12001', 'ra-9470', 'workflow_related_to'],
+    ['ra-12001', 'ra-10173', 'workflow_related_to'],
+    ['ra-12001', 'pd-1529', 'workflow_related_to'],
+    ['ra-12001', 'ra-9646', 'workflow_related_to'],
+    ['ra-12001', 'ra-11032', 'workflow_related_to'],
+  ]) {
+    assert.ok(
+      data.relations.some((relation) => (
+        relation.sourceId === sourceId &&
+        relation.targetId === targetId &&
+        relation.type === type
+      )),
+      `${sourceId} should relate to ${targetId} as ${type}`
     )
   }
 

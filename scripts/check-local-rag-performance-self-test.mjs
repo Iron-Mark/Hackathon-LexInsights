@@ -294,6 +294,16 @@ const scenarios = [
     p95Limit: 65,
   },
   {
+    label: 'real property valuation RPT local assessment workflow',
+    params: {
+      query:
+        'What real property tax, RPT, Local Government Code RA 7160, assessor, schedule of market values, tax declaration, assessment roll, local treasurer, delinquency, appeal, property record, privacy, and citizen charter controls apply?',
+      user_id: 'performance',
+      use_deep_search: true,
+    },
+    p95Limit: 65,
+  },
+  {
     label: 'child adoption foundling civil status workflow',
     params: {
       query:
@@ -314,6 +324,22 @@ const { module: providerless, cleanup } = await loadProviderlessModule()
 
 try {
   const { runLocalResearch } = providerless
+  const rptScenario = scenarios.find((scenario) => (
+    scenario.label === 'real property valuation RPT local assessment workflow'
+  ))
+  assert.ok(rptScenario, 'RPT performance scenario should exist')
+  const rptSmoke = runLocalResearch(rptScenario.params)
+
+  assert.equal(rptSmoke.status, 'completed', 'RPT performance smoke should complete')
+  assert.equal(
+    rptSmoke.matched_documents?.[0]?.statute,
+    'RA 12001',
+    'RPT performance smoke should rank RA 12001 first'
+  )
+  assert.ok(
+    rptSmoke.matched_documents?.some((document) => document.statute === 'BLGF MC No. 001-2025'),
+    'RPT performance smoke should include the RPVARA IRR'
+  )
 
   const results = scenarios.map((scenario) => ({
     scenario,
