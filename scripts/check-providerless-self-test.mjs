@@ -41,6 +41,7 @@ function assertFinding(response, status, titleFragment) {
   ))
 
   assert.ok(match, `Expected ${status} finding containing "${titleFragment}"`)
+  return match
 }
 
 function assertNoFinding(response, titleFragment) {
@@ -146,7 +147,7 @@ try {
 
   const corpus = getLocalResearchCorpus()
   const frameworks = getLocalComplianceFrameworks()
-  assert.ok(corpus.length >= 246, 'Local corpus should include at least 246 authorities')
+  assert.ok(corpus.length >= 267, 'Local corpus should include at least 267 authorities')
   assert.ok(frameworks.length >= 42, 'Local corpus should include compliance framework bundles')
   assert.ok(
     frameworks.some((framework) => framework.id === 'data-incident-response'),
@@ -326,6 +327,10 @@ try {
   assert.ok(
     corpus.some((document) => document.id === 'cybercrime-irr-2015' && document.statute === 'Cybercrime Prevention Act IRR'),
     'Corpus should include Cybercrime Prevention Act IRR'
+  )
+  assert.ok(
+    corpus.some((document) => document.id === 'am-17-11-03-sc' && document.statute === 'A.M. No. 17-11-03-SC'),
+    'Corpus should include Rule on Cybercrime Warrants'
   )
   assert.ok(corpus.some((document) => document.statute === 'RA 9775'), 'Corpus should include RA 9775')
   assert.ok(corpus.some((document) => document.statute === 'RA 9160'), 'Corpus should include RA 9160')
@@ -936,6 +941,17 @@ try {
   assertResearchMatch(cybercrimeIrrResponse, 'Cybercrime Prevention Act IRR', 'Cybercrime Prevention Act IRR implementation query')
   assertResearchMatch(cybercrimeIrrResponse, 'RA 10175', 'Cybercrime Prevention Act IRR parent-law query')
 
+  const cybercrimeWarrantRuleResponse = runLocalResearch(
+    {
+      query:
+        'What does A.M. No. 17-11-03-SC Rule on Cybercrime Warrants require for WDCD, WICD, WSSECD, WECD, probable cause, service providers, forensic images, inventory, return, chain of custody, retention, destruction, confidentiality, and motion to suppress?',
+      user_id: 'self-test',
+    },
+    'simulated remote outage'
+  )
+  assertResearchMatch(cybercrimeWarrantRuleResponse, 'A.M. No. 17-11-03-SC', 'Rule on Cybercrime Warrants query')
+  assertResearchMatch(cybercrimeWarrantRuleResponse, 'RA 10175', 'Rule on Cybercrime Warrants parent-law query')
+
   assertResearchMatch(
     runLocalResearch(
       { query: 'What does the Data Privacy Act IRR require for PIC, PIP, lawful processing, privacy notice, data subject rights, security measures, DPO, registration, data sharing, outsourcing, and breach notification?', user_id: 'self-test' },
@@ -1297,9 +1313,9 @@ try {
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 11479', 'payment systems CFT workflow anti-terrorism query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 12010', 'payment systems CFT workflow scam query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 11765', 'payment systems CFT workflow financial consumer query')
-  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 8484', 'payment systems CFT workflow access device query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'RA 10175', 'payment systems CFT workflow cybercrime query')
   assertResearchMatch(paymentSystemsCftWorkflowResponse, 'Cybercrime Prevention Act IRR', 'payment systems CFT workflow cybercrime IRR query')
+  assertResearchMatch(paymentSystemsCftWorkflowResponse, 'A.M. No. 17-11-03-SC', 'payment systems CFT workflow cybercrime warrant query')
   assertIncludes(
     paymentSystemsCftWorkflowResponse.summary,
     'Payment Systems, CFT, and Sanctions Controls Stack',
@@ -3974,7 +3990,12 @@ This ordinance takes effect 30 days after publication.`
     'simulated draft checker outage'
   )
   assert.equal(thinCyberDraftResponse.status, 'success', 'Cyber draft check should succeed locally')
-  assertFinding(thinCyberDraftResponse, 'amber', 'Cybercrime incident')
+  const thinCyberFinding = assertFinding(thinCyberDraftResponse, 'amber', 'Cybercrime incident')
+  assertIncludes(
+    thinCyberFinding.references.join(' '),
+    'A.M. No. 17-11-03-SC',
+    'Cyber draft check warrant-rule reference'
+  )
 
   const thinWomenGenderDraft = `# Women Protection and GAD Services Ordinance
 

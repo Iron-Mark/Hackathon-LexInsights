@@ -117,6 +117,15 @@ const scenarios = [
     p95Limit: 35,
   },
   {
+    label: 'cybercrime warrant rule',
+    params: {
+      query:
+        'What does A.M. No. 17-11-03-SC Rule on Cybercrime Warrants require for WDCD, WICD, WSSECD, WECD, probable cause, service-provider disclosure, forensic images, inventory, return, chain of custody, retention, and destruction?',
+      user_id: 'performance',
+    },
+    p95Limit: 35,
+  },
+  {
     label: 'AI governance',
     params: {
       query: 'What privacy and governance controls apply to AI chatbots that process personal data in the Philippines?',

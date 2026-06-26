@@ -215,6 +215,17 @@ const CYBERCRIME_IRR_FRAMEWORK_IDS = [
   'ai-governance-privacy-public-sector-automation',
 ]
 
+const CYBERCRIME_WARRANT_RULE_ID = 'am-17-11-03-sc'
+const CYBERCRIME_WARRANT_RULE_FRAMEWORK_IDS = [
+  'data-incident-response',
+  'privacy-operations-and-npc-compliance',
+  'financial-account-scam-response',
+  'payment-systems-cft-and-sanctions-controls',
+  'digital-government-and-public-ict',
+  'ai-governance-privacy-public-sector-automation',
+  'rights-criminal-enforcement-and-public-order',
+]
+
 const SEC_BENEFICIAL_OWNERSHIP_IDS = ['sec-mc-01-2021', 'sec-mc-15-2025', 'sec-harbor-2026']
 const SEC_BENEFICIAL_OWNERSHIP_STATUTES = [
   'SEC Memorandum Circular No. 1, s. 2021',
@@ -797,6 +808,87 @@ try {
       cybercrimeIrrEvidenceText.includes('service') &&
       (cybercrimeIrrEvidenceText.includes('office of cybercrime') || cybercrimeIrrEvidenceText.includes('cicc')),
     `${CYBERCRIME_IRR_ID} evidence should cover preservation, service-provider, and OOC/CICC coordination`
+  )
+
+  const cybercrimeWarrantRuleDocument = data.corpus.find((document) => document.id === CYBERCRIME_WARRANT_RULE_ID)
+  assert.ok(cybercrimeWarrantRuleDocument, 'Corpus should include Rule on Cybercrime Warrants document')
+  assert.equal(
+    cybercrimeWarrantRuleDocument?.statute,
+    'A.M. No. 17-11-03-SC',
+    'Rule on Cybercrime Warrants statute label should be stable'
+  )
+
+  const cybercrimeWarrantRuleCoverage = coverageById.get(CYBERCRIME_WARRANT_RULE_ID)
+  const cybercrimeWarrantRuleSource = sourcesById.get(CYBERCRIME_WARRANT_RULE_ID)
+  const cybercrimeWarrantRuleEvidenceText = (evidenceById.get(CYBERCRIME_WARRANT_RULE_ID) || [])
+    .map((anchor) => `${anchor.label} ${anchor.note} ${anchor.supports.join(' ')}`)
+    .join(' ')
+    .toLowerCase()
+  const cybercrimeWarrantRuleDocumentText = [
+    cybercrimeWarrantRuleDocument?.statute || '',
+    cybercrimeWarrantRuleDocument?.title || '',
+    cybercrimeWarrantRuleDocument?.shortTitle || '',
+    cybercrimeWarrantRuleDocument?.summary || '',
+    ...(cybercrimeWarrantRuleDocument?.aliases || []),
+    ...(cybercrimeWarrantRuleDocument?.topics || []),
+    ...(cybercrimeWarrantRuleDocument?.keywords || []),
+    ...(cybercrimeWarrantRuleDocument?.obligations || []),
+    ...(cybercrimeWarrantRuleDocument?.commonGaps || []),
+  ].join(' ').toLowerCase()
+
+  for (const frameworkId of CYBERCRIME_WARRANT_RULE_FRAMEWORK_IDS) {
+    assert.ok(
+      cybercrimeWarrantRuleCoverage?.frameworkIds.includes(frameworkId),
+      `${CYBERCRIME_WARRANT_RULE_ID} coverage should reference ${frameworkId}`
+    )
+  }
+
+  assert.equal(cybercrimeWarrantRuleCoverage?.coverageStatus, 'golden', `${CYBERCRIME_WARRANT_RULE_ID} should have golden coverage`)
+  assert.equal(cybercrimeWarrantRuleCoverage?.draftCheckCovered, true, `${CYBERCRIME_WARRANT_RULE_ID} should be covered by draft checks`)
+  assert.ok(cybercrimeWarrantRuleSource, `${CYBERCRIME_WARRANT_RULE_ID} should have an authority source record`)
+  assert.equal(
+    cybercrimeWarrantRuleSource?.sourceName,
+    'Office of the Court Administrator',
+    `${CYBERCRIME_WARRANT_RULE_ID} should use OCA as source`
+  )
+  assert.equal(cybercrimeWarrantRuleSource?.authorityType, 'rule', `${CYBERCRIME_WARRANT_RULE_ID} should be a rule`)
+  assert.equal(cybercrimeWarrantRuleSource?.sourceTier, 'official-guidance', `${CYBERCRIME_WARRANT_RULE_ID} should use official guidance source tier`)
+  assert.equal(cybercrimeWarrantRuleSource?.provenanceStatus, 'verified', `${CYBERCRIME_WARRANT_RULE_ID} should have verified provenance`)
+  assert.ok(
+    cybercrimeWarrantRuleSource?.sourceUrl.startsWith('https://oca.judiciary.gov.ph/'),
+    `${CYBERCRIME_WARRANT_RULE_ID} should link to the Judiciary/OCA PDF`
+  )
+  assert.ok(
+    cybercrimeWarrantRuleSource?.provenanceNotes?.includes('Rule on Cybercrime Warrants'),
+    `${CYBERCRIME_WARRANT_RULE_ID} should have explicit warrant-rule provenance notes`
+  )
+  assert.ok(
+    data.relations.some((relation) => (
+      relation.sourceId === CYBERCRIME_WARRANT_RULE_ID &&
+      relation.targetId === 'ra-10175' &&
+      relation.type === 'implements'
+    )),
+    `${CYBERCRIME_WARRANT_RULE_ID} should implement RA 10175 warrant procedure`
+  )
+  assert.ok(
+    data.relations.some((relation) => (
+      relation.sourceId === CYBERCRIME_WARRANT_RULE_ID &&
+      relation.targetId === CYBERCRIME_IRR_ID
+    )),
+    `${CYBERCRIME_WARRANT_RULE_ID} should relate to the Cybercrime Prevention Act IRR`
+  )
+
+  for (const requiredTopic of ['wdcd', 'wicd', 'wssecd', 'wecd', 'probable cause', 'service provider', 'forensic image', 'chain of custody', 'retention', 'destruction']) {
+    assert.ok(
+      cybercrimeWarrantRuleDocumentText.includes(requiredTopic),
+      `${CYBERCRIME_WARRANT_RULE_ID} should cover ${requiredTopic}`
+    )
+  }
+  assert.ok(
+    cybercrimeWarrantRuleEvidenceText.includes('warrant') &&
+      cybercrimeWarrantRuleEvidenceText.includes('computer data') &&
+      cybercrimeWarrantRuleEvidenceText.includes('custody'),
+    `${CYBERCRIME_WARRANT_RULE_ID} evidence should cover warrant, computer-data, and custody support`
   )
 
   const secBeneficialOwnershipFramework = data.frameworks.find((framework) => (

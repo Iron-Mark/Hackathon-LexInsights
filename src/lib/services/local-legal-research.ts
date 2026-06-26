@@ -2297,10 +2297,10 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(cyber|computer|online fraud|phishing|hacking|account compromise|system access|platform|electronic evidence|traffic data|content data|subscriber information|preservation order|cyber warrant)\b/.test(normalizedDraft)) {
+  if (/\b(cyber|computer|online fraud|phishing|hacking|account compromise|system access|platform|electronic evidence|traffic data|content data|subscriber information|preservation order|cyber warrant|cybercrime warrant|wdcd|wicd|wssecd|wecd|warrant to disclose|warrant to intercept|warrant to search|warrant to examine)\b/.test(normalizedDraft)) {
     const hasCyberDataClassification = /\b(subscriber information|traffic data|content data|computer data|logs?|account records?|device records?|stored communications?)\b/.test(normalizedDraft)
-    const hasCyberLawfulProcess = /\b(warrant|court order|preservation order|authorized officer|law enforcement authority|law enforcement|prosecutor|office of cybercrime|cicc|service provider)\b/.test(normalizedDraft)
-    const hasCyberEvidenceControls = /\b(incident report|evidence preservation|chain of custody|access control|audit log|retention|referral|authorized disclosure|privacy coordination|data breach)\b/.test(normalizedDraft)
+    const hasCyberLawfulProcess = /\b(warrant|court order|preservation order|authorized officer|law enforcement authority|law enforcement|prosecutor|office of cybercrime|cicc|service provider|cybercrime court|probable cause|wdcd|wicd|wssecd|wecd)\b/.test(normalizedDraft)
+    const hasCyberEvidenceControls = /\b(incident report|evidence preservation|chain of custody|access control|audit log|retention|referral|authorized disclosure|privacy coordination|data breach|forensic image|inventory|return|destruction|confidentiality)\b/.test(normalizedDraft)
 
     if (!(hasCyberDataClassification && hasCyberLawfulProcess && hasCyberEvidenceControls)) {
       findings.amber.push(
@@ -2308,10 +2308,10 @@ function applyTopicSpecificDraftChecks(
           'amber',
           'gap',
           'Cybercrime incident and evidence controls need more detail',
-          'Cybercrime, online fraud, system access, provider, or electronic-evidence language was detected without enough data-type classification, lawful-process, evidence-preservation, or referral safeguards.',
-          'Add incident classification, affected data type, preservation or disclosure route, lawful process or court authority, authorized requester, service-provider coordination, chain of custody, privacy coordination, retention, and referral procedure.',
+          'Cybercrime, online fraud, system access, provider, warrant, or electronic-evidence language was detected without enough data-type classification, warrant route, lawful-process, evidence-preservation, or referral safeguards.',
+          'Add incident classification, affected data type, preservation or disclosure route, WDCD/WICD/WSSECD/WECD or other court authority where relevant, probable-cause or authorized-requester record, service-provider coordination, forensic image or inventory controls, chain of custody, privacy coordination, retention or destruction, and referral procedure.',
           6,
-          [referenceForId('ra-10175'), referenceForId('cybercrime-irr-2015')]
+          [referenceForId('ra-10175'), referenceForId('cybercrime-irr-2015'), referenceForId('am-17-11-03-sc')]
         )
       )
     }

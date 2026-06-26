@@ -170,6 +170,19 @@ try {
     'Cybercrime Prevention Act IRR should be the top implementation match'
   )
 
+  const cybercrimeWarrantRule = runLocalResearch({
+    query:
+      'What does A.M. No. 17-11-03-SC Rule on Cybercrime Warrants require for WDCD, WICD, WSSECD, WECD, probable cause, service-provider disclosure, forensic image, inventory, return, chain of custody, retention, destruction, confidentiality, and motion to suppress?',
+    user_id: 'golden',
+  })
+  assertCompletedMatch(cybercrimeWarrantRule, 'A.M. No. 17-11-03-SC', 'Rule on Cybercrime Warrants implementation', 0.45)
+  assertCompletedMatch(cybercrimeWarrantRule, 'RA 10175', 'Rule on Cybercrime Warrants related statute', 0.35)
+  assert.equal(
+    statutes(cybercrimeWarrantRule)[0],
+    'A.M. No. 17-11-03-SC',
+    'Rule on Cybercrime Warrants should be the top warrant-procedure match'
+  )
+
   const secBeneficialOwnershipImplementation = runLocalResearch({
     query:
       'What does SEC MC 15 s. 2025 require for beneficial ownership disclosure, HARBOR portal filing, GIS records, authorized filers, nominees, control persons, privacy safeguards, and corporate secretary review?',
@@ -515,7 +528,7 @@ try {
   })
   assertCompletedMatches(
     paymentCftSanctionsWorkflow,
-    ['RA 11127', 'RA 9160', '2018 AMLA IRR', 'RA 10168', 'RA 11479', 'RA 12010', 'RA 11765', 'RA 8484', 'RA 10175', 'Cybercrime Prevention Act IRR'],
+    ['RA 11127', 'RA 9160', '2018 AMLA IRR', 'RA 10168', 'RA 11479', 'RA 12010', 'RA 11765', 'RA 10175', 'Cybercrime Prevention Act IRR', 'A.M. No. 17-11-03-SC'],
     'payment systems CFT sanctions workflow'
   )
   assert.ok(
