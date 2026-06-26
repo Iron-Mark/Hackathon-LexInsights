@@ -1813,17 +1813,40 @@ function applyTopicSpecificDraftChecks(
     }
   }
 
-  if (/\b(disaster|drrm|typhoon|earthquake|flood|evacuation|hazard map|early warning)\b/.test(normalizedDraft)) {
-    if (!/\b(hazard map|early warning|evacuation|drill|vulnerable|ldrrm|contingency|incident command)\b/.test(normalizedDraft)) {
+  if (/\b(disaster|drrm|typhoon|earthquake|flood|evacuation|hazard map|early warning|imminent disaster|anticipatory action|pre-disaster risk assessment|preposition|lead time)\b/.test(normalizedDraft)) {
+    if (!/\b(hazard map|early warning|evacuation|drill|vulnerable|ldrrm|contingency|incident command|pre-disaster risk assessment|lead time|forecast|preposition|quick response fund)\b/.test(normalizedDraft)) {
       findings.amber.push(
         createFinding(
           'amber',
           'gap',
           'DRRM plan controls are thin',
-          'Disaster or emergency language was detected without enough hazard mapping, warning, evacuation, drill, vulnerable-group, or incident-command detail.',
-          'Add hazard maps, early-warning triggers, evacuation routes, drills, vulnerable-group support, inventories, reporting, and budget authority.',
+          'Disaster or emergency language was detected without enough hazard mapping, warning, evacuation, drill, vulnerable-group, fund, or incident-command detail.',
+          'Add hazard maps, early-warning triggers, evacuation routes, drills, vulnerable-group support, inventories, pre-disaster assessment, reporting, and budget authority.',
           6,
-          [referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10121') || LEGAL_CORPUS[0])]
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10121') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-12287') || LEGAL_CORPUS[0]),
+          ]
+        )
+      )
+    }
+
+    if (
+      /\b(imminent disaster|anticipatory action|pre-disaster risk assessment|preposition|lead time|forecasted hazard|forced evacuation|pre-emptive evacuation)\b/.test(normalizedDraft) &&
+      !/\b(declaring authority|lead time|forecast|pre-disaster risk assessment|ldrrm|national drrm fund|special trust fund|ocd|regional drrm council|non-occurrence|false hazard|manipulated assessment)\b/.test(normalizedDraft)
+    ) {
+      findings.amber.push(
+        createFinding(
+          'amber',
+          'gap',
+          'Imminent-disaster controls are incomplete',
+          'Anticipatory-action or imminent-disaster language was detected without clear declaration authority, forecast lead time, risk-assessment basis, fund source, monitoring, or non-occurrence controls.',
+          'Add the declaring authority, covered area, forecast trigger, three-to-five-day lead-time basis where relevant, LDRRMF or national DRRM fund source, relief storage, non-occurrence handling, OCD or council reporting, and anti-manipulation safeguards.',
+          6,
+          [
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-12287') || LEGAL_CORPUS[0]),
+            referenceFor(LEGAL_CORPUS.find((document) => document.id === 'ra-10121') || LEGAL_CORPUS[0]),
+          ]
         )
       )
     }

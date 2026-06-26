@@ -1137,6 +1137,20 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     weight: 0.8,
   },
   {
+    sourceId: 'ra-12287',
+    targetId: 'ra-10121',
+    type: 'workflow_related_to',
+    label: 'Imminent-disaster declaration and anticipatory-action workflow relationship',
+    weight: 1.2,
+  },
+  {
+    sourceId: 'ra-12287',
+    targetId: 'ra-7160',
+    type: 'workflow_related_to',
+    label: 'LGU disaster declaration, local fund, and local governance workflow relationship',
+    weight: 0.8,
+  },
+  {
     sourceId: 'eo-209-1987',
     targetId: 'ra-386',
     type: 'cross_references',

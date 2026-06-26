@@ -307,6 +307,12 @@ try {
   })
   assertExactCitationMatch(exactInclusiveEducationCitation, 'RA 11650', '11650', 'exact RA 11650 citation')
 
+  const exactImminentDisasterCitation = runLocalResearch({
+    query: 'What does RA 12287 require for declaration of state of imminent disaster and anticipatory action?',
+    user_id: 'golden',
+  })
+  assertExactCitationMatch(exactImminentDisasterCitation, 'RA 12287', '12287', 'exact RA 12287 citation')
+
   const exactPwdPrivilegesCitation = runLocalResearch({
     query: 'What does RA 9442 require for PWD privileges, discounts, and anti-discrimination controls?',
     user_id: 'golden',
@@ -850,7 +856,7 @@ try {
 
   const contractingWorkflow = runLocalResearch({
     query:
-      'What DOLE Department Order 174-17, labor-only contracting, contractor registration, service agreement, principal contractor, worker deployment, supervision boundary, payroll, and benefits records apply?',
+      'What PD 442 Labor Code and DOLE Department Order 174-17 labor-only contracting, contractor registration, service agreement, principal contractor, worker deployment, supervision boundary, payroll, and benefits records apply?',
     user_id: 'golden',
     use_deep_search: true,
   })
@@ -873,6 +879,24 @@ try {
   assert.ok(
     oshIrrWorkflow.summary.includes('Workplace, School, Public Safety, and Protection Stack'),
     'OSH IRR workflow should include the workplace safety framework section'
+  )
+
+  const imminentDisasterWorkflow = runLocalResearch({
+    query:
+      'What state of imminent disaster, forecasted hazard, pre-disaster risk assessment, anticipatory action, pre-emptive evacuation, relief prepositioning, LDRRMF, special trust fund, national DRRM fund, OCD monitoring, and false hazard information controls should an LGU disaster plan include?',
+    user_id: 'golden',
+    use_deep_search: true,
+  })
+  assertCompletedMatches(
+    imminentDisasterWorkflow,
+    ['RA 12287', 'RA 10121'],
+    'imminent disaster anticipatory action workflow',
+    0.25
+  )
+  assert.equal(statutes(imminentDisasterWorkflow)[0], 'RA 12287', 'imminent disaster workflow should rank RA 12287 first')
+  assert.ok(
+    imminentDisasterWorkflow.summary.includes('Workplace, School, Public Safety, and Protection Stack'),
+    'imminent disaster workflow should include the public safety framework section'
   )
 
   const secContactWorkflow = runLocalResearch({

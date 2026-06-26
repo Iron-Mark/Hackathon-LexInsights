@@ -6,7 +6,7 @@
 
 ## 1. Introduction
 
-This document outlines the disaster preparedness and response plan for Barangay San Isidro in accordance with Republic Act No. 10121 (Philippine Disaster Risk Reduction and Management Act of 2010).
+This document outlines the disaster preparedness and response plan for Barangay San Isidro in accordance with Republic Act No. 10121 (Philippine Disaster Risk Reduction and Management Act of 2010) and Republic Act No. 12287 (Declaration of State of Imminent Disaster Act).
 
 ## 2. Barangay Profile
 
@@ -78,7 +78,13 @@ This document outlines the disaster preparedness and response plan for Barangay 
 - SMS blast system (registered residents)
 - Barangay radio announcements
 
-### 7.2 Information Dissemination
+### 7.2 Anticipatory Action Trigger
+- The BDRRMC coordinates with the City DRRM Office when a forecasted hazard may affect the barangay.
+- A pre-disaster risk assessment records the covered area, lead time, vulnerable households, and expected severity before any imminent-disaster action.
+- Relief goods may be prepositioned and vulnerable groups may be moved before impact when authorized by the proper DRRM council or local chief executive.
+- LDRRMF or other authorized funds must be documented with inventory, distribution, non-occurrence, and post-action reports.
+
+### 7.3 Information Dissemination
 - Official Facebook page updates
 - Barangay bulletin boards
 - House-to-house announcements for urgent matters
