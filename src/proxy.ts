@@ -6,7 +6,11 @@ const isProtectedRoute = createRouteMatcher(['/documents(.*)'])
 const isClerkProxyRoute = createRouteMatcher(['/__clerk(.*)'])
 const hasClerkKeys = getClerkSetupStatus().configured
 
-function missingClerkProxy() {
+function missingClerkProxy(req: NextRequest) {
+  if (isProtectedRoute(req)) {
+    return redirectToSignIn(req)
+  }
+
   return NextResponse.next()
 }
 
@@ -47,13 +51,13 @@ async function runProtectedClerkProxy(req: NextRequest, event: NextFetchEvent) {
     return await protectedClerkProxy(req, event)
   } catch (error) {
     console.error('[auth] Clerk proxy failed.', error)
-    return NextResponse.next()
+    return isProtectedRoute(req) ? redirectToSignIn(req) : NextResponse.next()
   }
 }
 
 export default async function proxy(req: NextRequest, event: NextFetchEvent) {
   if (!hasClerkKeys) {
-    return missingClerkProxy()
+    return missingClerkProxy(req)
   }
 
   if (isClerkProxyRoute(req)) {

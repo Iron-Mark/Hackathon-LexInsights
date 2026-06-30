@@ -117,10 +117,11 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
               </div>
             ) : (
               filteredChats.map((chat) => (
-                <div
+                <button
                   key={chat.id}
+                  type="button"
                   onClick={() => handleChatClick(chat.id)}
-                  className="group cursor-pointer rounded-lg border border-slate-200 p-4 transition-all hover:border-iris-300 hover:bg-iris-50/50 active:scale-[0.99] dark:border-iris-300/15 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10"
+                  className="group w-full cursor-pointer rounded-lg border border-slate-200 p-4 text-left transition-all hover:border-iris-300 hover:bg-iris-50/50 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:focus-visible:ring-offset-[#171322]"
                 >
                   <div className="flex items-start gap-3">
                     <MessageSquare className="mt-0.5 h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-500" />
@@ -142,7 +143,7 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
                       </div>
                     </div>
                   </div>
-                </div>
+                </button>
               ))
             )}
           </div>

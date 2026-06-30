@@ -11,8 +11,8 @@ const ROUTES_TO_CHECK = [
   { path: '/auth/login', expectedStatuses: [200] },
   { path: '/chat', expectedStatuses: [200] },
   { path: '/documents', expectedStatuses: [200] },
-  { path: '/test-rag', expectedStatuses: [200, 404] },
-  { path: '/test-document', expectedStatuses: [200, 404] },
+  { path: '/test-rag', expectedStatuses: [404] },
+  { path: '/test-document', expectedStatuses: [404] },
 ]
 
 function parseArgs(argv) {

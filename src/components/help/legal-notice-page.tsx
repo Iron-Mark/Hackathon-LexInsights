@@ -2,7 +2,17 @@ import { ArrowLeft, BookOpen, FileText } from 'lucide-react'
 import Link from 'next/link'
 import { TermsPrivacyPanel } from './terms-privacy-panel'
 
-export function LegalNoticePage() {
+interface LegalNoticePageProps {
+  title?: string
+  eyebrow?: string
+  description?: string
+}
+
+export function LegalNoticePage({
+  title = 'Terms & Privacy',
+  eyebrow = 'Last updated June 27, 2026',
+  description = 'Public terms for using LexInsights and a Philippine privacy notice for account, chat, document review, and legal research workflows.',
+}: LegalNoticePageProps) {
   return (
     <main className="min-h-dvh bg-[linear-gradient(180deg,#f7f6ff_0%,#ffffff_54%,#f8fafc_100%)] px-4 py-6 text-slate-950 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_55%,#120d1f_100%)] dark:text-slate-100 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
@@ -30,14 +40,13 @@ export function LegalNoticePage() {
             </div>
             <div>
               <p className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
-                Last updated June 27, 2026
+                {eyebrow}
               </p>
               <h1 className="mt-2 text-3xl font-extrabold leading-tight text-slate-950 dark:text-white sm:text-4xl">
-                Terms & Privacy
+                {title}
               </h1>
               <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-300">
-                Public terms for using LexInsights and a Philippine privacy notice for account, chat,
-                document review, and legal research workflows.
+                {description}
               </p>
             </div>
           </div>

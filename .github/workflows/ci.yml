@@ -84,6 +84,9 @@ jobs:
       - name: Local RAG performance self-test
         run: npm run check:local-rag:performance
 
+      - name: Local RAG governance self-test
+        run: npm run check:local-rag:governance
+
       - name: Document text self-test
         run: npm run check:document-text:self-test
 

@@ -2,37 +2,38 @@ import type { MetadataRoute } from 'next'
 
 import { SITE_URL } from '@/lib/seo'
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date()
+const RELEASE_LAST_MODIFIED = new Date('2026-07-01T00:00:00+08:00')
+const LEGAL_LAST_MODIFIED = new Date('2026-06-27T00:00:00+08:00')
 
+export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: SITE_URL,
-      lastModified: now,
+      lastModified: RELEASE_LAST_MODIFIED,
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
       url: `${SITE_URL}/about`,
-      lastModified: now,
+      lastModified: RELEASE_LAST_MODIFIED,
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
       url: `${SITE_URL}/chat`,
-      lastModified: now,
+      lastModified: RELEASE_LAST_MODIFIED,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/terms`,
-      lastModified: now,
+      lastModified: LEGAL_LAST_MODIFIED,
       changeFrequency: 'yearly',
       priority: 0.4,
     },
     {
       url: `${SITE_URL}/privacy`,
-      lastModified: now,
+      lastModified: LEGAL_LAST_MODIFIED,
       changeFrequency: 'yearly',
       priority: 0.4,
     },

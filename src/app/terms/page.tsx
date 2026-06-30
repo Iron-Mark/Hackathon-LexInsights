@@ -51,7 +51,11 @@ export default function TermsPage() {
           ),
         }}
       />
-      <LegalNoticePage />
+      <LegalNoticePage
+        title="Terms of Service"
+        eyebrow="Public service terms"
+        description="Rules for accessing LexInsights, submitting user content, reviewing generated output, acceptable use, availability, and Philippine governing law."
+      />
     </>
   )
 }

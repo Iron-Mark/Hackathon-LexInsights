@@ -51,7 +51,11 @@ export default function PrivacyPage() {
           ),
         }}
       />
-      <LegalNoticePage />
+      <LegalNoticePage
+        title="Privacy Policy"
+        eyebrow="Public privacy notice"
+        description="How LexInsights handles account, chat, document, provider, retention, security, and Philippine data privacy rights for users and guests."
+      />
     </>
   )
 }

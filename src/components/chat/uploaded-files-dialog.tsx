@@ -213,7 +213,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                           size="icon"
                           onClick={() => handleDelete(file.id)}
                           disabled={deletingId === file.id}
-                          className="h-10 w-10 text-red-600 transition-all hover:bg-red-50 hover:text-red-700 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-red-300 dark:hover:bg-red-400/10 dark:hover:text-red-200"
+                          className="h-11 w-11 text-red-600 transition-all hover:bg-red-50 hover:text-red-700 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-red-300 dark:hover:bg-red-400/10 dark:hover:text-red-200"
                           title="Confirm delete"
                           aria-label={`Confirm delete ${file.name}`}
                         >
@@ -228,7 +228,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                           size="icon"
                           onClick={() => setConfirmDeleteId(null)}
                           disabled={deletingId === file.id}
-                          className="h-10 w-10 text-slate-600 transition-all hover:bg-slate-100 active:scale-95 disabled:active:scale-100 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
+                          className="h-11 w-11 text-slate-600 transition-all hover:bg-slate-100 active:scale-95 disabled:active:scale-100 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
                           title="Cancel"
                           aria-label={`Cancel delete ${file.name}`}
                         >
@@ -241,7 +241,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                           variant="ghost"
                           size="icon"
                           onClick={() => handleView(file)}
-                          className="h-10 w-10 transition-all active:scale-95"
+                          className="h-11 w-11 transition-all active:scale-95"
                           title="View file"
                           aria-label={`View ${file.name}`}
                         >
@@ -251,7 +251,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDownload(file)}
-                          className="h-10 w-10 transition-all active:scale-95"
+                          className="h-11 w-11 transition-all active:scale-95"
                           title="Download file"
                           aria-label={`Download ${file.name}`}
                         >
@@ -262,7 +262,7 @@ export function UploadedFilesDialog({ open, onOpenChange }: UploadedFilesDialogP
                           size="icon"
                           onClick={() => handleDelete(file.id)}
                           disabled={deletingId === file.id}
-                          className="h-10 w-10 text-red-600 transition-all hover:bg-red-50 hover:text-red-700 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-red-300 dark:hover:bg-red-400/10 dark:hover:text-red-200"
+                          className="h-11 w-11 text-red-600 transition-all hover:bg-red-50 hover:text-red-700 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-red-300 dark:hover:bg-red-400/10 dark:hover:text-red-200"
                           title="Delete file"
                           aria-label={`Delete ${file.name}`}
                         >

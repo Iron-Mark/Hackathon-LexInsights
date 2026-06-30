@@ -263,27 +263,27 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                 const { children, ...domProps } = stripMarkdownNode(props)
 
                 return (
-                  <h1 className="mb-4 mt-6 break-words border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:text-iris-100/90" {...domProps}>
-                    {renderCitationChildren(children, 'h1')}
-                  </h1>
+                  <h2 className="mb-4 mt-6 break-words border-b-2 border-slate-200 pb-2 text-2xl font-bold text-slate-900 [overflow-wrap:anywhere] dark:border-iris-300/15 dark:text-iris-100/90" {...domProps}>
+                    {renderCitationChildren(children, 'h2')}
+                  </h2>
                 )
               },
               h2: (props) => {
                 const { children, ...domProps } = stripMarkdownNode(props)
 
                 return (
-                  <h2 className="mb-3 mt-5 break-words text-xl font-bold text-slate-800 [overflow-wrap:anywhere] dark:text-iris-100/88" {...domProps}>
-                    {renderCitationChildren(children, 'h2')}
-                  </h2>
+                  <h3 className="mb-3 mt-5 break-words text-xl font-bold text-slate-800 [overflow-wrap:anywhere] dark:text-iris-100/88" {...domProps}>
+                    {renderCitationChildren(children, 'h3')}
+                  </h3>
                 )
               },
               h3: (props) => {
                 const { children, ...domProps } = stripMarkdownNode(props)
 
                 return (
-                  <h3 className="mb-2 mt-4 break-words text-lg font-semibold text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/82" {...domProps}>
-                    {renderCitationChildren(children, 'h3')}
-                  </h3>
+                  <h4 className="mb-2 mt-4 break-words text-lg font-semibold text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/82" {...domProps}>
+                    {renderCitationChildren(children, 'h4')}
+                  </h4>
                 )
               },
               // Paragraphs

@@ -5,7 +5,7 @@ export const SITE_NAME = 'LexInsights'
 export const SITE_TITLE = 'LexInsights - Philippine Legal Compliance Assistant'
 export const SITE_DESCRIPTION =
   'LexInsights is a Philippine legal research and compliance assistant for legal chat, document review, local RAG research, and compliance analysis.'
-export const SITE_OG_IMAGE = '/og/lexinsight-og.png'
+export const SITE_OG_IMAGE = '/og/lexinsights-og.png'
 
 export const CURRENT_APP_URL = SITE_URL
 export const LEGACY_SHOWCASE_URL = 'https://lexinsights.vercel.app'
@@ -180,6 +180,29 @@ export function buildProjectStructuredData() {
         maintainer: {
           '@id': `${PORTFOLIO_URL}/#mark-siazon`,
         },
+        contributor: [
+          {
+            '@type': 'Person',
+            name: 'Jam Emmanuel Villarosa',
+            sameAs: 'https://ph.linkedin.com/in/jamthedev2004',
+          },
+          {
+            '@type': 'Person',
+            name: 'Ken Patrick Garcia',
+            sameAs: 'https://ph.linkedin.com/in/ken-patrick-garcia',
+          },
+          {
+            '@type': 'Person',
+            '@id': `${PORTFOLIO_URL}/#mark-siazon`,
+            name: 'Mark Siazon',
+            url: PORTFOLIO_URL,
+          },
+          {
+            '@type': 'Person',
+            name: 'Ashlyn Jam Torres',
+            sameAs: 'https://ph.linkedin.com/in/ashlyn-torres-120354329',
+          },
+        ],
       },
     ],
   }

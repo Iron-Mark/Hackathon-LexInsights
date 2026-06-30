@@ -51,13 +51,14 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
         role="navigation"
         aria-label="Chat history"
         aria-hidden={!isOpen}
+        inert={!isOpen ? true : undefined}
       >
         <SidebarHeader />
         <ChatList />
 
         {isMobile && (
           <div className="shrink-0 border-t border-iris-100/80 bg-white/40 px-4 py-4 dark:border-iris-300/15 dark:bg-transparent">
-            <p className="px-1 text-[11px] font-bold uppercase tracking-normal text-iris-700/70 dark:text-iris-100/45">
+            <p className="px-1 text-[11px] font-bold uppercase tracking-normal text-iris-700/70 dark:text-iris-100/60">
               App controls
             </p>
             <div className="mt-3 grid grid-cols-3 gap-2">
@@ -104,7 +105,7 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
         {isOpen && (
           <button
             onClick={close}
-            className="absolute bottom-0 right-0 top-0 z-[60] w-3 cursor-pointer bg-transparent transition-colors after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-iris-100 after:transition-colors hover:bg-iris-100/45 hover:after:bg-iris-400 focus-visible:bg-iris-100/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 focus-visible:after:bg-iris-500 dark:after:bg-transparent dark:hover:bg-iris-300/10 dark:hover:after:bg-iris-300/45 dark:focus-visible:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
+            className="absolute right-0 top-1/2 z-[60] h-11 w-11 -translate-y-1/2 cursor-pointer rounded-l-lg bg-transparent transition-colors after:absolute after:inset-y-2 after:right-0 after:w-px after:bg-iris-100 after:transition-colors hover:bg-iris-100/45 hover:after:bg-iris-400 focus-visible:bg-iris-100/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 focus-visible:after:bg-iris-500 dark:after:bg-transparent dark:hover:bg-iris-300/10 dark:hover:after:bg-iris-300/45 dark:focus-visible:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
             aria-label="Collapse chat history"
             title="Collapse chat history"
             type="button"

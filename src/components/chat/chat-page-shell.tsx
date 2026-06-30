@@ -89,6 +89,8 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
           !isMobile && !isOpen && 'ml-16',
           !isMobile && isOpen && 'ml-[344px]'
         )}
+        aria-hidden={isMobile && isOpen}
+        inert={isMobile && isOpen ? true : undefined}
       >
         {isMobile && (
           <div className="fixed left-[calc(env(safe-area-inset-left)+1rem)] top-[calc(env(safe-area-inset-top)+0.375rem)] z-20 flex items-center gap-2">

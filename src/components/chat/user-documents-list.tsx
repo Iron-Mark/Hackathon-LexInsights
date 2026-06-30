@@ -165,7 +165,7 @@ export function UserDocumentsList() {
                     <button
                       onClick={() => handleDelete(doc)}
                       disabled={deletingId === doc.id}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-red-600 transition-all hover:bg-red-50 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-red-300 dark:hover:bg-red-400/10"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg text-red-600 transition-all hover:bg-red-50 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-red-300 dark:hover:bg-red-400/10"
                       aria-label={`Confirm delete ${doc.file_name}`}
                       title="Confirm delete"
                       type="button"
@@ -179,7 +179,7 @@ export function UserDocumentsList() {
                     <button
                       onClick={() => setConfirmDeleteId(null)}
                       disabled={deletingId === doc.id}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-all hover:bg-slate-100 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-600 transition-all hover:bg-slate-100 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
                       aria-label={`Cancel delete ${doc.file_name}`}
                       title="Cancel"
                       type="button"
@@ -191,7 +191,7 @@ export function UserDocumentsList() {
                   <>
                     <button
                       onClick={() => handleDownload(doc)}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-all hover:bg-slate-100 hover:text-iris-600 active:scale-95 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-600 transition-all hover:bg-slate-100 hover:text-iris-600 active:scale-95 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
                       aria-label={`Download ${doc.file_name}`}
                       title="Download"
                       type="button"
@@ -202,7 +202,7 @@ export function UserDocumentsList() {
                     <button
                       onClick={() => handleDelete(doc)}
                       disabled={deletingId === doc.id}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 transition-all hover:bg-red-50 hover:text-red-600 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-slate-300 dark:hover:bg-red-400/10 dark:hover:text-red-300"
+                      className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-600 transition-all hover:bg-red-50 hover:text-red-600 active:scale-95 disabled:opacity-50 disabled:active:scale-100 dark:text-slate-300 dark:hover:bg-red-400/10 dark:hover:text-red-300"
                       aria-label={`Delete ${doc.file_name}`}
                       title="Delete"
                       type="button"

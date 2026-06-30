@@ -72,7 +72,7 @@ const timeoutError = new DOMException('operation timed out', 'TimeoutError')
 assert.deepEqual(getProxyFailure(timeoutError), {
   status: 504,
   type: 'upstream_timeout',
-  detail: 'operation timed out',
+  detail: 'RAG backend request timed out. Providerless local research may still be available.',
 })
 
 const connectTimeoutError = new TypeError('fetch failed')
@@ -82,19 +82,19 @@ connectTimeoutError.cause = {
 assert.deepEqual(getProxyFailure(connectTimeoutError), {
   status: 504,
   type: 'upstream_timeout',
-  detail: 'fetch failed',
+  detail: 'RAG backend request timed out. Providerless local research may still be available.',
 })
 
 assert.deepEqual(getProxyFailure(new TypeError('fetch failed')), {
   status: 502,
   type: 'upstream_fetch_failed',
-  detail: 'fetch failed',
+  detail: 'RAG backend request failed. Providerless local research may still be available.',
 })
 
 assert.deepEqual(getProxyFailure('unknown'), {
   status: 500,
   type: 'proxy_error',
-  detail: 'Failed to fetch from RAG API',
+  detail: 'RAG proxy request failed.',
 })
 
 assert.equal(

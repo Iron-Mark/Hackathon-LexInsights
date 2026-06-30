@@ -132,7 +132,7 @@ export function AppSidebar() {
         {!isMobile && (
           <button
             onClick={isOpen ? close : open}
-            className="absolute bottom-0 right-0 top-0 z-[60] w-3 cursor-pointer bg-transparent transition-colors after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-iris-100 after:transition-colors hover:bg-iris-100/45 hover:after:bg-iris-400 focus-visible:bg-iris-100/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:after:bg-iris-500 dark:after:bg-transparent dark:hover:bg-iris-300/10 dark:hover:after:bg-iris-300/45 dark:focus-visible:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
+            className="absolute right-0 top-1/2 z-[60] h-11 w-11 -translate-y-1/2 cursor-pointer rounded-l-lg bg-transparent transition-colors after:absolute after:inset-y-2 after:right-0 after:w-px after:bg-iris-100 after:transition-colors hover:bg-iris-100/45 hover:after:bg-iris-400 focus-visible:bg-iris-100/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:after:bg-iris-500 dark:after:bg-transparent dark:hover:bg-iris-300/10 dark:hover:after:bg-iris-300/45 dark:focus-visible:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
             aria-label={isOpen ? 'Collapse chat history' : 'Expand chat history'}
             title={isOpen ? 'Collapse chat history' : 'Expand chat history'}
             type="button"

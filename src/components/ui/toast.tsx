@@ -153,7 +153,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       </div>
       <button
         onClick={() => onRemove(toast.id)}
-        className="relative z-10 -mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-iris-700/70 transition-colors hover:bg-iris-500/10 hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 dark:text-iris-100/65 dark:hover:bg-iris-300/12 dark:hover:text-iris-50"
+        className="relative z-10 -mr-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-iris-700/70 transition-colors hover:bg-iris-500/10 hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 dark:text-iris-100/65 dark:hover:bg-iris-300/12 dark:hover:text-iris-50"
         aria-label="Close notification"
       >
         <X className="h-4 w-4" aria-hidden="true" />

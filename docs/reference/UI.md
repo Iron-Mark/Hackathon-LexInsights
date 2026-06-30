@@ -22,7 +22,7 @@ LexInsights is a work-focused Philippine legal research and compliance assistant
 
 - Primary logo: `public/logo/LOGO-0.5-woBG.svg`.
 - PWA icons: `public/icons/`.
-- Open Graph image: `public/og/lexinsight-og.png`.
+- Open Graph image: `public/og/lexinsights-og.png`.
 - Use the actual brand logo in headers, favicon, PWA icons, and OG images. Do not replace it with generic icons.
 - In dark mode, place the logo in a subtle light or translucent chip so the mark stays legible.
 

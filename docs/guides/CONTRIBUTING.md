@@ -36,7 +36,7 @@ npm run build
 
 - Update one existing curated guide instead of adding a one-off summary file.
 - Keep historical planning specs in `docs/specs`.
-- Do not add `README.md` files inside source, tests, public assets, or library directories.
+- Do not add `README.md` files inside source, tests, public assets, or library directories. The repository root `README.md` is the only public GitHub overview exception.
 - Run `npm run check:docs` after moving or linking Markdown.
 
 ## Pull Request Checklist

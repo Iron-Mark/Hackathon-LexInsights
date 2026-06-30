@@ -1,7 +1,21 @@
 {
   "name": "LexInsights",
   "version": "0.5.2",
+  "description": "Philippine legal research and compliance assistant for chat, document review, providerless local RAG, and citation-supported compliance reports.",
   "private": true,
+  "license": "UNLICENSED",
+  "author": {
+    "name": "Mark Siazon",
+    "url": "https://www.marksiazon.dev"
+  },
+  "homepage": "https://lexiph.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Iron-Mark/Hackathon-LexInsights.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Iron-Mark/Hackathon-LexInsights/issues"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/build-with-metadata.mjs",

@@ -52,7 +52,10 @@ function shouldSkipRequest(request, url) {
     url.origin !== self.location.origin ||
     request.url.includes('/api/') ||
     url.pathname.startsWith('/auth/') ||
-    url.pathname.startsWith('/__clerk/')
+    url.pathname.startsWith('/__clerk/') ||
+    url.pathname.startsWith('/documents') ||
+    url.pathname.startsWith('/chat/') ||
+    url.pathname.startsWith('/test-')
   )
 }
 

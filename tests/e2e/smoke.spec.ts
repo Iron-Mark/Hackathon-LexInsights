@@ -45,8 +45,8 @@ test.describe('LexInsights smoke checks', () => {
         expect.stringMatching(/\/favicon\.ico$/),
       ])
     )
-    expect(brandMetadata.openGraphImage).toMatch(/\/og\/lexinsight-og\.png$/)
-    expect(brandMetadata.twitterImage).toMatch(/\/og\/lexinsight-og\.png$/)
+    expect(brandMetadata.openGraphImage).toMatch(/\/og\/lexinsights-og\.png$/)
+    expect(brandMetadata.twitterImage).toMatch(/\/og\/lexinsights-og\.png$/)
     await page.getByRole('button', { name: 'Switch to dark mode' }).click()
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
     await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible()

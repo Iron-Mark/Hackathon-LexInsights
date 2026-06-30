@@ -25,6 +25,29 @@ const sourceFamilies = [
   'Finance, tax, AML, corporate, labor, and consumer compliance sources',
 ]
 
+const teamMembers = [
+  {
+    name: 'Jam Emmanuel Villarosa',
+    role: 'AI Engineer & Lead Developer',
+    href: 'https://ph.linkedin.com/in/jamthedev2004',
+  },
+  {
+    name: 'Ken Patrick Garcia',
+    role: 'Full stack AI engineer',
+    href: 'https://ph.linkedin.com/in/ken-patrick-garcia',
+  },
+  {
+    name: 'Mark Siazon',
+    role: 'UI/UX Product Design, Front-end Development, and active maintenance',
+    href: PORTFOLIO_URL,
+  },
+  {
+    name: 'Ashlyn Jam Torres',
+    role: 'QA & Documentation',
+    href: 'https://ph.linkedin.com/in/ashlyn-torres-120354329',
+  },
+]
+
 const projectLinks = [
   { label: 'Current app', href: CURRENT_APP_URL },
   { label: 'Mark Siazon portfolio', href: PORTFOLIO_URL },
@@ -152,6 +175,30 @@ export default function AboutPage() {
           </section>
 
           <section className="grid gap-6 py-8 lg:grid-cols-[14rem_1fr]">
+            <h2 className="text-sm font-extrabold uppercase text-slate-500 dark:text-slate-400">
+              Team
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {teamMembers.map((member) => (
+                <a
+                  key={member.name}
+                  href={member.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group min-h-20 rounded-xl border border-slate-200 bg-white px-4 py-3 transition-colors hover:border-iris-300 hover:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:focus-visible:ring-offset-[#171322]"
+                >
+                  <span className="block text-sm font-extrabold text-slate-950 group-hover:text-iris-700 dark:text-slate-100 dark:group-hover:text-iris-200">
+                    {member.name}
+                  </span>
+                  <span className="mt-1 block text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {member.role}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+
+          <section className="grid gap-6 border-t border-slate-200 py-8 dark:border-iris-300/15 lg:grid-cols-[14rem_1fr]">
             <h2 className="text-sm font-extrabold uppercase text-slate-500 dark:text-slate-400">
               Public proof
             </h2>

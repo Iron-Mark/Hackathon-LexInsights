@@ -46,8 +46,6 @@ export function getProxyFailure(error) {
   const cause = error && typeof error === 'object' && 'cause' in error ? error.cause : null
   const causeCode = cause && typeof cause === 'object' && 'code' in cause ? cause.code : null
   const errorName = error instanceof Error ? error.name : null
-  const detail = error instanceof Error ? error.message : 'Failed to fetch from RAG API'
-
   if (
     errorName === 'AbortError' ||
     errorName === 'TimeoutError' ||
@@ -56,7 +54,7 @@ export function getProxyFailure(error) {
     return {
       status: 504,
       type: 'upstream_timeout',
-      detail,
+      detail: 'RAG backend request timed out. Providerless local research may still be available.',
     }
   }
 
@@ -64,14 +62,14 @@ export function getProxyFailure(error) {
     return {
       status: 502,
       type: 'upstream_fetch_failed',
-      detail,
+      detail: 'RAG backend request failed. Providerless local research may still be available.',
     }
   }
 
   return {
     status: 500,
     type: 'proxy_error',
-    detail,
+    detail: 'RAG proxy request failed.',
   }
 }
 

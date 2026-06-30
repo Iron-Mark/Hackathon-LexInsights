@@ -59,7 +59,7 @@ export function UploadedFilesList() {
 
               <button
                 onClick={() => handleRemove(uploadedFile.id, uploadedFile.file.name)}
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-red-50 hover:text-red-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:text-slate-500 dark:hover:bg-red-400/10 dark:hover:text-red-300"
+                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-red-50 hover:text-red-600 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:text-slate-500 dark:hover:bg-red-400/10 dark:hover:text-red-300"
                 aria-label={`Remove ${uploadedFile.file.name}`}
                 type="button"
               >

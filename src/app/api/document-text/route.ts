@@ -45,10 +45,6 @@ function jsonSuccess(body: {
   )
 }
 
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'Document extraction failed.'
-}
-
 async function getUploadedFile(request: NextRequest) {
   const formData = await request.formData()
   const file = formData.get('file')
@@ -103,7 +99,8 @@ export async function POST(request: NextRequest) {
       warnings: result.warnings,
     })
   } catch (error) {
-    return jsonError(422, messageFromError(error), {
+    console.error('[document-text] Extraction failed.', error)
+    return jsonError(422, 'Document extraction failed. Try a cleaner PDF or Word file, or paste the text directly.', {
       fileName: file.name,
       fileType: file.type,
     })

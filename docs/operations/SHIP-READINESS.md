@@ -1,7 +1,7 @@
 # Ship Readiness Checkpoint
 
-Date: June 22, 2026
-Branch: `dev`
+Date: July 1, 2026
+Branch: `main` and `dev`
 
 This checkpoint is the handoff record for pausing active development after the current LexInsights polish pass. It should be updated only when a new release candidate changes the ship/no-ship status.
 
@@ -104,7 +104,7 @@ The deployment is not considered current unless the live commit reported by thos
 
 ## Current Known Production Status
 
-The latest local checkpoint must still be verified against Vercel production after it is pushed. A previous production check showed `https://lexiph.vercel.app` serving commit `44e6760fa33b` while local `dev` was newer. Treat production as pending until a fresh deploy and live check confirm the current commit.
+Treat production as current only after the live deployment reports the same commit that was pushed to `main`. The latest verified production baseline before this checkpoint was `ec78c69`, with GitHub CI passing and `https://lexiph.vercel.app` serving the same commit. Any newer release candidate must run the required live gates again after Vercel finishes deploying.
 
 ## Ship Criteria
 
@@ -113,7 +113,7 @@ The latest local checkpoint must still be verified against Vercel production aft
 - Live readiness passes.
 - Providerless mode remains usable even when external RAG services are unavailable.
 - No blocking mobile layout issues remain at 320px and common phone widths.
-- A PR from `dev` to `main` exists with the current validation summary.
+- `main` and `dev` are aligned, or an explicit PR from `dev` to `main` exists with the current validation summary.
 
 ## Hold Criteria
 

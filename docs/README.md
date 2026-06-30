@@ -2,6 +2,8 @@
 
 LexInsights is a Next.js app for Philippine legal compliance chat, Markdown/text/PDF/Word document review, RAG research, providerless local research, and draft checking. The repository root is the app root, with source code organized under [src](../src).
 
+For the public GitHub project overview, use the repository root [README](../README.md). This documentation directory remains the source of truth for deeper setup, reference, operations, and historical planning material.
+
 ## Documentation Map
 
 ### Start Here
@@ -36,6 +38,7 @@ LexInsights is a Next.js app for Philippine legal compliance chat, Markdown/text
 
 ```text
 Hackathon-LexInsights/
+|-- README.md
 |-- database/
 |-- docs/
 |   |-- README.md
@@ -59,4 +62,4 @@ Hackathon-LexInsights/
 
 ## Documentation Rules
 
-All Markdown belongs under this root `docs/` directory. Keep setup and contribution docs in `docs/guides/`, runtime and implementation reference in `docs/reference/`, release and support docs in `docs/operations/`, sample upload documents in `docs/samples/`, and historical planning artifacts in `docs/specs/`. Avoid adding README files inside source, test, or library folders. When a guide becomes obsolete, update one of the curated docs instead of adding another summary file.
+All detailed Markdown belongs under this root `docs/` directory, except the repository root `README.md` used by GitHub. Keep setup and contribution docs in `docs/guides/`, runtime and implementation reference in `docs/reference/`, release and support docs in `docs/operations/`, sample upload documents in `docs/samples/`, and historical planning artifacts in `docs/specs/`. Avoid adding README files inside source, test, public asset, or library folders. When a guide becomes obsolete, update one of the curated docs instead of adding another summary file.

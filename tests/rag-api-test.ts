@@ -159,7 +159,7 @@ async function testErrorHandling() {
 }
 
 async function runAllTests() {
-  logSection('RAG API Test Suite - LexInSight')
+  logSection('RAG API Test Suite - LexInsights')
 
   log(`API Base URL: ${process.env.NEXT_PUBLIC_RAG_API_URL || 'https://devkada.resqlink.org'}`, 'blue')
   log('Endpoint: POST /api/research/rag-summary', 'blue')
