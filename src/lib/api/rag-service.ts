@@ -25,7 +25,7 @@ export interface RAGRequest {
 export async function ragSummary(query: string, userId?: string): Promise<RAGResponse> {
   return queryRAG({
     query,
-    user_id: userId || 'lexinsight-user',
+    user_id: userId || 'lexinsights-user',
   })
 }
 

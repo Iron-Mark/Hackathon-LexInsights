@@ -60,7 +60,7 @@ This live audit is intentionally opt-in and should not be wired into CI.`)
 }
 
 async function loadAuthoritySources() {
-  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-rag-source-live-'))
+  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsights-rag-source-live-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
   await mkdir(tempDataDir, { recursive: true })
 

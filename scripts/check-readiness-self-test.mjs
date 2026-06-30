@@ -128,7 +128,7 @@ const criticalDnsCheck = await checkDns('rag.dns', 'rag.example.test', {
 assert.equal(criticalDnsCheck.status, 'fail')
 assert.equal(criticalDnsCheck.critical, true)
 
-const tempDir = mkdtempSync(join(tmpdir(), 'lexinsight-readiness-env-'))
+const tempDir = mkdtempSync(join(tmpdir(), 'lexinsights-readiness-env-'))
 const envFile = join(tempDir, 'env.test')
 writeFileSync(envFile, [
   'REAL=present',

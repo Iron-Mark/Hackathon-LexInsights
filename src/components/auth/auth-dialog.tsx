@@ -39,8 +39,8 @@ const authDialogAppearance = {
 }
 
 const authHashToMode: Record<string, AuthDialogMode> = {
-  '#lexinsight-sign-in': 'sign-in',
-  '#lexinsight-sign-up': 'sign-up',
+  '#lexinsights-sign-in': 'sign-in',
+  '#lexinsights-sign-up': 'sign-up',
 }
 
 function clearAuthHash() {
@@ -96,12 +96,12 @@ export function AuthDialog({
         <DialogPrimitive.Content
           data-slot="auth-dialog-content"
           className="fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-1.5rem)] w-[calc(100vw-1.5rem)] max-w-[25rem] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-white/70 bg-white/95 p-3 shadow-2xl shadow-slate-950/25 outline-none backdrop-blur-xl duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 dark:border-iris-300/15 dark:bg-[#171322]/95 dark:shadow-iris-950/50"
-          aria-describedby="lexinsight-auth-dialog-description"
+          aria-describedby="lexinsights-auth-dialog-description"
         >
           <DialogPrimitive.Title className="sr-only">
             {mode === 'sign-in' ? 'Sign in to LexInsights' : 'Create your LexInsights account'}
           </DialogPrimitive.Title>
-          <DialogPrimitive.Description id="lexinsight-auth-dialog-description" className="sr-only">
+          <DialogPrimitive.Description id="lexinsights-auth-dialog-description" className="sr-only">
             Sign in or create an account without leaving the current chat.
           </DialogPrimitive.Description>
 
@@ -177,7 +177,7 @@ export function AuthDialog({
                 <SignIn
                   key="sign-in"
                   routing="hash"
-                  signUpUrl="#lexinsight-sign-up"
+                  signUpUrl="#lexinsights-sign-up"
                   fallbackRedirectUrl={fallbackRedirectUrl}
                   signUpFallbackRedirectUrl={fallbackRedirectUrl}
                   appearance={authDialogAppearance}
@@ -198,7 +198,7 @@ export function AuthDialog({
                 <SignUp
                   key="sign-up"
                   routing="hash"
-                  signInUrl="#lexinsight-sign-in"
+                  signInUrl="#lexinsights-sign-in"
                   fallbackRedirectUrl={fallbackRedirectUrl}
                   signInFallbackRedirectUrl={fallbackRedirectUrl}
                   appearance={authDialogAppearance}

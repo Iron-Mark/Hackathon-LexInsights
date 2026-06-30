@@ -91,7 +91,7 @@ test.describe('LexInsights smoke checks', () => {
     await page.getByRole('button', { name: /^New Chat$/ }).click()
     await expect(page).toHaveURL(/\/chat\/guest_/)
 
-    const guestPayload = await page.evaluate(() => window.localStorage.getItem('lexinsight_guest_chats_v1'))
+    const guestPayload = await page.evaluate(() => window.localStorage.getItem('lexinsights_guest_chats_v1'))
     expect(guestPayload).toBeTruthy()
     expect(JSON.parse(guestPayload || '{}')).toEqual(
       expect.objectContaining({
@@ -173,7 +173,7 @@ test.describe('LexInsights smoke checks', () => {
     await page.addInitScript((seedChatId) => {
       const now = '2026-06-25T00:00:00.000Z'
 
-      window.localStorage.setItem('lexinsight_guest_chats_v1', JSON.stringify({
+      window.localStorage.setItem('lexinsights_guest_chats_v1', JSON.stringify({
         version: 1,
         chats: [
           {
@@ -404,7 +404,7 @@ test.describe('LexInsights smoke checks', () => {
     expect(wordDownload.suggestedFilename()).toMatch(/^response-\d+\.docx$/)
 
     const guestPayloadHandle = await page.waitForFunction(() => {
-      const raw = window.localStorage.getItem('lexinsight_guest_chats_v1')
+      const raw = window.localStorage.getItem('lexinsights_guest_chats_v1')
 
       if (!raw) {
         return null

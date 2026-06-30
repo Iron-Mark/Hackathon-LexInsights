@@ -23,7 +23,7 @@ async function loadDocumentTextModule() {
     },
     fileName: sourcePath,
   })
-  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-document-text-'))
+  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsights-document-text-'))
   const tempModulePath = path.join(tempDir, 'document-text.mjs')
 
   writeFileSync(tempModulePath, transpiled.outputText, 'utf8')

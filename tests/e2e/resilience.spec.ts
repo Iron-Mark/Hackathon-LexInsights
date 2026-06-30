@@ -42,10 +42,8 @@ test.describe('offline recovery and local data controls', () => {
       window.localStorage.setItem('rag-storage', JSON.stringify({ state: { queryHistory: ['private'] } }))
       window.localStorage.setItem('compliance-storage', JSON.stringify({ state: { versions: ['draft'] } }))
       window.localStorage.setItem('rag_cache_resilience', JSON.stringify({ response: 'cached' }))
-      window.localStorage.setItem('lexinsight_guest_chats_v1', JSON.stringify({ version: 1, chats: ['guest'], messages: {} }))
-      window.localStorage.setItem('lexinsight_supabase_fallback_chats_v1', JSON.stringify({ version: 1, chats: ['fallback'], messages: {} }))
-      window.localStorage.setItem('lexinsights_guest_chats_v1', JSON.stringify({ version: 1, chats: ['legacy-guest'], messages: {} }))
-      window.localStorage.setItem('lexinsights_supabase_fallback_chats_v1', JSON.stringify({ version: 1, chats: ['legacy-fallback'], messages: {} }))
+      window.localStorage.setItem('lexinsights_guest_chats_v1', JSON.stringify({ version: 1, chats: ['guest'], messages: {} }))
+      window.localStorage.setItem('lexinsights_supabase_fallback_chats_v1', JSON.stringify({ version: 1, chats: ['fallback'], messages: {} }))
     })
 
     await page.getByRole('button', { name: 'Help & Resources' }).click()
@@ -56,14 +54,12 @@ test.describe('offline recovery and local data controls', () => {
     await expect(page.getByText('Local chats, uploaded document selections, compliance drafts, and research caches were cleared.')).toBeVisible()
 
     const remainingState = await page.evaluate(() => ({
-      theme: window.localStorage.getItem('lexinsight-theme'),
+      theme: window.localStorage.getItem('lexinsights-theme'),
       rag: window.localStorage.getItem('rag-storage'),
       compliance: window.localStorage.getItem('compliance-storage'),
       ragCache: window.localStorage.getItem('rag_cache_resilience'),
-      guest: window.localStorage.getItem('lexinsight_guest_chats_v1'),
-      fallback: window.localStorage.getItem('lexinsight_supabase_fallback_chats_v1'),
-      legacyGuest: window.localStorage.getItem('lexinsights_guest_chats_v1'),
-      legacyFallback: window.localStorage.getItem('lexinsights_supabase_fallback_chats_v1'),
+      guest: window.localStorage.getItem('lexinsights_guest_chats_v1'),
+      fallback: window.localStorage.getItem('lexinsights_supabase_fallback_chats_v1'),
     }))
 
     expect(remainingState).toEqual({
@@ -73,8 +69,6 @@ test.describe('offline recovery and local data controls', () => {
       ragCache: null,
       guest: null,
       fallback: null,
-      legacyGuest: null,
-      legacyFallback: null,
     })
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   })

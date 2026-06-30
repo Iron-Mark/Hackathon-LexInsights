@@ -11,7 +11,7 @@ export const CURRENT_APP_URL = SITE_URL
 export const LEGACY_SHOWCASE_URL = 'https://lexinsights.vercel.app'
 export const REPOSITORY_URL = 'https://github.com/Iron-Mark/Hackathon-LexInsights'
 export const PORTFOLIO_URL = 'https://www.marksiazon.dev'
-export const PORTFOLIO_CASE_STUDY_URL = 'https://www.marksiazon.dev/projects/lexinsight'
+export const PORTFOLIO_CASE_STUDY_URL = 'https://www.marksiazon.dev/projects/lexinsights'
 
 export const PHILIPPINE_COMPLIANCE_TOPICS = [
   'data privacy',

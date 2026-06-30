@@ -32,7 +32,7 @@ const TRUSTED_SOURCE_HOSTS = new Set([
 ])
 
 async function loadLocalRagData() {
-  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-rag-source-freshness-'))
+  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsights-rag-source-freshness-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
   await mkdir(tempDataDir, { recursive: true })
 

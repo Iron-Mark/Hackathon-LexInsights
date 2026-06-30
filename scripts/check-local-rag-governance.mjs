@@ -294,7 +294,7 @@ const SEC_BENEFICIAL_OWNERSHIP_FRAMEWORK_ID = 'business-market-entry-ownership-a
 const SEC_BENEFICIAL_OWNERSHIP_DRAFT_IDS = ['sec-mc-15-2025', 'sec-harbor-2026']
 
 async function loadLocalResearchData() {
-  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-governance-'))
+  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsights-local-rag-governance-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
   await mkdir(tempDataDir, { recursive: true })
 

@@ -1,4 +1,4 @@
-export const THEME_STORAGE_KEY = 'lexinsight-theme'
+export const THEME_STORAGE_KEY = 'lexinsights-theme'
 
 export const themeInitScript = `
 (function () {

@@ -72,7 +72,7 @@ function loadAnswerQualityCases() {
 async function loadProviderlessModule() {
   assert.equal(existsSync(sourcePath), true, 'local-legal-research.ts is missing')
 
-  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-answer-quality-'))
+  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsights-local-rag-answer-quality-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
   await mkdir(tempDataDir, { recursive: true })
 

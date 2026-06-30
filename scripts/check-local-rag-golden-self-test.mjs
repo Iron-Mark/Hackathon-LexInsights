@@ -17,7 +17,7 @@ const require = createRequire(import.meta.url)
 async function loadProviderlessModule() {
   assert.equal(existsSync(sourcePath), true, 'local-legal-research.ts is missing')
 
-  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-local-rag-golden-'))
+  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsights-local-rag-golden-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
   await mkdir(tempDataDir, { recursive: true })
 

@@ -8,8 +8,6 @@ import { useChatStore } from './chat-store'
 const PRIVATE_STORAGE_KEYS = [
   'rag-storage',
   'compliance-storage',
-  'lexinsight_guest_chats_v1',
-  'lexinsight_supabase_fallback_chats_v1',
   'lexinsights_guest_chats_v1',
   'lexinsights_supabase_fallback_chats_v1',
 ]

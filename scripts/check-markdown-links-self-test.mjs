@@ -76,7 +76,7 @@ assert.deepEqual(
   ]
 )
 
-const fixtureRoot = mkdtempSync(join(tmpdir(), 'lexinsight-md-links-'))
+const fixtureRoot = mkdtempSync(join(tmpdir(), 'lexinsights-md-links-'))
 
 try {
   mkdirSync(join(fixtureRoot, 'docs'))

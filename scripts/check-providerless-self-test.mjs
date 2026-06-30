@@ -89,7 +89,7 @@ function assertMatchedTerm(response, expectedStatute, expectedTerm, label) {
 async function loadProviderlessModule() {
   assert.equal(existsSync(sourcePath), true, 'local-legal-research.ts is missing')
 
-  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsight-providerless-'))
+  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsights-providerless-'))
   const tempDataDir = path.join(tempDir, 'local-research-data')
   await mkdir(tempDataDir, { recursive: true })
 
