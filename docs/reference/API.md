@@ -50,7 +50,7 @@ curl "http://localhost:3000/api/rag-proxy?endpoint=/api/research/health"
 
 Default upstream endpoint: `/api/research/rag-summary`.
 
-The body is forwarded as JSON to the upstream RAG backend. Upstream HTTP errors and malformed upstream payloads are converted into stable JSON errors.
+The route accepts JSON research objects with `query`, optional `user_id`, and optional `use_deep_search`. Requests are limited to 64KB, queries are limited to 4,000 characters, and unknown fields are dropped before forwarding. Upstream HTTP errors and malformed upstream payloads are converted into stable JSON errors.
 
 ### `POST /api/document-text`
 
@@ -61,6 +61,7 @@ Request:
 - Multipart form data with a `file` field.
 - Supported file types: `.pdf`, `.docx`, `.doc`, `application/pdf`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document`, and `application/msword`.
 - Maximum size: 5MB.
+- The route checks PDF and Word file signatures before extraction and caps extracted text returned to the app.
 
 Response:
 

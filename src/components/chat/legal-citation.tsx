@@ -45,7 +45,7 @@ export interface LegalCitationContext {
 }
 
 const RA_CITATION_PATTERN = /\b(?:R\.?\s*A\.?(?:\s*(?:No\.?|Number))?|Republic\s+Act(?:\s*(?:No\.?|Number))?)\s*[-.]?\s*(\d{3,6})\b/gi
-const MAX_INLINE_CITATION_CHIPS_PER_TEXT = 3
+const MAX_INLINE_CITATION_CHIPS_PER_TEXT = 8
 const SKIPPED_INLINE_ELEMENTS = new Set(['a', 'code', 'pre', 'kbd', 'samp', 'script', 'style', 'button'])
 
 function collectRaNumbers(value?: string) {
@@ -82,6 +82,20 @@ function formatSupportLevel(value?: string) {
   }
 
   return `${formatStatusLabel(value)} support`
+}
+
+function formatVerificationSummary(status?: string, lastVerified?: string) {
+  const label = formatStatusLabel(status)
+
+  if (status === 'verified') {
+    return lastVerified ? `${label} ${lastVerified}` : label
+  }
+
+  if (lastVerified) {
+    return `${label} catalog date ${lastVerified}`
+  }
+
+  return label
 }
 
 export function buildLegalCitationContext(ragResponse?: CitationRagResponse): LegalCitationContext {
@@ -230,8 +244,7 @@ function CitationPreview({ citation }: { citation: ResolvedCitation }) {
         <span className="text-xs leading-5 text-slate-600 dark:text-slate-300">
           {[
             document.source_tier,
-            formatStatusLabel(document.provenance_status),
-            document.source_last_verified && `verified ${document.source_last_verified}`,
+            formatVerificationSummary(document.provenance_status, document.source_last_verified),
           ].filter(Boolean).join(' | ')}
         </span>
       </span>
@@ -284,8 +297,7 @@ function CitationInspectorContent({ citation }: { citation: ResolvedCitation }) 
           <div>
             <dt className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Verification</dt>
             <dd className="mt-1 font-medium text-slate-950 dark:text-slate-100">
-              {formatStatusLabel(document.provenance_status)}
-              {document.source_last_verified ? ` | ${document.source_last_verified}` : ''}
+              {formatVerificationSummary(document.provenance_status, document.source_last_verified)}
             </dd>
           </div>
           <div>
@@ -301,6 +313,33 @@ function CitationInspectorContent({ citation }: { citation: ResolvedCitation }) 
             </dd>
           </div>
         </dl>
+
+        {((document.matched_terms && document.matched_terms.length > 0) ||
+          (document.supporting_fields && document.supporting_fields.length > 0)) && (
+          <section aria-labelledby={`citation-${citation.number}-signals`}>
+            <h4 id={`citation-${citation.number}-signals`} className="text-sm font-semibold text-slate-950 dark:text-slate-100">
+              Matched Signals
+            </h4>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {(document.matched_terms || []).slice(0, 5).map((term) => (
+                <span
+                  key={`term-${term}`}
+                  className="inline-flex rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-iris-300/15 dark:bg-iris-300/10 dark:text-slate-200"
+                >
+                  {term}
+                </span>
+              ))}
+              {(document.supporting_fields || []).slice(0, 4).map((field) => (
+                <span
+                  key={`field-${field}`}
+                  className="inline-flex rounded-md border border-iris-100 bg-iris-50 px-2.5 py-1 text-xs font-medium text-iris-800 dark:border-iris-300/15 dark:bg-iris-300/10 dark:text-iris-100"
+                >
+                  {formatStatusLabel(field)}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
 
         {document.evidence_anchors && document.evidence_anchors.length > 0 && (
           <section aria-labelledby={`citation-${citation.number}-anchors`}>

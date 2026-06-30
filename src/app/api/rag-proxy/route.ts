@@ -7,11 +7,13 @@ import {
   MAX_GET_TIMEOUT_MS,
   MAX_POST_TIMEOUT_MS,
   getProxyFailure,
+  validateProxyContentLength,
   getProxyTimeoutMs,
   getProxyUpstream,
   publicUpstreamHttpErrorDetail,
   publicUpstreamPayloadErrorDetail,
   summarizeProxyLogDetail,
+  validateProxyPostBody,
 } from '../../../lib/services/rag-proxy-helpers.mjs'
 
 const RAG_API_URL = process.env.NEXT_PUBLIC_RAG_API_URL || DEFAULT_RAG_API_URL
@@ -84,6 +86,23 @@ function readUpstreamSuccess(responseText: string): UpstreamParseResult {
 export async function POST(request: NextRequest) {
   const upstream = getProxyUpstream(request.nextUrl.searchParams, '/api/research/rag-summary', RAG_API_URL)
   const timeoutMs = getProxyTimeoutMs(request.nextUrl.searchParams, DEFAULT_POST_TIMEOUT_MS, MAX_POST_TIMEOUT_MS)
+  const contentLengthCheck = validateProxyContentLength(request.headers)
+
+  if (!contentLengthCheck.ok) {
+    const status = contentLengthCheck.status || 413
+
+    return noStoreJson(
+      {
+        detail: contentLengthCheck.detail,
+        error: {
+          type: contentLengthCheck.type,
+          maxBytes: 64 * 1024,
+          contentLength: contentLengthCheck.contentLength,
+        },
+      },
+      status
+    )
+  }
 
   if (!upstream.upstreamUrl) {
     return noStoreJson(
@@ -99,7 +118,22 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const body = await request.json()
+    const rawBody = await request.json()
+    const bodyCheck = validateProxyPostBody(rawBody)
+
+    if (!bodyCheck.ok) {
+      const status = bodyCheck.status || 400
+
+      return noStoreJson(
+        {
+          detail: bodyCheck.detail,
+          error: {
+            type: bodyCheck.type,
+          },
+        },
+        status
+      )
+    }
 
     if (!shouldSuppressProxyLog(upstream.endpoint)) {
       console.log(`[RAG Proxy] POST ${summarizeProxyLogDetail(upstream.endpoint)}`)
@@ -110,7 +144,7 @@ export async function POST(request: NextRequest) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(bodyCheck.body),
       signal: AbortSignal.timeout(timeoutMs),
     })
 

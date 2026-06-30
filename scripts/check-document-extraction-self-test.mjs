@@ -119,12 +119,22 @@ const { module: serverExtraction, cleanup } = await loadServerExtractionModule()
 
 try {
   const { extractServerDocumentText } = serverExtraction
+  const { getServerDocumentSignatureMode, MAX_EXTRACTED_DOCUMENT_TEXT_CHARS } = serverExtraction
 
   const pdfText = 'Barangay procurement RA 12009 compliance test'
+  const pdfBuffer = createSimplePdf(pdfText)
+  assert.equal(
+    getServerDocumentSignatureMode({
+      name: 'sample.pdf',
+      type: 'application/pdf',
+      buffer: pdfBuffer,
+    }),
+    'server-pdf'
+  )
   const pdfResult = await extractServerDocumentText({
     name: 'sample.pdf',
     type: 'application/pdf',
-    buffer: createSimplePdf(pdfText),
+    buffer: pdfBuffer,
   })
 
   assert.equal(pdfResult.extractionMode, 'server-pdf')
@@ -151,6 +161,18 @@ try {
     /only supports PDF and Word/,
     'Server extraction should reject browser-readable text documents'
   )
+
+  await assert.rejects(
+    () => extractServerDocumentText({
+      name: 'spoofed.pdf',
+      type: 'application/pdf',
+      buffer: Buffer.from('this is not a pdf'),
+    }),
+    /signature does not match/,
+    'Server extraction should reject extension and MIME spoofing'
+  )
+
+  assert.equal(MAX_EXTRACTED_DOCUMENT_TEXT_CHARS, 250000)
 
   console.log('Document extraction self-test passed.')
 } finally {

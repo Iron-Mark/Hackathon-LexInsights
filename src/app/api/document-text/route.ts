@@ -10,6 +10,8 @@ export const runtime = 'nodejs'
 
 type ExtractionMode = 'server-pdf' | 'server-docx' | 'server-doc'
 
+const DOCUMENT_EXTRACTION_TIMEOUT_MS = 15000
+
 function jsonError(status: number, error: string, details: Record<string, unknown> = {}) {
   return NextResponse.json(
     {
@@ -56,7 +58,43 @@ async function getUploadedFile(request: NextRequest) {
   return file as File
 }
 
+function getContentLength(request: NextRequest) {
+  const rawValue = request.headers.get('content-length')
+
+  if (!rawValue) {
+    return null
+  }
+
+  const parsed = Number(rawValue)
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : null
+}
+
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error('Document extraction timed out.')), timeoutMs)
+
+    promise
+      .then((value) => {
+        clearTimeout(timeout)
+        resolve(value)
+      })
+      .catch((error) => {
+        clearTimeout(timeout)
+        reject(error)
+      })
+  })
+}
+
 export async function POST(request: NextRequest) {
+  const contentLength = getContentLength(request)
+
+  if (contentLength !== null && contentLength > MAX_BROWSER_TEXT_DOCUMENT_BYTES + 1024 * 1024) {
+    return jsonError(413, 'Maximum document size is 5MB.', {
+      contentLength,
+      maxSize: MAX_BROWSER_TEXT_DOCUMENT_BYTES,
+    })
+  }
+
   const file = await getUploadedFile(request)
 
   if (!file) {
@@ -86,11 +124,14 @@ export async function POST(request: NextRequest) {
   const buffer = Buffer.from(await file.arrayBuffer())
 
   try {
-    const result = await extractServerDocumentText({
-      name: file.name,
-      type: file.type,
-      buffer,
-    })
+    const result = await withTimeout(
+      extractServerDocumentText({
+        name: file.name,
+        type: file.type,
+        buffer,
+      }),
+      DOCUMENT_EXTRACTION_TIMEOUT_MS
+    )
 
     return jsonSuccess({
       text: result.text,

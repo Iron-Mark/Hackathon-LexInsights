@@ -16,6 +16,7 @@ For the public GitHub project overview, use the repository root [README](../READ
 - [Architecture](./reference/ARCHITECTURE.md) - source layout, runtime boundaries, and data flow.
 - [API](./reference/API.md) - internal routes, RAG proxy behavior, providerless fallback, and upstream contracts.
 - [Providerless Research](./reference/PROVIDERLESS-RESEARCH.md) - local fallback algorithm, corpus, draft checks, and limits.
+- [Philippine Compliance Mapping](./reference/PH-COMPLIANCE-MAPPING.md) - product controls mapped to privacy, ICT, accessibility, and research-integrity expectations.
 - [Database](./reference/DATABASE.md) - Supabase schema, storage, and seed scripts.
 - [UI](./reference/UI.md) - design system, accessibility, and responsive conventions.
 - [SEO, AEO, and GEO](./reference/SEO-AEO-GEO.md) - public discovery, answer-engine files, structured data, and crawl policy.
@@ -24,6 +25,8 @@ For the public GitHub project overview, use the repository root [README](../READ
 
 - [Testing](./operations/TESTING.md) - local and CI quality gates.
 - [Deployment](./operations/DEPLOYMENT.md) - Vercel deployment and production checks.
+- [RAG QA](./operations/RAG-QA.md) - source freshness, answer-quality, and citation trust gates.
+- [Incident Response](./operations/INCIDENT-RESPONSE.md) - security, privacy, availability, and data-handling incident workflow.
 - [Ship Readiness](./operations/SHIP-READINESS.md) - current release-candidate checklist and hold criteria.
 - [App Root Migration](./operations/APP-ROOT-MIGRATION.md) - migration record and root-layout notes.
 - [Troubleshooting](./operations/TROUBLESHOOTING.md) - common setup, backend, and deployment failures.

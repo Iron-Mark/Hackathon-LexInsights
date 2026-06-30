@@ -198,7 +198,7 @@ test.describe('LexInsights smoke checks', () => {
             {
               id: 'guest_citation_assistant',
               role: 'assistant',
-              content: 'RA 11898 is the Extended Producer Responsibility law. See [Official Gazette](https://www.officialgazette.gov.ph/) for official issuances. R.A. No. 11898 should expose saved provenance. RA 999999 should not invent details.',
+              content: 'RA 11898 is the Extended Producer Responsibility law. See [Official Gazette](https://www.officialgazette.gov.ph/) for official issuances. R.A. No. 11898 should expose saved provenance. Multiple citations stay interactive: RA 11898, RA 11898, and RA 11898. RA 999999 should not invent details.',
               created_at: now,
               metadata: {
                 ragResponse: {
@@ -273,6 +273,7 @@ test.describe('LexInsights smoke checks', () => {
     const knownCitation = assistantMessage
       .getByRole('button', { name: 'Open citation details for RA 11898' })
       .first()
+    await expect(assistantMessage.getByRole('button', { name: 'Open citation details for RA 11898' })).toHaveCount(5)
 
     await expect(knownCitation).toBeVisible()
     await knownCitation.focus()
@@ -284,7 +285,9 @@ test.describe('LexInsights smoke checks', () => {
     await expect(knownDialog).toBeVisible()
     await expect(knownDialog).toContainText('Extended Producer Responsibility Act of 2022')
     await expect(knownDialog).toContainText('official')
-    await expect(knownDialog).toContainText('Verified | 2026-06-01')
+    await expect(knownDialog).toContainText('Verified 2026-06-01')
+    await expect(knownDialog).toContainText('Matched Signals')
+    await expect(knownDialog).toContainText('explicit citation: RA 11898')
     await expect(knownDialog).toContainText('EPR obligations')
     await expect(knownDialog.getByRole('link', { name: /Open official source/ })).toHaveAttribute(
       'href',

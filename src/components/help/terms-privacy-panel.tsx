@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import { PORTFOLIO_URL, REPOSITORY_URL } from '@/lib/seo'
 
-const LAST_UPDATED = 'June 27, 2026'
+const LAST_UPDATED = 'July 1, 2026'
 
 const policyHighlights = [
   {
@@ -130,10 +130,22 @@ const privacySections = [
       'Information may be processed by configured hosting, authentication, storage, document-extraction, or optional RAG providers. These providers may operate in or outside the Philippines, subject to applicable transfer, confidentiality, and security safeguards.',
   },
   {
+    icon: Globe2,
+    title: 'Service providers',
+    body:
+      'LexInsights uses providers only for app functions such as hosting, authentication, storage, extraction, and optional research backends. Provider access should be limited to the service purpose and governed by their applicable security, privacy, and processing terms.',
+  },
+  {
     icon: Lock,
     title: 'Security',
     body:
       'LexInsights uses reasonable technical and organizational safeguards appropriate to the app, including access controls, provider security features, and limited processing for the functions requested by the user.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Incidents and notices',
+    body:
+      'If LexInsights identifies a security or privacy incident, the project will assess affected data, contain the issue, preserve necessary evidence, and consider notices to affected users, providers, authorities, or the National Privacy Commission where legally required.',
   },
   {
     icon: Database,
@@ -158,6 +170,12 @@ const privacySections = [
     title: 'Your choices',
     body:
       'You can avoid uploading sensitive files, use guest mode for limited work, delete available local chats, manage account information through the sign-in provider, and contact the project maintainer for privacy requests related to LexInsights-controlled data.',
+  },
+  {
+    icon: UserCheck,
+    title: 'Requests',
+    body:
+      'Privacy requests should identify the account, browser-local data, or content involved. LexInsights may need to verify control of the account or request before access, correction, export, deletion, objection, or related requests can be handled.',
   },
   {
     icon: ShieldCheck,

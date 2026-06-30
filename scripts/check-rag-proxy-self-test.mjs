@@ -7,17 +7,25 @@ import {
   DEFAULT_POST_TIMEOUT_MS,
   MAX_GET_TIMEOUT_MS,
   MAX_POST_TIMEOUT_MS,
+  MAX_PROXY_POST_BODY_BYTES,
   MIN_PROXY_TIMEOUT_MS,
   getProxyFailure,
+  getProxyContentLength,
   getProxyTimeoutMs,
   getProxyUpstream,
   publicUpstreamHttpErrorDetail,
   publicUpstreamPayloadErrorDetail,
   summarizeProxyLogDetail,
+  validateProxyContentLength,
+  validateProxyPostBody,
 } from '../src/lib/services/rag-proxy-helpers.mjs'
 
 function params(value) {
   return new URLSearchParams(value)
+}
+
+function headers(value) {
+  return new Headers(value)
 }
 
 function assertNoSecretMarkers(value) {
@@ -116,6 +124,49 @@ assert.equal(summarizedEndpoint.includes('\n'), false)
 assert.equal(summarizedEndpoint.includes('X-Injected'), true)
 assert.equal(summarizedEndpoint.length <= 200, true)
 assert.equal(summarizeProxyLogDetail(''), 'empty upstream error body')
+
+assert.equal(getProxyContentLength(headers({ 'content-length': '123' })), 123)
+assert.equal(getProxyContentLength(headers({ 'content-length': 'nope' })), null)
+assert.deepEqual(validateProxyContentLength(headers({ 'content-length': String(MAX_PROXY_POST_BODY_BYTES) })).ok, true)
+assert.deepEqual(validateProxyContentLength(headers({ 'content-length': String(MAX_PROXY_POST_BODY_BYTES + 1) })), {
+  ok: false,
+  status: 413,
+  type: 'payload_too_large',
+  detail: 'RAG proxy requests are limited to 64KB.',
+  contentLength: MAX_PROXY_POST_BODY_BYTES + 1,
+})
+
+assert.deepEqual(validateProxyPostBody(null), {
+  ok: false,
+  status: 400,
+  type: 'invalid_request_body',
+  detail: 'RAG proxy requests must be JSON objects.',
+})
+assert.deepEqual(validateProxyPostBody({ query: '   ' }), {
+  ok: false,
+  status: 400,
+  type: 'invalid_query',
+  detail: 'RAG proxy requests require a non-empty query.',
+})
+assert.deepEqual(validateProxyPostBody({ query: 'x'.repeat(4001) }), {
+  ok: false,
+  status: 413,
+  type: 'query_too_large',
+  detail: 'RAG proxy queries are limited to 4,000 characters.',
+})
+assert.deepEqual(validateProxyPostBody({
+  query: '  RA 10173 privacy  ',
+  user_id: 'user-1',
+  use_deep_search: true,
+  injected: 'ignored',
+}), {
+  ok: true,
+  body: {
+    query: 'RA 10173 privacy',
+    user_id: 'user-1',
+    use_deep_search: true,
+  },
+})
 
 assertNoSecretMarkers({
   defaultUpstream,

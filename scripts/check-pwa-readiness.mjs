@@ -91,6 +91,10 @@ assertIncludes(nextConfig, 'application/javascript; charset=utf-8', 'Next config
 assertIncludes(nextConfig, 'Service-Worker-Allowed', 'Next config service worker scope header')
 assertIncludes(nextConfig, 'nosniff', 'Next config service worker nosniff header')
 assertIncludes(nextConfig, 'no-cache, no-store, must-revalidate', 'Next config service worker cache control')
+assertIncludes(nextConfig, 'Content-Security-Policy', 'Next config security headers')
+assertIncludes(nextConfig, 'Strict-Transport-Security', 'Next config security headers')
+assertIncludes(nextConfig, "frame-ancestors 'none'", 'Next config CSP')
+assertIncludes(nextConfig, 'max-age=63072000', 'Next config HSTS')
 
 for (const [relativePath, expectedSize] of [
   ['public/icons/icon-192x192.png', 192],
