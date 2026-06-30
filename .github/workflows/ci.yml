@@ -81,6 +81,12 @@ jobs:
       - name: Local RAG golden-query self-test
         run: npm run check:local-rag:golden
 
+      - name: Local RAG answer-quality check
+        run: npm run check:local-rag:answers
+
+      - name: Local RAG source-freshness check
+        run: npm run check:local-rag:sources
+
       - name: Local RAG performance self-test
         run: npm run check:local-rag:performance
 
