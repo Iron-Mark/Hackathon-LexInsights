@@ -223,33 +223,33 @@ function CitationPreview({ citation }: { citation: ResolvedCitation }) {
 
   if (citation.status === 'known' && document) {
     return (
-      <div className="space-y-1.5 text-left">
-        <p className="font-display text-sm font-semibold leading-5 text-slate-950 dark:text-slate-50">
+      <span className="inline-flex w-full flex-col gap-1.5 text-left">
+        <span className="font-display text-sm font-semibold leading-5 text-slate-950 dark:text-slate-50">
           {document.title}
-        </p>
-        <p className="text-xs leading-5 text-slate-600 dark:text-slate-300">
+        </span>
+        <span className="text-xs leading-5 text-slate-600 dark:text-slate-300">
           {[
             document.source_tier,
             formatStatusLabel(document.provenance_status),
             document.source_last_verified && `verified ${document.source_last_verified}`,
           ].filter(Boolean).join(' | ')}
-        </p>
-      </div>
+        </span>
+      </span>
     )
   }
 
   if (citation.status === 'unknown') {
     return (
-      <p className="text-left text-xs leading-5 text-amber-800 dark:text-amber-100">
+      <span className="inline-block text-left text-xs leading-5 text-amber-800 dark:text-amber-100">
         RA {citation.number} was cited, but it is not in the bundled providerless corpus.
-      </p>
+      </span>
     )
   }
 
   return (
-    <p className="text-left text-xs leading-5 text-slate-600 dark:text-slate-300">
+    <span className="inline-block text-left text-xs leading-5 text-slate-600 dark:text-slate-300">
       Source details were not saved with this response.
-    </p>
+    </span>
   )
 }
 
