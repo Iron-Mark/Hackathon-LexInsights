@@ -15,6 +15,24 @@ import {
 } from '../../../lib/services/rag-proxy-helpers.mjs'
 
 const RAG_API_URL = process.env.NEXT_PUBLIC_RAG_API_URL || DEFAULT_RAG_API_URL
+const SUPPRESS_EXPECTED_TEST_NOISE = process.env.RAG_PROXY_SUPPRESS_TEST_NOISE === 'true'
+const EXPECTED_NOISE_ENDPOINTS = new Set(['/missing-rag-upstream'])
+
+function shouldSuppressProxyLog(endpoint: string, status?: number) {
+  if (!SUPPRESS_EXPECTED_TEST_NOISE) {
+    return false
+  }
+
+  if (!EXPECTED_NOISE_ENDPOINTS.has(endpoint)) {
+    return false
+  }
+
+  if (status === undefined) {
+    return true
+  }
+
+  return status === 404
+}
 
 function noStoreJson(body: unknown, status: number) {
   return NextResponse.json(body, {
@@ -83,7 +101,9 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    console.log(`[RAG Proxy] POST ${summarizeProxyLogDetail(upstream.endpoint)}`)
+    if (!shouldSuppressProxyLog(upstream.endpoint)) {
+      console.log(`[RAG Proxy] POST ${summarizeProxyLogDetail(upstream.endpoint)}`)
+    }
 
     const response = await fetch(upstream.upstreamUrl, {
       method: 'POST',
@@ -96,7 +116,9 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       discardUpstreamBody(response)
-      console.error(`[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}`)
+      if (!shouldSuppressProxyLog(upstream.endpoint, response.status)) {
+        console.error(`[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}`)
+      }
       return noStoreJson(
         {
           detail: publicUpstreamHttpErrorDetail(response.status),
@@ -133,7 +155,9 @@ export async function POST(request: NextRequest) {
     return noStoreJson(parsed.data, 200)
   } catch (error) {
     const failure = getProxyFailure(error)
-    console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
+    if (!shouldSuppressProxyLog(upstream.endpoint, failure.status)) {
+      console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
+    }
 
     return noStoreJson(
       {
@@ -171,7 +195,9 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log(`[RAG Proxy] GET ${summarizeProxyLogDetail(upstream.endpoint)}`)
+    if (!shouldSuppressProxyLog(upstream.endpoint)) {
+      console.log(`[RAG Proxy] GET ${summarizeProxyLogDetail(upstream.endpoint)}`)
+    }
 
     const response = await fetch(upstream.upstreamUrl, {
       method: 'GET',
@@ -183,7 +209,9 @@ export async function GET(request: NextRequest) {
 
     if (!response.ok) {
       discardUpstreamBody(response)
-      console.error(`[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}`)
+      if (!shouldSuppressProxyLog(upstream.endpoint, response.status)) {
+        console.error(`[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}`)
+      }
       return noStoreJson(
         {
           detail: publicUpstreamHttpErrorDetail(response.status),
@@ -220,7 +248,9 @@ export async function GET(request: NextRequest) {
     return noStoreJson(parsed.data, 200)
   } catch (error) {
     const failure = getProxyFailure(error)
-    console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
+    if (!shouldSuppressProxyLog(upstream.endpoint, failure.status)) {
+      console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
+    }
 
     return noStoreJson(
       {

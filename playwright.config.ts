@@ -25,6 +25,7 @@ export default defineConfig({
         env: {
           CLERK_SECRET_KEY: '',
           ENABLE_DIAGNOSTIC_ROUTES: 'true',
+          RAG_PROXY_SUPPRESS_TEST_NOISE: 'true',
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: '',
           NEXT_PUBLIC_RAG_API_URL: baseURL,
           NEXT_PUBLIC_SUPABASE_URL: 'https://example.supabase.co',
