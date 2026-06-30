@@ -27,6 +27,7 @@ For the public GitHub project overview, use the repository root [README](../READ
 - [Deployment](./operations/DEPLOYMENT.md) - Vercel deployment and production checks.
 - [RAG QA](./operations/RAG-QA.md) - source freshness, answer-quality, and citation trust gates.
 - [Incident Response](./operations/INCIDENT-RESPONSE.md) - security, privacy, availability, and data-handling incident workflow.
+- [Production Release 569983a](./operations/RELEASE-2026-07-01-569983a.md) - verified 0.5.2 production release note.
 - [Ship Readiness](./operations/SHIP-READINESS.md) - current release-candidate checklist and hold criteria.
 - [App Root Migration](./operations/APP-ROOT-MIGRATION.md) - migration record and root-layout notes.
 - [Troubleshooting](./operations/TROUBLESHOOTING.md) - common setup, backend, and deployment failures.

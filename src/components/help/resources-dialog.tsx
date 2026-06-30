@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog'
 import { TermsPrivacyPanel } from './terms-privacy-panel'
 import { clearPrivateClientState } from '@/lib/store/private-client-state'
+import { trackHelpResourcesOpen, trackSourceLinkClick } from '@/lib/analytics/events'
 
 interface ResourcesDialogProps {
   open: boolean
@@ -172,8 +173,12 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
   const [clearStatus, setClearStatus] = useState<string | null>(null)
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
 
-  const handleResourceClick = (url: string) => {
-    window.open(url, '_blank', 'noopener,noreferrer')
+  const handleResourceClick = (resource: GovernmentResource) => {
+    trackSourceLinkClick({
+      category: resource.category,
+      id: resource.id,
+    })
+    window.open(resource.url, '_blank', 'noopener,noreferrer')
   }
 
   const resourceGroups = useMemo(
@@ -207,6 +212,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
       setActiveView('sources')
       setConfirmingClear(false)
       setClearStatus(null)
+      trackHelpResourcesOpen('sidebar_control')
     }
   }, [open])
 
@@ -442,7 +448,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                     {resources.map((resource) => (
                       <button
                         key={resource.id}
-                        onClick={() => handleResourceClick(resource.url)}
+                        onClick={() => handleResourceClick(resource)}
                         className="group min-w-0 w-full max-w-full overflow-hidden rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md active:translate-y-0 active:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:hover:border-iris-300/50 dark:hover:bg-[#2b2438] dark:focus-visible:ring-offset-[#171322]"
                         type="button"
                       >

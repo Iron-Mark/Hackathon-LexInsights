@@ -13,6 +13,7 @@ Current default throttle windows:
 - `GET /api/rag-proxy`: 120 requests per minute.
 - `POST /api/rag-proxy`: 30 requests per minute.
 - `POST /api/document-text`: 12 requests per minute.
+- `POST /api/analytics`: 120 requests per minute.
 
 ### `GET /api/version`
 
@@ -116,6 +117,42 @@ Stable error response shape:
 ```
 
 Document extraction errors may include safe metadata such as MIME type or byte size. They do not include uploaded file names, extracted text, or file contents.
+
+### `POST /api/analytics`
+
+Accepts privacy-safe first-party product events for lightweight launch learning.
+
+Allowed events:
+
+- `page_view` for public app pages only: `/`, `/chat`, `/about`, `/privacy`, and `/terms`.
+- `help_resources_open`.
+- `source_link_click`.
+- `chat_start`.
+
+Allowed metadata keys:
+
+- `path`
+- `source`
+- `component`
+- `resourceId`
+- `category`
+- `viewport`
+
+The client intentionally does not send chat text, document text, file names, file contents, account IDs, raw private chat URLs, or analytics cookies. Browsers with Do Not Track or Global Privacy Control enabled do not send these events.
+
+Example:
+
+```json
+{
+  "event": "source_link_click",
+  "metadata": {
+    "component": "help_resources",
+    "resourceId": "lawphil",
+    "category": "Primary Law",
+    "viewport": "desktop"
+  }
+}
+```
 
 ## RAG Service Contracts
 

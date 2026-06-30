@@ -160,6 +160,12 @@ const privacySections = [
       'The app may use cookies, local storage, and similar browser technologies for authentication, theme preferences, guest chats, saved settings, and core app functionality.',
   },
   {
+    icon: SlidersHorizontal,
+    title: 'Privacy-safe analytics',
+    body:
+      'LexInsights may record lightweight first-party usage events such as public page visits, Help & Resources opens, source-link clicks, and chat starts. These events use fixed names and limited metadata only; they do not include chat text, document text, file contents, full private URLs, account IDs, or cookies for analytics.',
+  },
+  {
     icon: UserCheck,
     title: 'Your PH privacy rights',
     body:

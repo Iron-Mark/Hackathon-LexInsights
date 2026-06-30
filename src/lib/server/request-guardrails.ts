@@ -7,7 +7,7 @@ type RequestLike = {
   method?: string
 }
 
-export type PublicApiRoute = '/api/rag-proxy' | '/api/document-text'
+export type PublicApiRoute = '/api/rag-proxy' | '/api/document-text' | '/api/analytics'
 
 export type PublicApiRequestContext = {
   requestId: string
@@ -59,6 +59,10 @@ export const PUBLIC_API_THROTTLE_LIMITS: Record<string, ThrottleLimit> = {
     windowMs: 60_000,
     max: 12,
   },
+  'POST /api/analytics': {
+    windowMs: 60_000,
+    max: 120,
+  },
 }
 
 const REDACTED = '[redacted]'
@@ -90,6 +94,13 @@ const SAFE_LOG_KEYS = new Set([
   'timeoutMs',
   'type',
   'upstreamOrigin',
+  'analyticsEvent',
+  'category',
+  'component',
+  'path',
+  'resourceId',
+  'source',
+  'viewport',
 ])
 const SENSITIVE_KEY_PATTERN =
   /(authorization|cookie|token|secret|password|credential|api[-_]?key|prompt|query|draft|text|content|body|buffer|file(name)?|email|phone|ip|user[-_]?id)/i

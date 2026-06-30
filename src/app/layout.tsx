@@ -10,6 +10,7 @@ import { authFormAppearance } from "@/lib/auth/clerk-appearance";
 import { getClerkSetupStatus } from "@/lib/auth/clerk-config";
 import { AuthSetupProvider } from "@/components/providers/auth-setup-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { AnalyticsProvider } from "@/components/providers/analytics-provider";
 import { themeInitScript } from "@/lib/theme";
 import {
   buildBaseStructuredData,
@@ -157,6 +158,7 @@ export default function RootLayout({
               <ThemeProvider>
                 <SessionProvider>
                   <ServiceWorkerRegistration />
+                  <AnalyticsProvider />
                   <ClerkAuthHeader />
                   {children}
                   <ToastContainer />
@@ -166,6 +168,7 @@ export default function RootLayout({
           ) : (
             <ThemeProvider>
               <ServiceWorkerRegistration />
+              <AnalyticsProvider />
               {children}
               <ToastContainer />
             </ThemeProvider>
