@@ -470,6 +470,8 @@ test.describe('LexInsights smoke checks', () => {
       expect.objectContaining({
         ready: expect.any(Boolean),
         checkedAt: expect.any(String),
+        providerMode: expect.any(String),
+        externalChecks: expect.any(String),
         checks: expect.any(Array),
         summary: expect.any(String),
       })
@@ -527,6 +529,8 @@ test.describe('LexInsights smoke checks', () => {
     )
     expect(anonKeyCheck).not.toHaveProperty('target')
     expect(anonKeyCheck).not.toHaveProperty('details')
+    expect(JSON.stringify(body)).not.toContain('https://devkada.resqlink.org')
+    expect(JSON.stringify(body)).not.toContain('supabase.co')
   })
 
   test('version endpoint exposes deployment metadata without backend secrets', async ({ request }) => {
@@ -553,6 +557,10 @@ test.describe('LexInsights smoke checks', () => {
 
     expect(JSON.stringify(body)).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
     expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
+    expect(body.source).not.toHaveProperty('branch')
+    expect(body.source).not.toHaveProperty('repoOwner')
+    expect(body.source).not.toHaveProperty('repoSlug')
+    expect(body.deployment).toEqual({ details: 'restricted' })
   })
 
   test('PWA manifest and service worker are install-ready', async ({ request }) => {

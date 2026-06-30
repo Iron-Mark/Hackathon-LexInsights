@@ -282,6 +282,11 @@ async function versionCheck(baseUrl, timeoutMs, expectedSha) {
 
 function providerModeFromReadiness(check) {
   const body = check.details?.body
+
+  if (body && typeof body === 'object' && typeof body.providerMode === 'string') {
+    return body.providerMode
+  }
+
   const checks = body && typeof body === 'object' && Array.isArray(body.checks) ? body.checks : []
   const providerModeCheck = checks.find((item) => item?.name === 'rag.provider_mode')
   const value = providerModeCheck?.details?.value
@@ -349,6 +354,7 @@ function publicCheckDetails(check) {
             source: body.source,
             expected: body.expected,
             providerMode: providerModeFromReadiness(check),
+            externalChecks: body.externalChecks,
           }
         : body,
   }

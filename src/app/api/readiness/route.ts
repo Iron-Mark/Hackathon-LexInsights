@@ -416,6 +416,34 @@ function getRagProviderMode() {
   return DEFAULT_RAG_PROVIDER_MODE
 }
 
+function detailTokenMatches(request: NextRequest) {
+  const token = getEnvValue('DIAGNOSTIC_DETAIL_TOKEN')
+
+  if (!token) {
+    return false
+  }
+
+  return request.headers.get('x-lexinsights-diagnostics') === token
+}
+
+function shouldExposeDiagnosticDetails(request: NextRequest) {
+  if (detailTokenMatches(request)) {
+    return true
+  }
+
+  return process.env.NODE_ENV !== 'production' && request.nextUrl.searchParams.get('details') === '1'
+}
+
+function publicCheck(check: ReadinessCheck): ReadinessCheck {
+  return {
+    name: check.name,
+    status: check.status,
+    critical: check.critical,
+    message: check.message,
+    ...(Number.isFinite(check.durationMs) ? { durationMs: check.durationMs } : {}),
+  }
+}
+
 export async function GET(request: NextRequest) {
   const checkedAt = new Date().toISOString()
   const origin = request.nextUrl.origin
@@ -523,12 +551,15 @@ export async function GET(request: NextRequest) {
 
   const ready = checks.every((check) => !check.critical || check.status === 'pass')
   const statusCode = ready ? 200 : 503
+  const exposeDetails = shouldExposeDiagnosticDetails(request)
 
   return NextResponse.json(
     {
       ready,
       checkedAt,
-      checks,
+      providerMode: ragProviderMode,
+      externalChecks: skipExternalChecks ? 'skip' : 'run',
+      checks: exposeDetails ? checks : checks.map(publicCheck),
       summary: ready
         ? 'All critical backend readiness checks passed.'
         : 'One or more critical backend readiness checks failed.',

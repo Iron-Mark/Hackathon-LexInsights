@@ -11,6 +11,12 @@ LexInsights is a Philippine legal research and compliance assistant for legal ch
 
 LexInsights is not a lawyer, law firm, court, regulator, or official government source. Generated output should be checked against official sources, qualified counsel, or the relevant authority before use.
 
+## Product Preview
+
+![LexInsights desktop legal chat showing a cited RA 9003 compliance answer](docs/assets/lexinsights-chat-desktop.png)
+
+![LexInsights mobile Help and Resources source directory](docs/assets/lexinsights-help-mobile.png)
+
 ## Project Trust
 
 - Security policy: [SECURITY.md](SECURITY.md)
@@ -32,7 +38,7 @@ LexInsights is not a lawyer, law firm, court, regulator, or official government 
 - `/about` connects the app, repository, maintainer portfolio, case study, and legacy showcase reference.
 - `/terms` and `/privacy` provide public service and data-handling notices.
 - `/robots.txt`, `/sitemap.xml`, `/llms.txt`, and `/ai.txt` support search, answer-engine, and crawler discovery.
-- `/api/version` and `/api/readiness` support deployment and health verification without exposing secrets.
+- `/api/version` and `/api/readiness` support lean deployment and health verification without exposing secrets, raw targets, or repository ownership details.
 
 ## Local Development
 

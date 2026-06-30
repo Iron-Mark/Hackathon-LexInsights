@@ -28,6 +28,8 @@ ENABLE_DIAGNOSTIC_ROUTES=false
 
 `ENABLE_DIAGNOSTIC_ROUTES` controls `/test-rag` and `/test-document`. Keep it `false` or unset for public production deployments.
 
+`DIAGNOSTIC_DETAIL_TOKEN` is optional. Set it only when maintainers need token-gated detailed `/api/version` and `/api/readiness` output. The public response stays lean so live deployment checks can pass without exposing branch names, repository ownership, upstream health targets, or raw diagnostic payloads.
+
 ## Optional Remote RAG Environment
 
 Configure these when a remote provider is available and should be used before local fallback. The app serves providerless local research without them.
@@ -78,6 +80,8 @@ npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-c
 
 - `https://lexiph.vercel.app/api/version`
 - `https://lexiph.vercel.app/api/readiness`
+
+These endpoints are intentionally public but minimal. They report app version, deployment commit match, readiness state, provider mode, and check status summaries. Detailed diagnostics are restricted to local `?details=1` checks or requests carrying the private diagnostics token.
 
 `NEXT_PUBLIC_SITE_URL` controls canonical metadata, sitemap URLs, and structured data. Keep it pointed at the current LexInsights production app. The older `https://lexinsights.vercel.app` URL is kept only as a legacy showcase reference, not as the canonical production URL.
 
