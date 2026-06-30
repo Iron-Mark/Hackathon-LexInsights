@@ -91,7 +91,7 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
         )}
       >
         {isMobile && (
-          <div className="fixed left-[calc(env(safe-area-inset-left)+1rem)] top-[calc(env(safe-area-inset-top)+0.375rem)] z-20">
+          <div className="fixed left-[calc(env(safe-area-inset-left)+1rem)] top-[calc(env(safe-area-inset-top)+0.375rem)] z-20 flex items-center gap-2">
             <Button
               onClick={open}
               variant="outline"
@@ -101,6 +101,14 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
             >
               <Menu className="h-5 w-5" aria-hidden="true" />
             </Button>
+            {!isOpen && (
+              <div className="rounded-lg border border-iris-100 bg-white/85 px-3 py-1.5 shadow-md shadow-iris-950/10 backdrop-blur dark:border-iris-300/15 dark:bg-[#1b1728]/90 dark:shadow-none">
+                <p className="text-sm font-extrabold leading-4 text-slate-950 dark:text-white">LexInsights</p>
+                <p className="hidden text-[10px] font-semibold leading-3 text-slate-600 min-[380px]:block dark:text-slate-400">
+                  Legal compliance assistant
+                </p>
+              </div>
+            )}
           </div>
         )}
 

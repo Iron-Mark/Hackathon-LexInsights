@@ -2,7 +2,7 @@
 
 ## Overview
 
-LexInSight uses Clerk for authentication and Supabase Third-Party Auth for database and storage authorization.
+LexInsights uses Clerk for authentication and Supabase Third-Party Auth for database and storage authorization.
 
 ## User Stories
 

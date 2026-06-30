@@ -2,7 +2,7 @@
 
 ## Overview
 
-LexInSight is a Next.js 14 application using the App Router architecture with TypeScript. The system implements a ChatGPT-inspired interface for Philippine legal compliance assistance. The MVP focuses on authentication infrastructure and UI foundation, leveraging Supabase for backend services, Zustand for client-side state management, and shadcn/ui with Tailwind CSS for the interface.
+LexInsights is a Next.js 14 application using the App Router architecture with TypeScript. The system implements a ChatGPT-inspired interface for Philippine legal compliance assistance. The MVP focuses on authentication infrastructure and UI foundation, leveraging Supabase for backend services, Zustand for client-side state management, and shadcn/ui with Tailwind CSS for the interface.
 
 The architecture follows a client-side rendering approach with server-side session validation, ensuring secure authentication flows and optimal user experience.
 
@@ -46,7 +46,7 @@ graph TB
 ### Folder Structure
 
 ```
-LexInSight/
+LexInsights/
 ├── app/
 │   ├── layout.tsx                 # Root layout with session check
 │   ├── page.tsx                   # Landing page
@@ -187,7 +187,7 @@ interface AuthState {
 **Structure**:
 ```
 ┌─────────────────────────────────────┐
-│ LexInSight              [User Avatar ▼] │
+│ LexInsights              [User Avatar ▼] │
 └─────────────────────────────────────┘
 ```
 
@@ -488,7 +488,7 @@ Since this is an MVP focused on authentication and UI, testing will be manual wi
 
 **UI/UX**:
 1. ✓ Chat interface resembles ChatGPT (clean, centered, white)
-2. ✓ Header shows LexInSight logo and user avatar
+2. ✓ Header shows LexInsights logo and user avatar
 3. ✓ User menu dropdown works correctly
 4. ✓ Mock message displays correctly (AI message bubble)
 5. ✓ Input area is fixed at bottom

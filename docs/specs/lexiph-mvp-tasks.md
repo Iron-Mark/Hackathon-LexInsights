@@ -108,7 +108,7 @@
 
   - [x] 5.2 Create ChatHeader component
 
-    - Display "LexInSight" logo text on the left with text-xl and font-bold styling
+    - Display "LexInsights" logo text on the left with text-xl and font-bold styling
     - Embed UserMenu component on the right side
     - Apply sticky positioning with white background and bottom border
     - Use flex layout with space-between for logo and menu alignment
@@ -174,7 +174,7 @@
 
     - Implement app/page.tsx with "Get Started" button
     - Add navigation to /auth/login on button click
-    - Apply clean, centered layout with LexInSight branding
+    - Apply clean, centered layout with LexInsights branding
     - _Requirements: 5.1_
   
   - [x] 9.2 Create authentication pages

@@ -481,7 +481,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             aria-label="Close version history"
             onClick={() => setShowHistory(false)}
           />
-          <div className="absolute inset-y-0 left-0 z-30 w-[min(18rem,calc(100vw-3rem))] border-r border-iris-100 bg-iris-50/95 shadow-xl shadow-iris-950/15 dark:border-iris-300/15 dark:bg-[#171322] dark:shadow-iris-950/40 lg:relative lg:inset-auto lg:z-auto lg:w-64 lg:bg-iris-50/45 lg:shadow-none">
+          <div className="absolute inset-y-0 left-0 z-30 w-[min(18rem,calc(100vw-3rem))] border-r border-iris-100 bg-iris-50/95 shadow-xl shadow-iris-950/15 dark:border-iris-300/15 dark:bg-[#171322] dark:shadow-iris-950/40 lg:relative lg:inset-auto lg:z-auto lg:w-64 lg:bg-iris-50/45 lg:shadow-none dark:lg:bg-[#171322]">
             <button
               type="button"
               className="absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-iris-100 hover:text-iris-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 lg:hidden"
@@ -541,7 +541,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               variant="outline"
               size="sm"
               className={cn(
-                'h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:focus-visible:ring-offset-[#241f32]',
+                'h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]',
                 showHistory && 'border-iris-300 bg-iris-50 text-iris-700 dark:border-iris-400/50 dark:bg-iris-400/10 dark:text-iris-200'
               )}
               aria-label={showHistory ? 'Hide version history' : 'Show version history'}
@@ -557,7 +557,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               variant="outline"
               size="sm"
               className={cn(
-                'h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:focus-visible:ring-offset-[#241f32]',
+                'h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]',
                 isEditMode && 'border-iris-300 bg-iris-50 text-iris-700 dark:border-iris-400/50 dark:bg-iris-400/10 dark:text-iris-200'
               )}
               aria-label={isEditMode ? 'Switch to preview mode' : 'Switch to edit mode'}
@@ -597,7 +597,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 onClick={() => setShowDownloadMenu(!showDownloadMenu)}
                 variant="outline"
                 size="sm"
-                className="h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:focus-visible:ring-offset-[#241f32]"
+                className="h-9 gap-2 border-iris-100 bg-white/90 text-slate-700 shadow-sm shadow-iris-950/5 hover:border-iris-300 hover:bg-white hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Download compliance report"
                 aria-expanded={showDownloadMenu}
                 aria-haspopup="true"
@@ -834,18 +834,18 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                           href={document.source_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="block rounded-lg border border-iris-100 bg-iris-50/60 px-3 py-2 text-xs text-slate-700 transition-colors hover:border-iris-300 hover:bg-iris-50 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-200"
+                          className="group block rounded-lg border border-iris-100 bg-iris-50/60 px-3 py-2 text-xs text-slate-700 transition-colors hover:border-iris-300 hover:bg-iris-50 active:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-slate-100 dark:active:bg-iris-300/15 dark:focus-visible:ring-offset-[#171322]"
                         >
                           <span className="font-semibold">{document.title}</span>
-                          <span className="ml-2 text-slate-500 dark:text-slate-400">
+                          <span className="ml-2 text-slate-500 transition-colors dark:text-slate-400 dark:group-hover:text-slate-300">
                             {(document.relevance_score * 100).toFixed(0)}%
                           </span>
                           {document.matched_terms.length > 0 && (
-                            <span className="mt-1 block text-slate-500 dark:text-slate-400">
+                            <span className="mt-1 block text-slate-500 transition-colors dark:text-slate-400 dark:group-hover:text-slate-300">
                               Matched: {document.matched_terms.slice(0, 6).join(', ')}
                             </span>
                           )}
-                          <span className="mt-1 block text-slate-500 dark:text-slate-400">
+                          <span className="mt-1 block text-slate-500 transition-colors dark:text-slate-400 dark:group-hover:text-slate-300">
                             {[document.support_level && `${document.support_level} support`, document.authority_type, document.source_tier]
                               .filter(Boolean)
                               .join(' | ')}

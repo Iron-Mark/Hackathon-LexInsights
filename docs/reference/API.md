@@ -1,6 +1,6 @@
 # API
 
-LexInSight uses a small set of internal Next.js routes, an optional remote RAG backend, and a bundled providerless local research engine. Providerless local research is the default runtime mode.
+LexInsights uses a small set of internal Next.js routes, an optional remote RAG backend, and a bundled providerless local research engine. Providerless local research is the default runtime mode.
 
 ## Internal Routes
 

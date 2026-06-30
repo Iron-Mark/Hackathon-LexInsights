@@ -1,6 +1,6 @@
 export const CLERK_SETUP_TITLE = 'Account sign-in is unavailable'
 export const CLERK_SETUP_MESSAGE =
-  'LexInSight is running in guest mode because Clerk is not fully configured. Add the Clerk publishable and secret keys to enable sign-in, sign-up, and protected routes.'
+  'LexInsights is running in guest mode because Clerk is not fully configured. Add the Clerk publishable and secret keys to enable sign-in, sign-up, and protected routes.'
 
 export const CLERK_SETUP_REQUIRED_ENV = [
   'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY',

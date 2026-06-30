@@ -362,7 +362,7 @@ function CitationInspectorContent({ citation }: { citation: ResolvedCitation }) 
           <div className="flex items-start gap-2">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700 dark:text-amber-200" aria-hidden="true" />
             <p className="text-sm leading-6 text-amber-900 dark:text-amber-100">
-              RA {citation.number} was detected in the response, but LexInSight does not have it in the bundled providerless corpus for this local result.
+              RA {citation.number} was detected in the response, but LexInsights does not have it in the bundled providerless corpus for this local result.
             </p>
           </div>
         </div>

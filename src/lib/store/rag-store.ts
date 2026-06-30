@@ -90,7 +90,7 @@ function buildDemoFallbackResponse(query: string, reason: string): RAGResponse {
       '',
       '## Demo Mode',
       '',
-      'The configured AI/RAG provider is not reachable, so LexInSight generated this local demo response to keep the chat workflow usable.',
+      'The configured AI/RAG provider is not reachable, so LexInsights generated this local demo response to keep the chat workflow usable.',
       '',
       '## Practical Next Steps',
       '',

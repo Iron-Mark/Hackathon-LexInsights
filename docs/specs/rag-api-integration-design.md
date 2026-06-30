@@ -2,7 +2,7 @@
 
 ## Overview
 
-This design document outlines the technical architecture for integrating the Philippine Legislation Research API (RAG API) into the LexInSight application. The integration will provide intelligent legislation search and summarization capabilities through a well-structured service layer, state management, and UI components. The design follows the existing LexInSight architecture patterns using Next.js 14, TypeScript, Zustand for state management, and Tailwind CSS for styling.
+This design document outlines the technical architecture for integrating the Philippine Legislation Research API (RAG API) into the LexInsights application. The integration will provide intelligent legislation search and summarization capabilities through a well-structured service layer, state management, and UI components. The design follows the existing LexInsights architecture patterns using Next.js 14, TypeScript, Zustand for state management, and Tailwind CSS for styling.
 
 ## Architecture
 
@@ -10,7 +10,7 @@ This design document outlines the technical architecture for integrating the Phi
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      LexInSight Application                      │
+│                      LexInsights Application                      │
 ├─────────────────────────────────────────────────────────────┤
 │                                                               │
 │  ┌──────────────┐      ┌──────────────┐                     │
@@ -858,6 +858,6 @@ module.exports = {
 
 ## Conclusion
 
-This design provides a comprehensive, scalable architecture for integrating the RAG API into LexInSight. The modular approach ensures maintainability, the TypeScript types provide safety, and the error handling ensures reliability. The testing strategy validates functionality, and the performance optimizations ensure a smooth user experience.
+This design provides a comprehensive, scalable architecture for integrating the RAG API into LexInsights. The modular approach ensures maintainability, the TypeScript types provide safety, and the error handling ensures reliability. The testing strategy validates functionality, and the performance optimizations ensure a smooth user experience.
 
-The design follows LexInSight's existing patterns and integrates seamlessly with the current chat and compliance features, providing users with powerful legislation research capabilities backed by authoritative sources.
+The design follows LexInsights' existing patterns and integrates seamlessly with the current chat and compliance features, providing users with powerful legislation research capabilities backed by authoritative sources.

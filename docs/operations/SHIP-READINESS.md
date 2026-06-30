@@ -3,7 +3,7 @@
 Date: June 22, 2026
 Branch: `dev`
 
-This checkpoint is the handoff record for pausing active development after the current LexInSight polish pass. It should be updated only when a new release candidate changes the ship/no-ship status.
+This checkpoint is the handoff record for pausing active development after the current LexInsights polish pass. It should be updated only when a new release candidate changes the ship/no-ship status.
 
 ## Scope Locked In
 

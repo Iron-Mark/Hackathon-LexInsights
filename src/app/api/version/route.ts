@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json(
     {
-      app: 'LexInSight',
+      app: 'LexInsights',
       packageVersion: packageJson.version,
       checkedAt: new Date().toISOString(),
       source: {

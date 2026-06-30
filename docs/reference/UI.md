@@ -1,6 +1,6 @@
 # UI Design System
 
-LexInSight is a work-focused Philippine legal research and compliance assistant. The product should feel like a quiet professional tool: dense enough for repeated legal work, readable under pressure, and mobile-friendly enough to demo as a PWA.
+LexInsights is a work-focused Philippine legal research and compliance assistant. The product should feel like a quiet professional tool: dense enough for repeated legal work, readable under pressure, and mobile-friendly enough to demo as a PWA.
 
 ## Product Principles
 

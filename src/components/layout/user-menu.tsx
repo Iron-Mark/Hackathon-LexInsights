@@ -29,7 +29,7 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-full min-h-[44px] min-w-[44px] flex items-center justify-center">
+        <button className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-[#171322]">
           <Avatar className="size-9 sm:size-10 cursor-pointer">
             {user.avatar_url && (
               <AvatarImage src={user.avatar_url} alt={user.email} />
@@ -43,7 +43,7 @@ export function UserMenu() {
       <DropdownMenuContent align="end" className="w-48 sm:w-56">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-xs sm:text-sm text-gray-500 truncate">{user.email}</p>
+            <p className="truncate text-xs text-gray-500 dark:text-slate-400 sm:text-sm">{user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

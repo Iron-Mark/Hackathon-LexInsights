@@ -6,12 +6,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useChatStore } from '@/lib/store/chat-store'
 import { useSidebarStore } from '@/lib/store/sidebar-store'
 import { ChatListItem } from './chat-list-item'
-import { Loader2, MessageSquarePlus, Plus, Search, X } from 'lucide-react'
+import { ExternalLink, HeartHandshake, Loader2, MessageSquarePlus, Plus, Search, X } from 'lucide-react'
 import { showToast } from '@/components/ui/toast'
 import { addChatEventListener, CHAT_EVENTS, dispatchChatEvent } from '@/lib/chat/events'
 import type { Chat, Message } from '@/types'
 
 const MIN_SEARCHABLE_CHATS = 4
+const MAINTAINER_PORTFOLIO_URL = 'https://www.marksiazon.dev'
 
 function getSearchableChatText(chat: Chat, messages: Message[]) {
   const userMessageText = messages
@@ -46,6 +47,33 @@ function ChatListSkeleton() {
         </div>
       </div>
     </motion.div>
+  )
+}
+
+function MaintainerCredit() {
+  return (
+    <div className="shrink-0 border-t border-iris-100/70 bg-white/30 px-4 py-3 dark:border-iris-300/15 dark:bg-[#171322]/35">
+      <a
+        href={MAINTAINER_PORTFOLIO_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="group flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-xs text-slate-500 transition-colors hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:text-slate-400 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+        aria-label="Maintained by Mark Siazon, opens portfolio"
+      >
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-iris-100 bg-white/80 text-iris-700 shadow-sm shadow-iris-950/5 transition-colors group-hover:border-iris-300 group-hover:bg-iris-50 dark:border-iris-300/15 dark:bg-iris-300/10 dark:text-iris-200 dark:group-hover:border-iris-300/35 dark:group-hover:bg-iris-300/15">
+          <HeartHandshake className="h-4 w-4" aria-hidden="true" />
+        </span>
+        <span className="min-w-0 flex-1 leading-5">
+          <span className="block text-[10px] font-bold uppercase tracking-normal text-slate-400 dark:text-slate-500">
+            Maintained by
+          </span>
+          <span className="inline-flex min-w-0 items-center font-semibold text-slate-600 underline-offset-4 group-hover:underline dark:text-slate-300">
+            <span className="truncate">Mark Siazon</span>
+          </span>
+        </span>
+        <ExternalLink className="h-3.5 w-3.5 shrink-0 opacity-60 transition-opacity group-hover:opacity-100" aria-hidden="true" />
+      </a>
+    </div>
   )
 }
 
@@ -165,6 +193,10 @@ export function ChatList() {
             Recent conversations will be listed here for quick return.
           </p>
         </div>
+
+        <div className="mt-auto pt-4">
+          <MaintainerCredit />
+        </div>
       </div>
     )
   }
@@ -233,6 +265,8 @@ export function ChatList() {
           </div>
         )}
       </div>
+
+      <MaintainerCredit />
     </div>
   )
 }

@@ -9,6 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  CURRENT_APP_URL,
+  LEGACY_SHOWCASE_URL,
+  PORTFOLIO_CASE_STUDY_URL,
+  PORTFOLIO_URL,
+  REPOSITORY_URL,
+} from '@/lib/seo'
 
 interface AttributionDialogProps {
   open: boolean
@@ -60,13 +67,15 @@ const PROJECT_FACTS = [
 const MAINTAINER_FACTS = [
   'Product designer and full-stack developer based in the Philippines.',
   'Focus areas include AI products, design systems, mobile, Web3, and proof-backed product work.',
-  'Currently stewarding LexInSight polish, repository hygiene, releases, and ongoing maintenance.',
+  'Currently stewarding LexInsights polish, repository hygiene, releases, and ongoing maintenance.',
 ]
 
 const PUBLIC_LINKS = [
-  { label: 'Mark Siazon portfolio', href: 'https://www.marksiazon.dev' },
-  { label: 'LexInSight case study', href: 'https://www.marksiazon.dev/projects/lexinsights' },
-  { label: 'Iron-Mark repository', href: 'https://github.com/Iron-Mark/Hackathon-LexInsights' },
+  { label: 'Current LexInsights app', href: CURRENT_APP_URL },
+  { label: 'Mark Siazon portfolio', href: PORTFOLIO_URL },
+  { label: 'LexInsights case study', href: PORTFOLIO_CASE_STUDY_URL },
+  { label: 'Legacy showcase app', href: LEGACY_SHOWCASE_URL },
+  { label: 'Iron-Mark repository', href: REPOSITORY_URL },
 ]
 
 export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps) {
@@ -81,7 +90,7 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
                 Authors & Attribution
               </DialogTitle>
               <DialogDescription className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                LexInSight was built during DevKada CodeKada 2025 and is now maintained as a public
+                LexInsights was built during DevKada CodeKada 2025 and is now maintained as a public
                 proof-backed AI legal compliance project.
               </DialogDescription>
             </div>

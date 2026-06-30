@@ -1,6 +1,6 @@
 # Providerless Research
 
-LexInSight can answer basic Philippine legal research questions and review Markdown, text, PDF, and Word drafts without a remote RAG backend or AI provider.
+LexInsights can answer basic Philippine legal research questions and review Markdown, text, PDF, and Word drafts without a remote RAG backend or AI provider.
 
 The implementation lives in [local-legal-research.ts](../../src/lib/services/local-legal-research.ts), with corpus, framework, and topic-expansion data split into [local-research-data](../../src/lib/services/local-research-data). The normal service entry points in [rag-api.ts](../../src/lib/services/rag-api.ts) use local providerless mode by default. If `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag`, they try the configured provider first, then return local providerless output on timeout, network failure, or upstream error.
 

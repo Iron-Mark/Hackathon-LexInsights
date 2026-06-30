@@ -39,7 +39,7 @@ export function LoginForm() {
           <div className="shrink-0">
             <Image 
               src="/logo/LOGO-0.5-woBG.svg" 
-              alt="LexiPH Logo" 
+              alt="LexInsights logo"
               width={120}
               height={120}
               priority
@@ -47,7 +47,7 @@ export function LoginForm() {
           </div>
           <div className="flex flex-col items-start">
             <h1 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-iris-500 via-purple-600 to-iris-700 animate-gradient bg-clip-text text-transparent">
-              LexInSight
+              LexInsights
             </h1>
             <p className="text-sm sm:text-base font-medium bg-linear-to-r from-iris-400 via-purple-500 to-iris-600 animate-gradient bg-clip-text text-transparent">
               Legal compliance assistant

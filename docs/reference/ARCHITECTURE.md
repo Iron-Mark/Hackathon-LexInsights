@@ -1,6 +1,6 @@
 # Architecture
 
-LexInSight is a single Next.js application at the [repository root](../..). Runtime code is under [src](../../src), while build scripts, tests, database scripts, and public assets stay at the app root.
+LexInsights is a single Next.js application at the [repository root](../..). Runtime code is under [src](../../src), while build scripts, tests, database scripts, and public assets stay at the app root.
 
 ## Source Layout
 

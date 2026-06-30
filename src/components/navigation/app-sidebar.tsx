@@ -156,7 +156,7 @@ export function AppSidebar() {
                   className={cn(
                     'h-12 w-12 rounded-xl transition-all duration-200',
                     'hover:bg-iris-100/70 hover:text-iris-800 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
                     active
                       ? 'bg-iris-100 text-iris-900 shadow-sm shadow-iris-950/5 ring-1 ring-iris-200/80 dark:bg-iris-300/14 dark:text-iris-100 dark:ring-0'
                       : 'text-iris-700/80 dark:text-iris-100/55'
@@ -202,7 +202,7 @@ export function AppSidebar() {
               className={cn(
                 'h-12 w-12 rounded-xl transition-all duration-200',
                 'text-iris-700/80 hover:bg-iris-100/70 hover:text-iris-900 dark:text-iris-100/55 dark:hover:bg-iris-300/12 dark:hover:text-iris-200',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]'
               )}
               aria-label="Help & Resources"
             >
@@ -235,7 +235,7 @@ export function AppSidebar() {
                 className={cn(
                   'h-12 w-12 rounded-full transition-all duration-200',
                   'hover:ring-2 hover:ring-iris-400',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2'
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]'
                 )}
                 aria-label="Profile"
               >

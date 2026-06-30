@@ -75,7 +75,7 @@ export function SidebarHeader() {
       {/* App Branding Area */}
       <div
         className="flex min-w-0 items-center gap-2.5"
-        aria-label="LexInSight Legal compliance assistant"
+        aria-label="LexInsights Legal compliance assistant"
       >
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-iris-100 bg-white/85 p-1 shadow-sm shadow-iris-950/10 ring-1 ring-white transition-colors duration-200 dark:border-iris-300/15 dark:bg-iris-300/10 dark:shadow-[0_0_18px_rgba(63,51,189,0.16)] dark:ring-iris-100/10">
           <Image
@@ -89,7 +89,7 @@ export function SidebarHeader() {
         </span>
         <div className="min-w-0">
           <h1 className="truncate text-base font-extrabold leading-tight text-slate-950 dark:text-white">
-            LexInSight
+            LexInsights
           </h1>
           <p className="truncate text-[10px] font-semibold leading-tight text-slate-600 dark:text-iris-100/70">
             Legal compliance assistant

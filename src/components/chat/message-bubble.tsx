@@ -212,7 +212,7 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
       await exportToDocx({
         content: message.content,
         fileName: `response-${Date.now()}`,
-        title: 'LexInSight Response',
+        title: 'LexInsights Response',
       })
       showToast('Downloaded as Word (.docx)', 'success')
     } catch {

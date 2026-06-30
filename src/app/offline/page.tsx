@@ -1,7 +1,15 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { WifiOff } from 'lucide-react'
 
 import { OfflineActions } from '@/components/pwa/offline-actions'
+import { NO_INDEX_ROBOTS } from '@/lib/seo'
+
+export const metadata: Metadata = {
+  title: 'Offline',
+  description: 'Offline fallback for LexInsights.',
+  robots: NO_INDEX_ROBOTS,
+}
 
 export default function OfflinePage() {
   return (
@@ -10,7 +18,7 @@ export default function OfflinePage() {
         <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-iris-100 bg-white/90 shadow-lg shadow-iris-950/10 ring-1 ring-white dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-iris-950/30 dark:ring-iris-100/10">
           <Image
             src="/logo/LOGO-0.5-woBG.svg"
-            alt="LexInSight"
+            alt="LexInsights"
             width={56}
             height={56}
             priority

@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { AuthDialog, type AuthDialogMode } from '@/components/auth/auth-dialog'
 import { useAuthSetup } from '@/components/providers/auth-setup-provider'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/store/auth-store'
+import { useSidebarStore } from '@/lib/store/sidebar-store'
 import { UserMenu } from './user-menu'
 
 const authSignInButtonClassName =
@@ -16,9 +16,11 @@ const authSignUpButtonClassName =
 
 export function ChatHeader() {
   const { user } = useAuthStore()
+  const { isOpen, isMobile } = useSidebarStore()
   const { clerkConfigured, missingClerkKeys } = useAuthSetup()
   const [authDialogMode, setAuthDialogMode] = useState<AuthDialogMode>('sign-in')
   const [authDialogOpen, setAuthDialogOpen] = useState(false)
+  const showHeaderBrand = !isMobile && !isOpen
 
   const openAuthDialog = (mode: AuthDialogMode) => {
     setAuthDialogMode(mode)
@@ -30,26 +32,16 @@ export function ChatHeader() {
       <div className="relative flex h-14 w-full items-center justify-between gap-2 px-4 sm:h-16 sm:gap-4 sm:px-6">
         <div className="flex-1" />
 
-        <div className="absolute left-1/2 top-1/2 flex max-w-[7.5rem] -translate-x-1/2 -translate-y-1/2 items-center gap-2 sm:max-w-[8rem] lg:max-w-none">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-iris-100 bg-iris-50/80 p-1 shadow-sm shadow-iris-950/10 ring-1 ring-white transition-colors duration-200 dark:border-iris-300/15 dark:bg-iris-300/10 dark:shadow-none dark:ring-iris-100/10 lg:h-11 lg:w-11">
-            <Image
-              src="/logo/LOGO-0.5-woBG.svg"
-              alt="LexInSight logo"
-              width={40}
-              height={40}
-              className="h-7 w-7 drop-shadow-[0_0_8px_rgba(99,102,241,0.32)] lg:h-9 lg:w-9"
-              priority
-            />
-          </div>
-          <div className="hidden min-w-0 flex-col items-start lg:flex">
-            <h1 className="truncate text-xl font-extrabold leading-tight text-slate-950 dark:text-white">
-              LexInSight
+        {showHeaderBrand && (
+          <div className="absolute left-1/2 top-1/2 hidden max-w-[10rem] -translate-x-1/2 -translate-y-1/2 text-center sm:block lg:max-w-none">
+            <h1 className="truncate text-sm font-extrabold leading-tight text-slate-950 dark:text-white lg:text-xl">
+              LexInsights
             </h1>
             <p className="hidden text-xs font-semibold leading-tight text-slate-600 dark:text-slate-300 xl:block">
               Legal compliance assistant
             </p>
           </div>
-        </div>
+        )}
 
         <div className="flex flex-1 items-center justify-end gap-1 sm:gap-2">
           {user ? (

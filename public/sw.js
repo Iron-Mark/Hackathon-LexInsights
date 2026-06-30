@@ -81,7 +81,7 @@ async function networkFirstNavigation(request, event) {
     const cachedResponse = await caches.match(request)
     const offlineResponse = await caches.match(OFFLINE_URL)
 
-    return cachedResponse || offlineResponse || new Response('LexInSight is offline.', {
+    return cachedResponse || offlineResponse || new Response('LexInsights is offline.', {
       status: 503,
       statusText: 'Offline',
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },

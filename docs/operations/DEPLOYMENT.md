@@ -1,6 +1,6 @@
 # Deployment
 
-LexInSight is deployed from the [repository root](../..).
+LexInsights is deployed from the [repository root](../..).
 
 ## Vercel Settings
 
@@ -78,6 +78,8 @@ npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-c
 
 - `https://lexiph.vercel.app/api/version`
 - `https://lexiph.vercel.app/api/readiness`
+
+`NEXT_PUBLIC_SITE_URL` controls canonical metadata, sitemap URLs, and structured data. Keep it pointed at the current LexInsights production app. The older `https://lexinsights.vercel.app` URL is kept only as a legacy showcase reference, not as the canonical production URL.
 
 Maintainer diagnostics are available only when `ENABLE_DIAGNOSTIC_ROUTES=true` for that deployment:
 

@@ -11,6 +11,14 @@ import { getClerkSetupStatus } from "@/lib/auth/clerk-config";
 import { AuthSetupProvider } from "@/components/providers/auth-setup-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { themeInitScript } from "@/lib/theme";
+import {
+  buildBaseStructuredData,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_OG_IMAGE,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/lib/seo";
 
 // Manrope - Body font
 const manrope = Manrope({
@@ -28,20 +36,49 @@ const outfit = Outfit({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lexiph.vercel.app";
-const appTitle = "LexInSight - Philippine Legal Compliance Assistant";
-const appDescription = "Your Philippine legal research and compliance assistant";
-const ogImage = "/og/lexinsight-og.png";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: appTitle,
-  description: appDescription,
-  applicationName: "LexInSight",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_TITLE,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "LexInsights",
+    "Philippine legal research",
+    "Philippine compliance assistant",
+    "legal compliance chat",
+    "RAG legal research",
+    "document compliance review",
+    "RA 10173",
+    "RA 10175",
+    "RA 9160",
+    "RA 9775",
+  ],
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: "Legal technology",
+  classification: "Philippine legal compliance assistant",
   manifest: "/manifest.webmanifest",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   appleWebApp: {
     capable: true,
-    title: "LexInSight",
+    title: "LexInsights",
     statusBarStyle: "default",
   },
   formatDetection: {
@@ -57,16 +94,16 @@ export const metadata: Metadata = {
     apple: "/icons/apple-touch-icon.png",
   },
   openGraph: {
-    title: appTitle,
-    description: appDescription,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     url: "/",
-    siteName: "LexInSight",
+    siteName: SITE_NAME,
     images: [
       {
-        url: ogImage,
+        url: SITE_OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "LexInSight Philippine legal compliance assistant",
+        alt: "LexInsights Philippine legal compliance assistant",
       },
     ],
     locale: "en_PH",
@@ -74,9 +111,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: appTitle,
-    description: appDescription,
-    images: [ogImage],
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [SITE_OG_IMAGE],
+  },
+  other: {
+    "geo.region": "PH",
+    "geo.placename": "Philippines",
+    "og:country-name": "Philippines",
+    "application-name": SITE_NAME,
   },
 };
 
@@ -96,6 +139,10 @@ export default function RootLayout({
     <html lang="en" className={`${manrope.variable} ${outfit.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildBaseStructuredData()) }}
+        />
       </head>
       <body className="antialiased">
         <AuthSetupProvider

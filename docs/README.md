@@ -1,6 +1,6 @@
-# LexInSight Documentation
+# LexInsights Documentation
 
-LexInSight is a Next.js app for Philippine legal compliance chat, Markdown/text/PDF/Word document review, RAG research, providerless local research, and draft checking. The repository root is the app root, with source code organized under [src](../src).
+LexInsights is a Next.js app for Philippine legal compliance chat, Markdown/text/PDF/Word document review, RAG research, providerless local research, and draft checking. The repository root is the app root, with source code organized under [src](../src).
 
 ## Documentation Map
 
@@ -16,6 +16,7 @@ LexInSight is a Next.js app for Philippine legal compliance chat, Markdown/text/
 - [Providerless Research](./reference/PROVIDERLESS-RESEARCH.md) - local fallback algorithm, corpus, draft checks, and limits.
 - [Database](./reference/DATABASE.md) - Supabase schema, storage, and seed scripts.
 - [UI](./reference/UI.md) - design system, accessibility, and responsive conventions.
+- [SEO, AEO, and GEO](./reference/SEO-AEO-GEO.md) - public discovery, answer-engine files, structured data, and crawl policy.
 
 ### Operations
 

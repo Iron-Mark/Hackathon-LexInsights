@@ -115,7 +115,7 @@ export function AIDisclaimer() {
                 Limitation of liability
               </h4>
               <p className="mt-2 text-amber-800 dark:text-amber-200">
-                The creators and operators of LexInSight assume no liability for decisions made based on this analysis.
+                The creators and operators of LexInsights assume no liability for decisions made based on this analysis.
                 Users bear full responsibility for ensuring compliance with all applicable laws and regulations.
               </p>
             </section>

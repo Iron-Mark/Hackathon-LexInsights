@@ -1,10 +1,18 @@
 import { SignIn } from '@clerk/nextjs'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { AuthErrorBoundary } from '@/components/auth/auth-error-boundary'
 import { AuthSetupBlocker } from '@/components/auth/auth-setup-blocker'
 import { AuthSetupNotice } from '@/components/auth/auth-setup-notice'
 import { authFormAppearance } from '@/lib/auth/clerk-appearance'
 import { isClerkConfigured } from '@/lib/auth/clerk-config'
+import { NO_INDEX_ROBOTS } from '@/lib/seo'
+
+export const metadata: Metadata = {
+  title: 'Sign In',
+  description: 'Sign in to LexInsights.',
+  robots: NO_INDEX_ROBOTS,
+}
 
 export default function LoginPage() {
   if (!isClerkConfigured()) {
@@ -25,7 +33,7 @@ export default function LoginPage() {
               priority
             />
           </span>
-          <h1 className="text-2xl font-extrabold text-slate-950 dark:text-white">Sign in to LexInSight</h1>
+          <h1 className="text-2xl font-extrabold text-slate-950 dark:text-white">Sign in to LexInsights</h1>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
             Continue to your legal compliance workspace.
           </p>
@@ -33,7 +41,7 @@ export default function LoginPage() {
         <AuthErrorBoundary
           fallback={
             <AuthSetupNotice
-              message="The sign-in service could not load. You can keep using LexInSight in guest mode while the auth provider is checked."
+              message="The sign-in service could not load. You can keep using LexInsights in guest mode while the auth provider is checked."
               showDeveloperDetails={false}
               title="Sign-in could not load"
             />

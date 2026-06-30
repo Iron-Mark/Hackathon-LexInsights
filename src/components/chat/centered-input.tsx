@@ -250,7 +250,7 @@ export function CenteredInput({
         id="centered-message-disclaimer"
         className="mx-auto mt-2 max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-500 dark:text-iris-100/35"
       >
-        LexInSight can make mistakes. Verify legal information with official sources; this is not legal advice.
+        LexInsights can make mistakes. Verify legal information with official sources; this is not legal advice.
       </p>
     </motion.div>
   )

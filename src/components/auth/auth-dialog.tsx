@@ -99,7 +99,7 @@ export function AuthDialog({
           aria-describedby="lexinsight-auth-dialog-description"
         >
           <DialogPrimitive.Title className="sr-only">
-            {mode === 'sign-in' ? 'Sign in to LexInSight' : 'Create your LexInSight account'}
+            {mode === 'sign-in' ? 'Sign in to LexInsights' : 'Create your LexInsights account'}
           </DialogPrimitive.Title>
           <DialogPrimitive.Description id="lexinsight-auth-dialog-description" className="sr-only">
             Sign in or create an account without leaving the current chat.
@@ -116,7 +116,7 @@ export function AuthDialog({
             />
             <div className="min-w-0">
               <p className="text-lg font-extrabold leading-tight text-slate-950 dark:text-white">
-                LexInSight
+                LexInsights
               </p>
               <p className="mt-1 max-w-[18rem] text-sm font-medium leading-5 text-slate-600 dark:text-slate-300">
                 {mode === 'sign-in'
@@ -167,7 +167,7 @@ export function AuthDialog({
                 fallback={
                   <AuthSetupNotice
                     compact
-                    message="The sign-in service could not load. You can keep using LexInSight in guest mode while the auth provider is checked."
+                    message="The sign-in service could not load. You can keep using LexInsights in guest mode while the auth provider is checked."
                     onContinue={() => handleOpenChange(false)}
                     showDeveloperDetails={false}
                     title="Sign-in could not load"
@@ -188,7 +188,7 @@ export function AuthDialog({
                 fallback={
                   <AuthSetupNotice
                     compact
-                    message="The sign-up service could not load. You can keep using LexInSight in guest mode while the auth provider is checked."
+                    message="The sign-up service could not load. You can keep using LexInsights in guest mode while the auth provider is checked."
                     onContinue={() => handleOpenChange(false)}
                     showDeveloperDetails={false}
                     title="Sign-up could not load"

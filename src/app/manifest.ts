@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'LexInSight',
-    short_name: 'LexInSight',
+    name: 'LexInsights',
+    short_name: 'LexInsights',
     description: 'Philippine legal compliance assistant for chat, documents, research, and compliance analysis.',
     id: '/',
     lang: 'en-PH',
@@ -50,7 +50,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         name: 'Start a legal chat',
         short_name: 'New chat',
-        description: 'Open LexInSight and ask a Philippine legal compliance question.',
+        description: 'Open LexInsights and ask a Philippine legal compliance question.',
         url: '/chat',
         icons: [
           {
