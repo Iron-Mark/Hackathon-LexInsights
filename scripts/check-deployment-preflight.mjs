@@ -757,6 +757,30 @@ async function readinessRouteCheck(baseUrl, timeoutMs) {
   return check
 }
 
+function providerModeFromReadiness(check) {
+  const body = check.details?.body
+
+  if (body && typeof body === 'object' && typeof body.providerMode === 'string') {
+    return body.providerMode
+  }
+
+  const checks = body && typeof body === 'object' && Array.isArray(body.checks) ? body.checks : []
+  const providerModeCheck = checks.find((item) => item?.name === 'rag.provider_mode')
+  const value = providerModeCheck?.details?.value
+
+  return typeof value === 'string' ? value : null
+}
+
+function skippedProviderlessCheck(name, target) {
+  return {
+    name,
+    status: 'skip',
+    critical: false,
+    message: 'Skipped because providerless local research is the active provider mode.',
+    target,
+  }
+}
+
 async function ragProxyRouteCheck(baseUrl, timeoutMs) {
   const check = await fetchJsonCheck(
     'live.rag_proxy_route',
@@ -785,6 +809,23 @@ async function ragProxyRouteCheck(baseUrl, timeoutMs) {
 
   check.message = `${check.message}; live app does not expose the RAG proxy route.`
   return check
+}
+
+async function deploymentBackendChecks(baseUrl, timeoutMs) {
+  const readiness = await readinessRouteCheck(baseUrl, timeoutMs)
+  const ragProxyTarget = appendPath(baseUrl, `/api/rag-proxy?endpoint=/api/research/health&timeoutMs=${timeoutMs}`)
+
+  if (providerModeFromReadiness(readiness) === 'local-providerless') {
+    return [
+      readiness,
+      skippedProviderlessCheck('live.rag_proxy_route', ragProxyTarget),
+    ]
+  }
+
+  return [
+    readiness,
+    await ragProxyRouteCheck(baseUrl, timeoutMs),
+  ]
 }
 
 function vercelCliChecks(baseUrl, repoInfo, scope, discoverScopes) {
@@ -871,6 +912,8 @@ function publicDetails(check) {
             summary: body.summary,
             source: body.source,
             expected: body.expected,
+            providerMode: providerModeFromReadiness(check),
+            externalChecks: body.externalChecks,
           }
         : body,
   }
@@ -900,15 +943,11 @@ async function run() {
       ? vercelCliChecks(baseUrl, repoInfo, args.vercelScope, args.discoverVercelScopes)
       : []),
   ]
-  const liveChecks = await Promise.all(
-    args.sourceOnly
-      ? [versionCheck(baseUrl, args.timeoutMs, expectedSha)]
-      : [
-          versionCheck(baseUrl, args.timeoutMs, expectedSha),
-          readinessRouteCheck(baseUrl, args.timeoutMs),
-          ragProxyRouteCheck(baseUrl, args.timeoutMs),
-        ]
-  )
+  const backendChecks = args.sourceOnly ? [] : await deploymentBackendChecks(baseUrl, args.timeoutMs)
+  const liveChecks = await Promise.all([
+    versionCheck(baseUrl, args.timeoutMs, expectedSha),
+    ...backendChecks,
+  ])
   const checks = [...localChecks, ...liveChecks]
   const ready = checks.every((check) => !check.critical || check.status === 'pass')
   const result = {

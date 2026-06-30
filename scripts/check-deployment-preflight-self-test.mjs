@@ -249,4 +249,25 @@ assert.equal(publicBody.body.secret, undefined)
 assert.equal(publicBody.body.app, 'LexInsights')
 assert.equal(publicBody.commitMatches, true)
 
+const readinessBody = publicDetails({
+  name: 'live.readiness_route',
+  details: {
+    body: {
+      ready: true,
+      providerMode: 'local-providerless',
+      externalChecks: 'run',
+      checks: [
+        {
+          name: 'rag.provider_mode',
+          details: {
+            value: 'remote-rag',
+          },
+        },
+      ],
+    },
+  },
+})
+assert.equal(readinessBody.body.providerMode, 'local-providerless')
+assert.equal(readinessBody.body.externalChecks, 'run')
+
 console.log('Deployment preflight self-test passed.')
