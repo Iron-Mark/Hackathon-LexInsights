@@ -155,10 +155,14 @@ test.describe('public discovery smoke checks', () => {
     expect(llms).toContain('/terms')
     expect(llms).toContain('/privacy')
 
-    const aiRedirectResponse = await request.get('/ai.txt', { maxRedirects: 0 })
+    const aiResponse = await request.get('/ai.txt', { maxRedirects: 0 })
+    const ai = await aiResponse.text()
 
-    expect(aiRedirectResponse.status()).toBe(308)
-    expect(aiRedirectResponse.headers().location).toBe('https://lexiph.vercel.app/llms.txt')
+    expect(aiResponse.status()).toBe(200)
+    expect(aiResponse.headers()['content-type']).toContain('text/plain')
+    expect(ai).toContain('# LexInsights')
+    expect(ai).toContain('## What LexInsights Is')
+    expect(ai).toContain('## Public Pages')
   })
 
   test('sitemap lists stable public URLs without dynamic lastmod values', async ({ request }) => {
