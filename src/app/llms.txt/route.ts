@@ -25,7 +25,7 @@ const sourceDirectory = [
   'Securities and Exchange Commission',
 ]
 
-function buildLlmsText() {
+export function buildLlmsText() {
   return `# ${SITE_NAME}
 
 > ${SITE_DESCRIPTION}
