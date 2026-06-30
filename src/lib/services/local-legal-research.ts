@@ -920,24 +920,29 @@ function prioritizeFrameworkDocuments(query: string, rankedDocuments: RankedDocu
   ]
 }
 
-function formatFrameworkMatch(match: ReturnType<typeof getFrameworkMatches>[number]) {
-  const laws = match.framework.lawIds
+function formatFrameworkMatch(
+  match: ReturnType<typeof getFrameworkMatches>[number],
+  visibleStatutes = new Set<string>()
+) {
+  const linkedAuthorities = match.framework.lawIds
     .map((lawId) => getDocumentById(lawId))
     .filter((document): document is LocalLegalDocument => Boolean(document))
-    .map((document) => `${document.statute} (${document.shortTitle})`)
+    .filter((document) => !visibleStatutes.has(document.statute))
+  const linkedAuthorityLabels = uniqueByNormalized(linkedAuthorities.map((document) => document.statute))
+  const displayedAuthorityLabels = linkedAuthorityLabels.slice(0, 6)
+  const remainingAuthorityCount = Math.max(0, linkedAuthorityLabels.length - displayedAuthorityLabels.length)
+  const linkedAuthoritiesLine = displayedAuthorityLabels.length > 0
+    ? `Linked authorities: ${displayedAuthorityLabels.join('; ')}${remainingAuthorityCount > 0 ? `; +${remainingAuthorityCount} more` : ''}.`
+    : 'Linked authorities are available in the match details.'
 
   return [
     `### ${match.framework.title}`,
     '',
-    match.framework.summary,
+    'Use this workflow stack for the matched compliance topic.',
+    linkedAuthoritiesLine,
     '',
-    `Related local corpus: ${laws.join('; ')}`,
-    '',
-    'Suggested order:',
-    ...match.framework.sequence.slice(0, 4).map((item) => `- ${item}`),
-    '',
-    'Framework checkpoints:',
-    ...match.framework.checkpoints.slice(0, 4).map((item) => `- ${item}`),
+    'Priority checks:',
+    ...match.framework.checkpoints.slice(0, 3).map((item) => `- ${item}`),
   ].join('\n')
 }
 
@@ -993,63 +998,6 @@ function getCoverageWarnings(matches: RankedDocument[], unknownCitationNumbers: 
   return [...warnings].slice(0, 6)
 }
 
-function formatSupportLevel(value: RankedDocument['supportLevel']) {
-  if (value === 'direct') {
-    return 'direct support'
-  }
-
-  if (value === 'framework') {
-    return 'framework-related support'
-  }
-
-  return 'related support'
-}
-
-function buildSourceSupportSection(rankedDocuments: RankedDocument[]) {
-  const topMatches = rankedDocuments.slice(0, 5)
-
-  if (topMatches.length === 0) {
-    return []
-  }
-
-  return [
-    '## Source Support',
-    '',
-    ...topMatches.map((match) => {
-      const source = getAuthoritySource(match.document)
-      return `- ${match.document.statute} (${match.document.shortTitle}) - ${formatSupportLevel(match.supportLevel)} from ${source.sourceTier} source.`
-    }),
-    '',
-  ]
-}
-
-function buildProvenanceVerificationSection(rankedDocuments: RankedDocument[]) {
-  const topMatches = rankedDocuments.slice(0, 5)
-
-  if (topMatches.length === 0) {
-    return []
-  }
-
-  return [
-    '## Provenance & Verification',
-    '',
-    ...topMatches.map((match) => {
-      const source = getAuthoritySource(match.document)
-      const coverage = getAuthorityCoverage(match.document)
-      const evidenceLabels = getEvidenceAnchors(match.document)
-        .slice(0, 2)
-        .map((anchor) => anchor.label)
-        .join('; ')
-      const coverageLabel = coverage?.coverageStatus || 'missing coverage'
-
-      const verificationLabel = source.provenanceStatus === 'verified' ? 'verified' : 'cataloged'
-
-      return `- ${match.document.statute}: ${source.sourceTier}, ${source.provenanceStatus}, ${verificationLabel} ${source.lastVerified}; coverage ${coverageLabel}; anchors: ${evidenceLabels || 'none'}.`
-    }),
-    '',
-  ]
-}
-
 function buildRelatedAuthorityPathSection(query: string, rankedDocuments: RankedDocument[], deepSearchUsed?: boolean) {
   if (!deepSearchUsed) {
     return []
@@ -1066,13 +1014,12 @@ function buildRelatedAuthorityPathSection(query: string, rankedDocuments: Ranked
     '## Related Authority Path',
     '',
     ...frameworkMatches.map((match) => {
-      const laws = match.framework.lawIds
+      const authorityCount = match.framework.lawIds
         .map((lawId) => getDocumentById(lawId))
         .filter((document): document is LocalLegalDocument => Boolean(document))
-        .slice(0, 6)
-        .map((document) => document.statute)
+        .length
 
-      return `- ${match.framework.title}: ${laws.join(' -> ')}`
+      return `- ${match.framework.title}: ${authorityCount} linked local authorities.`
     }),
     ...relationPaths.map((path) => (
       `- ${path.source} ${path.relation_type.replace(/_/g, ' ')} ${path.target}: ${path.label}`
@@ -1081,18 +1028,20 @@ function buildRelatedAuthorityPathSection(query: string, rankedDocuments: Ranked
   ]
 }
 
-function buildFrameworkSection(query: string, rankedDocuments: RankedDocument[]) {
+function buildFrameworkSection(query: string, rankedDocuments: RankedDocument[], visibleDocuments: RankedDocument[]) {
   const frameworkMatches = getFrameworkMatches(query, rankedDocuments)
 
   if (frameworkMatches.length === 0) {
     return []
   }
 
+  const visibleStatutes = new Set(visibleDocuments.map((match) => match.document.statute))
+
   return [
     '## Local Compliance Framework',
     '',
     ...frameworkMatches
-      .map((frameworkMatch) => formatFrameworkMatch(frameworkMatch))
+      .map((frameworkMatch) => formatFrameworkMatch(frameworkMatch, visibleStatutes))
       .join('\n\n')
       .split('\n'),
     '',
@@ -1102,13 +1051,10 @@ function buildFrameworkSection(query: string, rankedDocuments: RankedDocument[])
 function buildCitationCoverageSection(value: string) {
   const citationAnalysis = getCitationAnalysis(value)
 
-  if (citationAnalysis.raNumbers.length === 0) {
+  if (citationAnalysis.raNumbers.length === 0 || citationAnalysis.unknownNumbers.length === 0) {
     return []
   }
 
-  const knownLines = citationAnalysis.citedDocuments.map(
-    (document) => `- ${document.statute} was cited and is included in the bundled local corpus.`
-  )
   const unknownLines = citationAnalysis.unknownNumbers.map(
     (raNumber) => `- RA ${raNumber} was cited but is not in the bundled local corpus; verify it against current official sources.`
   )
@@ -1116,7 +1062,6 @@ function buildCitationCoverageSection(value: string) {
   return [
     '## Citation Coverage',
     '',
-    ...knownLines,
     ...unknownLines,
     '',
   ]
@@ -1128,6 +1073,155 @@ function toPercent(value: number) {
 
 function formatSeconds(startedAt: number) {
   return Number(((Date.now() - startedAt) / 1000).toFixed(3))
+}
+
+function hasNormalizedAny(value: string, patterns: RegExp[]) {
+  const normalizedValue = normalizeText(value)
+  return patterns.some((pattern) => pattern.test(normalizedValue))
+}
+
+function getResponseIntent(query: string) {
+  return hasNormalizedAny(query, [
+    /\b(draft|policy|ordinance|resolution|memo|manual|procedure|protocol|template|clause|checklist|controls?)\b/,
+    /\b(what should|how should|prepare|write|include|review|fix)\b/,
+  ])
+    ? 'drafting'
+    : 'research'
+}
+
+function expandLegalShorthand(value: string) {
+  return value
+    .replace(/\bPIC\/PIP\b/g, 'PIC/PIP (controller/processor)')
+    .replace(/\bDPO\b/g, 'DPO (data protection officer)')
+    .replace(/\bDBNMS\b/g, 'DBNMS (NPC breach-notification portal)')
+    .replace(/\bNPC\b/g, 'NPC')
+}
+
+function ensureSentence(value: string) {
+  const trimmedValue = value.trim()
+
+  if (!trimmedValue) {
+    return trimmedValue
+  }
+
+  return /[.!?]$/.test(trimmedValue) ? trimmedValue : `${trimmedValue}.`
+}
+
+function lowerFirst(value: string) {
+  return value.charAt(0).toLowerCase() + value.slice(1)
+}
+
+function formatChecklistAction(item: string) {
+  const expandedItem = expandLegalShorthand(item.trim())
+
+  if (!expandedItem) {
+    return expandedItem
+  }
+
+  if (/^(add|assign|avoid|check|classify|coordinate|document|identify|include|map|preserve|record|require|separate|state|tie|treat|use|validate|verify)\b/i.test(expandedItem)) {
+    return ensureSentence(expandedItem)
+  }
+
+  return ensureSentence(`Check ${lowerFirst(expandedItem)}`)
+}
+
+function getPlainAnswer(query: string, rankedDocuments: RankedDocument[], checklist: string[]) {
+  const primaryMatch = rankedDocuments[0]
+
+  if (!primaryMatch) {
+    return 'Short answer: No strong local legal match was found for this question.'
+  }
+
+  const primaryAuthority = `${primaryMatch.document.statute} (${primaryMatch.document.shortTitle})`
+  const topActions = checklist.slice(0, 2).map(formatChecklistAction)
+  const actionText = topActions.length > 0
+    ? ` Focus first on: ${topActions.join(' ')}`
+    : ''
+
+  if (getResponseIntent(query) === 'drafting') {
+    return `Short answer: Use ${primaryAuthority} as the main local reference, then turn the requirements into clear scope, owner, process, records, and remedy controls.${actionText}`
+  }
+
+  return `Short answer: ${primaryAuthority} is the strongest local match for this question.${actionText}`
+}
+
+function getClarifyingPrompts(query: string, rankedDocuments: RankedDocument[]) {
+  const prompts: string[] = []
+  const normalizedQuery = normalizeText(query)
+
+  if (!/\b(company|business|school|bank|lgu|barangay|agency|employer|employee|hospital|clinic|platform|vendor|processor|controller|office|resident|customer|student|worker)\b/.test(normalizedQuery)) {
+    prompts.push('Who is acting or affected: company, LGU, school, employer, customer, resident, employee, or agency?')
+  }
+
+  if (!/\b(data|record|permit|license|contract|complaint|incident|breach|tax|invoice|payment|benefit|building|waste|procurement|employment|land|health|child)\b/.test(normalizedQuery)) {
+    prompts.push('What activity, record, permit, transaction, incident, or decision needs checking?')
+  }
+
+  if (!/\b(city|municipality|province|barangay|philippines|ph|national|local|regional)\b/.test(normalizedQuery)) {
+    prompts.push('What location or level applies: national, LGU, barangay, or a specific city or province?')
+  }
+
+  if (rankedDocuments.length > 3 && rankedDocuments[0]?.relevance < 0.75) {
+    prompts.push('Which matched authority should be prioritized if several topics are involved?')
+  }
+
+  return prompts.slice(0, 3)
+}
+
+function getConfidenceSummary(rankedDocuments: RankedDocument[], deepSearchUsed?: boolean) {
+  const topRelevance = rankedDocuments[0]?.relevance || 0
+  const matchCount = rankedDocuments.length
+  const modeText = deepSearchUsed ? 'Deep local cross-reference search' : 'Standard local retrieval'
+
+  if (topRelevance >= 0.75) {
+    return `Strong local match. ${modeText} found ${matchCount} candidate authority record(s), but you should still verify current official issuances before relying on the result.`
+  }
+
+  if (topRelevance >= 0.45) {
+    return `Good local match with some uncertainty. ${modeText} found ${matchCount} candidate authority record(s); add facts if you need a tighter answer.`
+  }
+
+  return `Light local match. ${modeText} found ${matchCount} candidate authority record(s), so treat this as a starting point and verify with official sources.`
+}
+
+function compactRepeatedCitationMentions(summary: string, query: string) {
+  return extractRaNumbers(query).reduce((compactedSummary, raNumber) => {
+    let visibleMentions = 0
+
+    return compactedSummary.replace(new RegExp(`\\bRA\\s+${raNumber}\\b`, 'g'), (match) => {
+      visibleMentions += 1
+
+      return visibleMentions <= 2 ? match : 'the cited Act'
+    })
+  }, summary)
+}
+
+function formatMatchedTermsForSummary(match: RankedDocument) {
+  const raNumber = getDocumentRaNumber(match.document)
+
+  return uniqueByNormalized(
+    match.matchedTerms.flatMap((term) => {
+      if (/^explicit citation:/i.test(term)) {
+        return ['explicit citation']
+      }
+
+      const normalizedTerm = normalizeText(term)
+
+      if (/^\d{3,6}$/.test(normalizedTerm)) {
+        return []
+      }
+
+      if (match.document.statute && normalizedTerm === normalizeText(match.document.statute)) {
+        return []
+      }
+
+      if (raNumber && normalizedTerm === raNumber) {
+        return []
+      }
+
+      return [term]
+    })
+  ).slice(0, 6)
 }
 
 function getProcessingStages(deepSearchUsed?: boolean) {
@@ -1143,41 +1237,78 @@ function getProcessingStages(deepSearchUsed?: boolean) {
 
 function formatMatchedDocument(match: RankedDocument, index: number, deepSearchUsed?: boolean) {
   const obligationLimit = deepSearchUsed ? 4 : 3
+  const matchedTerms = formatMatchedTermsForSummary(match)
 
   return [
     `### ${index + 1}. ${match.document.statute} - ${match.document.shortTitle}`,
     '',
     `- Relevance: ${toPercent(match.relevance)}%`,
     `- Source: [${match.document.sourceName}](${match.document.sourceUrl})`,
-    `- Matched terms: ${match.matchedTerms.slice(0, 8).join(', ') || 'phrase match'}`,
+    `- Matched terms: ${matchedTerms.join(', ') || 'phrase match'}`,
     '',
-    match.document.summary,
+    expandLegalShorthand(match.document.summary),
     '',
     'Key checks:',
-    ...match.document.obligations.slice(0, obligationLimit).map((obligation) => `- ${obligation}`),
+    ...match.document.obligations.slice(0, obligationLimit).map((obligation) => `- ${formatChecklistAction(obligation)}`),
   ].join('\n')
+}
+
+function getNoResultSuggestions(query: string) {
+  const normalizedQuery = normalizeText(query)
+  const topicWords = tokenize(query)
+    .filter((token) => token.length > 3)
+    .slice(0, 5)
+  const topic = topicWords.length > 0 ? topicWords.join(' ') : 'the issue'
+  const suggestions = [
+    `Ask with a Philippine authority or agency, for example "What law or agency rule covers ${topic}?"`,
+    `Add the actor and activity, for example "What compliance checklist applies to ${topic} for a company, LGU, school, or employer?"`,
+    `If you know it, include the RA number, circular, department order, permit, location, and affected sector.`,
+  ]
+
+  if (/\b(recipe|cook|bake|smoothie|food|banana|cinnamon|sourdough)\b/.test(normalizedQuery)) {
+    return [
+      'This looks like a non-legal topic. Try a legal framing if you meant food business, labeling, permits, consumer safety, or public-health compliance.',
+      'Example: "What permits and food-safety records should a smoothie shop in the Philippines keep?"',
+      'Example: "What consumer-labeling or sanitation rules apply to a local food business?"',
+    ]
+  }
+
+  if (/\b(labor|employee|termination|wage|leave|contractor|workplace)\b/.test(normalizedQuery)) {
+    return [
+      'Add whether this involves termination, wages, leave, contracting, OSH, or employee records.',
+      'Name the employer type, worker group, incident date, and whether a company policy or CBA applies.',
+      'Ask for a targeted checklist, for example "termination due process checklist for private employers."',
+    ]
+  }
+
+  if (/\b(sec|corporation|shares|beneficial owner|gis|harbor)\b/.test(normalizedQuery)) {
+    return [
+      'Add the corporation type, filing or report involved, deadline, portal, and responsible officer.',
+      'Specify whether the issue is beneficial ownership, GIS, official contact details, securities, or corporate records.',
+      'Ask for a targeted checklist, for example "beneficial ownership filing records for a domestic corporation."',
+    ]
+  }
+
+  return suggestions
 }
 
 function buildNoResultsSummary(query: string, fallbackReason?: string) {
   const reasonLine = fallbackReason
-    ? `The configured AI/RAG provider was unavailable, so LexInSight used its local providerless engine. Provider error: ${fallbackReason}`
-    : 'LexInSight used its local providerless engine.'
+    ? `The configured AI/RAG provider was unavailable, so LexInsights used its local providerless engine. Provider error: ${fallbackReason}`
+    : 'LexInsights used its local providerless engine.'
+  const suggestions = getNoResultSuggestions(query)
 
   return [
-    '# Providerless Local Research Brief',
-    '',
-    '## Result',
+    '# Answer',
     '',
     'No strong match was found in the bundled local legal corpus.',
     '',
+    '## Better Search',
+    '',
     ...buildCitationCoverageSection(query),
-    '## What You Can Try',
+    ...suggestions.map((suggestion) => `- ${suggestion}`),
     '',
-    '- Include a Republic Act number or official issuance, such as RA 10173, RA 11232, DOLE Department Order 147-15, DOLE Department Order 174-17, DOLE Department Order 198-18, SEC MC 28 s. 2020, or NPC Circular 16-03.',
-    '- Add the regulated activity, agency, permit, affected sector, and location.',
-    '- Ask for a narrower compliance checklist, for example "DOLE termination due process under Department Order 147-15" or "SEC MC 28 official email and mobile contact records under the Revised Corporation Code".',
-    '',
-    '## Provider Mode',
+    '## How This Was Found',
     '',
     reasonLine,
     '',
@@ -1190,49 +1321,70 @@ function buildNoResultsSummary(query: string, fallbackReason?: string) {
 function buildResearchSummary(query: string, rankedDocuments: RankedDocument[], deepSearchUsed?: boolean, fallbackReason?: string) {
   const resultLimit = deepSearchUsed ? DEEP_RESULT_LIMIT : STANDARD_RESULT_LIMIT
   const topMatches = rankedDocuments.slice(0, resultLimit)
+  const visibleAuthorityLimit = deepSearchUsed ? 5 : 4
+  const visibleMatches = topMatches.slice(0, visibleAuthorityLimit)
   const checklist = uniqueByNormalized(topMatches.flatMap((match) => match.document.obligations)).slice(
     0,
-    deepSearchUsed ? 10 : 7
+    deepSearchUsed ? 8 : 6
   )
   const gaps = uniqueByNormalized(topMatches.flatMap((match) => match.document.commonGaps)).slice(
     0,
-    deepSearchUsed ? 8 : 5
+    deepSearchUsed ? 6 : 4
   )
   const reasonLine = fallbackReason
     ? `The configured AI/RAG provider was unavailable, so this brief was generated locally. Provider error: ${fallbackReason}`
     : 'This brief was generated by the local providerless engine.'
   const deepSearchLine = deepSearchUsed
-    ? 'Deep search was requested. In providerless mode, LexInSight expands local cross-references but does not download PDFs or call an AI provider.'
+    ? 'Deep search was requested. In providerless mode, LexInsights expands local cross-references but does not download PDFs or call an AI provider.'
     : 'Standard local retrieval was used.'
+  const clarifyingPrompts = getClarifyingPrompts(query, rankedDocuments)
+  const additionalMatchCount = Math.max(0, topMatches.length - visibleMatches.length)
 
-  return [
-    '# Providerless Local Research Brief',
+  const summary = [
+    '# Answer',
     '',
-    '## Provider Mode',
-    '',
-    `${reasonLine} ${deepSearchLine}`,
+    getPlainAnswer(query, topMatches, checklist),
     '',
     ...buildCitationCoverageSection(query),
-    ...buildSourceSupportSection(topMatches),
-    ...buildProvenanceVerificationSection(topMatches),
-    ...buildRelatedAuthorityPathSection(query, rankedDocuments, deepSearchUsed),
-    ...buildFrameworkSection(query, rankedDocuments),
-    '## Likely Relevant Authorities',
-    '',
-    ...topMatches.map((match, index) => formatMatchedDocument(match, index, deepSearchUsed)).join('\n\n').split('\n'),
-    '',
     '## Practical Checklist',
     '',
-    ...checklist.map((item) => `- ${item}`),
+    ...checklist.map((item) => `- ${formatChecklistAction(item)}`),
     '',
-    '## Common Drafting or Compliance Gaps to Check',
+    ...(clarifyingPrompts.length > 0
+      ? [
+          '## To Make This More Precise',
+          '',
+          ...clarifyingPrompts.map((prompt) => `- ${prompt}`),
+          '',
+        ]
+      : []),
+    '## Relevant Authorities',
     '',
-    ...gaps.map((item) => `- ${item}`),
+    ...visibleMatches.map((match, index) => formatMatchedDocument(match, index, deepSearchUsed)).join('\n\n').split('\n'),
+    ...(additionalMatchCount > 0
+      ? [
+          '',
+          `More matched authorities are available in the details (${additionalMatchCount} additional local match${additionalMatchCount === 1 ? '' : 'es'}).`,
+        ]
+      : []),
+    '',
+    ...buildRelatedAuthorityPathSection(query, rankedDocuments, deepSearchUsed),
+    ...buildFrameworkSection(query, rankedDocuments, visibleMatches),
+    '',
+    '## Gaps To Avoid',
+    '',
+    ...gaps.map((item) => `- ${formatChecklistAction(item)}`),
+    '',
+    '## How This Was Found',
+    '',
+    `${getConfidenceSummary(topMatches, deepSearchUsed)} ${reasonLine} ${deepSearchLine}`,
     '',
     '## Limits',
     '',
     'This is rule-based legal research support, not legal advice. It uses a bundled corpus and deterministic scoring, so it may miss newer laws, agency issuances, court rulings, local ordinances, and facts outside the query. Verify against current official sources and qualified legal counsel before acting.',
   ].join('\n')
+
+  return compactRepeatedCitationMentions(summary, query)
 }
 
 export function runLocalResearch(params: RAGQuery, fallbackReason?: string): RAGResponse {
@@ -1539,7 +1691,7 @@ function analyzeDraft(markdown: string) {
         'amber',
         'gap',
         'Cited authority is outside the local corpus',
-        `The draft cites ${citationAnalysis.unknownNumbers.map((raNumber) => `RA ${raNumber}`).join(', ')}, but LexInSight does not have that authority in its bundled providerless corpus.`,
+        `The draft cites ${citationAnalysis.unknownNumbers.map((raNumber) => `RA ${raNumber}`).join(', ')}, but LexInsights does not have that authority in its bundled providerless corpus.`,
         'Verify the cited authority against current official sources, then add enough title, agency, and operative context for manual review.',
         4,
         topReferences.length > 0 ? topReferences : [genericDraftingReference()]
@@ -5151,8 +5303,8 @@ export function runLocalDraftCheck(
   const complianceScore = calculateComplianceScore(analysis.green, analysis.amber, analysis.red)
   const totalFindings = analysis.green.length + analysis.amber.length + analysis.red.length
   const fallbackLine = fallbackReason
-    ? `The configured AI/RAG Draft Checker was unavailable, so LexInSight used deterministic local checks. Provider error: ${fallbackReason}`
-    : 'LexInSight used deterministic local providerless checks.'
+    ? `The configured AI/RAG Draft Checker was unavailable, so LexInsights used deterministic local checks. Provider error: ${fallbackReason}`
+    : 'LexInsights used deterministic local providerless checks.'
 
   return {
     status: 'success',

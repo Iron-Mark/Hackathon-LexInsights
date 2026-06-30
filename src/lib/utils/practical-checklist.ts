@@ -12,7 +12,7 @@ function isPracticalChecklistHeading(line: string) {
 
 function isChecklistEndHeading(line: string) {
   return /^#{1,6}\s+\S/.test(line.trim()) ||
-    /^(Common Drafting or Compliance Gaps to Check|Limits|Provider Mode|Likely Relevant Authorities|Result|What You Can Try)\s*:?\s*$/i.test(
+    /^(Answer|Better Search|Citation Coverage|Common Drafting or Compliance Gaps to Check|Gaps To Avoid|How This Was Found|Limits|Provider Mode|Relevant Authorities|Likely Relevant Authorities|Result|To Make This More Precise|What You Can Try)\s*:?\s*$/i.test(
       normalizeSectionLine(line)
     )
 }

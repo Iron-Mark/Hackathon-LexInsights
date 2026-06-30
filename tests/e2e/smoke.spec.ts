@@ -3,8 +3,8 @@ import { expect, test, type Page } from '@playwright/test'
 const protectedRoutes = ['/documents']
 const isManagedLocalWebServer = !process.env.PLAYWRIGHT_BASE_URL
 const diagnosticsExpected = isManagedLocalWebServer || process.env.ENABLE_DIAGNOSTIC_ROUTES === 'true'
-const authRouteHeading = /Sign in to LexInSight|Account sign-in is unavailable/
-const signupRouteHeading = /Create your LexInSight account|Account sign-in is unavailable/
+const authRouteHeading = /Sign in to LexInsights|Account sign-in is unavailable/
+const signupRouteHeading = /Create your LexInsights account|Account sign-in is unavailable/
 
 function authAction(page: Page, name: 'Sign in' | 'Sign up') {
   return page
@@ -25,10 +25,10 @@ function collapseChatHistoryButton(page: Page) {
   return chatHistory(page).getByRole('button', { name: 'Collapse chat history' })
 }
 
-test.describe('LexInSight smoke checks', () => {
+test.describe('LexInsights smoke checks', () => {
   test('public entry routes render', async ({ page }) => {
     await page.goto('/')
-    await expect(page.getByText('LexInSight').first()).toBeVisible()
+    await expect(page.getByText('LexInsights').first()).toBeVisible()
     await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(authAction(page, 'Sign up')).toBeVisible()
     await expect(chatInput(page)).toBeVisible()
@@ -55,7 +55,7 @@ test.describe('LexInSight smoke checks', () => {
     await page.getByRole('button', { name: 'Switch to light mode' }).click()
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
     await page.getByRole('button', { name: 'Help & Resources' }).click()
-    await expect(page.getByRole('dialog', { name: 'Philippine Government Resources' })).toBeVisible()
+    await expect(page.getByRole('dialog', { name: 'Help & Resources' })).toBeVisible()
     await expect(page.getByText('Official Gazette - Laws and Issuances')).toBeVisible()
     await page.keyboard.press('Escape')
 
@@ -81,7 +81,7 @@ test.describe('LexInSight smoke checks', () => {
   test('chat is available to signed-out visitors with local guest history', async ({ page }) => {
     await page.goto('/chat')
 
-    await expect(page.getByText('LexInSight').first()).toBeVisible()
+    await expect(page.getByText('LexInsights').first()).toBeVisible()
     await expect(authAction(page, 'Sign in')).toBeVisible()
     await expect(chatInput(page)).toBeVisible()
     await expect(collapseChatHistoryButton(page)).toBeVisible()
@@ -156,7 +156,7 @@ test.describe('LexInSight smoke checks', () => {
 
       window.dispatchEvent(installPromptEvent)
     })
-    await expect(page.getByRole('button', { name: 'Install LexInSight' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Install LexInsights' })).toBeVisible()
     await collapseChatHistoryButton(page).click()
     await expect.poll(async () => {
       return page.evaluate(() => {
@@ -369,10 +369,10 @@ test.describe('LexInSight smoke checks', () => {
 
     const completedAssistantMessage = page
       .locator('[data-revealing="false"]')
-      .filter({ hasText: 'Providerless Local Research Brief' })
+      .filter({ hasText: 'Short answer:' })
 
     await expect(completedAssistantMessage).toBeVisible({ timeout: 75_000 })
-    await expect(page.getByRole('heading', { name: 'Providerless Local Research Brief' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Answer' })).toBeVisible()
     await expect(completedAssistantMessage.getByText('Ecological Solid Waste Management Act of 2000').first()).toBeVisible()
     await expect(page.getByRole('button', { name: 'Run deep research' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Send standard message' })).toBeVisible()
@@ -417,7 +417,7 @@ test.describe('LexInSight smoke checks', () => {
         messages.some((message) => message.role === 'user') &&
         messages.some((message) => (
           message.role === 'assistant' &&
-          message.content.includes('Providerless Local Research Brief')
+          message.content.includes('# Answer')
         ))
       ))
         ? raw
@@ -536,7 +536,7 @@ test.describe('LexInSight smoke checks', () => {
     expect(response.status()).toBe(200)
     expect(body).toEqual(
       expect.objectContaining({
-        app: 'LexInSight',
+        app: 'LexInsights',
         packageVersion: expect.any(String),
         checkedAt: expect.any(String),
         source: expect.objectContaining({
@@ -562,8 +562,8 @@ test.describe('LexInSight smoke checks', () => {
     expect(manifestResponse.status()).toBe(200)
     expect(manifest).toEqual(
       expect.objectContaining({
-        name: 'LexInSight',
-        short_name: 'LexInSight',
+        name: 'LexInsights',
+        short_name: 'LexInsights',
         start_url: '/',
         scope: '/',
         display: 'standalone',
@@ -623,7 +623,7 @@ test.describe('LexInSight smoke checks', () => {
       expect(response.status()).toBe(200)
       expect(body).toEqual(
         expect.objectContaining({
-          app: 'LexInSight',
+          app: 'LexInsights',
           expected: expect.objectContaining({
             commitSha: 'proxy-smoke',
             matches: expect.any(Boolean),
@@ -736,7 +736,7 @@ test.describe('LexInSight smoke checks', () => {
     await expect(page.getByText('Source types:')).toBeVisible()
     await expect(page.getByText('direct support', { exact: true })).toBeVisible()
 
-    const summary = page.locator('pre').filter({ hasText: '# Providerless Local Research Brief' })
+    const summary = page.locator('pre').filter({ hasText: '# Answer' })
     await expect(summary).toContainText('RA 9003')
     await expect(summary).toContainText('Ecological Solid Waste Management Act of 2000')
   })

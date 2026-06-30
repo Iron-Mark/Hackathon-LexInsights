@@ -97,6 +97,10 @@ function assertSummaryIncludesAny(response, expectedFragments, label) {
   )
 }
 
+function countOccurrences(source, fragment) {
+  return source.split(fragment).length - 1
+}
+
 function assertExactCitationMatch(response, expectedStatute, citationNumber, label, minConfidence = 0.55) {
   assertCompletedMatch(response, expectedStatute, label, minConfidence)
   assert.equal(statutes(response)[0], expectedStatute, `${label} should be the top match`)
@@ -137,6 +141,10 @@ try {
   assert.ok(
     ['seeded', 'verified'].includes(exactCitation.matched_documents[0].provenance_status),
     'exact citation top match should expose provenance status'
+  )
+  assert.ok(
+    countOccurrences(exactCitation.summary, 'RA 10173') <= 2,
+    'exact citation summary should avoid repeated visible RA mentions'
   )
 
   const dpaIrrImplementation = runLocalResearch({
@@ -1488,9 +1496,9 @@ try {
   assert.equal(noResult.confidence_score, 0, 'unrelated query should have zero confidence')
   assert.ok(noResult.summary.includes('No strong match was found'), 'unrelated query should explain no local match')
   assert.ok(
-    noResult.summary.includes('DOLE Department Order 147-15') &&
-      noResult.summary.includes('SEC MC 28 s. 2020'),
-    'unrelated query should suggest current labor and SEC local corpus examples'
+    noResult.summary.includes('non-legal topic') &&
+      noResult.summary.includes('food business'),
+    'unrelated query should suggest a topic-aware legal framing'
   )
 
   const unknownCitation = runLocalResearch({ query: 'What is RA 999999 about?', user_id: 'golden' })

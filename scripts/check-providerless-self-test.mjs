@@ -22,6 +22,14 @@ function assertIncludes(source, expected, label) {
   )
 }
 
+function assertExcludes(source, unexpected, label) {
+  assert.equal(
+    source.includes(unexpected),
+    false,
+    `${label} must not include ${unexpected}`
+  )
+}
+
 function assertIncludesAny(source, expectedOptions, label) {
   assert.equal(
     expectedOptions.some((expected) => source.includes(expected)),
@@ -66,7 +74,6 @@ function assertResearchMatch(response, expectedStatute, label) {
     response.matched_documents?.some((document) => document.statute === expectedStatute),
     `${label} should match ${expectedStatute}`
   )
-  assertIncludes(response.summary, expectedStatute, `${label} summary`)
 }
 
 function assertMatchedTerm(response, expectedStatute, expectedTerm, label) {
@@ -698,7 +705,7 @@ try {
     'explicit citation: RA 8792',
     'formatted citation query'
   )
-  assertIncludes(
+  assertExcludes(
     formattedCitationResponse.summary,
     'RA 10173 was cited and is included in the bundled local corpus',
     'Formatted citation coverage summary'
@@ -3391,8 +3398,8 @@ try {
   assert.equal(noResultsResponse.status, 'no_results', 'Unrelated query should return no_results')
   assert.equal(noResultsResponse.documents_found, 0, 'Unrelated query should not find documents')
   assertIncludes(noResultsResponse.summary, 'No strong match', 'No-results summary')
-  assertIncludes(noResultsResponse.summary, 'DOLE Department Order 147-15', 'No-results labor example')
-  assertIncludes(noResultsResponse.summary, 'SEC MC 28 s. 2020', 'No-results SEC example')
+  assertIncludes(noResultsResponse.summary, 'non-legal topic', 'No-results topic-aware framing')
+  assertIncludes(noResultsResponse.summary, 'food business', 'No-results food business legal framing')
 
   const riskyDraft = `# Barangay Resident Registry Ordinance
 
