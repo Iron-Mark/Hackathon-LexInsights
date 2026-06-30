@@ -158,7 +158,7 @@ test.describe('public discovery smoke checks', () => {
     const aiRedirectResponse = await request.get('/ai.txt', { maxRedirects: 0 })
 
     expect(aiRedirectResponse.status()).toBe(308)
-    expect(aiRedirectResponse.headers().location).toMatch(/\/llms\.txt$/)
+    expect(aiRedirectResponse.headers().location).toBe('https://lexiph.vercel.app/llms.txt')
   })
 
   test('sitemap lists stable public URLs without dynamic lastmod values', async ({ request }) => {

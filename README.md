@@ -40,6 +40,14 @@ LexInsights is not a lawyer, law firm, court, regulator, or official government 
 - `/robots.txt`, `/sitemap.xml`, `/llms.txt`, and `/ai.txt` support search, answer-engine, and crawler discovery.
 - `/api/version` and `/api/readiness` support lean deployment and health verification without exposing secrets, raw targets, or repository ownership details.
 
+## Production Readiness
+
+- CI runs lint, typecheck, production dependency audit, docs checks, release checks, PWA checks, screenshot validation, production bundle checks, build, and browser smoke tests.
+- Local providerless RAG is covered by golden-query, answer-quality, source-freshness, performance, governance, and optional live-source audits.
+- `/terms` and `/privacy` are public production notices for service use, data handling, retention, security, and Philippine privacy rights.
+- Help & Resources keeps official source links close to the assistant so generated answers can be checked against primary authorities.
+- Production deployments are verified against `/api/version` and `/api/readiness` so `lexiph.vercel.app` can be matched to the intended commit.
+
 ## Local Development
 
 ```powershell
