@@ -12,97 +12,62 @@ import ts from 'typescript'
 const rootDir = process.cwd()
 const sourcePath = path.join(rootDir, 'src/lib/services/local-legal-research.ts')
 const dataSourceDir = path.join(rootDir, 'src/lib/services/local-research-data')
+const fixturePath = path.join(rootDir, 'tests/fixtures/rag-golden/answer-quality-cases.json')
 const require = createRequire(import.meta.url)
 
-const CASES = [
-  {
-    id: 'privacy-breach-notification',
-    query: 'What should a Philippine company do after a personal data breach affecting customers?',
-    expectedStatutes: ['NPC Circular No. 16-03', 'NPC Advisory No. 2026-02', 'RA 10173'],
-    requiredFragments: ['breach', 'NPC', 'personal data'],
-    minConfidence: 0.38,
-  },
-  {
-    id: 'cybercrime-warrants',
-    query: 'Explain cybercrime warrant and online evidence steps for an incident response plan.',
-    expectedStatutes: ['A.M. No. 17-11-03-SC', 'Cybercrime Prevention Act IRR', 'RA 10175'],
-    requiredFragments: ['cybercrime', 'warrant', 'evidence'],
-    minConfidence: 0.34,
-  },
-  {
-    id: 'child-online-safety-reporting',
-    query: 'What does RA 9775 require for online child safety reporting by a platform?',
-    expectedStatutes: ['RA 9775', 'RA 11930'],
-    requiredFragments: ['child', 'report'],
-    forbiddenStatutes: ['RA 9160'],
-    minConfidence: 0.45,
-  },
-  {
-    id: 'procurement-ra-12009',
-    query: 'Build a barangay procurement checklist under RA 12009 with bid records and supplier controls.',
-    expectedStatutes: ['RA 12009', 'RA 11032'],
-    requiredFragments: ['procurement', 'records'],
-    minConfidence: 0.34,
-  },
-  {
-    id: 'local-government-services',
-    query: 'What local government service standards apply to an LGU permit counter?',
-    expectedStatutes: ['RA 11032', 'RA 7160'],
-    requiredFragments: ['service', 'LGU'],
-    minConfidence: 0.32,
-  },
-  {
-    id: 'beneficial-ownership-sec',
-    query: 'What SEC beneficial ownership and official contact records should a corporation maintain?',
-    expectedStatutes: ['SEC Memorandum Circular No. 15, s. 2025', 'SEC Memorandum Circular No. 28, s. 2020'],
-    requiredFragments: ['beneficial ownership', 'SEC'],
-    minConfidence: 0.32,
-  },
-  {
-    id: 'dole-termination-due-process',
-    query: 'Review an employee termination process for twin notice and due process under DOLE rules.',
-    expectedStatutes: ['DOLE Department Order No. 147-15'],
-    requiredFragments: ['termination', 'notice'],
-    minConfidence: 0.33,
-  },
-  {
-    id: 'accessibility-built-environment',
-    query: 'What accessibility controls apply to a public building and PWD access plan?',
-    expectedStatutes: ['BP 344', 'RA 7277'],
-    requiredFragments: ['accessibility', 'PWD'],
-    minConfidence: 0.32,
-  },
-  {
-    id: 'aml-covered-person',
-    query: 'What AML controls apply for covered-person registration, reporting, and customer due diligence?',
-    expectedStatutes: ['RA 9160', '2018 AMLA IRR'],
-    requiredFragments: ['AML', 'covered'],
-    forbiddenStatutes: ['RA 9775'],
-    minConfidence: 0.32,
-  },
-  {
-    id: 'consumer-online-transaction',
-    query: 'What controls apply to an online marketplace under the Internet Transactions Act and consumer law?',
-    expectedStatutes: ['RA 11967', 'Joint Administrative Order No. 24-03, s. 2024', 'RA 7394'],
-    requiredFragments: ['consumer', 'online'],
-    minConfidence: 0.33,
-  },
-  {
-    id: 'imminent-disaster',
-    query: 'How should an LGU prepare DRRM, LDRRMF, pre-emptive evacuation, and anticipatory action for a state of imminent disaster?',
-    expectedStatutes: ['RA 12287', 'RA 10121'],
-    requiredFragments: ['disaster', 'LGU'],
-    minConfidence: 0.32,
-  },
-  {
-    id: 'unknown-citation',
-    query: 'Compare RA 999999 with RA 10173 for a privacy program.',
-    expectedStatutes: ['RA 10173'],
-    expectedUnknownCitations: ['999999'],
-    requiredFragments: ['RA 999999'],
-    minConfidence: 0.3,
-  },
-]
+function assertStringArray(value, label, { allowEmpty = false } = {}) {
+  assert.equal(Array.isArray(value), true, `${label} must be an array`)
+  assert.equal(
+    allowEmpty || value.length > 0,
+    true,
+    `${label} must include at least one value`
+  )
+
+  for (const item of value) {
+    assert.equal(typeof item, 'string', `${label} entries must be strings`)
+    assert.ok(item.trim().length > 0, `${label} entries must not be empty`)
+  }
+}
+
+function loadAnswerQualityCases() {
+  assert.equal(existsSync(fixturePath), true, 'RAG answer-quality fixture is missing')
+
+  const fixture = JSON.parse(readFileSync(fixturePath, 'utf8'))
+  assert.equal(fixture.schemaVersion, 1, 'RAG answer-quality fixture schemaVersion must be 1')
+  assert.equal(Array.isArray(fixture.cases), true, 'RAG answer-quality fixture must include a cases array')
+  assert.ok(fixture.cases.length > 0, 'RAG answer-quality fixture must include at least one case')
+
+  const seenIds = new Set()
+
+  for (const testCase of fixture.cases) {
+    assert.equal(typeof testCase.id, 'string', 'RAG answer-quality case id must be a string')
+    assert.ok(testCase.id.trim().length > 0, 'RAG answer-quality case id must not be empty')
+    assert.equal(seenIds.has(testCase.id), false, `Duplicate RAG answer-quality case id: ${testCase.id}`)
+    seenIds.add(testCase.id)
+
+    assert.equal(typeof testCase.query, 'string', `${testCase.id} query must be a string`)
+    assert.ok(testCase.query.trim().length > 0, `${testCase.id} query must not be empty`)
+    assertStringArray(testCase.expectedStatutes, `${testCase.id} expectedStatutes`)
+    assertStringArray(testCase.requiredFragments, `${testCase.id} requiredFragments`)
+
+    if (testCase.forbiddenStatutes !== undefined) {
+      assertStringArray(testCase.forbiddenStatutes, `${testCase.id} forbiddenStatutes`, { allowEmpty: true })
+    }
+
+    if (testCase.expectedUnknownCitations !== undefined) {
+      assertStringArray(
+        testCase.expectedUnknownCitations,
+        `${testCase.id} expectedUnknownCitations`,
+        { allowEmpty: true }
+      )
+    }
+
+    assert.equal(typeof testCase.minConfidence, 'number', `${testCase.id} minConfidence must be a number`)
+    assert.ok(testCase.minConfidence >= 0 && testCase.minConfidence <= 1, `${testCase.id} minConfidence must be 0..1`)
+  }
+
+  return fixture.cases
+}
 
 async function loadProviderlessModule() {
   assert.equal(existsSync(sourcePath), true, 'local-legal-research.ts is missing')
@@ -164,10 +129,11 @@ function textIncludes(value, fragment) {
   return value.toLowerCase().includes(fragment.toLowerCase())
 }
 
+const cases = loadAnswerQualityCases()
 const { module: providerless, cleanup } = await loadProviderlessModule()
 
 try {
-  for (const testCase of CASES) {
+  for (const testCase of cases) {
     const response = providerless.runLocalResearch({
       query: testCase.query,
       use_deep_search: true,
@@ -210,7 +176,7 @@ try {
     }
   }
 
-  console.log(`Local RAG answer-quality check passed (${CASES.length} cases).`)
+  console.log(`Local RAG answer-quality check passed (${cases.length} cases).`)
 } finally {
   cleanup()
 }

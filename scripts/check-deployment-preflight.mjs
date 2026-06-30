@@ -13,7 +13,9 @@ function parseArgs(argv) {
     allowDirty: false,
     baseUrl: DEFAULT_BASE_URL,
     discoverVercelScopes: false,
+    expectedSha: null,
     json: false,
+    localOnly: false,
     sourceOnly: false,
     timeoutMs: DEFAULT_TIMEOUT_MS,
     withVercelCli: false,
@@ -48,6 +50,11 @@ function parseArgs(argv) {
       continue
     }
 
+    if (arg === '--local-only') {
+      args.localOnly = true
+      continue
+    }
+
     if (arg === '--skip-backend') {
       args.sourceOnly = true
       continue
@@ -72,6 +79,17 @@ function parseArgs(argv) {
 
     if (arg.startsWith('--base-url=')) {
       args.baseUrl = arg.slice('--base-url='.length)
+      continue
+    }
+
+    if (arg === '--expect-sha') {
+      args.expectedSha = argv[index + 1] || null
+      index += 1
+      continue
+    }
+
+    if (arg.startsWith('--expect-sha=')) {
+      args.expectedSha = arg.slice('--expect-sha='.length) || null
       continue
     }
 
@@ -930,7 +948,7 @@ async function run() {
   }
 
   const cwd = process.cwd()
-  const expectedSha = getGitHead()
+  const expectedSha = args.expectedSha || getGitHead()
   const gitStatus = getGitStatusShort()
   const repoInfo = getGitHubRepoInfo()
   const localChecks = [
@@ -943,11 +961,13 @@ async function run() {
       ? vercelCliChecks(baseUrl, repoInfo, args.vercelScope, args.discoverVercelScopes)
       : []),
   ]
-  const backendChecks = args.sourceOnly ? [] : await deploymentBackendChecks(baseUrl, args.timeoutMs)
-  const liveChecks = await Promise.all([
-    versionCheck(baseUrl, args.timeoutMs, expectedSha),
-    ...backendChecks,
-  ])
+  const backendChecks = args.sourceOnly || args.localOnly ? [] : await deploymentBackendChecks(baseUrl, args.timeoutMs)
+  const liveChecks = args.localOnly
+    ? []
+    : await Promise.all([
+        versionCheck(baseUrl, args.timeoutMs, expectedSha),
+        ...backendChecks,
+      ])
   const checks = [...localChecks, ...liveChecks]
   const ready = checks.every((check) => !check.critical || check.status === 'pass')
   const result = {
@@ -957,7 +977,7 @@ async function run() {
     expectedSha,
     allowDirty: args.allowDirty,
     discoverVercelScopes: args.discoverVercelScopes,
-    mode: args.sourceOnly ? 'source-only' : 'full',
+    mode: args.localOnly ? 'local-only' : args.sourceOnly ? 'source-only' : 'full',
     withVercelCli: args.withVercelCli,
     vercelScope: args.vercelScope,
     checks,

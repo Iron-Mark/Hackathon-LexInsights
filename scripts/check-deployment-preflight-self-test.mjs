@@ -107,7 +107,9 @@ assert.deepEqual(
     allowDirty: false,
     baseUrl: 'https://lexiph.vercel.app',
     discoverVercelScopes: true,
+    expectedSha: null,
     json: false,
+    localOnly: false,
     sourceOnly: false,
     timeoutMs: 20000,
     withVercelCli: true,
@@ -116,7 +118,10 @@ assert.deepEqual(
 )
 assert.equal(parseArgs(['--vercel-scope=marksiazon-dev']).vercelScope, 'marksiazon-dev')
 assert.equal(parseArgs(['--discover-vercel-scopes']).discoverVercelScopes, true)
+assert.equal(parseArgs(['--expect-sha', 'abc123']).expectedSha, 'abc123')
+assert.equal(parseArgs(['--expect-sha=abc123']).expectedSha, 'abc123')
 assert.equal(parseArgs(['--source-only']).sourceOnly, true)
+assert.equal(parseArgs(['--local-only']).localOnly, true)
 assert.equal(parseArgs(['--skip-backend']).sourceOnly, true)
 assert.equal(parseArgs(['--skip-backend', '--source-only']).sourceOnly, true)
 assert.equal(parseArgs(['--timeout-ms=-1']).timeoutMs, 20000)

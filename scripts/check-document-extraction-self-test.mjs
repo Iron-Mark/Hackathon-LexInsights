@@ -14,6 +14,7 @@ const { Document, Packer, Paragraph } = require('docx')
 const rootDir = process.cwd()
 const documentTextSourcePath = path.join(rootDir, 'src/lib/utils/document-text.ts')
 const serverExtractionSourcePath = path.join(rootDir, 'src/lib/utils/server-document-extraction.ts')
+const guardrailsSourcePath = path.join(rootDir, 'src/lib/server/request-guardrails.ts')
 
 function transpileTs(sourcePath, replacements = []) {
   assert.equal(existsSync(sourcePath), true, `${path.basename(sourcePath)} is missing`)
@@ -51,6 +52,23 @@ async function loadServerExtractionModule() {
   try {
     return {
       module: await import(pathToFileURL(serverExtractionModulePath).href),
+      cleanup: () => rmSync(tempDir, { recursive: true, force: true }),
+    }
+  } catch (error) {
+    rmSync(tempDir, { recursive: true, force: true })
+    throw error
+  }
+}
+
+async function loadGuardrailsModule() {
+  const tempDir = mkdtempSync(path.join(rootDir, '.document-guardrails-test-'))
+  const guardrailsModulePath = path.join(tempDir, 'request-guardrails.mjs')
+
+  writeFileSync(guardrailsModulePath, transpileTs(guardrailsSourcePath), 'utf8')
+
+  try {
+    return {
+      module: await import(pathToFileURL(guardrailsModulePath).href),
       cleanup: () => rmSync(tempDir, { recursive: true, force: true }),
     }
   } catch (error) {
@@ -116,10 +134,19 @@ async function createDocxBuffer(text) {
 }
 
 const { module: serverExtraction, cleanup } = await loadServerExtractionModule()
+const { module: guardrails, cleanup: cleanupGuardrails } = await loadGuardrailsModule()
 
 try {
   const { extractServerDocumentText } = serverExtraction
   const { getServerDocumentSignatureMode, MAX_EXTRACTED_DOCUMENT_TEXT_CHARS } = serverExtraction
+  const {
+    buildPublicApiErrorBody,
+    checkPublicApiThrottle,
+    createPublicApiRequestContext,
+    getPublicApiThrottleLimit,
+    getThrottleHeaders,
+    resetPublicApiThrottleForSelfTest,
+  } = guardrails
 
   const pdfText = 'Barangay procurement RA 12009 compliance test'
   const pdfBuffer = createSimplePdf(pdfText)
@@ -174,7 +201,52 @@ try {
 
   assert.equal(MAX_EXTRACTED_DOCUMENT_TEXT_CHARS, 250000)
 
+  const documentContext = createPublicApiRequestContext({
+    method: 'POST',
+    headers: new Headers({
+      'x-forwarded-for': '198.51.100.7',
+      'x-request-id': 'document-self-test-0001',
+    }),
+  }, '/api/document-text')
+  assert.equal(documentContext.routeKey, 'POST /api/document-text')
+  assert.deepEqual(getPublicApiThrottleLimit(documentContext.routeKey), {
+    windowMs: 60000,
+    max: 12,
+  })
+
+  resetPublicApiThrottleForSelfTest()
+  const documentThrottle = checkPublicApiThrottle(documentContext, {
+    windowMs: 1000,
+    max: 1,
+  }, 5000)
+  assert.equal(documentThrottle.ok, true)
+  assert.equal(getThrottleHeaders(documentThrottle, documentContext.requestId)['X-Request-ID'], 'document-self-test-0001')
+  assert.equal(checkPublicApiThrottle(documentContext, {
+    windowMs: 1000,
+    max: 1,
+  }, 5100).ok, false)
+
+  const extractionError = buildPublicApiErrorBody(
+    documentContext,
+    'Document extraction failed. Try a cleaner PDF or Word file, or paste the text directly.',
+    'document_extraction_failed',
+    {
+      fileName: 'Juan Dela Cruz affidavit.pdf',
+      text: 'Sensitive extracted text should never be in errors.',
+      fileType: 'application/pdf',
+      fileSize: 1024,
+    }
+  )
+  const extractionErrorText = JSON.stringify(extractionError)
+  assert.equal(extractionError.error.requestId, 'document-self-test-0001')
+  assert.equal(extractionError.error.type, 'document_extraction_failed')
+  assert.equal(extractionError.error.fileType, 'application/pdf')
+  assert.equal(extractionError.error.fileSize, 1024)
+  assert.equal(extractionErrorText.includes('Juan Dela Cruz'), false)
+  assert.equal(extractionErrorText.includes('Sensitive extracted text'), false)
+
   console.log('Document extraction self-test passed.')
 } finally {
   cleanup()
+  cleanupGuardrails()
 }

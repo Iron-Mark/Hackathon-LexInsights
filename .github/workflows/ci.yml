@@ -108,8 +108,14 @@ jobs:
       - name: PWA readiness check
         run: npm run check:pwa
 
+      - name: README screenshot check
+        run: npm run check:screenshots
+
       - name: Build
         run: npm run build
+
+      - name: Production bundle check
+        run: npm run check:bundle
 
       - name: Browser smoke
         run: npm run smoke:browser

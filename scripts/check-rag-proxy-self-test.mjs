@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
 import assert from 'node:assert/strict'
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import { pathToFileURL } from 'node:url'
+
+import ts from 'typescript'
 
 import {
   DEFAULT_GET_TIMEOUT_MS,
@@ -19,6 +25,37 @@ import {
   validateProxyContentLength,
   validateProxyPostBody,
 } from '../src/lib/services/rag-proxy-helpers.mjs'
+
+const rootDir = process.cwd()
+const guardrailsSourcePath = path.join(rootDir, 'src/lib/server/request-guardrails.ts')
+
+async function loadGuardrailsModule() {
+  assert.equal(existsSync(guardrailsSourcePath), true, 'request-guardrails.ts is missing')
+
+  const source = readFileSync(guardrailsSourcePath, 'utf8')
+  const transpiled = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.ES2022,
+      target: ts.ScriptTarget.ES2022,
+      strict: true,
+    },
+    fileName: guardrailsSourcePath,
+  })
+  const tempDir = mkdtempSync(path.join(tmpdir(), 'lexinsights-rag-guardrails-'))
+  const tempModulePath = path.join(tempDir, 'request-guardrails.mjs')
+
+  writeFileSync(tempModulePath, transpiled.outputText, 'utf8')
+
+  try {
+    return {
+      module: await import(pathToFileURL(tempModulePath).href),
+      cleanup: () => rmSync(tempDir, { recursive: true, force: true }),
+    }
+  } catch (error) {
+    rmSync(tempDir, { recursive: true, force: true })
+    throw error
+  }
+}
 
 function params(value) {
   return new URLSearchParams(value)
@@ -176,5 +213,129 @@ assertNoSecretMarkers({
   protocolRelativeUpstream,
   invalidBaseUpstream,
 })
+
+const { module: guardrails, cleanup } = await loadGuardrailsModule()
+
+try {
+  const {
+    buildPublicApiErrorBody,
+    buildThrottleErrorBody,
+    checkPublicApiThrottle,
+    createPublicApiRequestContext,
+    getClientKey,
+    getThrottleHeaders,
+    resetPublicApiThrottleForSelfTest,
+    safeEndpointPath,
+    sanitizeForStructuredLog,
+  } = guardrails
+
+  const requestHeaders = headers({
+    'x-forwarded-for': '203.0.113.9, 10.0.0.1',
+    'x-request-id': 'rag-self-test-0001',
+  })
+  assert.equal(getClientKey(requestHeaders), '203.0.113.9')
+
+  const context = createPublicApiRequestContext({
+    method: 'POST',
+    headers: requestHeaders,
+  }, '/api/rag-proxy')
+  assert.equal(context.requestId, 'rag-self-test-0001')
+  assert.equal(context.routeKey, 'POST /api/rag-proxy')
+  assert.notEqual(context.clientFingerprint, context.clientKey, 'Logs should not use raw IP addresses')
+
+  resetPublicApiThrottleForSelfTest()
+  const limit = {
+    windowMs: 1000,
+    max: 2,
+  }
+  assert.deepEqual(checkPublicApiThrottle(context, limit, 1000), {
+    ok: true,
+    limit: 2,
+    remaining: 1,
+    resetAt: 2000,
+    retryAfterSeconds: 0,
+  })
+  assert.deepEqual(checkPublicApiThrottle(context, limit, 1100), {
+    ok: true,
+    limit: 2,
+    remaining: 0,
+    resetAt: 2000,
+    retryAfterSeconds: 0,
+  })
+  assert.deepEqual(checkPublicApiThrottle(context, limit, 1200), {
+    ok: false,
+    limit: 2,
+    remaining: 0,
+    resetAt: 2000,
+    retryAfterSeconds: 1,
+  })
+  assert.equal(checkPublicApiThrottle(context, limit, 2100).ok, true, 'Throttle buckets should reset after the window')
+
+  const throttled = checkPublicApiThrottle(context, limit, 2200)
+  assert.equal(throttled.ok, true)
+  const throttleHeaders = getThrottleHeaders({
+    ok: false,
+    limit: 2,
+    remaining: 0,
+    resetAt: 3000,
+    retryAfterSeconds: 1,
+  }, context.requestId)
+  assert.equal(throttleHeaders['X-Request-ID'], context.requestId)
+  assert.equal(throttleHeaders['Retry-After'], '1')
+  assert.equal(throttleHeaders['X-RateLimit-Limit'], '2')
+
+  assert.deepEqual(buildThrottleErrorBody(context, {
+    ok: false,
+    limit: 2,
+    remaining: 0,
+    resetAt: 3000,
+    retryAfterSeconds: 1,
+  }), {
+    detail: 'Too many requests. Try again shortly.',
+    error: {
+      type: 'rate_limited',
+      requestId: 'rag-self-test-0001',
+      route: '/api/rag-proxy',
+      retryAfterSeconds: 1,
+    },
+  })
+
+  assert.equal(safeEndpointPath('/api/research/health?token=sb_secret_should_not_leak'), '/api/research/health')
+
+  const publicError = buildPublicApiErrorBody(context, 'Invalid request.', 'invalid_request', {
+    query: 'What is the private fact?',
+    fileName: 'Maria Dela Cruz draft.pdf',
+    endpointPath: safeEndpointPath('/api/research/health?token=sb_secret_should_not_leak'),
+    contentLength: 123,
+  })
+  const publicErrorText = JSON.stringify(publicError)
+  assert.equal(publicError.error.requestId, 'rag-self-test-0001')
+  assert.equal(publicError.error.type, 'invalid_request')
+  assert.equal(publicError.error.endpointPath, '/api/research/health')
+  assert.equal(publicError.error.contentLength, 123)
+  assert.equal(publicErrorText.includes('private fact'), false)
+  assert.equal(publicErrorText.includes('Maria Dela Cruz'), false)
+  assert.equal(publicErrorText.includes('sb_secret_should_not_leak'), false)
+
+  const sanitizedLog = sanitizeForStructuredLog({
+    requestId: context.requestId,
+    query: 'RA 10173 for juan@example.com',
+    text: 'extracted document text',
+    fileName: 'Juan Dela Cruz draft.pdf',
+    authorization: 'Bearer secret-token-value',
+    endpointPath: '/api/research/health',
+    detail: 'Contact juan@example.com from 203.0.113.9 using sb_secret_should_not_leak.',
+  })
+  const sanitizedLogText = JSON.stringify(sanitizedLog)
+  assert.equal(sanitizedLog.query, '[redacted]')
+  assert.equal(sanitizedLog.text, '[redacted]')
+  assert.equal(sanitizedLog.fileName, '[redacted]')
+  assert.equal(sanitizedLog.authorization, '[redacted]')
+  assert.equal(sanitizedLogText.includes('juan@example.com'), false)
+  assert.equal(sanitizedLogText.includes('203.0.113.9'), false)
+  assert.equal(sanitizedLogText.includes('sb_secret_should_not_leak'), false)
+} finally {
+  cleanup()
+}
 
 console.log('RAG proxy self-test passed.')

@@ -654,7 +654,8 @@ test.describe('LexInsights smoke checks', () => {
           detail: expect.any(String),
           error: expect.objectContaining({
             type: expect.stringMatching(/^upstream_/),
-            endpoint: '/api/research/health',
+            endpointPath: '/api/research/health',
+            requestId: expect.any(String),
             upstreamOrigin: expect.any(String),
             timeoutMs: expect.any(Number),
           }),
@@ -678,10 +679,12 @@ test.describe('LexInsights smoke checks', () => {
         detail: 'Endpoint must stay on the configured RAG API origin',
         error: expect.objectContaining({
           type: 'invalid_endpoint',
-          endpoint: 'https://example.com/api/research/health',
+          endpointPath: '/api/research/health',
+          requestId: expect.any(String),
         }),
       })
     )
+    expect(JSON.stringify(body)).not.toContain('https://example.com')
     expect(JSON.stringify(body)).not.toContain('NEXT_PUBLIC_SUPABASE_ANON_KEY')
     expect(JSON.stringify(body)).not.toContain(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-not-set')
   })
@@ -699,7 +702,8 @@ test.describe('LexInsights smoke checks', () => {
         detail: expect.any(String),
         error: expect.objectContaining({
           type: expect.stringMatching(/^upstream_/),
-          endpoint: '/missing-rag-upstream',
+          endpointPath: '/missing-rag-upstream',
+          requestId: expect.any(String),
           upstreamOrigin: expect.any(String),
           timeoutMs: expect.any(Number),
         }),

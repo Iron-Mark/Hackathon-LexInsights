@@ -3,6 +3,7 @@
 import { useComplianceStore } from './compliance-store'
 import { useFileUploadStore } from './file-upload-store'
 import { clearRAGLocalCache, useRAGStore } from './rag-store'
+import { useChatStore } from './chat-store'
 
 const PRIVATE_STORAGE_KEYS = [
   'rag-storage',
@@ -33,5 +34,12 @@ export function clearPrivateClientState() {
   useRAGStore.getState().clearPrivateState()
   useComplianceStore.getState().clearPrivateState()
   useFileUploadStore.getState().clearFiles()
+  useChatStore.setState({
+    chats: [],
+    activeChat: null,
+    messages: {},
+    loading: false,
+    loadingMessages: false,
+  })
   clearPrivateStorageKeys()
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -113,13 +113,14 @@ const toastActionColors = {
 
 function ToastItem({ toast, onRemove }: ToastItemProps) {
   const Icon = toastIcons[toast.type]
+  const prefersReducedMotion = useReducedMotion()
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: -20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, x: 100, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
+      initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: -20, scale: 0.95 }}
+      animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+      exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, x: 100, scale: 0.95 }}
+      transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.2 }}
       className={cn(
         'pointer-events-auto relative flex min-w-[min(22rem,calc(100vw-2rem))] max-w-md items-start gap-3 overflow-hidden rounded-xl border px-4 py-3 text-slate-950 shadow-[0_18px_45px_rgba(39,32,117,0.18)] ring-1 backdrop-blur-xl',
         'dark:text-iris-50 dark:shadow-[0_18px_45px_rgba(8,5,18,0.58)]',

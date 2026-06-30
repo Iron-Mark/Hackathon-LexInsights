@@ -7,6 +7,7 @@ import {
   compareSha,
   gitWorktreeCheck,
   parseArgs,
+  productionDiagnosticsCheck,
   publicCheckDetails,
   safeUrl,
 } from './check-live-deployment.mjs'
@@ -93,5 +94,79 @@ assert.equal(details.body.app, 'LexInsights')
 assert.equal(details.body.secret, undefined)
 assert.equal(details.commitMatches, true)
 assertNoSensitiveMarkers(details)
+
+const restrictedDiagnostics = productionDiagnosticsCheck(
+  {
+    name: 'app.version',
+    status: 'pass',
+    details: {
+      body: {
+        source: {
+          commitSha: '5363fa7699f88f2bcb974c55a4d42a6b1c7e941f',
+        },
+        deployment: {
+          details: 'restricted',
+        },
+      },
+    },
+  },
+  {
+    name: 'app.readiness',
+    status: 'pass',
+    details: {
+      body: {
+        checks: [
+          {
+            name: 'supabase.url',
+            status: 'pass',
+            critical: true,
+            message: 'Configured',
+          },
+        ],
+      },
+    },
+  }
+)
+assert.equal(restrictedDiagnostics.status, 'pass')
+
+const exposedDiagnostics = productionDiagnosticsCheck(
+  {
+    name: 'app.version',
+    status: 'pass',
+    details: {
+      body: {
+        source: {
+          commitSha: '5363fa7699f88f2bcb974c55a4d42a6b1c7e941f',
+          branch: 'main',
+          repoOwner: 'private-owner',
+        },
+        deployment: {
+          url: 'private.vercel.app',
+        },
+      },
+    },
+  },
+  {
+    name: 'app.readiness',
+    status: 'pass',
+    details: {
+      body: {
+        checks: [
+          {
+            name: 'supabase.url',
+            status: 'pass',
+            critical: true,
+            message: 'Configured',
+            details: {
+              target: 'private-target',
+            },
+          },
+        ],
+      },
+    },
+  }
+)
+assert.equal(exposedDiagnostics.status, 'fail')
+assert.equal(exposedDiagnostics.critical, true)
 
 console.log('Live deployment self-test passed.')

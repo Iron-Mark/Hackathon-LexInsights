@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { Globe, ExternalLink, BookOpen, FileText } from 'lucide-react'
+import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { Globe, ExternalLink, BookOpen, FileText, ShieldCheck, Trash2, X } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { TermsPrivacyPanel } from './terms-privacy-panel'
+import { clearPrivateClientState } from '@/lib/store/private-client-state'
 
 interface ResourcesDialogProps {
   open: boolean
@@ -159,9 +160,17 @@ const GOVERNMENT_RESOURCES: GovernmentResource[] = [
 const ALL_CATEGORIES = 'All'
 type HelpView = 'sources' | 'terms-privacy'
 
+const HELP_TABS: Array<{ id: HelpView; label: string; panelId: string; Icon: typeof BookOpen }> = [
+  { id: 'sources', label: 'Sources', panelId: 'help-panel-sources', Icon: BookOpen },
+  { id: 'terms-privacy', label: 'Terms & Privacy', panelId: 'help-panel-terms-privacy', Icon: FileText },
+]
+
 export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
   const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES)
   const [activeView, setActiveView] = useState<HelpView>('sources')
+  const [confirmingClear, setConfirmingClear] = useState(false)
+  const [clearStatus, setClearStatus] = useState<string | null>(null)
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
 
   const handleResourceClick = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer')
@@ -196,8 +205,56 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
     if (open) {
       setSelectedCategory(ALL_CATEGORIES)
       setActiveView('sources')
+      setConfirmingClear(false)
+      setClearStatus(null)
     }
   }, [open])
+
+  const handleClearLocalData = () => {
+    clearPrivateClientState()
+    setConfirmingClear(false)
+    setClearStatus('Local chats, uploaded document selections, compliance drafts, and research caches were cleared. Your theme was kept.')
+  }
+
+  const focusTab = (index: number) => {
+    const tab = HELP_TABS[index]
+
+    if (!tab) {
+      return
+    }
+
+    setActiveView(tab.id)
+    tabRefs.current[index]?.focus()
+  }
+
+  const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const lastIndex = HELP_TABS.length - 1
+    let nextIndex: number | null = null
+
+    switch (event.key) {
+      case 'ArrowRight':
+      case 'ArrowDown':
+        nextIndex = index === lastIndex ? 0 : index + 1
+        break
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        nextIndex = index === 0 ? lastIndex : index - 1
+        break
+      case 'Home':
+        nextIndex = 0
+        break
+      case 'End':
+        nextIndex = lastIndex
+        break
+      default:
+        break
+    }
+
+    if (nextIndex !== null) {
+      event.preventDefault()
+      focusTab(nextIndex)
+    }
+  }
 
   const filterButtonClassName = (isSelected: boolean) => [
     'flex min-h-10 w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2.5 py-2 text-left text-sm transition-colors',
@@ -252,45 +309,48 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
               role="tablist"
               aria-label="Help sections"
             >
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeView === 'sources'}
-                className={[
-                  'inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-2 text-sm font-semibold leading-tight transition-colors sm:px-3',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
-                  activeView === 'sources'
-                    ? 'bg-iris-50 text-iris-800 dark:bg-iris-300/16 dark:text-iris-100'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
-                ].join(' ')}
-                onClick={() => setActiveView('sources')}
-              >
-                <BookOpen className="h-4 w-4" aria-hidden="true" />
-                Sources
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeView === 'terms-privacy'}
-                className={[
-                  'inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-2 text-sm font-semibold leading-tight transition-colors sm:px-3',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
-                  activeView === 'terms-privacy'
-                    ? 'bg-iris-50 text-iris-800 dark:bg-iris-300/16 dark:text-iris-100'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
-                ].join(' ')}
-                onClick={() => setActiveView('terms-privacy')}
-              >
-                <FileText className="h-4 w-4" aria-hidden="true" />
-                <span>Terms & Privacy</span>
-              </button>
+              {HELP_TABS.map(({ id, label, panelId, Icon }, index) => {
+                const isSelected = activeView === id
+
+                return (
+                  <button
+                    key={id}
+                    ref={(node) => {
+                      tabRefs.current[index] = node
+                    }}
+                    type="button"
+                    id={`help-tab-${id}`}
+                    role="tab"
+                    aria-selected={isSelected}
+                    aria-controls={panelId}
+                    tabIndex={isSelected ? 0 : -1}
+                    className={[
+                      'inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-2 text-sm font-semibold leading-tight transition-colors sm:px-3',
+                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
+                      isSelected
+                        ? 'bg-iris-50 text-iris-800 dark:bg-iris-300/16 dark:text-iris-100'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
+                    ].join(' ')}
+                    onClick={() => setActiveView(id)}
+                    onKeyDown={(event) => handleTabKeyDown(event, index)}
+                  >
+                    <Icon className="h-4 w-4" aria-hidden="true" />
+                    <span>{label}</span>
+                  </button>
+                )
+              })}
             </div>
           </div>
         </DialogHeader>
 
         <div className="min-h-0 max-w-full flex-1 overflow-x-hidden overflow-y-auto px-4 py-4 sm:px-7 sm:py-5">
           {activeView === 'sources' ? (
-          <div className="grid w-full max-w-full gap-6 overflow-x-hidden lg:grid-cols-[190px_minmax(0,1fr)]">
+          <div
+            id="help-panel-sources"
+            role="tabpanel"
+            aria-labelledby="help-tab-sources"
+            className="grid w-full max-w-full gap-6 overflow-x-hidden lg:grid-cols-[190px_minmax(0,1fr)]"
+          >
             <aside className="hidden lg:block">
               <div className="sticky top-0 rounded-xl border border-slate-200 bg-white p-4 dark:border-iris-300/15 dark:bg-[#241f32]">
                 <p className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Categories</p>
@@ -418,7 +478,12 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
             </div>
           </div>
           ) : (
-            <div className="space-y-6">
+            <div
+              id="help-panel-terms-privacy"
+              role="tabpanel"
+              aria-labelledby="help-tab-terms-privacy"
+              className="space-y-6"
+            >
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4 dark:border-iris-300/15">
                 <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
                   Open the public legal pages for sharing, review, or direct browser access.
@@ -444,6 +509,66 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                   </a>
                 </div>
               </div>
+              <section
+                className="border-b border-slate-200 pb-5 dark:border-iris-300/15"
+                aria-labelledby="local-data-controls"
+              >
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex min-w-0 gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-iris-50 text-iris-700 dark:bg-iris-300/12 dark:text-iris-100">
+                      <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 id="local-data-controls" className="text-sm font-bold text-slate-950 dark:text-slate-100">
+                        Local data
+                      </h3>
+                      <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                        Clear guest chats, temporary document selections, compliance drafts, and saved research results on this device.
+                      </p>
+                      {clearStatus && (
+                        <p className="mt-2 text-sm font-medium leading-6 text-emerald-700 dark:text-emerald-200" role="status">
+                          {clearStatus}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex shrink-0 flex-wrap gap-2 sm:justify-end">
+                    {confirmingClear ? (
+                      <>
+                        <button
+                          type="button"
+                          className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg bg-rose-600 px-3 text-sm font-bold text-white transition-colors hover:bg-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 dark:bg-rose-500 dark:text-white dark:hover:bg-rose-400 dark:focus-visible:ring-offset-[#171322]"
+                          onClick={handleClearLocalData}
+                        >
+                          <Trash2 className="h-4 w-4" aria-hidden="true" />
+                          Clear now
+                        </button>
+                        <button
+                          type="button"
+                          className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-3 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100 dark:focus-visible:ring-offset-[#171322]"
+                          onClick={() => setConfirmingClear(false)}
+                        >
+                          <X className="h-4 w-4" aria-hidden="true" />
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-rose-200 bg-white px-3 text-sm font-bold text-rose-700 transition-colors hover:border-rose-300 hover:bg-rose-50 hover:text-rose-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 dark:border-rose-300/20 dark:bg-[#241f32] dark:text-rose-200 dark:hover:border-rose-300/40 dark:hover:bg-rose-300/10 dark:hover:text-rose-100 dark:focus-visible:ring-offset-[#171322]"
+                        onClick={() => {
+                          setClearStatus(null)
+                          setConfirmingClear(true)
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                        Clear local data
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </section>
               <TermsPrivacyPanel />
             </div>
           )}

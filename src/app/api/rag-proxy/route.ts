@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import {
+  buildPublicApiErrorBody,
+  buildThrottleErrorBody,
+  checkPublicApiThrottle,
+  createPublicApiRequestContext,
+  getThrottleHeaders,
+  logPublicApiEvent,
+  safeEndpointPath,
+  type PublicApiRequestContext,
+  type ThrottleResult,
+} from '@/lib/server/request-guardrails'
+import {
   DEFAULT_GET_TIMEOUT_MS,
   DEFAULT_POST_TIMEOUT_MS,
   DEFAULT_RAG_API_URL,
@@ -12,7 +23,6 @@ import {
   getProxyUpstream,
   publicUpstreamHttpErrorDetail,
   publicUpstreamPayloadErrorDetail,
-  summarizeProxyLogDetail,
   validateProxyPostBody,
 } from '../../../lib/services/rag-proxy-helpers.mjs'
 
@@ -36,13 +46,31 @@ function shouldSuppressProxyLog(endpoint: string, status?: number) {
   return status === 404
 }
 
-function noStoreJson(body: unknown, status: number) {
+function noStoreJson(
+  body: unknown,
+  status: number,
+  context: PublicApiRequestContext,
+  throttle?: ThrottleResult,
+  headers: Record<string, string> = {}
+) {
   return NextResponse.json(body, {
     status,
     headers: {
       'Cache-Control': 'no-store',
+      ...(throttle ? getThrottleHeaders(throttle, context.requestId) : { 'X-Request-ID': context.requestId }),
+      ...headers,
     },
   })
+}
+
+function rateLimitedJson(context: PublicApiRequestContext, throttle: ThrottleResult) {
+  logPublicApiEvent('warn', 'public_api.rate_limited', context, {
+    limit: throttle.limit,
+    retryAfterSeconds: throttle.retryAfterSeconds,
+    route: context.route,
+  })
+
+  return noStoreJson(buildThrottleErrorBody(context, throttle), 429, context, throttle)
 }
 
 function discardUpstreamBody(response: Response) {
@@ -84,6 +112,13 @@ function readUpstreamSuccess(responseText: string): UpstreamParseResult {
  * Bypasses CORS by making server-side requests
  */
 export async function POST(request: NextRequest) {
+  const context = createPublicApiRequestContext(request, '/api/rag-proxy')
+  const throttle = checkPublicApiThrottle(context)
+
+  if (!throttle.ok) {
+    return rateLimitedJson(context, throttle)
+  }
+
   const upstream = getProxyUpstream(request.nextUrl.searchParams, '/api/research/rag-summary', RAG_API_URL)
   const timeoutMs = getProxyTimeoutMs(request.nextUrl.searchParams, DEFAULT_POST_TIMEOUT_MS, MAX_POST_TIMEOUT_MS)
   const contentLengthCheck = validateProxyContentLength(request.headers)
@@ -92,28 +127,29 @@ export async function POST(request: NextRequest) {
     const status = contentLengthCheck.status || 413
 
     return noStoreJson(
-      {
-        detail: contentLengthCheck.detail,
-        error: {
-          type: contentLengthCheck.type,
+      buildPublicApiErrorBody(
+        context,
+        contentLengthCheck.detail || 'RAG proxy request is too large.',
+        contentLengthCheck.type || 'payload_too_large',
+        {
           maxBytes: 64 * 1024,
           contentLength: contentLengthCheck.contentLength,
-        },
-      },
-      status
+        }
+      ),
+      status,
+      context,
+      throttle
     )
   }
 
   if (!upstream.upstreamUrl) {
     return noStoreJson(
-      {
-        detail: upstream.error,
-        error: {
-          type: 'invalid_endpoint',
-          endpoint: upstream.endpoint,
-        },
-      },
-      400
+      buildPublicApiErrorBody(context, upstream.error || 'Invalid RAG proxy endpoint.', 'invalid_endpoint', {
+        endpointPath: safeEndpointPath(upstream.endpoint),
+      }),
+      400,
+      context,
+      throttle
     )
   }
 
@@ -125,18 +161,22 @@ export async function POST(request: NextRequest) {
       const status = bodyCheck.status || 400
 
       return noStoreJson(
-        {
-          detail: bodyCheck.detail,
-          error: {
-            type: bodyCheck.type,
-          },
-        },
-        status
+        buildPublicApiErrorBody(
+          context,
+          bodyCheck.detail || 'Invalid RAG proxy request body.',
+          bodyCheck.type || 'invalid_request_body'
+        ),
+        status,
+        context,
+        throttle
       )
     }
 
     if (!shouldSuppressProxyLog(upstream.endpoint)) {
-      console.log(`[RAG Proxy] POST ${summarizeProxyLogDetail(upstream.endpoint)}`)
+      logPublicApiEvent('info', 'rag_proxy.request', context, {
+        endpointPath: safeEndpointPath(upstream.endpoint),
+        timeoutMs,
+      })
     }
 
     const response = await fetch(upstream.upstreamUrl, {
@@ -151,20 +191,23 @@ export async function POST(request: NextRequest) {
     if (!response.ok) {
       discardUpstreamBody(response)
       if (!shouldSuppressProxyLog(upstream.endpoint, response.status)) {
-        console.error(`[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}`)
+        logPublicApiEvent('error', 'rag_proxy.upstream_http_error', context, {
+          status: response.status,
+          endpointPath: safeEndpointPath(upstream.endpoint),
+          upstreamOrigin: upstream.upstreamOrigin,
+          timeoutMs,
+        })
       }
       return noStoreJson(
-        {
-          detail: publicUpstreamHttpErrorDetail(response.status),
-          error: {
-            type: 'upstream_http_error',
-            status: response.status,
-            endpoint: upstream.endpoint,
-            upstreamOrigin: upstream.upstreamOrigin,
-            timeoutMs,
-          },
-        },
-        response.status
+        buildPublicApiErrorBody(context, publicUpstreamHttpErrorDetail(response.status), 'upstream_http_error', {
+          status: response.status,
+          endpointPath: safeEndpointPath(upstream.endpoint),
+          upstreamOrigin: upstream.upstreamOrigin,
+          timeoutMs,
+        }),
+        response.status,
+        context,
+        throttle
       )
     }
 
@@ -173,37 +216,40 @@ export async function POST(request: NextRequest) {
 
     if (!parsed.ok) {
       return noStoreJson(
-        {
-          detail: parsed.detail,
-          error: {
-            type: 'upstream_payload_parse_error',
-            endpoint: upstream.endpoint,
-            upstreamOrigin: upstream.upstreamOrigin,
-            timeoutMs,
-          },
-        },
-        502
+        buildPublicApiErrorBody(context, parsed.detail, 'upstream_payload_parse_error', {
+          endpointPath: safeEndpointPath(upstream.endpoint),
+          upstreamOrigin: upstream.upstreamOrigin,
+          timeoutMs,
+        }),
+        502,
+        context,
+        throttle
       )
     }
 
-    return noStoreJson(parsed.data, 200)
+    return noStoreJson(parsed.data, 200, context, throttle)
   } catch (error) {
     const failure = getProxyFailure(error)
     if (!shouldSuppressProxyLog(upstream.endpoint, failure.status)) {
-      console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
+      logPublicApiEvent('error', 'rag_proxy.failed', context, {
+        type: failure.type,
+        status: failure.status,
+        endpointPath: safeEndpointPath(upstream.endpoint),
+        upstreamOrigin: upstream.upstreamOrigin,
+        timeoutMs,
+        errorName: error instanceof Error ? error.name : typeof error,
+      })
     }
 
     return noStoreJson(
-      {
-        detail: failure.detail,
-        error: {
-          type: failure.type,
-          endpoint: upstream.endpoint,
-          upstreamOrigin: upstream.upstreamOrigin,
-          timeoutMs,
-        },
-      },
-      failure.status
+      buildPublicApiErrorBody(context, failure.detail, failure.type, {
+        endpointPath: safeEndpointPath(upstream.endpoint),
+        upstreamOrigin: upstream.upstreamOrigin,
+        timeoutMs,
+      }),
+      failure.status,
+      context,
+      throttle
     )
   }
 }
@@ -212,25 +258,33 @@ export async function POST(request: NextRequest) {
  * GET proxy for health checks and other GET endpoints
  */
 export async function GET(request: NextRequest) {
+  const context = createPublicApiRequestContext(request, '/api/rag-proxy')
+  const throttle = checkPublicApiThrottle(context)
+
+  if (!throttle.ok) {
+    return rateLimitedJson(context, throttle)
+  }
+
   const upstream = getProxyUpstream(request.nextUrl.searchParams, '/api/research/health', RAG_API_URL)
   const timeoutMs = getProxyTimeoutMs(request.nextUrl.searchParams, DEFAULT_GET_TIMEOUT_MS, MAX_GET_TIMEOUT_MS)
 
   if (!upstream.upstreamUrl) {
     return noStoreJson(
-      {
-        detail: upstream.error,
-        error: {
-          type: 'invalid_endpoint',
-          endpoint: upstream.endpoint,
-        },
-      },
-      400
+      buildPublicApiErrorBody(context, upstream.error || 'Invalid RAG proxy endpoint.', 'invalid_endpoint', {
+        endpointPath: safeEndpointPath(upstream.endpoint),
+      }),
+      400,
+      context,
+      throttle
     )
   }
 
   try {
     if (!shouldSuppressProxyLog(upstream.endpoint)) {
-      console.log(`[RAG Proxy] GET ${summarizeProxyLogDetail(upstream.endpoint)}`)
+      logPublicApiEvent('info', 'rag_proxy.request', context, {
+        endpointPath: safeEndpointPath(upstream.endpoint),
+        timeoutMs,
+      })
     }
 
     const response = await fetch(upstream.upstreamUrl, {
@@ -244,20 +298,23 @@ export async function GET(request: NextRequest) {
     if (!response.ok) {
       discardUpstreamBody(response)
       if (!shouldSuppressProxyLog(upstream.endpoint, response.status)) {
-        console.error(`[RAG Proxy] Error ${response.status} from ${summarizeProxyLogDetail(upstream.endpoint)}`)
+        logPublicApiEvent('error', 'rag_proxy.upstream_http_error', context, {
+          status: response.status,
+          endpointPath: safeEndpointPath(upstream.endpoint),
+          upstreamOrigin: upstream.upstreamOrigin,
+          timeoutMs,
+        })
       }
       return noStoreJson(
-        {
-          detail: publicUpstreamHttpErrorDetail(response.status),
-          error: {
-            type: 'upstream_http_error',
-            status: response.status,
-            endpoint: upstream.endpoint,
-            upstreamOrigin: upstream.upstreamOrigin,
-            timeoutMs,
-          },
-        },
-        response.status
+        buildPublicApiErrorBody(context, publicUpstreamHttpErrorDetail(response.status), 'upstream_http_error', {
+          status: response.status,
+          endpointPath: safeEndpointPath(upstream.endpoint),
+          upstreamOrigin: upstream.upstreamOrigin,
+          timeoutMs,
+        }),
+        response.status,
+        context,
+        throttle
       )
     }
 
@@ -266,37 +323,40 @@ export async function GET(request: NextRequest) {
 
     if (!parsed.ok) {
       return noStoreJson(
-        {
-          detail: parsed.detail,
-          error: {
-            type: 'upstream_payload_parse_error',
-            endpoint: upstream.endpoint,
-            upstreamOrigin: upstream.upstreamOrigin,
-            timeoutMs,
-          },
-        },
-        502
+        buildPublicApiErrorBody(context, parsed.detail, 'upstream_payload_parse_error', {
+          endpointPath: safeEndpointPath(upstream.endpoint),
+          upstreamOrigin: upstream.upstreamOrigin,
+          timeoutMs,
+        }),
+        502,
+        context,
+        throttle
       )
     }
 
-    return noStoreJson(parsed.data, 200)
+    return noStoreJson(parsed.data, 200, context, throttle)
   } catch (error) {
     const failure = getProxyFailure(error)
     if (!shouldSuppressProxyLog(upstream.endpoint, failure.status)) {
-      console.error(`[RAG Proxy] ${failure.type}: ${failure.detail}`)
+      logPublicApiEvent('error', 'rag_proxy.failed', context, {
+        type: failure.type,
+        status: failure.status,
+        endpointPath: safeEndpointPath(upstream.endpoint),
+        upstreamOrigin: upstream.upstreamOrigin,
+        timeoutMs,
+        errorName: error instanceof Error ? error.name : typeof error,
+      })
     }
 
     return noStoreJson(
-      {
-        detail: failure.detail,
-        error: {
-          type: failure.type,
-          endpoint: upstream.endpoint,
-          upstreamOrigin: upstream.upstreamOrigin,
-          timeoutMs,
-        },
-      },
-      failure.status
+      buildPublicApiErrorBody(context, failure.detail, failure.type, {
+        endpointPath: safeEndpointPath(upstream.endpoint),
+        upstreamOrigin: upstream.upstreamOrigin,
+        timeoutMs,
+      }),
+      failure.status,
+      context,
+      throttle
     )
   }
 }

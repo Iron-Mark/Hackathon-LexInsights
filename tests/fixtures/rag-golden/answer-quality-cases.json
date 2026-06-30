@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "cases": [
+    {
+      "id": "privacy-breach-notification",
+      "query": "What should a Philippine company do after a personal data breach affecting customers?",
+      "expectedStatutes": ["NPC Circular No. 16-03", "NPC Advisory No. 2026-02", "RA 10173"],
+      "requiredFragments": ["breach", "NPC", "personal data"],
+      "minConfidence": 0.38
+    },
+    {
+      "id": "cybercrime-warrants",
+      "query": "Explain cybercrime warrant and online evidence steps for an incident response plan.",
+      "expectedStatutes": ["A.M. No. 17-11-03-SC", "Cybercrime Prevention Act IRR", "RA 10175"],
+      "requiredFragments": ["cybercrime", "warrant", "evidence"],
+      "minConfidence": 0.34
+    },
+    {
+      "id": "child-online-safety-reporting",
+      "query": "What does RA 9775 require for online child safety reporting by a platform?",
+      "expectedStatutes": ["RA 9775", "RA 11930"],
+      "requiredFragments": ["child", "report"],
+      "forbiddenStatutes": ["RA 9160"],
+      "minConfidence": 0.45
+    },
+    {
+      "id": "procurement-ra-12009",
+      "query": "Build a barangay procurement checklist under RA 12009 with bid records and supplier controls.",
+      "expectedStatutes": ["RA 12009", "RA 11032"],
+      "requiredFragments": ["procurement", "records"],
+      "minConfidence": 0.34
+    },
+    {
+      "id": "local-government-services",
+      "query": "What local government service standards apply to an LGU permit counter?",
+      "expectedStatutes": ["RA 11032", "RA 7160"],
+      "requiredFragments": ["service", "LGU"],
+      "minConfidence": 0.32
+    },
+    {
+      "id": "beneficial-ownership-sec",
+      "query": "What SEC beneficial ownership and official contact records should a corporation maintain?",
+      "expectedStatutes": ["SEC Memorandum Circular No. 15, s. 2025", "SEC Memorandum Circular No. 28, s. 2020"],
+      "requiredFragments": ["beneficial ownership", "SEC"],
+      "minConfidence": 0.32
+    },
+    {
+      "id": "dole-termination-due-process",
+      "query": "Review an employee termination process for twin notice and due process under DOLE rules.",
+      "expectedStatutes": ["DOLE Department Order No. 147-15"],
+      "requiredFragments": ["termination", "notice"],
+      "minConfidence": 0.33
+    },
+    {
+      "id": "accessibility-built-environment",
+      "query": "What accessibility controls apply to a public building and PWD access plan?",
+      "expectedStatutes": ["BP 344", "RA 7277"],
+      "requiredFragments": ["accessibility", "PWD"],
+      "minConfidence": 0.32
+    },
+    {
+      "id": "aml-covered-person",
+      "query": "What AML controls apply for covered-person registration, reporting, and customer due diligence?",
+      "expectedStatutes": ["RA 9160", "2018 AMLA IRR"],
+      "requiredFragments": ["AML", "covered"],
+      "forbiddenStatutes": ["RA 9775"],
+      "minConfidence": 0.32
+    },
+    {
+      "id": "consumer-online-transaction",
+      "query": "What controls apply to an online marketplace under the Internet Transactions Act and consumer law?",
+      "expectedStatutes": ["RA 11967", "Joint Administrative Order No. 24-03, s. 2024", "RA 7394"],
+      "requiredFragments": ["consumer", "online"],
+      "minConfidence": 0.33
+    },
+    {
+      "id": "imminent-disaster",
+      "query": "How should an LGU prepare DRRM, LDRRMF, pre-emptive evacuation, and anticipatory action for a state of imminent disaster?",
+      "expectedStatutes": ["RA 12287", "RA 10121"],
+      "requiredFragments": ["disaster", "LGU"],
+      "minConfidence": 0.32
+    },
+    {
+      "id": "unknown-citation",
+      "query": "Compare RA 999999 with RA 10173 for a privacy program.",
+      "expectedStatutes": ["RA 10173"],
+      "expectedUnknownCitations": ["999999"],
+      "requiredFragments": ["RA 999999"],
+      "minConfidence": 0.3
+    }
+  ]
+}

@@ -17,7 +17,7 @@ import { useSidebarStore } from '@/lib/store/sidebar-store'
 import type { Message } from '@/types'
 import type { DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { checkDraft, type DraftCheckerResponse, type Finding } from '@/lib/services/rag-api'
-import { AlertCircle, ChevronDown, FileText, X } from 'lucide-react'
+import { AlertCircle, ChevronDown, FileText, RefreshCw, WifiOff, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { DragDropOverlay } from './drag-drop-overlay'
@@ -44,6 +44,14 @@ import {
 
 interface ChatContainerProps {
   messages: Message[]
+}
+
+interface FailedChatTurn {
+  id: string
+  chatId: string
+  query: string
+  failedAt: string
+  reason: string
 }
 
 const MIN_THINKING_DURATION_MS = 700
@@ -83,6 +91,22 @@ function formatAnalysisDate() {
 
 function clampCanvasWidthPercent(value: number) {
   return Math.min(MAX_CANVAS_WIDTH_PERCENT, Math.max(MIN_CANVAS_WIDTH_PERCENT, value))
+}
+
+function isBrowserOffline() {
+  return typeof navigator !== 'undefined' && navigator.onLine === false
+}
+
+function getFriendlyRecoveryMessage(reason?: string) {
+  if (isBrowserOffline()) {
+    return 'You are offline. Reconnect, then retry this message.'
+  }
+
+  if (reason?.toLowerCase().includes('websocket')) {
+    return 'The live connection paused before this message finished. Retry when your connection is steady.'
+  }
+
+  return 'This message did not finish sending. Check your connection and retry.'
 }
 
 function formatFindings(title: string, findings: Finding[]) {
@@ -216,6 +240,63 @@ function buildDeepSearchOnlyReport(fileName: string, query: string) {
 Deep Search results are available in the section above. For a full local draft check, upload a plain text, Markdown, PDF, or Word file.`
 }
 
+function FailedSendRecovery({
+  turn,
+  onRetry,
+  onDismiss,
+}: {
+  turn: FailedChatTurn
+  onRetry: (turn: FailedChatTurn) => void
+  onDismiss: (turn: FailedChatTurn) => void
+}) {
+  return (
+    <div className="mb-4 space-y-3" data-send-recovery="true">
+      <div className="flex justify-end">
+        <div className="max-w-[85%] rounded-2xl rounded-br-md bg-iris-600 px-4 py-3 text-white shadow-sm dark:bg-iris-500 dark:text-white sm:max-w-[75%]">
+          <p className="whitespace-pre-wrap break-words text-sm leading-6">{turn.query}</p>
+        </div>
+      </div>
+      <div className="flex justify-start">
+        <div
+          className="w-full max-w-xl rounded-xl border border-rose-200 bg-rose-50/80 px-4 py-3 text-rose-950 dark:border-rose-300/25 dark:bg-rose-300/10 dark:text-rose-100"
+          role="alert"
+          aria-live="polite"
+        >
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-rose-700 ring-1 ring-rose-200 dark:bg-[#241f32] dark:text-rose-200 dark:ring-rose-300/20">
+              <WifiOff className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-bold leading-5">Message not sent</p>
+              <p className="mt-1 text-sm leading-6 text-rose-800 dark:text-rose-100/85">{turn.reason}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  className="min-h-10 bg-rose-600 text-white hover:bg-rose-700 dark:bg-rose-500 dark:text-white dark:hover:bg-rose-400"
+                  onClick={() => onRetry(turn)}
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Retry
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="min-h-10 text-rose-800 hover:bg-rose-100 hover:text-rose-950 dark:text-rose-100 dark:hover:bg-rose-300/10 dark:hover:text-white"
+                  onClick={() => onDismiss(turn)}
+                >
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function ChatContainer({ messages: initialMessages }: ChatContainerProps) {
   const { mode } = useChatModeStore()
   const { user } = useAuthStore()
@@ -247,8 +328,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const [canvasWidthPercent, setCanvasWidthPercent] = useState(DEFAULT_CANVAS_WIDTH_PERCENT)
   const [isResizingCanvas, setIsResizingCanvas] = useState(false)
   const [pendingTurns, setPendingTurns] = useState<Array<PendingChatTurn & { chatId: string }>>([])
+  const [failedTurns, setFailedTurns] = useState<FailedChatTurn[]>([])
   const [revealingMessageIds, setRevealingMessageIds] = useState<Set<string>>(() => new Set())
   const pendingRAGTargetRef = useRef<{ query: string; chatId: string; startedAt: number } | null>(null)
+  const suppressedFailedQueriesRef = useRef<Set<string>>(new Set())
   const checkedRAGHealthRef = useRef(false)
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const splitContainerRef = useRef<HTMLDivElement | null>(null)
@@ -271,15 +354,6 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
     const newChat = await createChat(fallbackTitle)
     return newChat.id
-  }
-
-  const runRAGQuery = (query: string) => {
-    if (mode === 'compliance' && wsConnected) {
-      sendWebSocketQuery(query, user?.id)
-      return
-    }
-
-    void submitQuery(query, user?.id)
   }
 
   const addPendingTurn = useCallback((chatId: string, query: string) => {
@@ -307,6 +381,73 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       currentTurns.filter((turn) => !(turn.chatId === chatId && turn.query === query))
     )
   }, [])
+
+  const markTurnFailed = useCallback((chatId: string, query: string, reason: string) => {
+    const failedTurn: FailedChatTurn = {
+      id: `failed_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
+      chatId,
+      query,
+      failedAt: new Date().toISOString(),
+      reason: getFriendlyRecoveryMessage(reason),
+    }
+
+    suppressedFailedQueriesRef.current.add(query)
+    removePendingTurn(chatId, query)
+
+    const pendingTarget = pendingRAGTargetRef.current
+    if (pendingTarget?.chatId === chatId && pendingTarget.query === query) {
+      pendingRAGTargetRef.current = null
+    }
+
+    setFailedTurns((currentTurns) => [
+      ...currentTurns.filter((turn) => !(turn.chatId === chatId && turn.query === query)),
+      failedTurn,
+    ])
+  }, [removePendingTurn])
+
+  const removeFailedTurn = useCallback((chatId: string, query: string) => {
+    suppressedFailedQueriesRef.current.delete(query)
+    setFailedTurns((currentTurns) =>
+      currentTurns.filter((turn) => !(turn.chatId === chatId && turn.query === query))
+    )
+  }, [])
+
+  const runRAGQuery = useCallback((query: string) => {
+    if (isBrowserOffline()) {
+      const pendingTarget = pendingRAGTargetRef.current
+
+      if (pendingTarget?.query === query) {
+        markTurnFailed(pendingTarget.chatId, query, 'offline')
+      }
+
+      return
+    }
+
+    if (mode === 'compliance' && wsConnected) {
+      sendWebSocketQuery(query, user?.id)
+      return
+    }
+
+    void submitQuery(query, user?.id).catch((error) => {
+      const pendingTarget = pendingRAGTargetRef.current
+
+      if (pendingTarget?.query === query) {
+        markTurnFailed(
+          pendingTarget.chatId,
+          query,
+          error instanceof Error ? error.message : 'network'
+        )
+      }
+    })
+  }, [markTurnFailed, mode, sendWebSocketQuery, submitQuery, user?.id, wsConnected])
+
+  const retryFailedTurn = useCallback((turn: FailedChatTurn) => {
+    clearError()
+    removeFailedTurn(turn.chatId, turn.query)
+    pendingRAGTargetRef.current = { query: turn.query, chatId: turn.chatId, startedAt: Date.now() }
+    addPendingTurn(turn.chatId, turn.query)
+    runRAGQuery(turn.query)
+  }, [addPendingTurn, clearError, removeFailedTurn, runRAGQuery])
 
   const removeRevealingMessage = useCallback((messageId: string) => {
     setRevealingMessageIds((currentIds) => {
@@ -370,7 +511,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const visiblePendingTurns = activeChat
     ? pendingTurns.filter((turn) => turn.chatId === activeChat.id)
     : []
-  const hasMessages = messages.length > 0 || visiblePendingTurns.length > 0
+  const visibleFailedTurns = activeChat
+    ? failedTurns.filter((turn) => turn.chatId === activeChat.id)
+    : []
+  const hasMessages = messages.length > 0 || visiblePendingTurns.length > 0 || visibleFailedTurns.length > 0
 
   const updateScrollToBottomVisibility = useCallback(() => {
     const container = scrollContainerRef.current
@@ -536,6 +680,22 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   }, [activeChat, chatMessages, fetchMessages])
 
   useEffect(() => {
+    const handleOffline = () => {
+      const pendingTarget = pendingRAGTargetRef.current
+
+      if (pendingTarget) {
+        markTurnFailed(pendingTarget.chatId, pendingTarget.query, 'offline')
+      }
+    }
+
+    window.addEventListener('offline', handleOffline)
+
+    return () => {
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [markTurnFailed])
+
+  useEffect(() => {
     const container = scrollContainerRef.current
 
     if (!container) {
@@ -566,6 +726,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     loadingMessages,
     messages.length,
     visiblePendingTurns.length,
+    visibleFailedTurns.length,
     isProcessing,
     updateScrollToBottomVisibility,
   ])
@@ -575,7 +736,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     const nextState = {
       conversationKey,
       messageCount: messages.length,
-      pendingCount: visiblePendingTurns.length,
+      pendingCount: visiblePendingTurns.length + visibleFailedTurns.length,
     }
     const previousState = scrollStateRef.current
     const conversationChanged = previousState.conversationKey !== conversationKey
@@ -641,7 +802,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
     scrollStateRef.current = nextState
     window.requestAnimationFrame(updateScrollToBottomVisibility)
-  }, [activeChat?.id, messages.length, visiblePendingTurns.length, updateScrollToBottomVisibility])
+  }, [activeChat?.id, messages.length, visiblePendingTurns.length, visibleFailedTurns.length, updateScrollToBottomVisibility])
 
   useEffect(() => {
     if (mode !== 'compliance') {
@@ -750,18 +911,38 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
       if (chatId) {
         pendingRAGTargetRef.current = { query, chatId, startedAt: Date.now() }
+        removeFailedTurn(chatId, query)
         addPendingTurn(chatId, query)
+
+        if (isBrowserOffline()) {
+          markTurnFailed(chatId, query, 'offline')
+        }
       }
     }
 
     return addChatEventListener(CHAT_EVENTS.querySubmitted, handleQuerySubmit)
-  }, [addPendingTurn])
+  }, [addPendingTurn, markTurnFailed, removeFailedTurn])
+
+  useEffect(() => {
+    if (!error) {
+      return
+    }
+
+    const pendingTarget = pendingRAGTargetRef.current
+    if (pendingTarget) {
+      markTurnFailed(pendingTarget.chatId, pendingTarget.query, error)
+    }
+  }, [error, markTurnFailed])
 
   // Persist RAG responses into the active chat when the RAG store completes a query.
   useEffect(() => {
     const handleRAGResponse = (event: CustomEvent<RAGResponseEventDetail>) => {
       const { query, response } = event.detail
       const pendingTarget = pendingRAGTargetRef.current
+
+      if (suppressedFailedQueriesRef.current.has(query)) {
+        return
+      }
 
       if (pendingTarget?.query === query) {
         pendingRAGTargetRef.current = null
@@ -948,7 +1129,9 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                   <div className="flex items-start gap-2">
                     <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
                     <div className="flex-1">
-                      <p className="font-body text-sm text-red-800 dark:text-red-200">{error}</p>
+                      <p className="font-body text-sm text-red-800 dark:text-red-200">
+                        {getFriendlyRecoveryMessage(error)}
+                      </p>
                       <Button
                         onClick={handleRetry}
                         variant="outline"
@@ -985,6 +1168,14 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                       revealingMessageIds={revealingMessageIds}
                       onMessageRevealComplete={removeRevealingMessage}
                     />
+                    {visibleFailedTurns.map((turn) => (
+                      <FailedSendRecovery
+                        key={turn.id}
+                        turn={turn}
+                        onRetry={retryFailedTurn}
+                        onDismiss={(failedTurn) => removeFailedTurn(failedTurn.chatId, failedTurn.query)}
+                      />
+                    ))}
                     
                     <AnimatePresence>
                       {isProcessing && (

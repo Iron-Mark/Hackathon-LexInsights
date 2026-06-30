@@ -360,6 +360,53 @@ function publicCheckDetails(check) {
   }
 }
 
+function productionDiagnosticsCheck(version, readiness) {
+  const issues = []
+  const versionBody = version?.details?.body
+  const readinessBody = readiness?.details?.body
+
+  if (!version || version.status !== 'pass') {
+    return {
+      name: 'app.production_diagnostics',
+      status: 'skip',
+      critical: false,
+      message: 'Skipped because /api/version did not pass.',
+    }
+  }
+
+  if (versionBody && typeof versionBody === 'object') {
+    if (versionBody.source?.branch || versionBody.source?.repoOwner || versionBody.source?.repoSlug) {
+      issues.push('/api/version exposed source branch or repository fields without the diagnostics token.')
+    }
+
+    if (versionBody.deployment?.details !== 'restricted') {
+      issues.push('/api/version did not keep deployment details restricted for the public response.')
+    }
+  }
+
+  if (readiness && readiness.status === 'pass' && readinessBody && typeof readinessBody === 'object') {
+    const checks = Array.isArray(readinessBody.checks) ? readinessBody.checks : []
+    const detailedChecks = checks.filter((check) => check?.details || check?.target)
+
+    if (detailedChecks.length > 0) {
+      issues.push('/api/readiness exposed detailed check payloads without the diagnostics token.')
+    }
+  }
+
+  return {
+    name: 'app.production_diagnostics',
+    status: issues.length === 0 ? 'pass' : 'fail',
+    critical: true,
+    message:
+      issues.length === 0
+        ? 'Public production diagnostics are restricted.'
+        : `${issues.length} public diagnostics restriction issue(s) found.`,
+    details: {
+      issues,
+    },
+  }
+}
+
 async function run() {
   const args = parseArgs(process.argv.slice(2))
   const baseUrl = safeUrl(args.baseUrl)
@@ -380,14 +427,19 @@ async function run() {
       route.expectedStatuses
     )
   )
-  const backendChecks = args.sourceOnly ? [] : await providerAwareBackendChecks(baseUrl, args.timeoutMs)
-
-  const checks = await Promise.all([
+  const routeAndLocalChecks = await Promise.all([
     ...localChecks,
     ...routeChecks,
-    versionCheck(baseUrl, args.timeoutMs, expectedSha),
-    ...backendChecks,
   ])
+  const version = await versionCheck(baseUrl, args.timeoutMs, expectedSha)
+  const backendChecks = args.sourceOnly ? [] : await providerAwareBackendChecks(baseUrl, args.timeoutMs)
+  const readiness = backendChecks.find((check) => check.name === 'app.readiness')
+  const checks = [
+    ...routeAndLocalChecks,
+    version,
+    ...backendChecks,
+    productionDiagnosticsCheck(version, readiness),
+  ]
 
   const ready = checks.every((check) => !check.critical || check.status === 'pass')
   const result = {
@@ -447,6 +499,7 @@ export {
   compareSha,
   gitWorktreeCheck,
   parseArgs,
+  productionDiagnosticsCheck,
   publicCheckDetails,
   safeUrl,
 }

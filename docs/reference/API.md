@@ -4,6 +4,16 @@ LexInsights uses a small set of internal Next.js routes, an optional remote RAG 
 
 ## Internal Routes
 
+Public internal routes include an `X-Request-ID` response header. If a request supplies a valid `X-Request-ID`, the route reuses it; otherwise the route generates one. Public error bodies include the same request ID so reports can be matched with server logs without logging user prompts, extracted text, file contents, tokens, secrets, raw IP addresses, email addresses, or phone numbers.
+
+`/api/rag-proxy` and `/api/document-text` use lightweight in-memory per-client/per-route throttling. These limits are best-effort controls for a single running server instance, not a distributed quota system. Throttled responses use HTTP `429` with `Retry-After`, `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`, and `X-Request-ID` headers.
+
+Current default throttle windows:
+
+- `GET /api/rag-proxy`: 120 requests per minute.
+- `POST /api/rag-proxy`: 30 requests per minute.
+- `POST /api/document-text`: 12 requests per minute.
+
 ### `GET /api/version`
 
 Returns app identity, package version, current deployment metadata, and optional commit comparison.
@@ -46,11 +56,25 @@ Example:
 curl "http://localhost:3000/api/rag-proxy?endpoint=/api/research/health"
 ```
 
+Stable error response shape:
+
+```json
+{
+  "detail": "Too many requests. Try again shortly.",
+  "error": {
+    "type": "rate_limited",
+    "requestId": "req_...",
+    "route": "/api/rag-proxy",
+    "retryAfterSeconds": 12
+  }
+}
+```
+
 ### `POST /api/rag-proxy`
 
 Default upstream endpoint: `/api/research/rag-summary`.
 
-The route accepts JSON research objects with `query`, optional `user_id`, and optional `use_deep_search`. Requests are limited to 64KB, queries are limited to 4,000 characters, and unknown fields are dropped before forwarding. Upstream HTTP errors and malformed upstream payloads are converted into stable JSON errors.
+The route accepts JSON research objects with `query`, optional `user_id`, and optional `use_deep_search`. Requests are limited to 64KB, queries are limited to 4,000 characters, and unknown fields are dropped before forwarding. Upstream HTTP errors and malformed upstream payloads are converted into stable JSON errors. Public errors include a type and request ID, but do not echo the query.
 
 ### `POST /api/document-text`
 
@@ -75,6 +99,23 @@ Response:
 ```
 
 Text and Markdown files are read in the browser and do not call this route.
+
+Stable error response shape:
+
+```json
+{
+  "error": "Maximum document size is 5MB.",
+  "detail": "Maximum document size is 5MB.",
+  "details": {
+    "type": "document_too_large",
+    "requestId": "req_...",
+    "fileSize": 6291457,
+    "maxSize": 5242880
+  }
+}
+```
+
+Document extraction errors may include safe metadata such as MIME type or byte size. They do not include uploaded file names, extracted text, or file contents.
 
 ## RAG Service Contracts
 

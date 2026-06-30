@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ArrowRight, Building2, FileSearch, Recycle, ShieldCheck } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
 import { useFileUploadStore } from '@/lib/store/file-upload-store'
@@ -20,6 +20,8 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
   const { uploadedFiles } = useFileUploadStore()
   const [greeting, setGreeting] = useState('')
   const [isHydrated, setIsHydrated] = useState(false)
+  const prefersReducedMotion = useReducedMotion()
+  const shouldReduceMotion = !isHydrated || Boolean(prefersReducedMotion)
 
   useEffect(() => {
     setIsHydrated(true)
@@ -121,19 +123,22 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
     },
   } as const
 
+  const fadeInitial = { opacity: 0 }
+  const visibleAnimation = shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }
+
   return (
     <div className={cn('pointer-events-auto mx-auto w-full px-4 text-center', compact ? 'max-w-md' : 'max-w-3xl')}>
       {/* Minimal Greeting */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        initial={fadeInitial}
+        animate={visibleAnimation}
+        transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.4 }}
         className="mx-auto max-w-2xl space-y-1.5 sm:space-y-2"
       >
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
+          transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.1 }}
           className={cn(
             'font-bold leading-[1.05] text-slate-950 drop-shadow-[0_1px_0_rgba(255,255,255,0.78)] dark:text-slate-100 dark:drop-shadow-none',
             compact ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
@@ -145,7 +150,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
+          transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.2 }}
           className="mx-auto max-w-md text-sm font-medium leading-5 text-slate-600 sm:text-base dark:text-slate-400"
         >
           {mode === 'compliance' 
@@ -157,7 +162,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.25 }}
+            transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.25 }}
             className="text-xs text-slate-500 dark:text-slate-400"
           >
             Guest document checks are temporary and are not saved to an account.
@@ -168,9 +173,9 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
       {/* Show uploaded files in compliance mode */}
       {mode === 'compliance' && uploadedFiles.length > 0 && (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
+          initial={fadeInitial}
+          animate={visibleAnimation}
+          transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.25 }}
           className="mt-7"
         >
           <UploadedFilesList />
@@ -182,7 +187,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.3 }}
           className="mt-9 grid gap-3"
         >
           {suggestedPrompts.map(({ prompt, eyebrow, scope, icon: Icon, tone }, index) => {
@@ -191,16 +196,16 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
             return (
             <motion.button
               key={index}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + index * 0.035, duration: 0.2 }}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.985 }}
+              initial={fadeInitial}
+              animate={visibleAnimation}
+              transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.2 + index * 0.035, duration: 0.2 }}
+              whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+              whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
               onClick={() => onPromptSelect(prompt)}
               disabled={!isHydrated}
               className={cn(
                 'group relative flex min-h-16 w-full gap-3 overflow-hidden rounded-md border px-3.5 py-3 text-left shadow-sm ring-1 ring-white/70 backdrop-blur transition-all duration-200',
-                'hover:-translate-y-0.5 hover:shadow-md hover:shadow-iris-950/10 active:translate-y-0 active:shadow-sm',
+                'hover:-translate-y-0.5 hover:shadow-md hover:shadow-iris-950/10 active:translate-y-0 active:shadow-sm motion-reduce:hover:translate-y-0',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
                 'disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-sm',
                 styles.card
@@ -208,7 +213,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
             >
               <span
                 className={cn(
-                  'flex h-10 w-10 shrink-0 items-center justify-center rounded-md ring-1 transition-all duration-200 group-hover:scale-105 max-[430px]:hidden',
+                  'flex h-10 w-10 shrink-0 items-center justify-center rounded-md ring-1 transition-all duration-200 group-hover:scale-105 motion-reduce:group-hover:scale-100 max-[430px]:hidden',
                   styles.icon
                 )}
               aria-hidden="true"
@@ -244,7 +249,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
               </span>
               <span
                 className={cn(
-                  'ml-2 flex h-10 w-10 shrink-0 self-center items-center justify-center opacity-75 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 max-[430px]:ml-1 max-[430px]:h-8 max-[430px]:w-8',
+                  'ml-2 flex h-10 w-10 shrink-0 self-center items-center justify-center opacity-75 transition-all duration-200 group-hover:translate-x-1 group-hover:opacity-100 motion-reduce:group-hover:translate-x-0 max-[430px]:ml-1 max-[430px]:h-8 max-[430px]:w-8',
                   styles.arrow
                 )}
                 aria-hidden="true"

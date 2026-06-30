@@ -9,15 +9,18 @@ npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm run check:docs:self-test
 npm run check:docs
+node scripts/check-readme-screenshots.mjs
 ```
 
 ## Build
 
 ```powershell
 npm run build
+node scripts/check-production-bundle.mjs
 ```
 
 The build uses [build-with-metadata.mjs](../../scripts/build-with-metadata.mjs) so deployment metadata can be surfaced by `/api/version`.
+The bundle check reads the completed `.next` output and fails on oversized generated assets or static chunks. It warns when providerless local RAG corpus markers appear in client chunks; use `--strict-client-rag` for releases that must be remote-only in the browser.
 
 ## Readiness
 
@@ -80,9 +83,12 @@ The release integrity check verifies SemVer formatting, package-lock version syn
 Against production:
 
 ```powershell
-npm run check:deployment -- --base-url https://lexiph.vercel.app
-npm run check:live -- --base-url https://lexiph.vercel.app
+$sha = (git rev-parse HEAD).Trim()
+npm run check:deployment -- --base-url https://lexiph.vercel.app --expect-sha $sha
+npm run check:live -- --base-url https://lexiph.vercel.app --expect-sha $sha
 ```
+
+Before deploying a commit that is not live yet, use `npm run check:deployment -- --base-url https://lexiph.vercel.app --local-only` so the preflight does not compare production to a future SHA.
 
 ## Release Tag Check
 
@@ -111,3 +117,10 @@ npm run check:local
 ```
 
 This is intentionally broad: lint, typecheck, production dependency audit, docs checks, readiness self-tests, deployment self-tests, RAG proxy self-test, providerless self-test, local RAG golden-query check, answer-quality check, source-freshness check, performance check, governance check, document text self-test, document extraction self-test, release integrity checks, PWA check, build, and browser smoke.
+
+Suggested package aliases for the new standalone maintenance checks, if `package.json` is open for script changes later:
+
+```json
+"check:screenshots": "node scripts/check-readme-screenshots.mjs",
+"check:bundle": "node scripts/check-production-bundle.mjs"
+```
