@@ -60,15 +60,15 @@ assert.equal(versionFromTag('0.3.0'), null)
 assert.equal(versionFromTag('release-v0.3.0'), null)
 
 const goodPackageJson = {
-  name: 'LexInSight',
+  name: 'LexInsights',
   version: '0.3.0',
 }
 const goodPackageLock = {
-  name: 'LexInSight',
+  name: 'LexInsights',
   version: '0.3.0',
   packages: {
     '': {
-      name: 'LexInSight',
+      name: 'LexInsights',
       version: '0.3.0',
     },
   },
@@ -81,7 +81,7 @@ const driftChecks = packageVersionChecks(goodPackageJson, {
   version: '0.2.0',
   packages: {
     '': {
-      name: 'LexInSight',
+      name: 'LexInsights',
       version: '0.2.0',
     },
   },
@@ -90,9 +90,9 @@ assert.equal(getCheck(driftChecks, 'package_lock.version_sync').status, 'fail')
 assert.equal(getCheck(driftChecks, 'package_lock.root_version_sync').status, 'fail')
 
 const invalidVersionChecks = packageVersionChecks(
-  { name: 'LexInSight', version: 'v0.3.0' },
+  { name: 'LexInsights', version: 'v0.3.0' },
   {
-    name: 'LexInSight',
+    name: 'LexInsights',
     version: 'v0.3.0',
     packages: {
       '': {

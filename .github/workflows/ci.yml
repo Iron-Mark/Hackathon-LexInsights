@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   app:
-    name: LexInSight app gates
+    name: LexInsights app gates
     runs-on: ubuntu-latest
 
     env:

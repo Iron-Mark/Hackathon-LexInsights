@@ -74,7 +74,7 @@ const details = publicCheckDetails({
       vercelId: 'private-region-id',
     },
     body: {
-      app: 'LexInSight',
+      app: 'LexInsights',
       packageVersion: '0.1.0',
       summary: 'Ready',
       secret: 'secret-value',
@@ -89,7 +89,7 @@ const details = publicCheckDetails({
 })
 
 assert.equal(details.responseStatus, 200)
-assert.equal(details.body.app, 'LexInSight')
+assert.equal(details.body.app, 'LexInsights')
 assert.equal(details.body.secret, undefined)
 assert.equal(details.commitMatches, true)
 assertNoSensitiveMarkers(details)

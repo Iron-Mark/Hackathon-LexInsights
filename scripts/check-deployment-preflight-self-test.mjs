@@ -233,7 +233,7 @@ const publicBody = publicDetails({
     actualSha: 'b13673820a4677fe838e6b9052eb97bc5dbf9175',
     commitMatches: true,
     body: {
-      app: 'LexInSight',
+      app: 'LexInsights',
       packageVersion: '0.1.0',
       secret: 'do-not-include',
       source: {
@@ -246,7 +246,7 @@ const publicBody = publicDetails({
   },
 })
 assert.equal(publicBody.body.secret, undefined)
-assert.equal(publicBody.body.app, 'LexInSight')
+assert.equal(publicBody.body.app, 'LexInsights')
 assert.equal(publicBody.commitMatches, true)
 
 console.log('Deployment preflight self-test passed.')

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lexinsight-pwa-v2'
+const CACHE_NAME = 'lexinsights-pwa-v2'
 const OFFLINE_URL = '/offline'
 const APP_SHELL_URLS = [
   '/',

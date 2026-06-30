@@ -634,7 +634,7 @@ async function run() {
   if (args.json) {
     console.log(JSON.stringify(result, null, 2))
   } else {
-    console.log(`LexInSight readiness: ${ready ? 'ready' : 'blocked'}`)
+    console.log(`LexInsights readiness: ${ready ? 'ready' : 'blocked'}`)
     console.log(`Checked at: ${result.checkedAt}`)
 
     for (const check of checks) {

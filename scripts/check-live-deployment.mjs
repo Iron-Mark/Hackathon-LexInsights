@@ -397,7 +397,7 @@ async function run() {
   if (args.json) {
     console.log(JSON.stringify(result, null, 2))
   } else {
-    console.log(`LexInSight live deployment: ${ready ? 'ready' : 'blocked'}`)
+    console.log(`LexInsights live deployment: ${ready ? 'ready' : 'blocked'}`)
     console.log(`Base URL: ${result.baseUrl}`)
     console.log(`Expected commit: ${expectedSha || 'not available'}`)
     console.log(`Mode: ${result.mode}`)

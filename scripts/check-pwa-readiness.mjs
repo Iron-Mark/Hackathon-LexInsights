@@ -37,8 +37,8 @@ function readPngSize(relativePath) {
 }
 
 const manifest = readProjectFile('src/app/manifest.ts')
-assertIncludes(manifest, "name: 'LexInSight'", 'PWA manifest')
-assertIncludes(manifest, "short_name: 'LexInSight'", 'PWA manifest')
+assertIncludes(manifest, "name: 'LexInsights'", 'PWA manifest')
+assertIncludes(manifest, "short_name: 'LexInsights'", 'PWA manifest')
 assertIncludes(manifest, "start_url: '/'", 'PWA manifest')
 assertIncludes(manifest, "display: 'standalone'", 'PWA manifest')
 assertIncludes(manifest, "scope: '/'", 'PWA manifest')
@@ -61,7 +61,7 @@ assertIncludes(registration, "scope: '/'", 'Service worker registration componen
 assertIncludes(registration, "updateViaCache: 'none'", 'Service worker registration component')
 
 const serviceWorker = readProjectFile('public/sw.js')
-assertIncludes(serviceWorker, "const CACHE_NAME = 'lexinsight-pwa-v2'", 'Service worker')
+assertIncludes(serviceWorker, "const CACHE_NAME = 'lexinsights-pwa-v2'", 'Service worker')
 assertMatches(serviceWorker, /self\.addEventListener\('install'/, 'Service worker must handle install')
 assertMatches(serviceWorker, /self\.addEventListener\('activate'/, 'Service worker must handle activate')
 assertMatches(serviceWorker, /self\.addEventListener\('fetch'/, 'Service worker must handle fetch')
@@ -74,7 +74,7 @@ assertIncludes(serviceWorker, "'/manifest.webmanifest'", 'Service worker app she
 const installButton = readProjectFile('src/components/pwa/install-app-button.tsx')
 assertIncludes(installButton, 'beforeinstallprompt', 'Install button')
 assertIncludes(installButton, 'appinstalled', 'Install button')
-assertIncludes(installButton, 'Install LexInSight', 'Install button')
+assertIncludes(installButton, 'Install LexInsights', 'Install button')
 
 const offlinePage = readProjectFile('src/app/offline/page.tsx')
 assertIncludes(offlinePage, 'OfflineActions', 'Offline page')

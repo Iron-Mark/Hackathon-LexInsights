@@ -280,7 +280,7 @@ function printReport(report, json) {
     return
   }
 
-  console.log(`LexInSight release integrity: ${report.ok ? 'pass' : 'fail'}`)
+  console.log(`LexInsights release integrity: ${report.ok ? 'pass' : 'fail'}`)
   console.log(report.summary)
 
   for (const check of report.checks) {
