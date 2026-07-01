@@ -215,19 +215,19 @@ export function TermsPrivacyPanel({
   return (
     <div className="space-y-8">
       {showIntro && (
-        <section className="border-b border-slate-200 pb-6 dark:border-iris-300/15">
+        <section className="border-b border-[#8A82DC]/70 pb-6 dark:border-iris-300/15">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-iris-50 text-iris-700 dark:bg-iris-400/10 dark:text-iris-200">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EFECFF] text-iris-800 dark:bg-iris-400/10 dark:text-iris-200">
               <FileText className="h-5 w-5" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
+              <p className="text-xs font-bold uppercase text-slate-700 dark:text-slate-400">
                 Terms & Privacy
               </p>
               <h3 className="mt-1 text-lg font-bold leading-tight text-slate-950 dark:text-slate-100">
                 Combined service terms and privacy notice
               </h3>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-700 dark:text-slate-300">
                 Last updated {LAST_UPDATED}. This summary explains how LexInsights should be used and how the
                 app handles information while supporting Philippine legal research and compliance workflows.
               </p>
@@ -241,17 +241,17 @@ export function TermsPrivacyPanel({
           {policyHighlights.map(({ icon: Icon, title, text }) => (
             <div
               key={title}
-              className="border-l border-slate-200 pl-4 first:border-l-0 first:pl-0 dark:border-iris-300/15"
+              className="border-l border-[#8A82DC]/70 pl-4 first:border-l-0 first:pl-0 dark:border-iris-300/15"
             >
               <Icon className="h-5 w-5 text-iris-700 dark:text-iris-200" aria-hidden="true" />
               <h4 className="mt-3 text-sm font-bold text-slate-950 dark:text-slate-100">{title}</h4>
-              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{text}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">{text}</p>
             </div>
           ))}
         </section>
       )}
 
-      <section className="scroll-mt-8 border-t border-slate-200 pt-7 dark:border-iris-300/15" aria-labelledby="terms-heading">
+      <section className="scroll-mt-8 border-t border-[#8A82DC]/70 pt-7 dark:border-iris-300/15" aria-labelledby="terms-heading">
         <div className="mb-4 grid gap-2 md:grid-cols-[13rem_1fr] md:gap-6">
           <div className="flex items-center gap-3">
             <span className="text-xs font-extrabold text-iris-700 dark:text-iris-200">01</span>
@@ -259,24 +259,24 @@ export function TermsPrivacyPanel({
               Terms of Service
             </h3>
           </div>
-          <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">
+          <p className="text-sm leading-6 text-slate-700 dark:text-slate-400">
             Rules for access, user content, generated output, acceptable use, and Philippine governing law.
           </p>
         </div>
-        <div className="divide-y divide-slate-200 dark:divide-iris-300/15">
+        <div className="divide-y divide-[#8A82DC]/60 dark:divide-iris-300/15">
           {termsSections.map((section) => (
             <article
               key={section.title}
               className="grid gap-2 py-5 md:grid-cols-[13rem_1fr] md:gap-6"
             >
               <h4 className="text-base font-extrabold text-slate-950 dark:text-slate-100">{section.title}</h4>
-              <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">{section.body}</p>
+              <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">{section.body}</p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="scroll-mt-8 border-t border-slate-200 pt-7 dark:border-iris-300/15" aria-labelledby="privacy-heading">
+      <section className="scroll-mt-8 border-t border-[#8A82DC]/70 pt-7 dark:border-iris-300/15" aria-labelledby="privacy-heading">
         <div className="mb-4 grid gap-2 md:grid-cols-[13rem_1fr] md:gap-6">
           <div className="flex items-center gap-3">
             <span className="text-xs font-extrabold text-iris-700 dark:text-iris-200">02</span>
@@ -284,11 +284,11 @@ export function TermsPrivacyPanel({
               Privacy Policy
             </h3>
           </div>
-          <p className="text-sm leading-6 text-slate-500 dark:text-slate-400">
+          <p className="text-sm leading-6 text-slate-700 dark:text-slate-400">
             How LexInsights handles account, chat, document, provider, retention, and data subject rights.
           </p>
         </div>
-        <div className="divide-y divide-slate-200 dark:divide-iris-300/15">
+        <div className="divide-y divide-[#8A82DC]/60 dark:divide-iris-300/15">
           {privacySections.map(({ icon: Icon, title, body }) => (
             <article
               key={title}
@@ -298,7 +298,7 @@ export function TermsPrivacyPanel({
                 <Icon className="h-5 w-5 shrink-0 text-iris-700 dark:text-iris-200" aria-hidden="true" />
                 <h4 className="text-base font-extrabold text-slate-950 dark:text-slate-100">{title}</h4>
               </div>
-              <div className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+              <div className="text-sm leading-6 text-slate-700 dark:text-slate-300">
                 <p>{body}</p>
                 {title === 'Privacy contact' && (
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -306,7 +306,7 @@ export function TermsPrivacyPanel({
                       href={PORTFOLIO_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-10 items-center rounded-lg border border-slate-200 px-3 text-sm font-semibold text-iris-700 transition-colors hover:border-iris-300 hover:bg-iris-50 hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+                      className="inline-flex min-h-10 items-center rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-3 text-sm font-semibold text-iris-800 transition-colors hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
                     >
                       Maintainer portfolio
                     </a>
@@ -314,7 +314,7 @@ export function TermsPrivacyPanel({
                       href={`${REPOSITORY_URL}/issues`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-10 items-center rounded-lg border border-slate-200 px-3 text-sm font-semibold text-iris-700 transition-colors hover:border-iris-300 hover:bg-iris-50 hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+                      className="inline-flex min-h-10 items-center rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-3 text-sm font-semibold text-iris-800 transition-colors hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
                     >
                       Repository issues
                     </a>

@@ -228,14 +228,14 @@ export function ChatInput() {
     : 'Upload or ask...'
 
   return (
-    <div className="border-t border-iris-100/80 bg-white/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_0_rgba(39,32,117,0.04)] backdrop-blur-xl dark:border-iris-300/15 dark:bg-[#171322]/95 dark:shadow-none" role="region" aria-label="Message input">
+    <div className="border-t border-[#8A82DC] bg-[#F8F6FF]/92 pb-[env(safe-area-inset-bottom)] shadow-[0_-1px_0_rgba(63,51,189,0.12)] backdrop-blur-xl dark:border-iris-300/15 dark:bg-[#171322]/95 dark:shadow-none" role="region" aria-label="Message input">
       {/* Uploaded Files List - Shows files from drag-drop */}
       {uploadedFiles.length > 0 && (
-        <div className="border-b border-iris-100/80 bg-iris-50/45 dark:border-iris-300/15 dark:bg-[#1a1625]">
+        <div className="border-b border-[#8A82DC]/80 bg-[#EFECFF]/70 dark:border-iris-300/15 dark:bg-[#1a1625]">
           <div className="mx-auto max-w-5xl px-3 sm:px-4 py-3">
             <UploadedFilesList />
             {!user && mode === 'compliance' && (
-              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+              <p className="mt-2 text-xs text-slate-700 dark:text-slate-400">
                 Guest document checks are temporary and are not saved to an account.
               </p>
             )}
@@ -245,7 +245,7 @@ export function ChatInput() {
       
       <div className="mx-auto max-w-5xl cursor-text p-2.5 sm:p-4" onClick={focusTextareaFromShellClick}>
         {/* Input Area */}
-        <div className="flex items-end gap-1.5 rounded-lg border-2 border-iris-100 bg-white/95 p-2 shadow-sm shadow-iris-950/10 transition-all focus-within:border-iris-500 focus-within:shadow-md focus-within:shadow-iris-950/15 sm:gap-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
+        <div className="flex items-end gap-1.5 rounded-lg border-2 border-[#8A82DC] bg-[#FBFAFF]/95 p-2 shadow-sm shadow-iris-950/12 transition-all focus-within:border-iris-600 focus-within:shadow-md focus-within:shadow-iris-950/16 sm:gap-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
           {/* File Upload Button (Compliance Mode Only) */}
           {mode === 'compliance' && (
             <>
@@ -260,7 +260,7 @@ export function ChatInput() {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-iris-700 transition-all hover:bg-iris-50 hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-1 dark:text-slate-300 dark:hover:bg-iris-400/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-iris-700 transition-all hover:bg-[#EFECFF] hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-1 dark:text-slate-300 dark:hover:bg-iris-400/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Upload compliance document"
                 type="button"
               >
@@ -285,7 +285,7 @@ export function ChatInput() {
             rows={1}
             aria-label={placeholder}
             aria-describedby="message-hint"
-            className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-2 py-2 text-base leading-6 text-slate-900 placeholder-slate-500 transition-opacity focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
+            className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-2 py-2 text-base leading-6 text-slate-900 placeholder-slate-600 transition-opacity focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
               minHeight: 'clamp(48px, 7dvh, 72px)',
               maxHeight: '160px',
@@ -301,7 +301,7 @@ export function ChatInput() {
             <button
               onClick={handleDeepSearch}
               disabled={!message.trim() || isDeepSearching || isSending || loading || uploading}
-              className="group flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-iris-200 bg-iris-50 px-3 py-2.5 text-iris-700 shadow-sm transition-all duration-200 hover:border-iris-300 hover:bg-iris-100 hover:text-iris-900 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:hover:shadow-sm sm:min-w-[7rem] dark:border-iris-400/30 dark:bg-iris-400/10 dark:text-iris-200 dark:hover:border-iris-300/50 dark:hover:bg-iris-400/20 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32] dark:disabled:border-iris-300/10 dark:disabled:bg-[#1a1625] dark:disabled:text-slate-600"
+              className="group flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-[#8A82DC] bg-[#EFECFF] px-3 py-2.5 text-iris-800 shadow-sm transition-all duration-200 hover:border-iris-600 hover:bg-iris-100 hover:text-iris-900 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-100 disabled:text-slate-500 disabled:hover:shadow-sm sm:min-w-[7rem] dark:border-iris-400/30 dark:bg-iris-400/10 dark:text-iris-200 dark:hover:border-iris-300/50 dark:hover:bg-iris-400/20 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32] dark:disabled:border-iris-300/10 dark:disabled:bg-[#1a1625] dark:disabled:text-slate-600"
               aria-label={isDeepSearching ? 'Running deep research...' : 'Run deep research'}
               type="button"
               title="Run deep research"

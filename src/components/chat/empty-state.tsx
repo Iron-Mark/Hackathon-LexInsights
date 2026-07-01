@@ -98,25 +98,25 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
 
   const toneStyles = {
     iris: {
-      card: 'border-iris-200/90 bg-white/90 shadow-iris-950/5 dark:border-iris-300/45 dark:bg-iris-400/12 dark:shadow-iris-950/20',
-      icon: 'bg-iris-50 text-iris-700 ring-iris-200 dark:bg-iris-300/15 dark:text-iris-100 dark:ring-iris-300/30',
-      chip: 'bg-iris-100 text-iris-800 ring-iris-200 dark:bg-iris-300/15 dark:text-iris-100 dark:ring-iris-300/30',
+      card: 'border-[#8A82DC]/24 bg-[#FBFAFF]/90 shadow-iris-950/8 dark:border-iris-300/10 dark:bg-iris-400/10 dark:shadow-iris-950/20',
+      icon: 'bg-[#EFECFF] text-iris-800 ring-[#8A82DC]/70 dark:bg-iris-300/15 dark:text-iris-100 dark:ring-iris-300/30',
+      chip: 'bg-iris-100 text-iris-900 ring-[#8A82DC]/70 dark:bg-iris-300/15 dark:text-iris-100 dark:ring-iris-300/30',
       arrow: 'text-iris-600 dark:text-iris-200',
     },
     emerald: {
-      card: 'border-emerald-200/90 bg-white/90 shadow-emerald-950/5 dark:border-emerald-400/35 dark:bg-emerald-400/10 dark:shadow-iris-950/20',
+      card: 'border-emerald-600/22 bg-[#FBFAFF]/90 shadow-emerald-950/8 dark:border-emerald-400/10 dark:bg-emerald-400/9 dark:shadow-iris-950/20',
       icon: 'bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-300/15 dark:text-emerald-100 dark:ring-emerald-300/25',
       chip: 'bg-emerald-100 text-emerald-800 ring-emerald-200 dark:bg-emerald-300/15 dark:text-emerald-100 dark:ring-emerald-300/25',
       arrow: 'text-emerald-700 dark:text-emerald-200',
     },
     amber: {
-      card: 'border-amber-200/90 bg-white/90 shadow-amber-950/5 dark:border-amber-300/35 dark:bg-amber-300/10 dark:shadow-iris-950/20',
+      card: 'border-amber-600/24 bg-[#FBFAFF]/90 shadow-amber-950/8 dark:border-amber-300/10 dark:bg-amber-300/9 dark:shadow-iris-950/20',
       icon: 'bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-300/15 dark:text-amber-100 dark:ring-amber-300/25',
       chip: 'bg-amber-100 text-amber-800 ring-amber-200 dark:bg-amber-300/15 dark:text-amber-100 dark:ring-amber-300/25',
       arrow: 'text-amber-700 dark:text-amber-200',
     },
     sky: {
-      card: 'border-sky-200/90 bg-white/90 shadow-sky-950/5 dark:border-sky-300/35 dark:bg-sky-300/10 dark:shadow-iris-950/20',
+      card: 'border-sky-600/22 bg-[#FBFAFF]/90 shadow-sky-950/8 dark:border-sky-300/10 dark:bg-sky-300/9 dark:shadow-iris-950/20',
       icon: 'bg-sky-50 text-sky-700 ring-sky-200 dark:bg-sky-300/15 dark:text-sky-100 dark:ring-sky-300/25',
       chip: 'bg-sky-100 text-sky-800 ring-sky-200 dark:bg-sky-300/15 dark:text-sky-100 dark:ring-sky-300/25',
       arrow: 'text-sky-700 dark:text-sky-200',
@@ -151,7 +151,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.2 }}
-          className="mx-auto max-w-md text-sm font-medium leading-5 text-slate-600 sm:text-base dark:text-slate-400"
+          className="mx-auto max-w-md text-sm font-medium leading-5 text-slate-700 sm:text-base dark:text-slate-400"
         >
           {mode === 'compliance' 
             ? 'Upload documents for compliance analysis'
@@ -163,7 +163,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.25 }}
-            className="text-xs text-slate-500 dark:text-slate-400"
+            className="text-xs text-slate-700 dark:text-slate-400"
           >
             Guest document checks are temporary and are not saved to an account.
           </motion.p>
@@ -204,8 +204,8 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
               onClick={() => onPromptSelect(prompt)}
               disabled={!isHydrated}
               className={cn(
-                'group relative flex min-h-16 w-full gap-3 overflow-hidden rounded-md border px-3.5 py-3 text-left shadow-sm ring-1 ring-white/70 backdrop-blur transition-all duration-200',
-                'hover:-translate-y-0.5 hover:shadow-md hover:shadow-iris-950/10 active:translate-y-0 active:shadow-sm motion-reduce:hover:translate-y-0',
+                'group relative flex min-h-16 w-full gap-3 overflow-hidden rounded-lg border px-3.5 py-3 text-left shadow-[0_8px_18px_rgba(63,51,189,0.018)] ring-1 ring-inset ring-white/35 backdrop-blur transition-all duration-200 dark:shadow-[0_14px_34px_rgba(6,4,16,0.16)] dark:ring-iris-100/5',
+                'hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(63,51,189,0.032)] active:translate-y-0 active:shadow-[0_6px_14px_rgba(63,51,189,0.018)] motion-reduce:hover:translate-y-0 dark:hover:shadow-[0_18px_40px_rgba(6,4,16,0.22)]',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
                 'disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-sm',
                 styles.card
@@ -218,11 +218,11 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
                 )}
               aria-hidden="true"
               >
-                <Icon className="h-[18px] w-[18px]" />
+                <Icon className="h-[22px] w-[22px]" strokeWidth={1.85} />
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex min-w-0 items-center gap-2 max-[430px]:flex-wrap max-[430px]:gap-x-1.5 max-[430px]:gap-y-1">
-                  <span className="truncate text-[11px] font-bold uppercase leading-4 text-slate-600 max-[430px]:basis-full dark:text-slate-400">
+                  <span className="truncate text-[11px] font-bold uppercase leading-4 text-slate-700 max-[430px]:basis-full dark:text-slate-400">
                     {eyebrow}
                   </span>
                   <span
@@ -232,7 +232,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
                     )}
                     aria-hidden="true"
                   >
-                    <Icon className="h-3.5 w-3.5" />
+                    <Icon className="h-[17px] w-[17px]" strokeWidth={1.85} />
                   </span>
                   <span
                     className={cn(

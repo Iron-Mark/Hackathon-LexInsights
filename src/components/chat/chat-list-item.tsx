@@ -105,12 +105,12 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
         onClick={handleRowClick}
         className={cn(
           'w-full rounded-lg px-3 py-2.5 text-left transition-all duration-150 cursor-pointer active:scale-[0.99]',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:focus-visible:ring-offset-[#171322]',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:focus-visible:ring-offset-[#171322]',
           showDeleteConfirm
             ? 'bg-red-50 text-red-800 shadow-sm ring-1 ring-red-200 hover:bg-red-100 dark:bg-red-950/35 dark:text-red-100 dark:ring-red-500/30 dark:hover:bg-red-950/50'
             : isActive
-            ? 'bg-iris-100/70 text-slate-950 shadow-sm shadow-iris-950/5 ring-1 ring-iris-200/80 hover:bg-iris-100 dark:bg-[#2b2438] dark:text-slate-100 dark:ring-1 dark:ring-iris-300/12 dark:hover:bg-[#312944]'
-            : 'text-slate-700 hover:bg-white/70 hover:text-slate-950 hover:shadow-sm hover:shadow-iris-950/5 dark:text-slate-300 dark:hover:bg-[#241f32] dark:hover:text-white',
+            ? 'bg-[#EFECFF] text-slate-950 shadow-sm shadow-iris-950/8 ring-1 ring-[#8A82DC] hover:bg-iris-100 dark:bg-[#2b2438] dark:text-slate-100 dark:ring-1 dark:ring-iris-300/12 dark:hover:bg-[#312944]'
+            : 'text-slate-800 hover:bg-[#EFECFF] hover:text-slate-950 hover:shadow-sm hover:shadow-iris-950/8 dark:text-slate-300 dark:hover:bg-[#241f32] dark:hover:text-white',
           isDeleting && 'opacity-50 cursor-not-allowed pointer-events-none'
         )}
         aria-current={!showDeleteConfirm && isActive ? 'page' : undefined}
@@ -140,8 +140,8 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
               showDeleteConfirm
                 ? 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-200'
                 : isActive
-                  ? 'bg-iris-100 text-iris-700 shadow-xs ring-1 ring-iris-200 dark:bg-iris-400/20 dark:text-iris-100 dark:ring-iris-300/30'
-                  : 'bg-iris-100/55 text-iris-700/75 dark:bg-iris-300/10 dark:text-iris-200/50'
+                  ? 'bg-[#FBFAFF] text-iris-800 shadow-xs ring-1 ring-[#8A82DC] dark:bg-iris-400/20 dark:text-iris-100 dark:ring-iris-300/30'
+                  : 'bg-[#EFECFF] text-iris-800 dark:bg-iris-300/10 dark:text-iris-200/50'
             )}
             aria-hidden="true"
           >
@@ -171,8 +171,8 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
                 showDeleteConfirm
                   ? 'text-red-600 dark:text-red-200/80'
                   : isActive
-                    ? 'text-neutral-600 dark:text-slate-400'
-                    : 'text-neutral-500 dark:text-slate-500'
+                    ? 'text-neutral-700 dark:text-slate-400'
+                    : 'text-neutral-700 dark:text-slate-500'
               )}
             >
               {showDeleteConfirm ? "Tap here to confirm" : formatRelativeTime(chat.updated_at)}
@@ -194,7 +194,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
                   <div className="flex" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={handleCancelDelete}
-                      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg bg-white text-red-700 shadow-xs ring-1 ring-red-200 transition-all hover:bg-red-100 active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:bg-[#1a1625]/90 dark:text-red-100 dark:ring-red-400/40 dark:hover:bg-red-950/70 dark:focus-visible:ring-offset-[#241f32]"
+                      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg bg-[#FBFAFF] text-red-700 shadow-xs ring-1 ring-red-400 transition-all hover:bg-red-100 active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:bg-[#1a1625]/90 dark:text-red-100 dark:ring-red-400/40 dark:hover:bg-red-950/70 dark:focus-visible:ring-offset-[#241f32]"
                       aria-label="Cancel delete"
                       title="Cancel"
                       type="button"
@@ -205,7 +205,7 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
                 ) : (
                   <button
                     onClick={handleStartDelete}
-                    className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg text-slate-400 transition-all hover:bg-red-50 hover:text-red-600 active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:text-slate-500 dark:hover:bg-red-950/50 dark:hover:text-red-300 dark:focus-visible:ring-offset-[#241f32]"
+                    className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg text-slate-700 transition-all hover:bg-red-50 hover:text-red-700 active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:text-slate-500 dark:hover:bg-red-950/50 dark:hover:text-red-300 dark:focus-visible:ring-offset-[#241f32]"
                     aria-label={`Delete ${chat.title}`}
                     title="Delete chat"
                     type="button"

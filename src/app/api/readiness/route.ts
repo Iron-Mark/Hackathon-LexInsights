@@ -145,7 +145,7 @@ function supabaseProjectRefCheck(projectRef: string | null, host: string | undef
     critical: false,
     message: projectRef
       ? 'Project ref parsed from standard Supabase URL'
-      : 'Project ref comparison skipped because URL is not the standard <ref>.supabase.co shape',
+      : 'Project ref comparison skipped because URL is not a recognized project URL shape',
     target: host,
     details: {
       projectRef,

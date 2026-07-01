@@ -14,6 +14,7 @@ import { ProfileDialog } from '@/components/profile/profile-dialog'
 import { ResourcesDialog } from '@/components/help/resources-dialog'
 import { AttributionDialog } from '@/components/about/attribution-dialog'
 import { useTheme } from '@/components/providers/theme-provider'
+import { SidebarTooltip } from './sidebar-tooltip'
 
 interface NavItem {
   icon: React.ComponentType<{ className?: string }>
@@ -21,29 +22,6 @@ interface NavItem {
   href?: string
   action?: () => void
   active?: boolean
-}
-
-interface SidebarTooltipButtonProps {
-  label: string
-  children: React.ReactNode
-}
-
-function SidebarTooltipButton({ label, children }: SidebarTooltipButtonProps) {
-  return (
-    <div className="group relative">
-      {children}
-      <div
-        className={cn(
-          'pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 whitespace-nowrap rounded-lg border border-iris-100 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-lg shadow-iris-950/10 backdrop-blur dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/30',
-          'transition-all duration-150 ease-out group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-within:translate-x-0.5 group-focus-within:opacity-100'
-        )}
-        role="tooltip"
-      >
-        {label}
-        <span className="absolute left-[-5px] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rotate-45 border-b border-l border-iris-100 bg-white dark:border-iris-300/15 dark:bg-[#241f32]" />
-      </div>
-    </div>
-  )
 }
 
 export function AppSidebar() {
@@ -128,17 +106,30 @@ export function AppSidebar() {
       <ResourcesDialog open={showResourcesDialog} onOpenChange={setShowResourcesDialog} />
       <AttributionDialog open={showAttributionDialog} onOpenChange={setShowAttributionDialog} />
       
-      <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center border-r border-iris-100/80 bg-[linear-gradient(180deg,#f7f6ff_0%,#ffffff_52%,#f8fafc_100%)] pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-[calc(env(safe-area-inset-top)+1rem)] shadow-[inset_-1px_0_0_rgba(39,32,117,0.04)] supports-[height:100dvh]:h-dvh dark:border-iris-300/15 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_55%,#120d1f_100%)] dark:shadow-none">
+      <aside className="fixed left-0 top-0 z-50 flex h-screen w-16 flex-col items-center border-r border-[#8A82DC] bg-[linear-gradient(180deg,#F1EEFF_0%,#F8F6FF_54%,#F0EDFF_100%)] pb-[calc(env(safe-area-inset-bottom)+1rem)] pt-[calc(env(safe-area-inset-top)+1rem)] shadow-[inset_-1px_0_0_rgba(63,51,189,0.16)] supports-[height:100dvh]:h-dvh dark:border-iris-300/15 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_55%,#120d1f_100%)] dark:shadow-none">
         {!isMobile && (
-          <button
-            onClick={isOpen ? close : open}
-            className="absolute right-0 top-1/2 z-[60] h-11 w-11 -translate-y-1/2 cursor-pointer rounded-l-lg bg-transparent transition-colors after:absolute after:inset-y-2 after:right-0 after:w-px after:bg-iris-100 after:transition-colors hover:bg-iris-100/45 hover:after:bg-iris-400 focus-visible:bg-iris-100/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:after:bg-iris-500 dark:after:bg-transparent dark:hover:bg-iris-300/10 dark:hover:after:bg-iris-300/45 dark:focus-visible:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
-            aria-label={isOpen ? 'Collapse chat history' : 'Expand chat history'}
-            title={isOpen ? 'Collapse chat history' : 'Expand chat history'}
-            type="button"
+          <SidebarTooltip
+            label={isOpen ? 'Collapse chat history' : 'Expand chat history'}
+            className="absolute right-0 top-0 z-[60] h-full w-3"
           >
-            <span className="sr-only">{isOpen ? 'Collapse chat history' : 'Expand chat history'}</span>
-          </button>
+            <button
+              onClick={isOpen ? close : open}
+              className="h-full w-full cursor-ew-resize bg-transparent focus-visible:outline-none"
+              aria-label={isOpen ? 'Collapse chat history' : 'Expand chat history'}
+              aria-expanded={isOpen}
+              type="button"
+            >
+              <span
+                aria-hidden="true"
+                className="absolute inset-y-0 right-0 w-full bg-iris-500/0 transition-colors duration-150 group-hover:bg-iris-500/10 group-focus-within:bg-iris-500/15 dark:group-hover:bg-iris-200/10 dark:group-focus-within:bg-iris-200/15"
+              />
+              <span
+                aria-hidden="true"
+                className="absolute right-0 top-1/2 z-10 h-16 w-1 -translate-y-1/2 rounded-full bg-iris-500/0 transition-all duration-150 group-hover:right-0.5 group-hover:bg-iris-500/55 group-focus-within:right-0.5 group-focus-within:bg-iris-500/70 dark:group-hover:bg-iris-200/55 dark:group-focus-within:bg-iris-200/75"
+              />
+              <span className="sr-only">{isOpen ? 'Collapse chat history' : 'Expand chat history'}</span>
+            </button>
+          </SidebarTooltip>
         )}
 
         {/* Top Navigation Items */}
@@ -148,7 +139,7 @@ export function AppSidebar() {
             const active = isActive(item)
             
             return (
-              <SidebarTooltipButton key={item.label + index} label={item.label}>
+              <SidebarTooltip key={item.label + index} label={item.label}>
                 <Button
                   onClick={() => handleItemClick(item)}
                   variant="ghost"
@@ -165,14 +156,14 @@ export function AppSidebar() {
                 >
                   <Icon className="h-5 w-5" />
                 </Button>
-              </SidebarTooltipButton>
+              </SidebarTooltip>
             )
           })}
         </nav>
 
         {/* Bottom Section - Utilities */}
         <div className={cn('flex flex-col items-center gap-2', !user && 'pb-10')}>
-          <SidebarTooltipButton label={themeToggleLabel}>
+          <SidebarTooltip label={themeToggleLabel}>
             <Button
               onClick={toggleTheme}
               variant="ghost"
@@ -191,10 +182,10 @@ export function AppSidebar() {
                 <Moon className="h-5 w-5" aria-hidden="true" />
               )}
             </Button>
-          </SidebarTooltipButton>
+          </SidebarTooltip>
 
           {/* Help/Resources Button */}
-          <SidebarTooltipButton label="Help & Resources">
+          <SidebarTooltip label="Help & Resources">
             <Button
               onClick={() => setShowResourcesDialog(true)}
               variant="ghost"
@@ -208,9 +199,9 @@ export function AppSidebar() {
             >
               <HelpCircle className="h-5 w-5" />
             </Button>
-          </SidebarTooltipButton>
+          </SidebarTooltip>
 
-          <SidebarTooltipButton label="Authors & Attribution">
+          <SidebarTooltip label="Authors & Attribution">
             <Button
               onClick={() => setShowAttributionDialog(true)}
               variant="ghost"
@@ -224,10 +215,10 @@ export function AppSidebar() {
             >
               <UserRound className="h-5 w-5" aria-hidden="true" />
             </Button>
-          </SidebarTooltipButton>
+          </SidebarTooltip>
 
           {user && (
-            <SidebarTooltipButton label="Profile">
+            <SidebarTooltip label="Profile">
               <Button
                 onClick={() => setShowProfileDialog(true)}
                 variant="ghost"
@@ -252,7 +243,7 @@ export function AppSidebar() {
                   </div>
                 )}
               </Button>
-            </SidebarTooltipButton>
+            </SidebarTooltip>
           )}
         </div>
       </aside>

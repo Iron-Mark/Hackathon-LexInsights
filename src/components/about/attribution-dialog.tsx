@@ -10,10 +10,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {
-  CURRENT_APP_URL,
   LEGACY_SHOWCASE_URL,
   PORTFOLIO_CASE_STUDY_URL,
-  PORTFOLIO_URL,
   REPOSITORY_URL,
 } from '@/lib/seo'
 
@@ -61,7 +59,7 @@ const PROJECT_FACTS = [
     href: 'https://www.facebook.com/events/kmc-armstrong-corporate-center/codekada-the-innovation-hackathon/1122064766115595/',
   },
   { label: 'Product focus', value: 'Philippine legal research and compliance review workflows' },
-  { label: 'Public proof', value: 'Live app, portfolio case study, and Iron-Mark repository' },
+  { label: 'Public proof', value: 'Live app and portfolio case study' },
 ]
 
 const MAINTAINER_FACTS = [
@@ -71,11 +69,9 @@ const MAINTAINER_FACTS = [
 ]
 
 const PUBLIC_LINKS = [
-  { label: 'Current LexInsights app', href: CURRENT_APP_URL },
-  { label: 'Mark Siazon portfolio', href: PORTFOLIO_URL },
-  { label: 'LexInsights case study', href: PORTFOLIO_CASE_STUDY_URL },
-  { label: 'Legacy showcase app', href: LEGACY_SHOWCASE_URL },
-  { label: 'Iron-Mark repository', href: REPOSITORY_URL },
+  { label: 'GitHub repository', href: REPOSITORY_URL },
+  { label: 'Read case study', href: PORTFOLIO_CASE_STUDY_URL },
+  { label: 'Legacy showcase', href: LEGACY_SHOWCASE_URL },
 ]
 
 export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps) {
@@ -166,28 +162,34 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
           </section>
 
           <section className="mt-5 border-t border-slate-200 pt-5 dark:border-iris-300/15" aria-labelledby="attribution-maintainer">
-            <div className="flex items-center gap-2">
-              <Wrench className="h-4 w-4 text-iris-600 dark:text-iris-200" aria-hidden="true" />
-              <h3 id="attribution-maintainer" className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                Active Maintainer
-              </h3>
-            </div>
-            <p className="mt-3 text-sm leading-6 text-slate-800 dark:text-slate-200">
-              Mark Siazon, also publishing under Iron-Mark, is the solo active maintainer for now.
-            </p>
-            <details className="group mt-3">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm font-semibold text-iris-700 transition-colors hover:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-iris-200 dark:hover:bg-iris-300/10 dark:focus-visible:ring-offset-[#171322] [&::-webkit-details-marker]:hidden">
-                <span>Maintainer details</span>
-                <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
+            <details className="group">
+              <summary className="-mx-3 flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-iris-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:bg-iris-300/10 dark:focus-visible:ring-offset-[#171322] [&::-webkit-details-marker]:hidden">
+                <span className="flex min-w-0 items-center gap-2">
+                  <Wrench className="h-4 w-4 shrink-0 text-iris-600 dark:text-iris-200" aria-hidden="true" />
+                  <span className="min-w-0">
+                    <h3 id="attribution-maintainer" className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                      Active Maintainer
+                    </h3>
+                    <span className="mt-1 block truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      Mark Siazon / Iron-Mark
+                    </span>
+                  </span>
+                </span>
+                <ChevronDown className="h-4 w-4 shrink-0 text-iris-700 transition-transform duration-200 group-open:rotate-180 dark:text-iris-200" aria-hidden="true" />
               </summary>
-              <ul className="mt-2 space-y-2 px-3 text-sm leading-6 text-slate-700 dark:text-slate-300">
+              <div className="mt-3 px-3 pb-1">
+                <p className="text-sm leading-6 text-slate-800 dark:text-slate-200">
+                  Mark Siazon, also publishing under Iron-Mark, is the solo active maintainer for now.
+                </p>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-700 dark:text-slate-300">
                 {MAINTAINER_FACTS.map((fact) => (
                   <li key={fact} className="flex gap-2">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-iris-500 dark:bg-iris-300" aria-hidden="true" />
                     <span>{fact}</span>
                   </li>
                 ))}
-              </ul>
+                </ul>
+              </div>
             </details>
           </section>
 
@@ -213,7 +215,7 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
               ))}
             </div>
             <p className="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
-              This panel uses public portfolio and repository context only.
+              The repository shows implementation context; the legacy showcase is retained as a historical reference.
             </p>
           </section>
         </div>

@@ -13,7 +13,9 @@ LexInsights is not a lawyer, law firm, court, regulator, or official government 
 
 ## Product Preview
 
-![LexInsights desktop legal chat showing a cited RA 9003 compliance answer](docs/assets/lexinsights-chat-desktop.png)
+Screenshots refreshed July 1, 2026.
+
+![LexInsights desktop chat entry showing legal research prompt cards and the providerless assistant composer](docs/assets/lexinsights-chat-desktop.png)
 
 ![LexInsights mobile Help and Resources source directory](docs/assets/lexinsights-help-mobile.png)
 

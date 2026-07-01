@@ -266,21 +266,21 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
     'flex min-h-10 w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-2.5 py-2 text-left text-sm transition-colors',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
     isSelected
-      ? 'bg-iris-50 text-iris-800 dark:bg-iris-300/16 dark:text-iris-100'
-      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
+      ? 'bg-[#EFECFF] text-iris-800 dark:bg-iris-300/16 dark:text-iris-100'
+      : 'text-slate-700 hover:bg-[#EFECFF] hover:text-slate-950 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
   ].join(' ')
 
   const filterCountClassName = (isSelected: boolean) => [
     'rounded-full px-2 py-0.5 text-xs font-semibold transition-colors',
     isSelected
-      ? 'bg-iris-100 text-iris-700 dark:bg-iris-300/22 dark:text-iris-100'
-      : 'bg-slate-100 text-slate-500 dark:bg-iris-300/12 dark:text-slate-300',
+      ? 'bg-iris-100 text-iris-800 dark:bg-iris-300/22 dark:text-iris-100'
+      : 'bg-[#EFECFF] text-slate-700 dark:bg-iris-300/12 dark:text-slate-300',
   ].join(' ')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[92dvh] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden border-slate-200 bg-white p-0 dark:border-iris-300/15 dark:bg-[#171322] sm:max-h-[88dvh] sm:max-w-2xl lg:max-w-[min(calc(100vw-2rem),60rem)] xl:max-w-6xl">
-        <DialogHeader className="shrink-0 border-b border-slate-200 bg-slate-50 px-4 py-4 dark:border-iris-300/15 dark:bg-[#1a1625] sm:px-7 sm:py-5">
+      <DialogContent className="flex max-h-[92dvh] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden border-[#8A82DC] bg-[#FBFAFF] p-0 dark:border-iris-300/15 dark:bg-[#171322] sm:max-h-[88dvh] sm:max-w-2xl lg:max-w-[min(calc(100vw-2rem),60rem)] xl:max-w-6xl">
+        <DialogHeader className="shrink-0 border-b border-[#8A82DC] bg-[#F8F6FF] px-4 py-4 dark:border-iris-300/15 dark:bg-[#1a1625] sm:px-7 sm:py-5">
           <div className="flex flex-col gap-4 pr-8 lg:flex-row lg:items-start lg:justify-between">
             <div className="grid min-w-0 grid-cols-[2.5rem_1fr] items-start gap-3 sm:grid-cols-[2.75rem_1fr]">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-iris-100 text-iris-700 dark:bg-iris-400/15 dark:text-iris-200 sm:h-11 sm:w-11">
@@ -290,19 +290,19 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                 <DialogTitle className="text-left text-lg font-bold leading-tight text-slate-950 dark:text-slate-100 sm:text-xl">
                   Help & Resources
                 </DialogTitle>
-                <DialogDescription className="mt-1.5 max-w-2xl text-left text-sm leading-6 text-slate-600 dark:text-slate-300 sm:mt-2">
+                <DialogDescription className="mt-1.5 max-w-2xl text-left text-sm leading-6 text-slate-700 dark:text-slate-300 sm:mt-2">
                   Official source directory, service terms, and privacy notes for LexInsights.
                 </DialogDescription>
                 <div className="mt-3 grid max-w-full grid-cols-3 gap-1.5 max-sm:-ml-[3.25rem] max-sm:w-[calc(100%+3.25rem)] max-sm:max-w-none sm:flex sm:flex-wrap sm:gap-2">
-                  <span className="flex min-h-10 min-w-0 flex-col items-center justify-center rounded-lg bg-white px-1.5 py-1 text-center text-iris-700 shadow-sm dark:bg-[#241f32] dark:text-iris-200 sm:inline-flex sm:min-h-0 sm:flex-row sm:rounded-full sm:px-3">
+                  <span className="flex min-h-10 min-w-0 flex-col items-center justify-center rounded-lg bg-[#EFECFF] px-1.5 py-1 text-center text-iris-800 shadow-sm shadow-iris-950/8 dark:bg-[#241f32] dark:text-iris-200 sm:inline-flex sm:min-h-0 sm:flex-row sm:rounded-full sm:px-3">
                     <strong className="text-xs font-extrabold leading-none sm:mr-1">{GOVERNMENT_RESOURCES.length}</strong>
                     <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold leading-none sm:mt-0 sm:text-xs">source links</span>
                   </span>
-                  <span className="flex min-h-10 min-w-0 flex-col items-center justify-center rounded-lg bg-white px-1.5 py-1 text-center text-emerald-700 shadow-sm dark:bg-[#241f32] dark:text-emerald-200 sm:inline-flex sm:min-h-0 sm:flex-row sm:rounded-full sm:px-3">
+                  <span className="flex min-h-10 min-w-0 flex-col items-center justify-center rounded-lg bg-[#EFFDF6] px-1.5 py-1 text-center text-emerald-700 shadow-sm shadow-emerald-950/8 dark:bg-[#241f32] dark:text-emerald-200 sm:inline-flex sm:min-h-0 sm:flex-row sm:rounded-full sm:px-3">
                     <strong className="text-xs font-extrabold leading-none sm:mr-1">{LOCAL_CORPUS_AUTHORITY_COUNT}</strong>
                     <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold leading-none sm:mt-0 sm:text-xs">authorities</span>
                   </span>
-                  <span className="flex min-h-10 min-w-0 flex-col items-center justify-center rounded-lg bg-white px-1.5 py-1 text-center text-sky-700 shadow-sm dark:bg-[#241f32] dark:text-sky-200 sm:inline-flex sm:min-h-0 sm:flex-row sm:rounded-full sm:px-3">
+                  <span className="flex min-h-10 min-w-0 flex-col items-center justify-center rounded-lg bg-[#EEF7FF] px-1.5 py-1 text-center text-sky-700 shadow-sm shadow-sky-950/8 dark:bg-[#241f32] dark:text-sky-200 sm:inline-flex sm:min-h-0 sm:flex-row sm:rounded-full sm:px-3">
                     <strong className="text-xs font-extrabold leading-none sm:mr-1">{LOCAL_COMPLIANCE_FRAMEWORK_COUNT}</strong>
                     <span className="mt-0.5 max-w-full truncate text-[10px] font-semibold leading-none sm:mt-0 sm:text-xs">frameworks</span>
                   </span>
@@ -311,7 +311,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
             </div>
 
             <div
-              className="grid min-h-[3.25rem] w-full grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-white p-1 dark:border-iris-300/15 dark:bg-[#241f32]/80 lg:w-auto lg:min-w-80"
+              className="grid min-h-[3.25rem] w-full grid-cols-2 gap-1 rounded-xl border border-[#8A82DC] bg-[#F4F2FF] p-1 dark:border-iris-300/15 dark:bg-[#241f32]/80 lg:w-auto lg:min-w-80"
               role="tablist"
               aria-label="Help sections"
             >
@@ -334,8 +334,8 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                       'inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-2 text-sm font-semibold leading-tight transition-colors sm:px-3',
                       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
                       isSelected
-                        ? 'bg-iris-50 text-iris-800 dark:bg-iris-300/16 dark:text-iris-100'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
+                        ? 'bg-[#FBFAFF] text-iris-800 shadow-sm shadow-iris-950/8 dark:bg-iris-300/16 dark:text-iris-100'
+                        : 'text-slate-700 hover:bg-[#EFECFF] hover:text-slate-950 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
                     ].join(' ')}
                     onClick={() => setActiveView(id)}
                     onKeyDown={(event) => handleTabKeyDown(event, index)}
@@ -358,8 +358,8 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
             className="grid w-full max-w-full gap-6 overflow-x-hidden lg:grid-cols-[190px_minmax(0,1fr)]"
           >
             <aside className="hidden lg:block">
-              <div className="sticky top-0 rounded-xl border border-slate-200 bg-white p-4 dark:border-iris-300/15 dark:bg-[#241f32]">
-                <p className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Categories</p>
+              <div className="sticky top-0 rounded-xl border border-[#8A82DC] bg-[#F8F6FF] p-4 dark:border-iris-300/15 dark:bg-[#241f32]">
+                <p className="text-xs font-semibold uppercase text-slate-600 dark:text-slate-500">Categories</p>
                 <div className="mt-3 space-y-1.5" role="group" aria-label="Filter government resources by category">
                   {categoryFilters.map(({ category, count }) => {
                     const isSelected = selectedCategory === category
@@ -385,7 +385,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
 
             <div className="min-w-0 max-w-full space-y-7 overflow-x-hidden">
               <div className="space-y-3 lg:hidden">
-                <p className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Categories</p>
+                <p className="text-xs font-semibold uppercase text-slate-600 dark:text-slate-500">Categories</p>
                 <div
                   className="grid grid-cols-2 gap-2 min-[420px]:grid-cols-3"
                   role="group"
@@ -403,8 +403,8 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                           'inline-flex min-h-10 min-w-0 cursor-pointer items-center justify-between gap-2 rounded-full border px-3 py-2 text-sm transition-colors',
                           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
                           isSelected
-                            ? 'border-iris-300 bg-iris-50 text-iris-800 dark:border-iris-300/35 dark:bg-iris-300/16 dark:text-iris-100'
-                            : 'border-slate-200 bg-white text-slate-600 hover:border-iris-200 hover:text-slate-950 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-300 dark:hover:border-iris-300/30 dark:hover:text-slate-100',
+                            ? 'border-iris-500 bg-[#EFECFF] text-iris-800 dark:border-iris-300/35 dark:bg-iris-300/16 dark:text-iris-100'
+                            : 'border-[#8A82DC] bg-[#FBFAFF] text-slate-700 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-slate-950 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-300 dark:hover:border-iris-300/30 dark:hover:text-slate-100',
                         ].join(' ')}
                         onClick={() => setSelectedCategory(category)}
                       >
@@ -417,7 +417,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Showing <span className="font-bold text-slate-950 dark:text-slate-100">{visibleResourceCount}</span>{' '}
                   {selectedCategory === ALL_CATEGORIES ? 'official sources' : `${selectedCategory.toLowerCase()} source${visibleResourceCount === 1 ? '' : 's'}`}
                 </p>
@@ -441,7 +441,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                     >
                       {category}
                     </h3>
-                    <div className="h-px flex-1 bg-slate-200 dark:bg-iris-300/15" />
+                    <div className="h-px flex-1 bg-[#8A82DC]/70 dark:bg-iris-300/15" />
                   </div>
 
                   <div className="grid min-w-0 max-w-full grid-cols-1 gap-3 overflow-x-hidden xl:grid-cols-2">
@@ -449,11 +449,11 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                       <button
                         key={resource.id}
                         onClick={() => handleResourceClick(resource)}
-                        className="group min-w-0 w-full max-w-full overflow-hidden rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-iris-300 hover:shadow-md active:translate-y-0 active:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:hover:border-iris-300/50 dark:hover:bg-[#2b2438] dark:focus-visible:ring-offset-[#171322]"
+                        className="group min-w-0 w-full max-w-full overflow-hidden rounded-xl border border-[#8A82DC] bg-[#FBFAFF] p-4 text-left shadow-sm shadow-iris-950/8 transition-all hover:-translate-y-0.5 hover:border-iris-600 hover:bg-[#F8F6FF] hover:shadow-md active:translate-y-0 active:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:hover:border-iris-300/50 dark:hover:bg-[#2b2438] dark:focus-visible:ring-offset-[#171322]"
                         type="button"
                       >
                         <div className="flex min-w-0 items-start gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-iris-50 text-iris-700 transition-colors group-hover:bg-iris-100 dark:bg-iris-400/10 dark:text-iris-200 dark:group-hover:bg-iris-400/20">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EFECFF] text-iris-800 transition-colors group-hover:bg-iris-100 dark:bg-iris-400/10 dark:text-iris-200 dark:group-hover:bg-iris-400/20">
                             <Globe className="h-5 w-5" aria-hidden="true" />
                           </div>
                           <div className="min-w-0 flex-1">
@@ -463,14 +463,14 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                               </h4>
                               <ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-slate-400 group-hover:text-iris-600 dark:text-slate-500 dark:group-hover:text-iris-200" />
                             </div>
-                            <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                            <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">
                               {resource.description}
                             </p>
-                            <div className="mt-3 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs font-medium text-slate-500 dark:text-slate-400">
+                            <div className="mt-3 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs font-medium text-slate-700 dark:text-slate-400">
                               {resource.url}
                             </div>
                             {resource.corpusCount !== undefined && (
-                              <div className="mt-3 inline-flex rounded-full bg-iris-50 px-2.5 py-1 text-[11px] font-semibold text-iris-700 dark:bg-iris-300/12 dark:text-iris-200">
+                              <div className="mt-3 inline-flex rounded-full bg-[#EFECFF] px-2.5 py-1 text-[11px] font-semibold text-iris-800 dark:bg-iris-300/12 dark:text-iris-200">
                                 {resource.corpusCount} local corpus {resource.corpusCount === 1 ? 'entry' : 'entries'}
                               </div>
                             )}
@@ -490,8 +490,8 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
               aria-labelledby="help-tab-terms-privacy"
               className="space-y-6"
             >
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4 dark:border-iris-300/15">
-                <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#8A82DC]/70 pb-4 dark:border-iris-300/15">
+                <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">
                   Open the public legal pages for sharing, review, or direct browser access.
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -516,19 +516,19 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                 </div>
               </div>
               <section
-                className="border-b border-slate-200 pb-5 dark:border-iris-300/15"
+                className="border-b border-[#8A82DC]/70 pb-5 dark:border-iris-300/15"
                 aria-labelledby="local-data-controls"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex min-w-0 gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-iris-50 text-iris-700 dark:bg-iris-300/12 dark:text-iris-100">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EFECFF] text-iris-800 dark:bg-iris-300/12 dark:text-iris-100">
                       <ShieldCheck className="h-5 w-5" aria-hidden="true" />
                     </div>
                     <div className="min-w-0">
                       <h3 id="local-data-controls" className="text-sm font-bold text-slate-950 dark:text-slate-100">
                         Local data
                       </h3>
-                      <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                      <p className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-300">
                         Clear guest chats, temporary document selections, compliance drafts, and saved research results on this device.
                       </p>
                       {clearStatus && (
@@ -552,7 +552,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                         </button>
                         <button
                           type="button"
-                          className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-3 text-sm font-bold text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100 dark:focus-visible:ring-offset-[#171322]"
+                          className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg px-3 text-sm font-bold text-slate-700 transition-colors hover:bg-[#EFECFF] hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:text-slate-300 dark:hover:bg-iris-300/10 dark:hover:text-slate-100 dark:focus-visible:ring-offset-[#171322]"
                           onClick={() => setConfirmingClear(false)}
                         >
                           <X className="h-4 w-4" aria-hidden="true" />
@@ -562,7 +562,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                     ) : (
                       <button
                         type="button"
-                        className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-rose-200 bg-white px-3 text-sm font-bold text-rose-700 transition-colors hover:border-rose-300 hover:bg-rose-50 hover:text-rose-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 dark:border-rose-300/20 dark:bg-[#241f32] dark:text-rose-200 dark:hover:border-rose-300/40 dark:hover:bg-rose-300/10 dark:hover:text-rose-100 dark:focus-visible:ring-offset-[#171322]"
+                        className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-rose-400 bg-[#FBFAFF] px-3 text-sm font-bold text-rose-700 transition-colors hover:border-rose-600 hover:bg-rose-50 hover:text-rose-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 dark:border-rose-300/20 dark:bg-[#241f32] dark:text-rose-200 dark:hover:border-rose-300/40 dark:hover:bg-rose-300/10 dark:hover:text-rose-100 dark:focus-visible:ring-offset-[#171322]"
                         onClick={() => {
                           setClearStatus(null)
                           setConfirmingClear(true)
@@ -580,7 +580,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
           )}
         </div>
 
-        <div className="shrink-0 border-t border-slate-200 bg-slate-50 px-4 py-3 text-xs leading-5 text-slate-500 dark:border-iris-300/15 dark:bg-[#1a1625] dark:text-slate-400 sm:px-7 sm:py-4">
+        <div className="shrink-0 border-t border-[#8A82DC] bg-[#F8F6FF] px-4 py-3 text-xs leading-5 text-slate-700 dark:border-iris-300/15 dark:bg-[#1a1625] dark:text-slate-400 sm:px-7 sm:py-4">
           <p className="max-w-4xl">
             <strong className="text-slate-700 dark:text-slate-200">Note:</strong>{' '}
             {activeView === 'sources'

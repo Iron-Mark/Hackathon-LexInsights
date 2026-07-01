@@ -21,11 +21,11 @@ function HeaderTooltipButton({ label, children }: HeaderTooltipButtonProps) {
     <div className="group relative z-40">
       {children}
       <div
-        className="pointer-events-none absolute right-0 top-full z-[70] mt-2 whitespace-nowrap rounded-lg border border-iris-100 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-800 opacity-0 shadow-xl shadow-iris-950/10 backdrop-blur transition-all duration-150 ease-out group-hover:translate-y-0.5 group-hover:opacity-100 group-focus-within:translate-y-0.5 group-focus-within:opacity-100 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/40"
+        className="pointer-events-none absolute right-0 top-full z-[70] mt-2 whitespace-nowrap rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/95 px-3 py-2 text-xs font-semibold text-slate-900 opacity-0 shadow-xl shadow-iris-950/14 backdrop-blur transition-all duration-150 ease-out group-hover:translate-y-0.5 group-hover:opacity-100 group-focus-within:translate-y-0.5 group-focus-within:opacity-100 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/40"
         role="tooltip"
       >
         {label}
-        <span className="absolute right-3 top-[-5px] h-2.5 w-2.5 rotate-45 border-l border-t border-iris-100 bg-white dark:border-iris-300/15 dark:bg-[#241f32]" />
+        <span className="absolute right-3 top-[-5px] h-2.5 w-2.5 rotate-45 border-l border-t border-[#8A82DC] bg-[#FBFAFF] dark:border-iris-300/15 dark:bg-[#241f32]" />
       </div>
     </div>
   )
@@ -71,13 +71,13 @@ export function SidebarHeader() {
   }
 
   return (
-    <header className="relative z-40 flex overflow-visible items-center justify-between border-b border-iris-100/80 bg-[linear-gradient(135deg,rgba(255,255,255,0.96)_0%,rgba(244,243,255,0.9)_100%)] px-4 py-3 shadow-[inset_0_-1px_0_rgba(39,32,117,0.04)] backdrop-blur dark:border-iris-300/15 dark:bg-[linear-gradient(135deg,#211a35_0%,#1a1625_48%,#171322_100%)] dark:shadow-[inset_0_-1px_0_rgba(158,151,227,0.10)]">
+    <header className="relative z-40 flex overflow-visible items-center justify-between border-b border-[#8A82DC] bg-[linear-gradient(135deg,rgba(251,250,255,0.96)_0%,rgba(239,236,255,0.92)_100%)] px-4 py-3 shadow-[inset_0_-1px_0_rgba(63,51,189,0.12)] backdrop-blur dark:border-iris-300/15 dark:bg-[linear-gradient(135deg,#211a35_0%,#1a1625_48%,#171322_100%)] dark:shadow-[inset_0_-1px_0_rgba(158,151,227,0.10)]">
       {/* App Branding Area */}
       <div
         className="flex min-w-0 items-center gap-2.5"
         aria-label="LexInsights Legal compliance assistant"
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-iris-100 bg-white/85 p-1 shadow-sm shadow-iris-950/10 ring-1 ring-white transition-colors duration-200 dark:border-iris-300/15 dark:bg-iris-300/10 dark:shadow-[0_0_18px_rgba(63,51,189,0.16)] dark:ring-iris-100/10">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#8A82DC]/80 bg-[#FBFAFF]/90 p-1 shadow-sm shadow-iris-950/12 ring-1 ring-[#FBFAFF] transition-colors duration-200 dark:border-iris-300/15 dark:bg-iris-300/10 dark:shadow-[0_0_18px_rgba(63,51,189,0.16)] dark:ring-iris-100/10">
           <Image
             src="/logo/LOGO-0.5-woBG.svg"
             alt=""
@@ -91,7 +91,7 @@ export function SidebarHeader() {
           <h1 className="truncate text-base font-extrabold leading-tight text-slate-950 dark:text-white">
             LexInsights
           </h1>
-          <p className="truncate text-[10px] font-semibold leading-tight text-slate-600 dark:text-iris-100/70">
+          <p className="truncate text-[10px] font-semibold leading-tight text-slate-700 dark:text-iris-100/70">
             Legal compliance assistant
           </p>
         </div>

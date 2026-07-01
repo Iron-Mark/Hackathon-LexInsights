@@ -98,15 +98,15 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
               onClick={open}
               variant="outline"
               size="icon"
-              className="h-11 w-11 border-iris-100 bg-white/90 text-iris-700 shadow-md shadow-iris-950/10 transition-all duration-150 hover:bg-iris-50 hover:text-iris-900 hover:shadow-lg hover:shadow-iris-950/15 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#1b1728] dark:text-slate-200 dark:hover:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
+              className="h-11 w-11 border-[#8A82DC] bg-[#FBFAFF]/92 text-iris-800 shadow-md shadow-iris-950/12 transition-all duration-150 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 hover:shadow-lg hover:shadow-iris-950/15 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:border-iris-300/15 dark:bg-[#1b1728] dark:text-slate-200 dark:hover:bg-iris-300/12 dark:focus-visible:ring-offset-[#171322]"
               aria-label="Open sidebar menu"
             >
               <Menu className="h-5 w-5" aria-hidden="true" />
             </Button>
             {!isOpen && (
-              <div className="rounded-lg border border-iris-100 bg-white/85 px-3 py-1.5 shadow-md shadow-iris-950/10 backdrop-blur dark:border-iris-300/15 dark:bg-[#1b1728]/90 dark:shadow-none">
+              <div className="rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/90 px-3 py-1.5 shadow-md shadow-iris-950/12 backdrop-blur dark:border-iris-300/15 dark:bg-[#1b1728]/90 dark:shadow-none">
                 <p className="text-sm font-extrabold leading-4 text-slate-950 dark:text-white">LexInsights</p>
-                <p className="hidden text-[10px] font-semibold leading-3 text-slate-600 min-[380px]:block dark:text-slate-400">
+                <p className="hidden text-[10px] font-semibold leading-3 text-slate-700 min-[380px]:block dark:text-slate-400">
                   Legal compliance assistant
                 </p>
               </div>

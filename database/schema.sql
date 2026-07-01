@@ -1,5 +1,5 @@
 -- =====================================================
--- LEXINSIGHT SUPABASE DATABASE SETUP
+-- LEXINSIGHTS SUPABASE DATABASE SETUP
 -- Clerk Auth edition for fresh demo projects
 -- =====================================================
 --

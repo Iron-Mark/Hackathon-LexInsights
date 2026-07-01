@@ -1106,7 +1106,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
-                  className="mb-4 rounded-lg border border-iris-100 bg-white/90 p-4 shadow-sm shadow-iris-950/5 dark:border-iris-300/15 dark:bg-[#241f32]"
+                  className="mb-4 rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/92 p-4 shadow-sm shadow-iris-950/8 dark:border-iris-300/15 dark:bg-[#241f32]"
                 >
                   <RAGProgress 
                     events={wsEvents} 
@@ -1224,7 +1224,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.18 }}
                 onClick={scrollToLatestMessage}
-                className="absolute bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-iris-100 bg-white/95 text-iris-700 shadow-lg shadow-iris-950/10 backdrop-blur transition-all hover:border-iris-300 hover:bg-iris-50 hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32]/95 dark:text-slate-100 dark:shadow-iris-950/30 dark:hover:border-iris-300/60 dark:hover:bg-iris-300/12 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#171322] sm:right-6"
+                className="absolute bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[#8A82DC] bg-[#FBFAFF]/95 text-iris-800 shadow-lg shadow-iris-950/12 backdrop-blur transition-all hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32]/95 dark:text-slate-100 dark:shadow-iris-950/30 dark:hover:border-iris-300/60 dark:hover:bg-iris-300/12 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#171322] sm:right-6"
               >
                 <ChevronDown className="h-5 w-5" aria-hidden="true" />
               </motion.button>
@@ -1282,7 +1282,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 100 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="fixed inset-0 z-40 flex min-w-0 bg-white dark:bg-[#171322] lg:relative lg:inset-auto lg:z-auto lg:w-[var(--canvas-pane-width)] lg:shrink-0"
+              className="fixed inset-0 z-40 flex min-w-0 bg-[#FBFAFF] dark:bg-[#171322] lg:relative lg:inset-auto lg:z-auto lg:w-[var(--canvas-pane-width)] lg:shrink-0"
             >
               <div
                 role="separator"
@@ -1298,12 +1298,12 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 data-chat-no-background-focus
                 className={cn(
                   'group relative z-50 hidden w-3 shrink-0 cursor-col-resize touch-none items-center justify-center bg-iris-500/[0.03] outline-none transition-colors hover:bg-iris-500/10 dark:bg-iris-300/[0.04] dark:hover:bg-iris-300/10 lg:flex',
-                  'focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#171322]'
+                  'focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:focus-visible:ring-offset-[#171322]'
                 )}
               >
                 <span
                   className={cn(
-                    'pointer-events-none h-20 w-1 rounded-full bg-slate-300/80 transition-all duration-150 group-hover:h-28 group-hover:bg-iris-500 group-focus-visible:h-28 group-focus-visible:bg-iris-500 dark:bg-iris-300/30 dark:group-hover:bg-iris-300 dark:group-focus-visible:bg-iris-300',
+                    'pointer-events-none h-20 w-1 rounded-full bg-[#8A82DC] transition-all duration-150 group-hover:h-28 group-hover:bg-iris-600 group-focus-visible:h-28 group-focus-visible:bg-iris-600 dark:bg-iris-300/30 dark:group-hover:bg-iris-300 dark:group-focus-visible:bg-iris-300',
                     isResizingCanvas && 'h-32 bg-iris-500 dark:bg-iris-300'
                   )}
                   aria-hidden="true"

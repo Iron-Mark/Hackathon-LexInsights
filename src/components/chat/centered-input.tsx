@@ -165,13 +165,13 @@ export function CenteredInput({
       </label>
       <div
         onClick={focusTextareaFromShellClick}
-        className={`relative rounded-xl border bg-white/95 shadow-lg shadow-iris-950/10 backdrop-blur transition-colors duration-200 dark:bg-[#241f32] dark:shadow-none ${
+        className={`relative overflow-hidden rounded-xl border bg-[#FBFAFF]/95 shadow-lg shadow-iris-950/12 backdrop-blur transition-colors duration-200 dark:bg-[#241f32] dark:shadow-none ${
           isFocused
-            ? 'border-iris-500 shadow-iris-950/15 dark:border-iris-400/35'
-            : 'border-iris-100/90 dark:border-iris-300/15'
+            ? 'border-iris-600 shadow-iris-950/16 dark:border-iris-400/35'
+            : 'border-[#8A82DC] dark:border-iris-300/15'
         }`}
       >
-        <div className="flex items-center justify-between gap-2 border-b border-iris-100/80 bg-white/45 px-2.5 py-2 dark:border-iris-300/10 dark:bg-transparent">
+        <div className="flex items-center justify-between gap-2 border-b border-[#8A82DC]/80 bg-[#F8F6FF]/70 px-2.5 py-2 dark:border-iris-300/10 dark:bg-transparent">
           <ChatModeToggle showLabelOnMobile />
 
           {mode === 'compliance' && (
@@ -187,7 +187,7 @@ export function CenteredInput({
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-iris-100 bg-white/80 px-3 text-sm font-semibold text-slate-700 shadow-sm shadow-iris-950/5 transition-all duration-200 hover:border-iris-300 hover:bg-iris-50 hover:text-iris-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322]/90 dark:text-slate-200 dark:shadow-none dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
+                className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/90 px-3 text-sm font-semibold text-slate-800 shadow-sm shadow-iris-950/8 transition-all duration-200 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:border-iris-300/15 dark:bg-[#171322]/90 dark:text-slate-200 dark:shadow-none dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Upload compliance document"
                 type="button"
               >
@@ -199,10 +199,10 @@ export function CenteredInput({
         </div>
 
         {uploadedFiles.length > 0 && (
-          <div className="border-b border-iris-100/80 bg-iris-50/45 p-2.5 dark:border-iris-300/10 dark:bg-[#1a1625]/75">
+          <div className="border-b border-[#8A82DC]/70 bg-[#EFECFF]/70 p-2.5 dark:border-iris-300/10 dark:bg-[#1a1625]/75">
             <UploadedFilesList />
             {!user && mode === 'compliance' && (
-              <p className="mt-2 px-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+              <p className="mt-2 px-1 text-xs leading-5 text-slate-700 dark:text-slate-400">
                 Guest document checks are temporary and are not saved to an account.
               </p>
             )}
@@ -223,7 +223,7 @@ export function CenteredInput({
             rows={1}
             aria-label={effectivePlaceholder}
             aria-describedby="centered-message-disclaimer"
-            className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-3 py-2.5 text-base leading-6 text-slate-900 placeholder-slate-500 focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
+            className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-3 py-2.5 text-base leading-6 text-slate-900 placeholder-slate-600 focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
               minHeight: '48px',
               maxHeight: '150px',
@@ -248,7 +248,7 @@ export function CenteredInput({
       </div>
       <p
         id="centered-message-disclaimer"
-        className="mx-auto mt-2 max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-500 dark:text-iris-100/60"
+        className="mx-auto mt-2 max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-700 dark:text-iris-100/60"
       >
         LexInsights can make mistakes. Verify legal information with official sources; this is not legal advice.
       </p>

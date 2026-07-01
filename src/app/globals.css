@@ -118,16 +118,16 @@
   --color-neutral-300: #A0AFB7;
   /* Lighter Neutral */
 
-  /* Base Colors - Using Neutral Palette */
-  --background: #FFFFFF;
+  /* Base Colors - pastel iris surfaces tuned for light-mode contrast */
+  --background: #F4F2FF;
   --foreground: var(--color-neutral-900);
   /* neutral-900 - High contrast for readability */
 
   /* Card & Popover */
-  --card: #FFFFFF;
+  --card: #FBFAFF;
   --card-foreground: var(--color-neutral-900);
   /* neutral-900 */
-  --popover: #FFFFFF;
+  --popover: #FBFAFF;
   --popover-foreground: var(--color-neutral-900);
   /* neutral-900 */
 
@@ -137,16 +137,16 @@
   --primary-foreground: #FFFFFF;
 
   /* Secondary - Neutral with Iris tint */
-  --secondary: var(--color-iris-50);
-  /* iris-50 - Very light iris background */
+  --secondary: #EFECFF;
+  /* iris-tinted secondary surface */
   --secondary-foreground: var(--color-neutral-800);
   /* neutral-800 */
 
   /* Muted - Subtle backgrounds with better contrast */
-  --muted: hsl(244, 50%, 98%);
-  /* Very light iris-tinted background */
-  --muted-foreground: var(--color-neutral-600);
-  /* neutral-600 - Improved contrast */
+  --muted: #F0EDFF;
+  /* Light iris-tinted background */
+  --muted-foreground: var(--color-neutral-700);
+  /* neutral-700 - readable on pastel surfaces */
 
   /* Accent - Blue Iris 500 for highlights */
   --accent: var(--color-iris-500);
@@ -158,11 +158,11 @@
   /* red-600 */
   --destructive-foreground: #FFFFFF;
 
-  /* Borders & Inputs - Using neutral palette */
-  --border: var(--color-neutral-300);
-  /* neutral-300 */
-  --input: var(--color-neutral-300);
-  /* neutral-300 */
+  /* Borders & Inputs - visible on older light-mode displays */
+  --border: #8A82DC;
+  /* iris outline, 3:1+ against light surfaces */
+  --input: #8A82DC;
+  /* functional control boundary */
   --ring: var(--color-iris-500);
   /* iris-500 for focus rings */
 
@@ -179,18 +179,18 @@
   /* iris-200 */
 
   /* Sidebar */
-  --sidebar: #FFFFFF;
+  --sidebar: #F8F6FF;
   --sidebar-foreground: var(--color-neutral-900);
   /* neutral-900 */
   --sidebar-primary: var(--color-iris-600);
   /* iris-600 */
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: var(--color-iris-50);
-  /* iris-50 */
+  --sidebar-accent: #EFECFF;
+  /* iris-tinted accent */
   --sidebar-accent-foreground: var(--color-neutral-800);
   /* neutral-800 */
-  --sidebar-border: var(--color-neutral-300);
-  /* neutral-300 */
+  --sidebar-border: #8A82DC;
+  /* visible control boundary */
   --sidebar-ring: var(--color-iris-500);
   /* iris-500 */
 }
@@ -304,7 +304,8 @@
   html:not(.dark),
   html:not(.dark) body {
     background:
-      linear-gradient(180deg, rgba(224, 222, 250, 0.72) 0%, rgba(248, 250, 252, 0.94) 17rem, #f8fafc 100%);
+      radial-gradient(circle at top right, rgba(158, 151, 227, 0.18), transparent 28rem),
+      linear-gradient(180deg, #F0EDFF 0%, #F8F6FF 18rem, #F4F2FF 100%);
   }
 
   button:not(:disabled),
@@ -376,7 +377,8 @@
 
 .chat-viewport-surface {
   background:
-    linear-gradient(180deg, rgba(224, 222, 250, 0.56) 0%, rgba(248, 250, 252, 0.98) 18rem, #f8fafc 100%);
+    radial-gradient(circle at top right, rgba(158, 151, 227, 0.16), transparent 28rem),
+    linear-gradient(180deg, #F1EEFF 0%, #F8F6FF 19rem, #F4F2FF 100%);
 }
 
 .dark .chat-viewport-surface,
@@ -1200,7 +1202,7 @@ html.dark *::-webkit-scrollbar-corner,
   /* Input States */
   .input-field {
     border: 1px solid var(--color-neutral-300);
-    background-color: #FFFFFF;
+    background-color: #FBFAFF;
     color: var(--color-neutral-900);
     transition: all 0.2s ease-in-out;
   }
