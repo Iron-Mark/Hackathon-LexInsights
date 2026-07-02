@@ -46,6 +46,22 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: 'maskable',
       },
     ],
+    screenshots: [
+      {
+        src: '/screenshots/desktop-wide.png',
+        sizes: '1440x900',
+        type: 'image/png',
+        form_factor: 'wide',
+        label: 'LexInsights desktop assistant with legal compliance prompt cards',
+      },
+      {
+        src: '/screenshots/mobile-chat.png',
+        sizes: '390x844',
+        type: 'image/png',
+        form_factor: 'narrow',
+        label: 'LexInsights mobile assistant experience',
+      },
+    ],
     shortcuts: [
       {
         name: 'Start a legal chat',

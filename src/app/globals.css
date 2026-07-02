@@ -1425,3 +1425,17 @@ html.dark *::-webkit-scrollbar-corner,
     border-bottom-color: var(--color-iris-400);
   }
 }
+
+@keyframes loading-progress {
+  0% {
+    transform: translateX(-110%);
+  }
+
+  50% {
+    transform: translateX(70%);
+  }
+
+  100% {
+    transform: translateX(210%);
+  }
+}

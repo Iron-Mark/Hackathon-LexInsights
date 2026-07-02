@@ -29,7 +29,11 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-[#171322]">
+        <button
+          className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-[#171322]"
+          aria-label="Open account menu"
+          type="button"
+        >
           <Avatar className="size-9 sm:size-10 cursor-pointer">
             {user.avatar_url && (
               <AvatarImage src={user.avatar_url} alt={user.email} />

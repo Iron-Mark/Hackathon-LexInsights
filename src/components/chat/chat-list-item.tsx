@@ -102,10 +102,8 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
       onMouseLeave={scheduleDeleteConfirmClose}
     >
       <div
-        onClick={handleRowClick}
         className={cn(
-          'w-full rounded-lg px-3 py-2.5 text-left transition-all duration-150 cursor-pointer active:scale-[0.99]',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:focus-visible:ring-offset-[#171322]',
+          'w-full rounded-lg px-3 py-2.5 text-left transition-all duration-150',
           showDeleteConfirm
             ? 'bg-red-50 text-red-800 shadow-sm ring-1 ring-red-200 hover:bg-red-100 dark:bg-red-950/35 dark:text-red-100 dark:ring-red-500/30 dark:hover:bg-red-950/50'
             : isActive
@@ -113,71 +111,66 @@ export function ChatListItem({ chat, isActive, onClick }: ChatListItemProps) {
             : 'text-slate-800 hover:bg-[#EFECFF] hover:text-slate-950 hover:shadow-sm hover:shadow-iris-950/8 dark:text-slate-300 dark:hover:bg-[#241f32] dark:hover:text-white',
           isDeleting && 'opacity-50 cursor-not-allowed pointer-events-none'
         )}
-        aria-current={!showDeleteConfirm && isActive ? 'page' : undefined}
-        aria-label={showDeleteConfirm ? `Confirm delete ${chat.title}` : `Open ${chat.title}`}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault()
-            if (showDeleteConfirm) {
-              void handleConfirmDelete(e)
-            } else {
-              onClick()
-            }
-          }
-
-          if (e.key === 'Escape' && showDeleteConfirm) {
-            e.preventDefault()
-            setShowDeleteConfirm(false)
-          }
-        }}
       >
         <div className="flex items-start gap-3">
-          <span
-            className={cn(
-              'mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg transition-colors duration-150',
-              showDeleteConfirm
-                ? 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-200'
-                : isActive
-                  ? 'bg-[#FBFAFF] text-iris-800 shadow-xs ring-1 ring-[#8A82DC] dark:bg-iris-400/20 dark:text-iris-100 dark:ring-iris-300/30'
-                  : 'bg-[#EFECFF] text-iris-800 dark:bg-iris-300/10 dark:text-iris-200/50'
-            )}
-            aria-hidden="true"
+          <button
+            onClick={handleRowClick}
+            className="flex min-w-0 flex-1 cursor-pointer items-start gap-3 rounded-md text-left active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:focus-visible:ring-offset-[#171322]"
+            aria-current={!showDeleteConfirm && isActive ? 'page' : undefined}
+            aria-label={showDeleteConfirm ? `Confirm delete ${chat.title}` : `Open ${chat.title}`}
+            type="button"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape' && showDeleteConfirm) {
+                e.preventDefault()
+                setShowDeleteConfirm(false)
+              }
+            }}
           >
-            {showDeleteConfirm ? (
-              <Trash2 className="h-4 w-4" />
-            ) : (
-              <MessageSquare className="h-4 w-4" />
-            )}
-          </span>
-          <div className="min-w-0 flex-1">
-            <p
+            <span
               className={cn(
-                'font-body truncate text-sm font-semibold leading-snug',
+                'mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg transition-colors duration-150',
                 showDeleteConfirm
-                  ? 'text-red-800 dark:text-red-100'
+                  ? 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-200'
                   : isActive
-                    ? 'text-neutral-900 dark:text-slate-100'
-                    : 'text-neutral-800 dark:text-slate-200'
+                    ? 'bg-[#FBFAFF] text-iris-800 shadow-xs ring-1 ring-[#8A82DC] dark:bg-iris-400/20 dark:text-iris-100 dark:ring-iris-300/30'
+                    : 'bg-[#EFECFF] text-iris-800 dark:bg-iris-300/10 dark:text-iris-200/50'
               )}
-              title={chat.title}
+              aria-hidden="true"
             >
-              {showDeleteConfirm ? `Delete ${chat.title}` : chat.title}
-            </p>
-            <p
-              className={cn(
-                'mt-1 font-body text-xs font-medium transition-colors duration-150',
-                showDeleteConfirm
-                  ? 'text-red-600 dark:text-red-200/80'
-                  : isActive
-                    ? 'text-neutral-700 dark:text-slate-400'
-                    : 'text-neutral-700 dark:text-slate-500'
+              {showDeleteConfirm ? (
+                <Trash2 className="h-4 w-4" />
+              ) : (
+                <MessageSquare className="h-4 w-4" />
               )}
-            >
-              {showDeleteConfirm ? "Tap here to confirm" : formatRelativeTime(chat.updated_at)}
-            </p>
-          </div>
+            </span>
+            <span className="min-w-0 flex-1">
+              <span
+                className={cn(
+                  'font-body block truncate text-sm font-semibold leading-snug',
+                  showDeleteConfirm
+                    ? 'text-red-800 dark:text-red-100'
+                    : isActive
+                      ? 'text-neutral-900 dark:text-slate-100'
+                      : 'text-neutral-800 dark:text-slate-200'
+                )}
+                title={chat.title}
+              >
+                {showDeleteConfirm ? `Delete ${chat.title}` : chat.title}
+              </span>
+              <span
+                className={cn(
+                  'mt-1 block font-body text-xs font-medium transition-colors duration-150',
+                  showDeleteConfirm
+                    ? 'text-red-600 dark:text-red-200/80'
+                    : isActive
+                      ? 'text-neutral-700 dark:text-slate-400'
+                      : 'text-neutral-700 dark:text-slate-500'
+                )}
+              >
+                {showDeleteConfirm ? "Tap here to confirm" : formatRelativeTime(chat.updated_at)}
+              </span>
+            </span>
+          </button>
 
           <AnimatePresence>
             {!isDeleting && (

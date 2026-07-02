@@ -1,16 +1,18 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { cloneElement, isValidElement, useCallback, useEffect, useId, useRef, useState } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils'
 
 interface SidebarTooltipProps {
   label: string
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
 export function SidebarTooltip({ label, children, className }: SidebarTooltipProps) {
+  const tooltipId = useId()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const tooltipRef = useRef<HTMLDivElement>(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -56,6 +58,14 @@ export function SidebarTooltip({ label, children, className }: SidebarTooltipPro
     }
   }, [isOpen, updatePosition])
 
+  const trigger = isValidElement<{ 'aria-describedby'?: string }>(children)
+    ? cloneElement(children as ReactElement<{ 'aria-describedby'?: string }>, {
+        'aria-describedby': isOpen
+          ? [children.props['aria-describedby'], tooltipId].filter(Boolean).join(' ')
+          : children.props['aria-describedby'],
+      })
+    : children
+
   return (
     <div
       ref={wrapperRef}
@@ -71,10 +81,11 @@ export function SidebarTooltip({ label, children, className }: SidebarTooltipPro
       }}
       onBlurCapture={() => setIsOpen(false)}
     >
-      {children}
+      {trigger}
       {mounted && isOpen
         ? createPortal(
             <div
+              id={tooltipId}
               ref={tooltipRef}
               className="pointer-events-none fixed z-[9999] max-w-[min(20rem,calc(100vw-1.5rem))] -translate-y-1/2 translate-x-0.5 rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/95 px-3 py-2 text-xs font-semibold leading-5 text-slate-900 opacity-100 shadow-lg shadow-iris-950/14 backdrop-blur transition-opacity duration-150 ease-out dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100 dark:shadow-iris-950/30"
               role="tooltip"

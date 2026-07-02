@@ -38,21 +38,14 @@ export function VersionHistorySidebar() {
                 isActive ? 'bg-iris-100 dark:bg-iris-400/10' : 'hover:bg-slate-50 dark:hover:bg-iris-300/10'
               )}
             >
-              <div
-                onClick={() => setCurrentVersion(version.id)}
-                className="w-full cursor-pointer rounded text-left transition-transform active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    setCurrentVersion(version.id)
-                  }
-                }}
-                aria-label={`Switch to ${version.label}`}
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2">
+                <button
+                  onClick={() => setCurrentVersion(version.id)}
+                  className="min-w-0 flex-1 cursor-pointer rounded text-left transition-transform active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]"
+                  aria-label={`Switch to ${version.label}`}
+                  type="button"
+                >
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <Clock className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" aria-hidden="true" />
                       <span
@@ -73,50 +66,49 @@ export function VersionHistorySidebar() {
                       {formatVersionTimestamp(version.timestamp)}
                     </p>
                   </div>
+                </button>
 
-                  {versions.length > 1 && (
-                    <div
-                      className={cn(
-                        'flex items-center gap-1 transition-opacity',
-                        confirmDeleteId === version.id ? 'opacity-100' : 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100'
-                      )}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {confirmDeleteId === version.id ? (
-                        <>
-                          <button
-                            onClick={() => {
-                              deleteVersion(version.id)
-                              setConfirmDeleteId(null)
-                            }}
-                            className="flex h-11 w-11 items-center justify-center rounded bg-red-600 text-white transition-all hover:bg-red-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
-                            aria-label={`Confirm delete ${version.label}`}
-                            type="button"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
-                          </button>
-                          <button
-                            onClick={() => setConfirmDeleteId(null)}
-                            className="flex h-11 w-11 items-center justify-center rounded bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:bg-[#241f32] dark:text-slate-200 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
-                            aria-label={`Cancel delete ${version.label}`}
-                            type="button"
-                          >
-                            <X className="h-3.5 w-3.5" aria-hidden="true" />
-                          </button>
-                        </>
-                      ) : (
+                {versions.length > 1 && (
+                  <div
+                    className={cn(
+                      'flex items-center gap-1 transition-opacity',
+                      confirmDeleteId === version.id ? 'opacity-100' : 'opacity-100 sm:opacity-0 sm:group-hover:opacity-100'
+                    )}
+                  >
+                    {confirmDeleteId === version.id ? (
+                      <>
                         <button
-                          onClick={() => setConfirmDeleteId(version.id)}
-                          className="flex h-11 w-11 items-center justify-center rounded p-0 transition-all hover:bg-red-50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 dark:hover:bg-red-400/10"
-                          aria-label={`Delete ${version.label}`}
+                          onClick={() => {
+                            deleteVersion(version.id)
+                            setConfirmDeleteId(null)
+                          }}
+                          className="flex h-11 w-11 items-center justify-center rounded bg-red-600 text-white transition-all hover:bg-red-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                          aria-label={`Confirm delete ${version.label}`}
                           type="button"
                         >
-                          <Trash2 className="h-3.5 w-3.5 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-300" aria-hidden="true" />
+                          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                         </button>
-                      )}
-                    </div>
-                  )}
-                </div>
+                        <button
+                          onClick={() => setConfirmDeleteId(null)}
+                          className="flex h-11 w-11 items-center justify-center rounded bg-slate-100 text-slate-600 transition-all hover:bg-slate-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 dark:bg-[#241f32] dark:text-slate-200 dark:hover:bg-iris-300/10 dark:hover:text-iris-200"
+                          aria-label={`Cancel delete ${version.label}`}
+                          type="button"
+                        >
+                          <X className="h-3.5 w-3.5" aria-hidden="true" />
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmDeleteId(version.id)}
+                        className="flex h-11 w-11 items-center justify-center rounded p-0 transition-all hover:bg-red-50 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 dark:hover:bg-red-400/10"
+                        aria-label={`Delete ${version.label}`}
+                        type="button"
+                      >
+                        <Trash2 className="h-3.5 w-3.5 text-slate-400 hover:text-red-600 dark:text-slate-500 dark:hover:text-red-300" aria-hidden="true" />
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 interface LoadingIndicatorProps {
@@ -16,6 +16,7 @@ export function LoadingIndicator({
   size = 'md',
   className 
 }: LoadingIndicatorProps) {
+  const shouldReduceMotion = useReducedMotion()
   const sizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-6 w-6',
@@ -30,17 +31,17 @@ export function LoadingIndicator({
 
   return (
     <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={shouldReduceMotion ? false : { opacity: 0 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1 }}
+      exit={shouldReduceMotion ? undefined : { opacity: 0 }}
       className={cn('flex items-center gap-2 text-slate-600 dark:text-iris-100/75', className)}
       role="status"
       aria-live="polite"
     >
-      <Loader2 className={cn(sizeClasses[size], 'animate-spin text-iris-600 dark:text-iris-200')} aria-hidden="true" />
+      <Loader2 className={cn(sizeClasses[size], !shouldReduceMotion && 'animate-spin', 'text-iris-600 dark:text-iris-200')} aria-hidden="true" />
       <motion.span 
-        animate={{ opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
+        animate={shouldReduceMotion ? undefined : { opacity: [0.5, 1, 0.5] }}
+        transition={shouldReduceMotion ? undefined : { duration: 1.5, repeat: Infinity }}
         className={textSizeClasses[size]}
       >
         {message}
@@ -61,11 +62,12 @@ const DEFAULT_TYPING_STEPS = [
 ]
 
 export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: TypingIndicatorProps) {
+  const shouldReduceMotion = useReducedMotion()
   const [stepIndex, setStepIndex] = useState(0)
   const currentStep = steps[stepIndex] || DEFAULT_TYPING_STEPS[0]
 
   useEffect(() => {
-    if (steps.length <= 1) {
+    if (shouldReduceMotion || steps.length <= 1) {
       return
     }
 
@@ -74,7 +76,7 @@ export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: Typ
     }, 1500)
 
     return () => window.clearInterval(intervalId)
-  }, [steps])
+  }, [shouldReduceMotion, steps])
 
   const dotVariants = {
     initial: { y: 0 },
@@ -83,10 +85,10 @@ export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: Typ
 
   return (
     <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.95 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, scale: 1 }}
+      exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.95 }}
+      transition={shouldReduceMotion ? undefined : { duration: 0.2 }}
       className={cn(
         'flex w-fit items-center gap-3 rounded-xl border-2 border-iris-200 bg-gradient-to-r from-iris-50 to-purple-50 px-5 py-4 shadow-sm',
         'dark:border-iris-300/18 dark:bg-[linear-gradient(135deg,rgba(63,51,189,0.16),rgba(36,31,50,0.92)_52%,rgba(24,18,39,0.96))] dark:from-transparent dark:to-transparent dark:text-iris-100/80 dark:shadow-[0_16px_42px_rgba(9,6,22,0.34)]',
@@ -103,8 +105,8 @@ export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: Typ
             key={index}
             variants={dotVariants}
             initial="initial"
-            animate="animate"
-            transition={{
+            animate={shouldReduceMotion ? 'initial' : 'animate'}
+            transition={shouldReduceMotion ? undefined : {
               duration: 0.5,
               repeat: Infinity,
               repeatType: "reverse",
@@ -117,8 +119,8 @@ export function TypingIndicator({ className, steps = DEFAULT_TYPING_STEPS }: Typ
       
       {/* Text with animation */}
       <motion.span 
-        animate={{ opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 1.5, repeat: Infinity }}
+        animate={shouldReduceMotion ? undefined : { opacity: [0.5, 1, 0.5] }}
+        transition={shouldReduceMotion ? undefined : { duration: 1.5, repeat: Infinity }}
         className="text-sm font-medium text-iris-700 dark:text-iris-100/82"
       >
         {currentStep}
@@ -134,6 +136,7 @@ interface EnhancedLoadingProps {
 }
 
 export function EnhancedLoading({ stage = 'searching', progress, className }: EnhancedLoadingProps) {
+  const shouldReduceMotion = useReducedMotion()
   const stageInfo = {
     searching: {
       icon: '🔍',
@@ -162,10 +165,10 @@ export function EnhancedLoading({ stage = 'searching', progress, className }: En
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 10 }}
+      animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      exit={shouldReduceMotion ? undefined : { opacity: 0, y: -10 }}
+      transition={shouldReduceMotion ? undefined : { duration: 0.3 }}
       className={cn(
         'flex w-full max-w-md flex-col gap-3 rounded-xl border-2 bg-gradient-to-r px-5 py-4 shadow-md',
         current.bgColor,
@@ -180,8 +183,8 @@ export function EnhancedLoading({ stage = 'searching', progress, className }: En
       {/* Header with icon and text */}
       <div className="flex items-center gap-3">
         <motion.span 
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 1, repeat: Infinity }}
+          animate={shouldReduceMotion ? undefined : { scale: [1, 1.2, 1] }}
+          transition={shouldReduceMotion ? undefined : { duration: 1, repeat: Infinity }}
           className="text-2xl"
         >
           {current.icon}
@@ -195,7 +198,7 @@ export function EnhancedLoading({ stage = 'searching', progress, className }: En
           <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.5, ease: "easeOut" }}
             className={cn('h-full rounded-full bg-gradient-to-r', current.color, 'dark:from-iris-300 dark:to-violet-200')}
           />
         </div>
@@ -206,16 +209,16 @@ export function EnhancedLoading({ stage = 'searching', progress, className }: En
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            animate={{ 
+            animate={shouldReduceMotion ? undefined : {
               height: ['4px', '16px', '4px']
             }}
-            transition={{
+            transition={shouldReduceMotion ? undefined : {
               duration: 1.5,
               repeat: Infinity,
               ease: "easeInOut",
               delay: i * 0.1
             }}
-            className={cn('w-1 rounded-full bg-gradient-to-t', current.color, 'dark:from-iris-300 dark:to-violet-200')}
+            className={cn('w-1 rounded-full bg-gradient-to-t', shouldReduceMotion && 'h-2.5', current.color, 'dark:from-iris-300 dark:to-violet-200')}
           />
         ))}
       </div>

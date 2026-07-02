@@ -59,7 +59,7 @@ function MaintainerCredit() {
           href={MAINTAINER_PORTFOLIO_URL}
           target="_blank"
           rel="noreferrer"
-          className="group flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-xs text-slate-700 transition-colors hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:text-slate-400 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+          className="group flex min-h-11 items-center gap-2.5 rounded-lg px-2 text-xs text-slate-700 transition-colors hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:text-slate-400 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
           aria-label="Open Mark Siazon portfolio for LexInsights maintainer context"
         >
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/90 text-iris-800 shadow-sm shadow-iris-950/8 transition-colors group-hover:border-iris-600 group-hover:bg-[#EFECFF] dark:border-iris-300/15 dark:bg-iris-300/10 dark:text-iris-200 dark:group-hover:border-iris-300/35 dark:group-hover:bg-iris-300/15">

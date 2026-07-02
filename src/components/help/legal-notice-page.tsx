@@ -10,7 +10,7 @@ interface LegalNoticePageProps {
 
 export function LegalNoticePage({
   title = 'Terms & Privacy',
-  eyebrow = 'Last updated June 27, 2026',
+  eyebrow = 'Last updated July 1, 2026',
   description = 'Public terms for using LexInsights and a Philippine privacy notice for account, chat, document review, and legal research workflows.',
 }: LegalNoticePageProps) {
   return (

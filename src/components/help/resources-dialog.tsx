@@ -404,7 +404,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
                           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#171322]',
                           isSelected
                             ? 'border-iris-500 bg-[#EFECFF] text-iris-800 dark:border-iris-300/35 dark:bg-iris-300/16 dark:text-iris-100'
-                            : 'border-[#8A82DC] bg-[#FBFAFF] text-slate-700 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-slate-950 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-300 dark:hover:border-iris-300/30 dark:hover:text-slate-100',
+                            : 'border-[#8A82DC] bg-[#FBFAFF] text-slate-700 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-slate-950 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-300 dark:hover:border-iris-300/30 dark:hover:bg-iris-300/10 dark:hover:text-slate-100',
                         ].join(' ')}
                         onClick={() => setSelectedCategory(category)}
                       >

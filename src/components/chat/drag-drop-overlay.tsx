@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { Upload, FileText, AlertCircle } from 'lucide-react'
 import { useChatModeStore } from '@/lib/store/chat-mode-store'
 import { getValidComplianceDocuments } from '@/lib/utils/compliance-upload'
@@ -12,6 +12,7 @@ interface DragDropOverlayProps {
 }
 
 export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayProps) {
+  const shouldReduceMotion = useReducedMotion()
   const [isDragging, setIsDragging] = useState(false)
   const [, setDragCounter] = useState(0)
   const { setMode } = useChatModeStore()
@@ -84,18 +85,18 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
     <AnimatePresence>
       {isDragging && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          initial={shouldReduceMotion ? false : { opacity: 0 }}
+          animate={shouldReduceMotion ? undefined : { opacity: 1 }}
+          exit={shouldReduceMotion ? undefined : { opacity: 0 }}
+          transition={shouldReduceMotion ? undefined : { duration: 0.2 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm"
           style={{ pointerEvents: 'none' }}
         >
           <motion.div
-            initial={{ scale: 0.9, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.9, y: 20 }}
-            transition={{ duration: 0.2 }}
+            initial={shouldReduceMotion ? false : { scale: 0.9, y: 20 }}
+            animate={shouldReduceMotion ? undefined : { scale: 1, y: 0 }}
+            exit={shouldReduceMotion ? undefined : { scale: 0.9, y: 20 }}
+            transition={shouldReduceMotion ? undefined : { duration: 0.2 }}
             className="relative mx-4 max-w-2xl w-full"
           >
             {/* Main Drop Zone */}
@@ -107,11 +108,11 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
               <div className="relative flex flex-col items-center gap-6 text-center">
                 {/* Icon */}
                 <motion.div
-                  animate={{ 
+                  animate={shouldReduceMotion ? undefined : {
                     y: [0, -10, 0],
                     rotate: [0, 5, -5, 0]
                   }}
-                  transition={{ 
+                  transition={shouldReduceMotion ? undefined : {
                     duration: 2,
                     repeat: Infinity,
                     ease: "easeInOut"
@@ -170,11 +171,11 @@ export function DragDropOverlay({ onFileDrop, maxFiles = 3 }: DragDropOverlayPro
 
               {/* Animated Border Glow */}
               <motion.div
-                animate={{
+                animate={shouldReduceMotion ? undefined : {
                   opacity: [0.5, 1, 0.5],
                   scale: [1, 1.02, 1]
                 }}
-                transition={{
+                transition={shouldReduceMotion ? undefined : {
                   duration: 2,
                   repeat: Infinity,
                   ease: "easeInOut"

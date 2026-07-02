@@ -306,7 +306,7 @@ export function TermsPrivacyPanel({
                       href={PORTFOLIO_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-10 items-center rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-3 text-sm font-semibold text-iris-800 transition-colors hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+                      className="inline-flex min-h-10 items-center rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-3 text-sm font-semibold text-iris-800 transition-colors hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
                     >
                       Maintainer portfolio
                     </a>
@@ -314,7 +314,7 @@ export function TermsPrivacyPanel({
                       href={`${REPOSITORY_URL}/issues`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-10 items-center rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-3 text-sm font-semibold text-iris-800 transition-colors hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+                      className="inline-flex min-h-10 items-center rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-3 text-sm font-semibold text-iris-800 transition-colors hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
                     >
                       Repository issues
                     </a>

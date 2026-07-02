@@ -37,8 +37,8 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
           'w-[280px]',
           // Desktop: fixed positioning with offset for app sidebar
           !isMobile && 'fixed left-16 top-0 z-30',
-          // Mobile: overlay positioning with higher z-index
-          isMobile && 'fixed left-0 top-0 z-40 max-w-[80%]',
+          // Mobile: keep the history panel beside the persistent app rail so controls remain clickable.
+          isMobile && 'fixed left-16 top-0 z-40 max-w-[calc(100%-4rem)]',
           // Smooth transitions - 300ms as per design spec
           'transition-transform duration-300 ease-out',
           // Slide in/out based on isOpen state

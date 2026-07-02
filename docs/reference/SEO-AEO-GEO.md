@@ -27,7 +27,7 @@ The legacy showcase remains available at `https://lexinsights.vercel.app` only a
 ## Answer Engine Optimization
 
 - `/llms.txt` gives retrieval systems a concise source of truth for what LexInsights is, what it can do, what it is not, public URLs, official source orientation, portfolio attribution, and a suggested summary.
-- `/ai.txt` redirects to `/llms.txt` for tools that look for a short AI-facing text endpoint.
+- `/ai.txt` serves the same guidance as `/llms.txt` for tools that look for a short AI-facing text endpoint.
 - The app avoids claiming official legal authority. Public summaries consistently say generated legal analysis should be verified against official sources, counsel, or the relevant authority.
 
 ## Generative Engine Optimization
