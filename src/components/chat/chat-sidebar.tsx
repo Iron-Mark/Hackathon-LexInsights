@@ -42,7 +42,7 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
           // Smooth transitions - 300ms as per design spec
           'transition-transform duration-300 ease-out',
           // Slide in/out based on isOpen state
-          isOpen ? 'translate-x-0' : '-translate-x-full',
+          isOpen ? 'translate-x-0' : isMobile ? '-translate-x-[calc(100%+4rem)]' : '-translate-x-full',
           // Closed transformed drawers must not leave an invisible edge hit area.
           isOpen ? 'pointer-events-auto' : 'pointer-events-none',
           // Focus visible outline for keyboard navigation
