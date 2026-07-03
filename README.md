@@ -13,7 +13,7 @@ LexInsights is not a lawyer, law firm, court, regulator, or official government 
 
 ## Product Preview
 
-Assets refreshed July 2, 2026.
+Assets refreshed July 3, 2026.
 
 ![LexInsights desktop chat entry showing legal research prompt cards and the providerless assistant composer](docs/assets/lexinsights-chat-desktop.png)
 
@@ -26,7 +26,11 @@ Assets refreshed July 2, 2026.
 Additional repository assets:
 
 - GitHub social preview: [docs/assets/lexinsights-github-social.png](docs/assets/lexinsights-github-social.png)
+- Dark social preview variant: [docs/assets/lexinsights-github-social-dark.png](docs/assets/lexinsights-github-social-dark.png)
 - Compliance report screenshot: [docs/assets/lexinsights-compliance-report.png](docs/assets/lexinsights-compliance-report.png)
+- Light-mode desktop capture: [docs/assets/lexinsights-chat-desktop-light.png](docs/assets/lexinsights-chat-desktop-light.png)
+- Light-mode compliance capture: [docs/assets/lexinsights-compliance-report-light.png](docs/assets/lexinsights-compliance-report-light.png)
+- Light-mode mobile resources capture: [docs/assets/lexinsights-help-mobile-light.png](docs/assets/lexinsights-help-mobile-light.png)
 - Providerless RAG flow diagram: [docs/assets/lexinsights-rag-flow.svg](docs/assets/lexinsights-rag-flow.svg)
 - PWA screenshots: [public/screenshots/desktop-wide.png](public/screenshots/desktop-wide.png), [public/screenshots/mobile-chat.png](public/screenshots/mobile-chat.png)
 
