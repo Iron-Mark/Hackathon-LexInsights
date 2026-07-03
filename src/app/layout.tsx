@@ -20,6 +20,7 @@ import {
   SITE_TITLE,
   SITE_URL,
 } from "@/lib/seo";
+import { Analytics } from "@vercel/analytics/next";
 
 // Manrope - Body font
 const manrope = Manrope({
@@ -174,6 +175,7 @@ export default function RootLayout({
             </ThemeProvider>
           )}
         </AuthSetupProvider>
+        <Analytics />
       </body>
     </html>
   );
