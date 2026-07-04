@@ -23,7 +23,7 @@ import { Button } from '@/components/ui/button'
 import { DragDropOverlay } from './drag-drop-overlay'
 import { showToast } from '@/components/ui/toast'
 import { EmptyState } from './empty-state'
-import { CenteredInput } from './centered-input'
+import { CENTERED_INPUT_DISCLAIMER_ID, CENTERED_INPUT_DISCLAIMER_TEXT, CenteredInput } from './centered-input'
 import { extractComplianceDocumentText, type ExtractedDocumentText } from '@/lib/utils/document-text'
 import {
   RAG_BACKEND_TOAST_ACTION,
@@ -1202,7 +1202,16 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                         onSend={handleCenteredSend}
                         disabled={loading}
                         isTransitioning={isTransitioning}
+                        renderDisclaimer={false}
                       />
+                    </div>
+                    <div className="mx-auto w-full max-w-5xl px-4 pb-[calc(env(safe-area-inset-bottom)+0.875rem)] sm:px-6 lg:px-8">
+                      <p
+                        id={CENTERED_INPUT_DISCLAIMER_ID}
+                        className="mx-auto max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-700 dark:text-iris-100/60"
+                      >
+                        {CENTERED_INPUT_DISCLAIMER_TEXT}
+                      </p>
                     </div>
                   </motion.div>
                 )}
