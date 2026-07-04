@@ -12,6 +12,7 @@ import { ChatModeToggle } from './chat-mode-toggle'
 import { performDeepSearch } from '@/lib/services/deep-search-api'
 import { UploadedFilesList } from './uploaded-files-list'
 import { showToast } from '@/components/ui/toast'
+import { cn } from '@/lib/utils'
 import {
   COMPLIANCE_DOCUMENT_ACCEPT,
   getComplianceDocumentRejection,
@@ -41,7 +42,7 @@ export function ChatInput() {
     resizeTextarea,
     resetTextarea,
     focusTextareaFromShellClick,
-  } = useComposerTextarea(120)
+  } = useComposerTextarea(220)
 
   const ensureActiveChat = async (fallbackTitle: string) => {
     if (activeChat?.id) {
@@ -243,9 +244,9 @@ export function ChatInput() {
         </div>
       )}
       
-      <div className="mx-auto max-w-5xl cursor-text p-2.5 sm:p-4" onClick={focusTextareaFromShellClick}>
+      <div className="mx-auto max-w-5xl cursor-text px-2.5 pb-3 pt-2.5 sm:p-4" onClick={focusTextareaFromShellClick}>
         {/* Input Area */}
-        <div className="flex items-end gap-1.5 rounded-lg border-2 border-[#8A82DC] bg-[#FBFAFF]/95 p-2 shadow-sm shadow-iris-950/12 transition-all focus-within:border-iris-600 focus-within:shadow-md focus-within:shadow-iris-950/16 sm:gap-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
+        <div className="flex flex-wrap items-end gap-2 rounded-lg border-2 border-[#8A82DC] bg-[#FBFAFF]/95 p-2.5 shadow-sm shadow-iris-950/12 transition-all focus-within:border-iris-600 focus-within:shadow-md focus-within:shadow-iris-950/16 min-[360px]:flex-nowrap dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
           {/* File Upload Button (Compliance Mode Only) */}
           {mode === 'compliance' && (
             <>
@@ -260,7 +261,7 @@ export function ChatInput() {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg p-2.5 text-iris-700 transition-all hover:bg-[#EFECFF] hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-1 dark:text-slate-300 dark:hover:bg-iris-400/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
+                className="flex min-h-12 min-w-12 items-center justify-center rounded-lg p-2.5 text-iris-700 transition-all hover:bg-[#EFECFF] hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-1 sm:min-h-11 sm:min-w-11 dark:text-slate-300 dark:hover:bg-iris-400/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
                 aria-label="Upload compliance document"
                 type="button"
               >
@@ -285,10 +286,10 @@ export function ChatInput() {
             rows={1}
             aria-label={placeholder}
             aria-describedby="message-hint"
-            className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-2 py-2 text-base leading-6 text-slate-900 placeholder-slate-600 transition-opacity focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
+            className="scrollbar-none order-first min-w-0 basis-full flex-1 resize-none overflow-hidden bg-transparent px-2 py-3 text-base leading-6 text-slate-900 placeholder-slate-600 transition-opacity focus:outline-none disabled:opacity-50 min-[360px]:order-none min-[360px]:basis-auto sm:py-2 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
-              minHeight: 'clamp(48px, 7dvh, 72px)',
-              maxHeight: '160px',
+              minHeight: 'clamp(64px, 9dvh, 88px)',
+              maxHeight: '220px',
               overflowY: 'hidden',
             }}
           />
@@ -301,7 +302,7 @@ export function ChatInput() {
             <button
               onClick={handleDeepSearch}
               disabled={!message.trim() || isDeepSearching || isSending || loading || uploading}
-              className="group flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-lg border border-[#8A82DC] bg-[#EFECFF] px-3 py-2.5 text-iris-800 shadow-sm transition-all duration-200 hover:border-iris-600 hover:bg-iris-100 hover:text-iris-900 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-100 disabled:text-slate-500 disabled:hover:shadow-sm sm:min-w-[7rem] dark:border-iris-400/30 dark:bg-iris-400/10 dark:text-iris-200 dark:hover:border-iris-300/50 dark:hover:bg-iris-400/20 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32] dark:disabled:border-iris-300/10 dark:disabled:bg-[#1a1625] dark:disabled:text-slate-600"
+              className="group ml-auto flex min-h-12 min-w-12 items-center justify-center gap-2 rounded-lg border border-[#8A82DC] bg-[#EFECFF] px-3 py-2.5 text-iris-800 shadow-sm transition-all duration-200 hover:border-iris-600 hover:bg-iris-100 hover:text-iris-900 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:border-slate-300 disabled:bg-slate-100 disabled:text-slate-500 disabled:hover:shadow-sm min-[360px]:ml-0 sm:min-h-11 sm:min-w-[7rem] dark:border-iris-400/30 dark:bg-iris-400/10 dark:text-iris-200 dark:hover:border-iris-300/50 dark:hover:bg-iris-400/20 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32] dark:disabled:border-iris-300/10 dark:disabled:bg-[#1a1625] dark:disabled:text-slate-600"
               aria-label={isDeepSearching ? 'Running deep research...' : 'Run deep research'}
               type="button"
               title="Run deep research"
@@ -321,7 +322,10 @@ export function ChatInput() {
           <button
             onClick={handleSend}
             disabled={(!message.trim() && uploadedFiles.length === 0) || isSending || loading || uploading}
-            className="group flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-primary p-2.5 text-primary-foreground transition-all duration-200 hover:scale-105 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none dark:hover:bg-iris-300 dark:focus-visible:ring-offset-[#241f32] dark:disabled:bg-[#39334a] dark:disabled:text-slate-500"
+            className={cn(
+              'group flex min-h-12 min-w-12 items-center justify-center rounded-lg bg-primary p-2.5 text-primary-foreground transition-all duration-200 hover:scale-105 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:scale-100 disabled:hover:shadow-none sm:min-h-11 sm:min-w-11 dark:hover:bg-iris-300 dark:focus-visible:ring-offset-[#241f32] dark:disabled:bg-[#39334a] dark:disabled:text-slate-500',
+              mode !== 'general' && 'ml-auto min-[360px]:ml-0'
+            )}
             aria-label={isSending || loading || uploading ? 'Sending standard message...' : 'Send standard message'}
             type="submit"
             title="Send standard message"
