@@ -34,15 +34,15 @@ export function ChatSidebar({ className }: ChatSidebarProps) {
           // Base styles with design system colors
           'relative flex h-screen flex-col border-r border-[#8A82DC] bg-[linear-gradient(180deg,#F1EEFF_0%,#F8F6FF_58%,#F0EDFF_100%)] shadow-[inset_-1px_0_0_rgba(63,51,189,0.16)] supports-[height:100dvh]:h-dvh dark:border-iris-300/15 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_54%,#120d1f_100%)] dark:shadow-none',
           // Width constraints
-          'w-[280px]',
+          isMobile ? 'w-full max-w-none' : 'w-[280px]',
           // Desktop: fixed positioning with offset for app sidebar
           !isMobile && 'fixed left-16 top-0 z-30',
-          // Mobile: keep the history panel beside the persistent app rail so controls remain clickable.
-          isMobile && 'fixed left-16 top-0 z-40 max-w-[calc(100%-4rem)]',
+          // Mobile: the icon rail is hidden, so the drawer should own the viewport.
+          isMobile && 'fixed left-0 top-0 z-40',
           // Smooth transitions - 300ms as per design spec
           'transition-transform duration-300 ease-out',
           // Slide in/out based on isOpen state
-          isOpen ? 'translate-x-0' : isMobile ? '-translate-x-[calc(100%+4rem)]' : '-translate-x-full',
+          isOpen ? 'translate-x-0' : '-translate-x-full',
           // Closed transformed drawers must not leave an invisible edge hit area.
           isOpen ? 'pointer-events-auto' : 'pointer-events-none',
           // Focus visible outline for keyboard navigation
