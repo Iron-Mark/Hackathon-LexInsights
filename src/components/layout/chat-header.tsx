@@ -51,14 +51,22 @@ export function ChatHeader() {
               <Button
                 variant="ghost"
                 size="sm"
-                className={authSignInButtonClassName}
+                className={`${authSignInButtonClassName} hidden max-[340px]:inline-flex`}
+                onClick={() => openAuthDialog('sign-in')}
+              >
+                Login
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`${authSignInButtonClassName} max-[340px]:hidden`}
                 onClick={() => openAuthDialog('sign-in')}
               >
                 Sign in
               </Button>
               <Button
                 size="sm"
-                className={authSignUpButtonClassName}
+                className={`${authSignUpButtonClassName} max-[340px]:hidden`}
                 onClick={() => openAuthDialog('sign-up')}
               >
                 Sign up

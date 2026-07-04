@@ -4,6 +4,7 @@ import {
   Children,
   cloneElement,
   isValidElement,
+  useEffect,
   useId,
   useMemo,
   useState,
@@ -42,6 +43,10 @@ interface ResolvedCitation {
 
 export interface LegalCitationContext {
   resolveCitation: (citationNumber: string) => ResolvedCitation
+}
+
+interface LegalCitationRenderOptions {
+  isRevealing?: boolean
 }
 
 const RA_CITATION_PATTERN = /\b(?:R\.?\s*A\.?(?:\s*(?:No\.?|Number))?|Republic\s+Act(?:\s*(?:No\.?|Number))?)\s*[-.]?\s*(\d{3,6})\b/gi
@@ -154,17 +159,18 @@ function shouldSkipElement(element: ReactElement) {
 export function renderLegalCitationNodes(
   children: ReactNode,
   citationContext: LegalCitationContext,
-  keyPrefix: string
+  keyPrefix: string,
+  options: LegalCitationRenderOptions = {}
 ): ReactNode {
   return Children.map(children, (child, childIndex) => {
     const childKey = `${keyPrefix}-${childIndex}`
 
     if (typeof child === 'string') {
-      return renderCitationText(child, citationContext, childKey)
+      return renderCitationText(child, citationContext, childKey, options)
     }
 
     if (Array.isArray(child)) {
-      return renderLegalCitationNodes(child, citationContext, childKey)
+      return renderLegalCitationNodes(child, citationContext, childKey, options)
     }
 
     if (isValidElement<{ children?: ReactNode }>(child)) {
@@ -177,7 +183,7 @@ export function renderLegalCitationNodes(
       }
 
       return cloneElement(child, {
-        children: renderLegalCitationNodes(child.props.children, citationContext, childKey),
+        children: renderLegalCitationNodes(child.props.children, citationContext, childKey, options),
       })
     }
 
@@ -188,7 +194,8 @@ export function renderLegalCitationNodes(
 function renderCitationText(
   text: string,
   citationContext: LegalCitationContext,
-  keyPrefix: string
+  keyPrefix: string,
+  options: LegalCitationRenderOptions
 ) {
   const parts: ReactNode[] = []
   let lastIndex = 0
@@ -214,6 +221,7 @@ function renderCitationText(
             key={`${keyPrefix}-${matchIndex}-${citationNumber}`}
             citation={citation}
             displayText={matchedText}
+            previewDisabled={options.isRevealing}
           />
         )
         renderedCitationCount += 1
@@ -432,9 +440,11 @@ function CitationInspectorContent({ citation }: { citation: ResolvedCitation }) 
 function LegalCitationInline({
   citation,
   displayText,
+  previewDisabled = false,
 }: {
   citation: ResolvedCitation
   displayText: string
+  previewDisabled?: boolean
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
@@ -448,18 +458,42 @@ function LegalCitationInline({
     ? 'Unsupported local citation'
     : 'Citation metadata unavailable'
 
+  useEffect(() => {
+    if (previewDisabled) {
+      setIsPreviewOpen(false)
+    }
+  }, [previewDisabled])
+
   const buttonClassName = cn(
-    'group/citation relative mx-0.5 inline-flex min-h-7 cursor-pointer items-center rounded-md border px-1.5 py-0.5 align-baseline text-[0.95em] font-semibold leading-normal underline decoration-2 underline-offset-4 transition-all duration-150 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
+    'group/citation relative mx-0.5 inline-flex min-h-7 cursor-pointer items-center rounded-md border px-1.5 py-0.5 align-baseline text-[0.95em] font-semibold leading-normal underline decoration-2 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
+    previewDisabled
+      ? 'transition-none active:scale-100'
+      : 'transition-all duration-150 active:scale-[0.98]',
     isKnown &&
-      'border-emerald-200 bg-emerald-50/80 text-emerald-800 decoration-emerald-500 hover:border-emerald-300 hover:bg-emerald-100 focus-visible:ring-emerald-500 dark:border-emerald-400/25 dark:bg-emerald-400/10 dark:text-emerald-100 dark:decoration-emerald-300 dark:hover:bg-emerald-400/15',
+      cn(
+        'border-emerald-200 bg-emerald-50/80 text-emerald-800 decoration-emerald-500 focus-visible:ring-emerald-500 dark:border-emerald-400/25 dark:bg-emerald-400/10 dark:text-emerald-100 dark:decoration-emerald-300',
+        !previewDisabled && 'hover:border-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-400/15'
+      ),
     isUnknown &&
-      'border-amber-200 bg-amber-50/80 text-amber-800 decoration-amber-500 hover:border-amber-300 hover:bg-amber-100 focus-visible:ring-amber-500 dark:border-amber-400/25 dark:bg-amber-400/10 dark:text-amber-100 dark:decoration-amber-300 dark:hover:bg-amber-400/15',
+      cn(
+        'border-amber-200 bg-amber-50/80 text-amber-800 decoration-amber-500 focus-visible:ring-amber-500 dark:border-amber-400/25 dark:bg-amber-400/10 dark:text-amber-100 dark:decoration-amber-300',
+        !previewDisabled && 'hover:border-amber-300 hover:bg-amber-100 dark:hover:bg-amber-400/15'
+      ),
     !isKnown &&
       !isUnknown &&
-      'border-slate-200 bg-slate-50 text-slate-700 decoration-slate-400 hover:border-slate-300 hover:bg-slate-100 focus-visible:ring-slate-400 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:decoration-slate-300 dark:hover:bg-iris-300/10'
+      cn(
+        'border-slate-200 bg-slate-50 text-slate-700 decoration-slate-400 focus-visible:ring-slate-400 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:decoration-slate-300',
+        !previewDisabled && 'hover:border-slate-300 hover:bg-slate-100 dark:hover:bg-iris-300/10'
+      )
   )
 
   const preview = useMemo(() => <CitationPreview citation={citation} />, [citation])
+  const openPreview = () => {
+    if (!previewDisabled) {
+      setIsPreviewOpen(true)
+    }
+  }
+  const closePreview = () => setIsPreviewOpen(false)
 
   return (
     <>
@@ -468,20 +502,21 @@ function LegalCitationInline({
           type="button"
           className={buttonClassName}
           aria-label={`Open citation details for RA ${citation.number}`}
-          aria-describedby={isPreviewOpen ? previewId : undefined}
+          aria-describedby={!previewDisabled && isPreviewOpen ? previewId : undefined}
           data-legal-citation={citation.number}
           data-citation-status={citation.status}
+          data-citation-preview-disabled={previewDisabled ? 'true' : undefined}
           onClick={() => setIsDialogOpen(true)}
-          onMouseEnter={() => setIsPreviewOpen(true)}
-          onMouseLeave={() => setIsPreviewOpen(false)}
-          onFocus={() => setIsPreviewOpen(true)}
-          onBlur={() => setIsPreviewOpen(false)}
+          onMouseEnter={openPreview}
+          onMouseLeave={closePreview}
+          onFocus={openPreview}
+          onBlur={closePreview}
         >
           <BookOpen className="mr-1 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
           {displayText}
         </button>
 
-        {isPreviewOpen && (
+        {!previewDisabled && isPreviewOpen && (
           <span
             id={previewId}
             role="tooltip"

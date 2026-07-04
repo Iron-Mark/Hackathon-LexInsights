@@ -23,13 +23,19 @@ interface CenteredInputProps {
   placeholder?: string
   disabled?: boolean
   isTransitioning?: boolean
+  renderDisclaimer?: boolean
 }
+
+export const CENTERED_INPUT_DISCLAIMER_ID = 'centered-message-disclaimer'
+export const CENTERED_INPUT_DISCLAIMER_TEXT =
+  'LexInsights can make mistakes. Verify legal information with official sources; this is not legal advice.'
 
 export function CenteredInput({ 
   onSend, 
   placeholder = "Ask about Philippine law...",
   disabled = false,
-  isTransitioning = false
+  isTransitioning = false,
+  renderDisclaimer = true
 }: CenteredInputProps) {
   const [message, setMessage] = useState('')
   const [isFocused, setIsFocused] = useState(false)
@@ -222,7 +228,7 @@ export function CenteredInput({
             disabled={disabled || !isHydrated}
             rows={1}
             aria-label={effectivePlaceholder}
-            aria-describedby="centered-message-disclaimer"
+            aria-describedby={CENTERED_INPUT_DISCLAIMER_ID}
             className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-3 py-2.5 text-base leading-6 text-slate-900 placeholder-slate-600 focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
               minHeight: '48px',
@@ -246,12 +252,14 @@ export function CenteredInput({
           </button>
         </div>
       </div>
-      <p
-        id="centered-message-disclaimer"
-        className="mx-auto mt-2 max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-700 dark:text-iris-100/60"
-      >
-        LexInsights can make mistakes. Verify legal information with official sources; this is not legal advice.
-      </p>
+      {renderDisclaimer && (
+        <p
+          id={CENTERED_INPUT_DISCLAIMER_ID}
+          className="mx-auto mt-2 max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-700 dark:text-iris-100/60"
+        >
+          {CENTERED_INPUT_DISCLAIMER_TEXT}
+        </p>
+      )}
     </motion.div>
   )
 }

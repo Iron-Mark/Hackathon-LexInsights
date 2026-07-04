@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo, type ReactNode } from 'react'
+import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react'
 import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useComplianceStore } from '@/lib/store/compliance-store'
@@ -38,7 +38,52 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   const [isDownloading, setIsDownloading] = useState(false)
   const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(externalDeepSearchResult || null)
   const [showDeepSearch, setShowDeepSearch] = useState(false)
+  const [isMobileHeader, setIsMobileHeader] = useState(false)
+  const [isCompactHeader, setIsCompactHeader] = useState(false)
   const currentVersion = getCurrentVersion()
+  const canvasArticleRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)')
+    const compactThreshold = 40
+    const contentEl = canvasArticleRef.current
+
+    const updateHeaderDensity = () => {
+      const isMobile = mediaQuery.matches
+      setIsMobileHeader(isMobile)
+
+      if (!isMobile || isEditMode || !contentEl) {
+        setIsCompactHeader(false)
+        return
+      }
+
+      setIsCompactHeader(contentEl.scrollTop > compactThreshold)
+    }
+
+    const onScroll = () => {
+      updateHeaderDensity()
+    }
+
+    updateHeaderDensity()
+
+    contentEl.addEventListener('scroll', onScroll, { passive: true })
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', updateHeaderDensity)
+    } else {
+      mediaQuery.addListener(updateHeaderDensity)
+    }
+
+    return () => {
+      contentEl.removeEventListener('scroll', onScroll)
+
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', updateHeaderDensity)
+      } else {
+        mediaQuery.removeListener(updateHeaderDensity)
+      }
+    }
+  }, [isEditMode])
 
   // Update deep search result when external prop changes
   useEffect(() => {
@@ -498,33 +543,38 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       {/* Main Canvas */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Canvas Header */}
-        <header className="border-b border-[#8A82DC] bg-[#F8F6FF]/92 px-4 py-4 pr-16 shadow-[0_1px_0_rgba(63,51,189,0.12)] backdrop-blur dark:border-iris-300/15 dark:bg-[#1a1625] dark:shadow-none lg:pr-4">
-          <div className="flex flex-col gap-3">
-            <div className="flex min-w-0 items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-iris-50 text-iris-700 dark:bg-iris-400/10 dark:text-iris-200">
-                <FileText className="h-5 w-5" aria-hidden="true" />
+        <header
+          className={cn(
+            'border-b border-[#8A82DC] bg-[#F8F6FF]/92 shadow-[0_1px_0_rgba(63,51,189,0.12)] backdrop-blur dark:border-iris-300/15 dark:bg-[#1a1625] dark:shadow-none lg:pr-4',
+            isCompactHeader ? 'px-3 py-2.5 pr-16' : isMobileHeader ? 'px-3 py-3 pr-16' : 'px-4 py-4 pr-16'
+          )}
+        >
+          <div className={cn('flex flex-col gap-3', isCompactHeader && 'gap-2')}>
+            <div className={cn('flex min-w-0 items-start gap-3', (isMobileHeader || isCompactHeader) && 'items-center gap-2')}>
+              <div className={cn('flex shrink-0 items-center justify-center rounded-xl bg-iris-50 text-iris-700 dark:bg-iris-400/10 dark:text-iris-200', isCompactHeader ? 'h-8 w-8' : isMobileHeader ? 'h-9 w-9' : 'h-10 w-10')}>
+                <FileText className={cn('h-5 w-5', (isMobileHeader || isCompactHeader) && 'h-4 w-4')} aria-hidden="true" />
               </div>
 
               <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="font-display text-base font-bold leading-6 text-neutral-900 dark:text-slate-100">
+                <div className={cn('flex flex-wrap items-center gap-2', (isMobileHeader || isCompactHeader) && 'gap-1.5')}>
+                  <h2 className={cn('font-display text-base font-bold leading-6 text-neutral-900 dark:text-slate-100', isCompactHeader ? 'text-sm leading-5' : isMobileHeader && 'text-[15px] leading-5')}>
                     Compliance Report
                   </h2>
                   {currentVersion && (
-                    <span className="rounded-full bg-iris-50 px-2.5 py-1 font-body text-xs font-semibold text-iris-700 ring-1 ring-iris-100 dark:bg-[#241f32] dark:text-slate-300 dark:ring-0">
+                    <span className={cn('rounded-full bg-iris-50 px-2.5 py-1 font-body text-xs font-semibold text-iris-700 ring-1 ring-iris-100 dark:bg-[#241f32] dark:text-slate-300 dark:ring-0', isMobileHeader && 'px-2 py-0.5 text-[11px]', isCompactHeader && 'hidden')}>
                       {currentVersion.label}
                     </span>
                   )}
                 </div>
 
-                <div className="mt-2 flex flex-wrap items-center gap-2">
+                <div className={cn('mt-2 flex flex-wrap items-center gap-2', isMobileHeader && 'mt-1.5 gap-1.5', isCompactHeader && 'hidden')}>
                   {ragResponse?.provider_mode === 'local-providerless' && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-200">
+                    <span className={cn('inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-200', isMobileHeader && 'px-2 py-0.5 text-[11px]')}>
                       Local mode
                     </span>
                   )}
                   {documentCount !== undefined && documentCount > 0 && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-iris-50 px-2.5 py-1 text-xs font-semibold text-iris-700 dark:bg-iris-400/10 dark:text-iris-200">
+                    <span className={cn('inline-flex items-center gap-1 rounded-full bg-iris-50 px-2.5 py-1 text-xs font-semibold text-iris-700 dark:bg-iris-400/10 dark:text-iris-200', isMobileHeader && 'px-2 py-0.5 text-[11px]')}>
                       <FileCheck className="h-3 w-3" aria-hidden="true" />
                       {documentCount} docs
                     </span>
@@ -534,7 +584,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-[#8A82DC] bg-[#EFECFF]/55 p-2 dark:border-iris-300/15 dark:bg-[#241f32]/80">
+          <div className={cn('mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-[#8A82DC] bg-[#EFECFF]/55 p-2 dark:border-iris-300/15 dark:bg-[#241f32]/80', isMobileHeader && 'mt-3 rounded-none border-0 bg-transparent p-0', isCompactHeader && 'mt-2')}>
             {/* History Toggle */}
             <Button
               onClick={() => setShowHistory(!showHistory)}
@@ -542,13 +592,15 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               size="sm"
               className={cn(
                 'h-9 gap-2 border-[#8A82DC] bg-[#FBFAFF]/90 text-slate-800 shadow-sm shadow-iris-950/8 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]',
+                isMobileHeader && 'h-10 w-10 justify-center gap-0 px-0',
+                isCompactHeader && 'h-9 w-9',
                 showHistory && 'border-iris-300 bg-iris-50 text-iris-700 dark:border-iris-400/50 dark:bg-iris-400/10 dark:text-iris-200'
               )}
               aria-label={showHistory ? 'Hide version history' : 'Show version history'}
               aria-pressed={showHistory}
             >
               <History className="h-4 w-4" aria-hidden="true" />
-              <span className="text-sm">History</span>
+              <span className={cn('text-sm', isMobileHeader && 'sr-only')}>History</span>
             </Button>
 
             {/* Edit/Preview Toggle */}
@@ -558,6 +610,8 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               size="sm"
               className={cn(
                 'h-9 gap-2 border-[#8A82DC] bg-[#FBFAFF]/90 text-slate-800 shadow-sm shadow-iris-950/8 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]',
+                isMobileHeader && 'h-10 w-10 justify-center gap-0 px-0',
+                isCompactHeader && 'h-9 w-9',
                 isEditMode && 'border-iris-300 bg-iris-50 text-iris-700 dark:border-iris-400/50 dark:bg-iris-400/10 dark:text-iris-200'
               )}
               aria-label={isEditMode ? 'Switch to preview mode' : 'Switch to edit mode'}
@@ -566,12 +620,12 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               {isEditMode ? (
                 <>
                   <Eye className="h-4 w-4" aria-hidden="true" />
-                  <span className="text-sm">Preview</span>
+                  <span className={cn('text-sm', isMobileHeader && 'sr-only')}>Preview</span>
                 </>
               ) : (
                 <>
                   <Edit3 className="h-4 w-4" aria-hidden="true" />
-                  <span className="text-sm">Edit</span>
+                  <span className={cn('text-sm', isMobileHeader && 'sr-only')}>Edit</span>
                 </>
               )}
             </Button>
@@ -582,12 +636,16 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 onClick={handleSave}
                 variant="default"
                 size="sm"
-                className="h-9 gap-2 bg-primary hover:bg-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]"
+                className={cn(
+                  'h-9 gap-2 bg-primary hover:bg-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#241f32]',
+                  isMobileHeader && 'h-10 w-10 justify-center gap-0 px-0',
+                  isCompactHeader && 'h-9 w-9'
+                )}
                 aria-label="Save changes as new version"
                 disabled={editContent === currentVersion?.content}
               >
                 <Save className="h-4 w-4" aria-hidden="true" />
-                <span className="text-sm">Save</span>
+                <span className={cn('text-sm', isMobileHeader && 'sr-only')}>Save</span>
               </Button>
             )}
 
@@ -597,15 +655,19 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 onClick={() => setShowDownloadMenu(!showDownloadMenu)}
                 variant="outline"
                 size="sm"
-                className="h-9 gap-2 border-[#8A82DC] bg-[#FBFAFF]/90 text-slate-800 shadow-sm shadow-iris-950/8 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
+                className={cn(
+                  'h-9 gap-2 border-[#8A82DC] bg-[#FBFAFF]/90 text-slate-800 shadow-sm shadow-iris-950/8 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]',
+                  isMobileHeader && 'h-10 w-10 justify-center gap-0 px-0',
+                  isCompactHeader && 'h-9 w-9'
+                )}
                 aria-label="Download compliance report"
                 aria-expanded={showDownloadMenu}
                 aria-haspopup="true"
                 disabled={isDownloading}
               >
                 <Download className="h-4 w-4" aria-hidden="true" />
-                <span className="text-sm">Download</span>
-                <ChevronDown className="h-3 w-3" aria-hidden="true" />
+                <span className={cn('text-sm', isMobileHeader && 'sr-only')}>Download</span>
+                <ChevronDown className={cn('h-3 w-3', isMobileHeader && 'hidden')} aria-hidden="true" />
               </Button>
               
               {showDownloadMenu && (
@@ -668,6 +730,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
         ) : (
           /* Preview Mode - Formatted View */
           <article 
+            ref={canvasArticleRef}
             className="flex-1 overflow-y-auto p-4 pb-32 focus:outline-none sm:p-6"
             tabIndex={0}
             aria-label="Compliance report content"

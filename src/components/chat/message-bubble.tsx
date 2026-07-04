@@ -228,7 +228,9 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
     [message.metadata?.ragResponse]
   )
   const renderCitationChildren = (children: ReactNode, scope: string) =>
-    renderLegalCitationNodes(children, citationContext, `${message.id}-${scope}`)
+    renderLegalCitationNodes(children, citationContext, `${message.id}-${scope}`, {
+      isRevealing,
+    })
   let checklistInputIndex = 0
 
   return (
