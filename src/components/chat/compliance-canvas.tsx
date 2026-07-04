@@ -66,7 +66,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
     updateHeaderDensity()
 
-    contentEl.addEventListener('scroll', onScroll, { passive: true })
+    contentEl?.addEventListener('scroll', onScroll, { passive: true })
 
     if (typeof mediaQuery.addEventListener === 'function') {
       mediaQuery.addEventListener('change', updateHeaderDensity)
@@ -75,7 +75,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
     }
 
     return () => {
-      contentEl.removeEventListener('scroll', onScroll)
+      contentEl?.removeEventListener('scroll', onScroll)
 
       if (typeof mediaQuery.removeEventListener === 'function') {
         mediaQuery.removeEventListener('change', updateHeaderDensity)
