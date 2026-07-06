@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   robots: NO_INDEX_ROBOTS,
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function TestDocumentPage() {
   if (!areDiagnosticRoutesEnabled()) {
     notFound()
