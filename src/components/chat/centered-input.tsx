@@ -178,33 +178,6 @@ export function CenteredInput({
             : 'border-[#8A82DC] dark:border-iris-300/15'
         }`}
       >
-        <div className="flex items-center justify-between gap-2 border-b border-[#8A82DC]/80 bg-[#F8F6FF]/70 px-2.5 py-2 dark:border-iris-300/10 dark:bg-transparent">
-          <ChatModeToggle showLabelOnMobile />
-
-          {mode === 'compliance' && (
-            <>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept={COMPLIANCE_DOCUMENT_ACCEPT}
-                onChange={handleFileSelect}
-                className="sr-only"
-                id="centered-file-upload"
-                aria-label="Upload compliance document (PDF, Markdown, Text, or Word)"
-              />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="inline-flex min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/90 px-3 text-sm font-semibold text-slate-800 shadow-sm shadow-iris-950/8 transition-all duration-200 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] dark:border-iris-300/15 dark:bg-[#171322]/90 dark:text-slate-200 dark:shadow-none dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
-                aria-label="Upload compliance document"
-                type="button"
-              >
-                <Paperclip className="h-4 w-4" aria-hidden="true" />
-                <span className="hidden min-[380px]:inline">Attach</span>
-              </button>
-            </>
-          )}
-        </div>
-
         {uploadedFiles.length > 0 && (
           <div className="border-b border-[#8A82DC]/70 bg-[#EFECFF]/70 p-2.5 dark:border-iris-300/10 dark:bg-[#1a1625]/75">
             <UploadedFilesList />
@@ -216,7 +189,7 @@ export function CenteredInput({
           </div>
         )}
 
-        <div className="flex items-end gap-2 p-2.5">
+        <div className="flex flex-col gap-2 p-2.5">
           <textarea
             id="centered-message-input"
             ref={textareaRef}
@@ -230,7 +203,7 @@ export function CenteredInput({
             rows={1}
             aria-label={effectivePlaceholder}
             aria-describedby={renderDisclaimer ? CENTERED_INPUT_DISCLAIMER_ID : CENTERED_INPUT_SR_DISCLAIMER_ID}
-            className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-3 py-2.5 text-base leading-6 text-slate-900 placeholder-slate-600 focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
+            className="scrollbar-none block w-full resize-none overflow-hidden bg-transparent px-3 py-2.5 text-base leading-6 text-slate-900 placeholder-slate-600 focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
               minHeight: '48px',
               maxHeight: '150px',
@@ -238,19 +211,68 @@ export function CenteredInput({
             }}
           />
 
-          <button
-            onClick={handleSend}
-            disabled={(!message.trim() && uploadedFiles.length === 0) || disabled || !isHydrated || isSending || uploading}
-            className="flex min-h-11 min-w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600 dark:bg-iris-400 dark:text-[#171322] dark:hover:bg-iris-300 dark:focus-visible:ring-offset-[#241f32] dark:disabled:hover:bg-iris-400"
-            aria-label="Send message"
-            type="button"
-          >
-            {(disabled || isSending || uploading) ? (
-              <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-            ) : (
-              <Send className="h-5 w-5" aria-hidden="true" />
-            )}
-          </button>
+          <div className="flex items-center justify-between gap-2">
+            <ChatModeToggle
+              compactResearchToggle={
+                mode === 'general'
+                  ? {
+                      checked: false,
+                      disabled: true,
+                      isLoading: false,
+                      onCheckedChange: () => undefined,
+                    }
+                  : undefined
+              }
+              compactUploadAction={
+                mode === 'compliance'
+                  ? {
+                      disabled: disabled || !isHydrated || isSending || uploading || !canAddMore(),
+                      onSelect: () => fileInputRef.current?.click(),
+                    }
+                  : undefined
+              }
+            />
+
+            <div className="flex items-center justify-end gap-2">
+              {mode === 'compliance' && (
+                <>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept={COMPLIANCE_DOCUMENT_ACCEPT}
+                    onChange={handleFileSelect}
+                    className="sr-only"
+                    id="centered-file-upload"
+                    aria-label="Upload compliance document (PDF, Markdown, Text, or Word)"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={disabled || !isHydrated || isSending || uploading || !canAddMore()}
+                    className="hidden min-h-11 min-w-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/90 px-3 text-sm font-semibold text-slate-800 shadow-sm shadow-iris-950/8 transition-all duration-200 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F2FF] disabled:cursor-not-allowed disabled:opacity-50 min-[700px]:inline-flex dark:border-iris-300/15 dark:bg-[#171322]/90 dark:text-slate-200 dark:shadow-none dark:hover:border-iris-400/50 dark:hover:bg-iris-400/10 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#241f32]"
+                    aria-label="Upload compliance document"
+                    type="button"
+                  >
+                    <Paperclip className="h-4 w-4" aria-hidden="true" />
+                    <span className="hidden min-[760px]:inline">Attach</span>
+                  </button>
+                </>
+              )}
+
+              <button
+                onClick={handleSend}
+                disabled={(!message.trim() && uploadedFiles.length === 0) || disabled || !isHydrated || isSending || uploading}
+                className="flex min-h-11 min-w-11 flex-shrink-0 cursor-pointer items-center justify-center rounded-lg bg-iris-600 p-3 text-white transition-all duration-200 hover:bg-iris-700 hover:shadow-md active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-iris-600 dark:bg-iris-400 dark:text-[#171322] dark:hover:bg-iris-300 dark:focus-visible:ring-offset-[#241f32] dark:disabled:hover:bg-iris-400"
+                aria-label="Send message"
+                type="button"
+              >
+                {(disabled || isSending || uploading) ? (
+                  <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+                ) : (
+                  <Send className="h-5 w-5" aria-hidden="true" />
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       {!renderDisclaimer && (

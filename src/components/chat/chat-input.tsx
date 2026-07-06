@@ -174,7 +174,7 @@ export function ChatInput() {
       
       <div className="mx-auto max-w-5xl cursor-text px-2.5 pb-3 pt-2.5 sm:p-4" onClick={focusTextareaFromShellClick}>
         {/* Input Area */}
-        <div className="relative rounded-lg border-2 border-[#8A82DC] bg-[#FBFAFF]/95 p-2.5 shadow-sm shadow-iris-950/12 transition-all focus-within:border-iris-600 focus-within:shadow-md focus-within:shadow-iris-950/16 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
+        <div className="flex flex-col gap-2 rounded-lg border-2 border-[#8A82DC] bg-[#FBFAFF]/95 p-2.5 shadow-sm shadow-iris-950/12 transition-all focus-within:border-iris-600 focus-within:shadow-md focus-within:shadow-iris-950/16 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none dark:focus-within:border-iris-400/35 dark:focus-within:ring-0">
           <label htmlFor="message-input" className="sr-only">
             {placeholder}
           </label>
@@ -189,7 +189,7 @@ export function ChatInput() {
             rows={1}
             aria-label={placeholder}
             aria-describedby="message-hint"
-            className="scrollbar-none block w-full resize-none overflow-hidden bg-transparent px-2 py-3 pr-24 text-base leading-6 text-slate-900 placeholder-slate-600 transition-opacity focus:outline-none disabled:opacity-50 min-[700px]:pr-40 sm:py-2 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
+            className="scrollbar-none block w-full resize-none overflow-hidden bg-transparent px-2 py-3 text-base leading-6 text-slate-900 placeholder-slate-600 transition-opacity focus:outline-none disabled:opacity-50 sm:py-2 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
               minHeight: 'clamp(64px, 9dvh, 88px)',
               maxHeight: '220px',
@@ -200,7 +200,7 @@ export function ChatInput() {
             Press Enter to send, Shift+Enter for new line
           </span>
 
-          <div className="absolute bottom-2.5 right-2.5 top-2.5 flex flex-col items-end justify-between gap-2">
+          <div className="flex items-center justify-between gap-2">
             <ChatModeToggle
               compactResearchToggle={
                 mode === 'general'
@@ -236,7 +236,8 @@ export function ChatInput() {
                   />
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="hidden min-h-12 min-w-12 items-center justify-center rounded-lg p-2.5 text-iris-700 transition-all hover:bg-[#EFECFF] hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-1 min-[700px]:flex sm:min-h-11 sm:min-w-11 dark:text-slate-300 dark:hover:bg-iris-400/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
+                    disabled={isSending || loading || uploading || !canAddMore()}
+                    className="hidden min-h-12 min-w-12 items-center justify-center rounded-lg p-2.5 text-iris-700 transition-all hover:bg-[#EFECFF] hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 min-[700px]:flex sm:min-h-11 sm:min-w-11 dark:text-slate-300 dark:hover:bg-iris-400/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]"
                     aria-label="Upload compliance document"
                     type="button"
                   >
