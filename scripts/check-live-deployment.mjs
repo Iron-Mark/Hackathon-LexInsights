@@ -6,13 +6,14 @@ import { fileURLToPath } from 'node:url'
 
 const DEFAULT_BASE_URL = 'https://lexiph.vercel.app'
 const DEFAULT_TIMEOUT_MS = 20000
+const STREAMED_NOT_FOUND_MARKER = 'NEXT_HTTP_ERROR_FALLBACK;404'
 const ROUTES_TO_CHECK = [
   { path: '/', expectedStatuses: [200] },
   { path: '/auth/login', expectedStatuses: [200] },
   { path: '/chat', expectedStatuses: [200] },
   { path: '/documents', expectedStatuses: [200] },
-  { path: '/test-rag', expectedStatuses: [404] },
-  { path: '/test-document', expectedStatuses: [404] },
+  { path: '/test-rag', expectedStatuses: [404], acceptStreamedNotFound: true },
+  { path: '/test-document', expectedStatuses: [404], acceptStreamedNotFound: true },
 ]
 
 function parseArgs(argv) {
@@ -185,9 +186,7 @@ function responseHeaders(response) {
   }
 }
 
-async function readResponseBody(response, parseJson) {
-  const text = await response.text()
-
+function parseBody(text, parseJson) {
   if (!text) {
     return null
   }
@@ -203,7 +202,7 @@ async function readResponseBody(response, parseJson) {
   }
 }
 
-async function fetchCheck(name, target, timeoutMs, expectedStatuses, parseJson = false) {
+async function fetchCheck(name, target, timeoutMs, expectedStatuses, parseJson = false, acceptStreamedNotFound = false) {
   const startedAt = Date.now()
 
   try {
@@ -215,14 +214,29 @@ async function fetchCheck(name, target, timeoutMs, expectedStatuses, parseJson =
       redirect: 'follow',
       signal: AbortSignal.timeout(timeoutMs),
     })
-    const body = await readResponseBody(response, parseJson)
-    const statusMatches = expectedStatuses.includes(response.status)
+    const rawText = await response.text()
+    const body = parseBody(rawText, parseJson)
+
+    let statusMatches = expectedStatuses.includes(response.status)
+    let streamedNotFound = false
+
+    if (
+      !statusMatches &&
+      acceptStreamedNotFound &&
+      response.status === 200 &&
+      rawText.includes(STREAMED_NOT_FOUND_MARKER)
+    ) {
+      statusMatches = true
+      streamedNotFound = true
+    }
 
     return {
       name,
       status: statusMatches ? 'pass' : 'fail',
       critical: true,
-      message: `HTTP ${response.status}`,
+      message: streamedNotFound
+        ? `HTTP ${response.status} (streamed not-found boundary matched expected 404)`
+        : `HTTP ${response.status}`,
       durationMs: elapsedSince(startedAt),
       target,
       details: {
@@ -230,6 +244,7 @@ async function fetchCheck(name, target, timeoutMs, expectedStatuses, parseJson =
         finalUrl: response.url,
         headers: responseHeaders(response),
         body,
+        streamedNotFound,
       },
     }
   } catch (error) {
@@ -344,6 +359,7 @@ function publicCheckDetails(check) {
     expectedSha: details.expectedSha,
     actualSha: details.actualSha,
     commitMatches: details.commitMatches,
+    streamedNotFound: details.streamedNotFound,
     body:
       body && typeof body === 'object'
         ? {
@@ -424,7 +440,9 @@ async function run() {
       `app.route:${route.path}`,
       appendPath(baseUrl, route.path),
       args.timeoutMs,
-      route.expectedStatuses
+      route.expectedStatuses,
+      false,
+      Boolean(route.acceptStreamedNotFound)
     )
   )
   const routeAndLocalChecks = await Promise.all([
@@ -481,6 +499,10 @@ async function run() {
         console.log(
           `  deploymentSha=${details.actualSha || 'missing'} expectedSha=${details.expectedSha || 'n/a'} match=${details.commitMatches}`
         )
+      }
+
+      if (details.streamedNotFound) {
+        console.log(`  note=matched via streamed not-found boundary (${STREAMED_NOT_FOUND_MARKER})`)
       }
 
       if (details.body?.summary) {

@@ -213,7 +213,7 @@ function renderCitationText(
     if (renderedCitationCount < MAX_INLINE_CITATION_CHIPS_PER_TEXT) {
       const citation = citationContext.resolveCitation(citationNumber)
 
-      if (citation.status === 'metadata-missing') {
+      if (options.isRevealing || citation.status === 'metadata-missing') {
         parts.push(matchedText)
       } else {
         parts.push(
