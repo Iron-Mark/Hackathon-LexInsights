@@ -23,7 +23,7 @@ import { Button } from '@/components/ui/button'
 import { DragDropOverlay } from './drag-drop-overlay'
 import { showToast } from '@/components/ui/toast'
 import { EmptyState } from './empty-state'
-import { CENTERED_INPUT_DISCLAIMER_ID, CENTERED_INPUT_DISCLAIMER_TEXT, CenteredInput } from './centered-input'
+import { CenteredInput } from './centered-input'
 import { extractComplianceDocumentText, type ExtractedDocumentText } from '@/lib/utils/document-text'
 import {
   RAG_BACKEND_TOAST_ACTION,
@@ -1196,7 +1196,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                     {/* 1. Greeting and assistant text */}
                     <EmptyState onPromptSelect={handlePromptSelect} compact={Boolean(isComplianceWithCanvas)} />
 
-                    {/* 2. Bottom composer with disclaimer */}
+                    {/* 2. Bottom composer */}
                     <div className="pointer-events-none sticky bottom-0 mt-auto w-full pb-[calc(env(safe-area-inset-bottom)+0.875rem)] pt-5">
                       <CenteredInput
                         onSend={handleCenteredSend}
@@ -1204,14 +1204,6 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                         isTransitioning={isTransitioning}
                         renderDisclaimer={false}
                       />
-                    </div>
-                    <div className="mx-auto w-full max-w-5xl px-4 pb-[calc(env(safe-area-inset-bottom)+0.875rem)] sm:px-6 lg:px-8">
-                      <p
-                        id={CENTERED_INPUT_DISCLAIMER_ID}
-                        className="mx-auto max-w-2xl px-2 text-center text-[11px] leading-5 text-slate-700 dark:text-iris-100/60"
-                      >
-                        {CENTERED_INPUT_DISCLAIMER_TEXT}
-                      </p>
                     </div>
                   </motion.div>
                 )}
@@ -1233,7 +1225,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                 whileTap={{ scale: 0.96 }}
                 transition={{ duration: 0.18 }}
                 onClick={scrollToLatestMessage}
-                className="absolute bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[#8A82DC] bg-[#FBFAFF]/95 text-iris-800 shadow-lg shadow-iris-950/12 backdrop-blur transition-all hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32]/95 dark:text-slate-100 dark:shadow-iris-950/30 dark:hover:border-iris-300/60 dark:hover:bg-iris-300/12 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#171322] sm:right-6"
+                className="absolute bottom-[calc(env(safe-area-inset-bottom)+8.75rem)] right-4 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-[#8A82DC] bg-[#FBFAFF]/95 text-iris-800 shadow-lg shadow-iris-950/12 backdrop-blur transition-all hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-900 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32]/95 dark:text-slate-100 dark:shadow-iris-950/30 dark:hover:border-iris-300/60 dark:hover:bg-iris-300/12 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#171322] sm:right-6"
               >
                 <ChevronDown className="h-5 w-5" aria-hidden="true" />
               </motion.button>

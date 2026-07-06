@@ -58,13 +58,13 @@ const PROJECT_FACTS = [
     value: 'DevKada CodeKada 2025',
     href: 'https://www.facebook.com/events/kmc-armstrong-corporate-center/codekada-the-innovation-hackathon/1122064766115595/',
   },
-  { label: 'Product focus', value: 'Philippine legal research and compliance review workflows' },
+  { label: 'Product focus', value: 'Philippine legal research, RAG, and compliance review workflows' },
   { label: 'Public proof', value: 'Live app and portfolio case study' },
 ]
 
 const MAINTAINER_FACTS = [
   'Product designer and full-stack developer based in the Philippines.',
-  'Focus areas include AI products, design systems, mobile, Web3, and proof-backed product work.',
+  'Focus areas include AI products, design systems, mobile, Web3, and public-facing product work.',
   'Currently stewarding LexInsights polish, repository hygiene, releases, and ongoing maintenance.',
 ]
 
@@ -87,7 +87,7 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
               </DialogTitle>
               <DialogDescription className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
                 LexInsights was built during DevKada CodeKada 2025 and is now maintained as a public
-                proof-backed AI legal compliance project.
+                Philippine legal research and compliance project.
               </DialogDescription>
             </div>
           </div>
@@ -123,7 +123,7 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
             </div>
           </section>
 
-          <section className="mt-5 border-y border-slate-200 py-5 dark:border-iris-300/15" aria-labelledby="attribution-project">
+          <section className="mt-5 border-t border-slate-200 pt-5 dark:border-iris-300/15" aria-labelledby="attribution-project">
             <div className="flex items-start gap-3">
               <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-iris-600 dark:text-iris-200" aria-hidden="true" />
               <div className="min-w-0">
@@ -131,11 +131,11 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
                   Project Context
                 </h3>
                 <p className="mt-1 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-                  A hackathon-origin legal assistant shaped into a public, proof-backed product demo.
+                  A hackathon-origin legal assistant shaped into a public Philippine legal research and compliance tool.
                 </p>
               </div>
             </div>
-            <dl className="mt-4 divide-y divide-slate-200 border-y border-slate-100 text-sm dark:divide-iris-300/10 dark:border-iris-300/10 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            <dl className="mt-4 divide-y divide-slate-200 text-sm dark:divide-iris-300/10 sm:grid sm:grid-cols-3 sm:divide-x sm:divide-y-0">
               {PROJECT_FACTS.map((fact) => (
                 <div key={fact.label} className="min-w-0 py-3 sm:px-4 sm:first:pl-0 sm:last:pr-0">
                   <dt className="text-[11px] font-bold uppercase tracking-wide text-iris-700 dark:text-iris-200">

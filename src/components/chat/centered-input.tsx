@@ -29,6 +29,7 @@ interface CenteredInputProps {
 export const CENTERED_INPUT_DISCLAIMER_ID = 'centered-message-disclaimer'
 export const CENTERED_INPUT_DISCLAIMER_TEXT =
   'LexInsights can make mistakes. Verify legal information with official sources; this is not legal advice.'
+export const CENTERED_INPUT_SR_DISCLAIMER_ID = 'centered-message-disclaimer-sr'
 
 export function CenteredInput({ 
   onSend, 
@@ -228,7 +229,7 @@ export function CenteredInput({
             disabled={disabled || !isHydrated}
             rows={1}
             aria-label={effectivePlaceholder}
-            aria-describedby={CENTERED_INPUT_DISCLAIMER_ID}
+            aria-describedby={renderDisclaimer ? CENTERED_INPUT_DISCLAIMER_ID : CENTERED_INPUT_SR_DISCLAIMER_ID}
             className="scrollbar-none min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-3 py-2.5 text-base leading-6 text-slate-900 placeholder-slate-600 focus:outline-none disabled:opacity-50 sm:text-sm dark:text-slate-100 dark:placeholder:text-slate-400"
             style={{
               minHeight: '48px',
@@ -252,6 +253,11 @@ export function CenteredInput({
           </button>
         </div>
       </div>
+      {!renderDisclaimer && (
+        <p id={CENTERED_INPUT_SR_DISCLAIMER_ID} className="sr-only">
+          {CENTERED_INPUT_DISCLAIMER_TEXT}
+        </p>
+      )}
       {renderDisclaimer && (
         <p
           id={CENTERED_INPUT_DISCLAIMER_ID}

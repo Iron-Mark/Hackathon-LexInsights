@@ -11,6 +11,7 @@ import { showToast } from '@/components/ui/toast'
 import { SidebarTooltip } from '@/components/navigation/sidebar-tooltip'
 import { addChatEventListener, CHAT_EVENTS, dispatchChatEvent } from '@/lib/chat/events'
 import type { Chat, Message } from '@/types'
+import { CENTERED_INPUT_DISCLAIMER_ID } from './centered-input'
 
 const MIN_SEARCHABLE_CHATS = 4
 const MAINTAINER_PORTFOLIO_URL = 'https://www.marksiazon.dev'
@@ -76,6 +77,20 @@ function MaintainerCredit() {
           <ExternalLink className="h-3.5 w-3.5 shrink-0 opacity-60 transition-opacity group-hover:opacity-100" aria-hidden="true" />
         </a>
       </SidebarTooltip>
+    </div>
+  )
+}
+
+function SidebarLegalDisclaimer() {
+  return (
+    <div className="shrink-0 px-4 py-2.5">
+      <p
+        id={CENTERED_INPUT_DISCLAIMER_ID}
+        className="text-center text-[10px] leading-4 text-slate-600 dark:text-iris-100/50"
+      >
+        <span className="block">LexInsights can make mistakes.</span>
+        <span className="block">Verify sources; not legal advice.</span>
+      </p>
     </div>
   )
 }
@@ -198,6 +213,7 @@ export function ChatList() {
         </div>
 
         <div className="mt-auto pt-4">
+          <SidebarLegalDisclaimer />
           <MaintainerCredit />
         </div>
       </div>
@@ -269,6 +285,7 @@ export function ChatList() {
         )}
       </div>
 
+      <SidebarLegalDisclaimer />
       <MaintainerCredit />
     </div>
   )
