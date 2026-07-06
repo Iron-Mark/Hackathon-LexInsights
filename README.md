@@ -13,17 +13,19 @@ LexInsights is not a lawyer, law firm, court, regulator, or official government 
 
 ## Product Preview
 
-Assets refreshed July 3, 2026.
+Preview captures are kept as the README smoke-check pair.
 
 ![LexInsights desktop chat entry showing legal research prompt cards and the providerless assistant composer](docs/assets/lexinsights-chat-desktop.png)
 
 ![LexInsights mobile Help and Resources source directory](docs/assets/lexinsights-help-mobile.png)
 
-## Archive Assets
+## Visual Archive
 
 ![LexInsights archive cover showing legal chat, document review, source-first answers, and local RAG research](docs/assets/lexinsights-archive-cover.png)
 
-Additional repository assets:
+Feature-by-feature screenshots, viewport coverage, light and dark theme captures, and showcase mockups are documented in [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md).
+
+Repository visual assets:
 
 - GitHub social preview: [docs/assets/lexinsights-github-social.png](docs/assets/lexinsights-github-social.png)
 - Dark social preview variant: [docs/assets/lexinsights-github-social-dark.png](docs/assets/lexinsights-github-social-dark.png)
@@ -49,6 +51,26 @@ Additional repository assets:
 - Detects citations, source support, confidence signals, and practical compliance checklist items.
 - Provides public source, terms, privacy, attribution, PWA, and answer-engine discovery surfaces.
 
+## Reviewer Walkthrough
+
+1. Open [lexiph.vercel.app](https://lexiph.vercel.app) and start from the chat prompt cards.
+2. Ask a Philippine legal question that includes a statute or compliance scenario.
+3. Switch into compliance mode and inspect the generated report, citations, research metadata, and export controls.
+4. Open Help & Resources to review the primary-source directory used for verification.
+5. Check `/about`, `/terms`, and `/privacy` for public context, legal notices, and data-handling posture.
+6. Review the [screenshot catalog](docs/SCREENSHOTS.md) for captured desktop, tablet, mobile, light theme, dark theme, and small-phone states.
+
+## What To Look For
+
+- Philippine legal research flow: prompt cards, legal chat, and answer structure are tuned for local statutes and compliance questions.
+- Compliance mode: the report view groups research metadata, status, confidence, sources, and generated analysis.
+- Citation support: cited statutes are surfaced inline and backed by source metadata where available.
+- Source metadata: retrieved documents, match reasons, confidence, local timing, and candidate counts are exposed for inspection.
+- Providerless local RAG fallback: bundled local research still works when external providers are unavailable or disabled.
+- Export and report workflow: compliance outputs include actions for history, editing, and downloadable formats.
+- Mobile responsiveness: small-phone captures cover compact navigation, sticky areas, scrolled states, and theme behavior.
+- Public trust pages: About, Terms, Privacy, Help & Resources, PWA fallback, crawler files, and attribution surfaces are included.
+
 ## Current Public Surfaces
 
 - `/` and `/chat` open the usable assistant experience.
@@ -57,7 +79,7 @@ Additional repository assets:
 - `/robots.txt`, `/sitemap.xml`, `/llms.txt`, and `/ai.txt` support search, answer-engine, and crawler discovery.
 - `/api/version` and `/api/readiness` support lean deployment and health verification without exposing secrets, raw targets, or repository ownership details.
 
-## Production Readiness
+## Quality And Release Checks
 
 - CI runs lint, typecheck, production dependency audit, docs checks, release checks, PWA checks, screenshot validation, production bundle checks, build, and browser smoke tests.
 - Local providerless RAG is covered by golden-query, answer-quality, source-freshness, performance, governance, and optional live-source audits.
