@@ -1,0 +1,39 @@
+name: Supabase keep-alive
+
+# Prevents the Supabase free-tier project from pausing after ~7 days of
+# inactivity (which would break logged-in chat/document persistence until a
+# manual restore). Guests are unaffected because LexInsights defaults to local
+# providerless mode, but this keeps the authenticated path warm at $0.
+#
+# Setup: add two repository secrets (Settings > Secrets and variables > Actions):
+#   SUPABASE_URL       e.g. https://<project-ref>.supabase.co
+#   SUPABASE_ANON_KEY  the public anon/publishable key (already shipped client-side)
+# Until the secrets exist, the job no-ops instead of failing.
+
+on:
+  schedule:
+    # Every 3 days at 06:00 UTC, comfortably under the ~7-day pause window.
+    - cron: '0 6 */3 * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "SUPABASE_URL / SUPABASE_ANON_KEY secrets not set; skipping keep-alive."
+            exit 0
+          fi
+          rest=$(curl -sS -o /dev/null -w "%{http_code}" \
+            "$SUPABASE_URL/rest/v1/" \
+            -H "apikey: $SUPABASE_ANON_KEY" || echo "000")
+          echo "REST ping status: $rest"
+          auth=$(curl -sS -o /dev/null -w "%{http_code}" \
+            "$SUPABASE_URL/auth/v1/health" || echo "000")
+          echo "Auth health status: $auth"
+          echo "Keep-alive ping complete."
