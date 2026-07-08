@@ -26,15 +26,15 @@ The legacy showcase remains available at `https://lexinsights.vercel.app` only a
 
 ## Answer Engine Optimization
 
-- `/llms.txt` gives retrieval systems a concise source of truth for what LexInsights is, what it can do, what it is not, public URLs, official source orientation, portfolio attribution, and a suggested summary.
-- `/ai.txt` serves the same guidance as `/llms.txt` for tools that look for a short AI-facing text endpoint.
+- `/llms.txt` gives retrieval systems a concise source of truth for what LexInsights is, what it can do, what it is not, public URLs, official source orientation, portfolio attribution, and a suggested summary. It also states quantified coverage (271 authorities, 13 source families, 45 frameworks, 181 relations) and links key statutes (RA 10173, RA 10175, RA 9160, RA 9775, RA 9003) so engines have citable, attributable facts.
+- `/ai.txt` serves a short AI-usage and attribution statement, distinct from `/llms.txt`, for tools that look for a short AI-facing text endpoint.
 - The app avoids claiming official legal authority. Public summaries consistently say generated legal analysis should be verified against official sources, counsel, or the relevant authority.
 
 ## Generative Engine Optimization
 
 - Canonical facts live in `src/lib/seo.ts` so product name, current domain, old showcase URL, repository URL, portfolio URL, and source descriptions stay synchronized.
-- Public structured data uses stable product and organization facts instead of route-wide FAQ markup.
-- The About page emits AboutPage, Person, SoftwareSourceCode, and BreadcrumbList structured data to support portfolio and repository attribution without turning the chat homepage into a landing page.
+- Public structured data uses stable product and organization facts, with a scoped FAQPage on `/about` rather than route-wide FAQ markup.
+- The About page emits AboutPage, Person, SoftwareSourceCode, FAQPage, and BreadcrumbList structured data, plus a visible FAQ and a coverage block (corpus counts and key statute links), to support attribution and answer-engine visibility without turning the chat homepage into a landing page.
 - Private or user-specific pages are noindexed and excluded from the sitemap to reduce weak or misleading retrieval surfaces.
 - The Terms and Privacy pages provide public trust context for data handling, acceptable use, provider processing, retention, and Philippine privacy rights.
 

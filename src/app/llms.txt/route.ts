@@ -1,5 +1,7 @@
 import {
+  COVERAGE_FACTS,
   CURRENT_APP_URL,
+  KEY_STATUTES,
   LEGACY_SHOWCASE_URL,
   PHILIPPINE_COMPLIANCE_TOPICS,
   PORTFOLIO_CASE_STUDY_URL,
@@ -43,6 +45,15 @@ LexInsights is a web-based Philippine legal research and compliance assistant. I
 
 LexInsights is not a lawyer, law firm, court, regulator, or official government source. Generated output should be checked against official sources, qualified counsel, or the relevant authority before use.
 
+## Corpus and Coverage
+
+- ${COVERAGE_FACTS.authorities} legal authorities bundled in the local corpus
+- ${COVERAGE_FACTS.sources} official source families
+- ${COVERAGE_FACTS.frameworks} compliance frameworks
+- ${COVERAGE_FACTS.relations} curated authority relations
+
+The default local providerless research mode is deterministic and calls no AI model: it retrieves and cites named authorities from the bundled corpus or reports that it found none, rather than generating text.
+
 ## Core Capabilities
 
 - Philippine legal chat and compliance research
@@ -55,6 +66,10 @@ LexInsights is not a lawyer, law firm, court, regulator, or official government 
 ## Primary Philippine Compliance Topics
 
 ${PHILIPPINE_COMPLIANCE_TOPICS.map((topic) => `- ${topic}`).join('\n')}
+
+## Key Philippine laws covered
+
+${KEY_STATUTES.map((statute) => `- [${statute.code} - ${statute.title}](${statute.url})`).join('\n')}
 
 ## Official Source Orientation
 

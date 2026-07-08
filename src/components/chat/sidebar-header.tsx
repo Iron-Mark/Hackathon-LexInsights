@@ -88,9 +88,9 @@ export function SidebarHeader() {
           />
         </span>
         <div className="min-w-0">
-          <h1 className="truncate text-base font-extrabold leading-tight text-slate-950 dark:text-white">
+          <span className="block truncate text-base font-extrabold leading-tight text-slate-950 dark:text-white">
             LexInsights
-          </h1>
+          </span>
           <p className="truncate text-[10px] font-semibold leading-tight text-slate-700 dark:text-iris-100/70">
             Legal compliance assistant
           </p>

@@ -63,11 +63,6 @@ export function buildBaseStructuredData() {
           '@id': `${SITE_URL}/#organization`,
         },
         description: SITE_DESCRIPTION,
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: `${SITE_URL}/chat?q={search_term_string}`,
-          'query-input': 'required name=search_term_string',
-        },
       },
       {
         '@type': 'SoftwareApplication',
@@ -100,6 +95,91 @@ export function buildBaseStructuredData() {
     ],
   }
 }
+
+export const COVERAGE_FACTS = {
+  authorities: 271,
+  sources: 13,
+  frameworks: 45,
+  relations: 181,
+}
+
+export const FAQ_ITEMS: Array<{ question: string; answer: string }> = [
+  {
+    question: 'Is LexInsights legal advice?',
+    answer:
+      'No. LexInsights is a research aid, not a lawyer, law firm, court, regulator, or official government source. Verify output against official sources and qualified counsel.',
+  },
+  {
+    question: 'Is LexInsights free to use?',
+    answer:
+      'Yes. It is guest-first with free entry, and its default local providerless research runs without an external AI provider.',
+  },
+  {
+    question: 'What Philippine laws does LexInsights cover?',
+    answer:
+      'A bundled corpus of 271 legal authorities across 13 official source families and 45 compliance frameworks, including RA 10173 (Data Privacy Act), RA 10175 (Cybercrime Prevention Act), and RA 9160 (AMLA).',
+  },
+  {
+    question: 'Does LexInsights invent or hallucinate citations?',
+    answer:
+      'In its default local providerless mode it uses deterministic retrieval with no generative model, so it cites named authorities from its corpus or reports that it found none.',
+  },
+  {
+    question: 'What is the Data Privacy Act of 2012 (RA 10173)?',
+    answer:
+      'The Philippine law governing the processing of personal information, enforced by the National Privacy Commission (NPC).',
+  },
+  {
+    question: 'Can I rely on LexInsights output for court filings?',
+    answer:
+      'Only as a research aid. The Philippine Supreme Court framework A.M. No. 25-11-28-SC requires disclosure of AI use and keeps the filer responsible for the work.',
+  },
+]
+
+export function buildFaqStructuredData() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    '@id': `${SITE_URL}/#faq`,
+    inLanguage: 'en-PH',
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  }
+}
+
+export const KEY_STATUTES: Array<{ code: string; title: string; url: string }> = [
+  {
+    code: 'RA 10173',
+    title: 'Data Privacy Act of 2012',
+    url: 'https://privacy.gov.ph/data-privacy-act/',
+  },
+  {
+    code: 'RA 10175',
+    title: 'Cybercrime Prevention Act of 2012',
+    url: 'https://lawphil.net/statutes/repacts/ra2012/ra_10175_2012.html',
+  },
+  {
+    code: 'RA 9160',
+    title: 'Anti-Money Laundering Act of 2001',
+    url: 'https://www.amlc.gov.ph/laws/money-laundering/2015-10-16-02-50-56/republic-act-9160',
+  },
+  {
+    code: 'RA 9775',
+    title: 'Anti-Child Pornography Act of 2009',
+    url: 'https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/2/16874',
+  },
+  {
+    code: 'RA 9003',
+    title: 'Ecological Solid Waste Management Act of 2000',
+    url: 'https://lawphil.net/statutes/repacts/ra2001/ra_9003_2001.html',
+  },
+]
 
 export function buildWebPageStructuredData({
   path,
