@@ -162,6 +162,8 @@ Reports export to Markdown and DOCX only ([compliance-canvas.tsx](../src/compone
 
 *Acceptance:* a compliance report exports to PDF with the same color-coded findings, checklist, and citations as the DOCX export; the PDF includes the P0-3 disclosure block.
 
+*Status (shipped 2026-07-08):* a "PDF (.pdf)" option now sits in the report download menu alongside Markdown and Word ([compliance-canvas.tsx](../src/components/chat/compliance-canvas.tsx)). PDF generation is client-side via jsPDF ([pdf-export.ts](../src/lib/utils/pdf-export.ts)), parsing the same Markdown as the DOCX path: headings, color-coded finding sections (green/amber/red), checklists, and bullets, with page breaks. It exports the same content the DOCX does, so the P0-3 AI-use disclosure block is included. Emoji status markers map to text colors rather than glyphs, since jsPDF's standard fonts don't render emoji.
+
 ### P1-2. Expand and version the corpus with visible coverage metadata
 
 271 authorities is the depth risk named in Section 5. The fix is two-part: grow the corpus toward 400+ and, more importantly, tell users what is and is not covered. The corpus already tracks per-source verification dates and a coverage map; surface them. A user who sees "this framework is covered, last verified 2026-06-25, these date ranges are not" trusts a small honest corpus more than a large silent one.

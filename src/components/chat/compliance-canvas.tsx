@@ -9,6 +9,7 @@ import { AIDisclaimer, AIDisclaimerBadge } from './ai-disclaimer'
 import { cn } from '@/lib/utils'
 import { type RAGResponse } from '@/lib/services/rag-api'
 import { exportToDocx } from '@/lib/utils/docx-export'
+import { exportToPdf } from '@/lib/utils/pdf-export'
 import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
 import { type DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { showToast } from '@/components/ui/toast'
@@ -152,6 +153,24 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
     } catch (error) {
       console.error('Error exporting to DOCX:', error)
       showToast('Failed to export to DOCX. Please try again.', 'error')
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
+  const handleDownloadPdf = async () => {
+    setIsDownloading(true)
+    try {
+      const contentToDownload = buildExportContentWithDisclosure(currentVersion?.content || content)
+      await exportToPdf({
+        content: contentToDownload,
+        fileName: fileName || 'compliance-report',
+        title: 'Compliance Analysis Report',
+      })
+      setShowDownloadMenu(false)
+    } catch (error) {
+      console.error('Error exporting to PDF:', error)
+      showToast('Failed to export to PDF. Please try again.', 'error')
     } finally {
       setIsDownloading(false)
     }
@@ -716,6 +735,15 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                     >
                       <FileText className="h-4 w-4" aria-hidden="true" />
                       <span>Markdown (.md)</span>
+                    </button>
+                    <button
+                      onClick={handleDownloadPdf}
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-iris-50 hover:text-iris-800 active:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
+                      role="menuitem"
+                      disabled={isDownloading}
+                    >
+                      <FileCheck className="h-4 w-4" aria-hidden="true" />
+                      <span>{isDownloading ? 'Exporting...' : 'PDF (.pdf)'}</span>
                     </button>
                     <button
                       onClick={handleDownloadDocx}
