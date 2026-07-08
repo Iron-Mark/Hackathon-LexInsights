@@ -4,8 +4,12 @@ import { ArrowLeft, ExternalLink, Github, Sparkles } from 'lucide-react'
 
 import {
   buildBreadcrumbStructuredData,
+  buildFaqStructuredData,
   buildProjectStructuredData,
+  COVERAGE_FACTS,
   CURRENT_APP_URL,
+  FAQ_ITEMS,
+  KEY_STATUTES,
   LEGACY_SHOWCASE_URL,
   PHILIPPINE_COMPLIANCE_TOPICS,
   PORTFOLIO_CASE_STUDY_URL,
@@ -16,7 +20,7 @@ import {
 } from '@/lib/seo'
 
 const description =
-  'About LexInsights, a Philippine legal compliance assistant connected to its current app, public repository, Mark Siazon portfolio, and legacy showcase.'
+  'About LexInsights, a Philippine legal compliance assistant connected to its app, repository, and portfolio. Explore the corpus and start free legal research.'
 
 const sourceFamilies = [
   'Lawphil and Official Gazette primary law references',
@@ -58,7 +62,7 @@ const projectLinks = [
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'About LexInsights',
+    absolute: 'About LexInsights - Philippine Legal Compliance Assistant',
   },
   description,
   alternates: {
@@ -96,6 +100,10 @@ export default function AboutPage() {
             ])
           ),
         }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqStructuredData()) }}
       />
       <main className="min-h-dvh bg-[linear-gradient(180deg,#f7f6ff_0%,#ffffff_54%,#f8fafc_100%)] px-4 py-6 text-slate-950 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_55%,#120d1f_100%)] dark:text-slate-100 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
@@ -196,6 +204,92 @@ export default function AboutPage() {
                 </a>
               ))}
             </div>
+          </section>
+
+          <section className="grid gap-6 border-t border-slate-200 py-8 dark:border-iris-300/15 lg:grid-cols-[14rem_1fr]">
+            <h2 className="text-sm font-extrabold uppercase text-slate-500 dark:text-slate-400">
+              Coverage
+            </h2>
+            <div className="space-y-6">
+              <p className="max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+                LexInsights bundles a curated corpus of {COVERAGE_FACTS.authorities} legal
+                authorities across {COVERAGE_FACTS.sources} official source families and{' '}
+                {COVERAGE_FACTS.frameworks} compliance frameworks, linked by{' '}
+                {COVERAGE_FACTS.relations} curated authority relations.
+              </p>
+              <dl className="grid gap-3 sm:grid-cols-4">
+                {[
+                  { value: COVERAGE_FACTS.authorities, label: 'Legal authorities' },
+                  { value: COVERAGE_FACTS.sources, label: 'Source families' },
+                  { value: COVERAGE_FACTS.frameworks, label: 'Compliance frameworks' },
+                  { value: COVERAGE_FACTS.relations, label: 'Authority relations' },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-xl border border-slate-200 bg-white px-4 py-3 dark:border-iris-300/15 dark:bg-[#241f32]"
+                  >
+                    <dt className="text-2xl font-extrabold text-slate-950 dark:text-white">
+                      {stat.value}
+                    </dt>
+                    <dd className="mt-1 text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
+                      {stat.label}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <div>
+                <p className="mb-3 text-xs font-bold uppercase text-slate-500 dark:text-slate-400">
+                  Key statutes
+                </p>
+                <ul className="divide-y divide-slate-200 dark:divide-iris-300/15">
+                  {KEY_STATUTES.map((statute) => (
+                    <li key={statute.code}>
+                      <a
+                        href={statute.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex min-h-12 items-center justify-between gap-4 py-3 text-sm text-slate-700 transition-colors hover:text-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:text-slate-200 dark:hover:text-iris-200 dark:focus-visible:ring-offset-[#171322]"
+                      >
+                        <span>
+                          <span className="font-extrabold">{statute.code}</span>{' '}
+                          <span className="text-slate-600 dark:text-slate-300">{statute.title}</span>
+                        </span>
+                        <ExternalLink
+                          className="h-4 w-4 shrink-0 text-slate-400 transition-colors group-hover:text-iris-600 dark:text-slate-500 dark:group-hover:text-iris-200"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section
+            aria-labelledby="faq-heading"
+            className="grid gap-6 border-t border-slate-200 py-8 dark:border-iris-300/15 lg:grid-cols-[14rem_1fr]"
+          >
+            <h2
+              id="faq-heading"
+              className="text-sm font-extrabold uppercase text-slate-500 dark:text-slate-400"
+            >
+              Frequently asked questions
+            </h2>
+            <dl className="space-y-6">
+              {FAQ_ITEMS.map((item) => (
+                <div key={item.question}>
+                  <dt>
+                    <h3 className="text-base font-extrabold text-slate-950 dark:text-white">
+                      {item.question}
+                    </h3>
+                  </dt>
+                  <dd className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                    {item.answer}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </section>
 
           <section className="grid gap-6 border-t border-slate-200 py-8 dark:border-iris-300/15 lg:grid-cols-[14rem_1fr]">

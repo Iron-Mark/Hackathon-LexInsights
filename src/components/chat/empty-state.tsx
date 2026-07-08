@@ -135,7 +135,11 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
         transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.4 }}
         className="mx-auto max-w-2xl space-y-1.5 sm:space-y-2"
       >
-        <motion.h1
+        <h1 className="sr-only">
+          Philippine Legal Research &amp; Compliance Assistant
+        </h1>
+
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={shouldReduceMotion ? { duration: 0 } : { delay: 0.1 }}
@@ -145,7 +149,7 @@ export function EmptyState({ onPromptSelect, compact = false }: EmptyStateProps)
           )}
         >
           {greeting}, {userName}
-        </motion.h1>
+        </motion.p>
 
         <motion.p
           initial={{ opacity: 0 }}

@@ -3,6 +3,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
+import { idbStorage } from './idb-storage'
+
 export interface ComplianceVersion {
   id: string
   content: string
@@ -100,7 +102,9 @@ export const useComplianceStore = create<ComplianceStore>()(
     }),
     {
       name: 'compliance-storage',
-      storage: createJSONStorage(() => window.localStorage),
+      // Durable, larger client-side store (IndexedDB) with a one-time migration
+      // from the old localStorage key. See src/lib/store/idb-storage.ts (PRD P0-1).
+      storage: createJSONStorage(() => idbStorage),
     }
   )
 )

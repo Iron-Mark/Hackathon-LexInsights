@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils'
 import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
 import { downloadBlob, formatClockTime } from '@/lib/utils/browser-actions'
 import { buildLegalCitationContext, renderLegalCitationNodes } from './legal-citation'
+import { NoAuthorityNotice, shouldShowNoAuthorityNotice } from './no-authority-notice'
 
 interface MessageBubbleProps {
   message: Message
@@ -231,6 +232,7 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
     renderLegalCitationNodes(children, citationContext, `${message.id}-${scope}`, {
       isRevealing,
     })
+  const showNoAuthorityNotice = !isUser && shouldShowNoAuthorityNotice(message.metadata?.ragResponse)
   let checklistInputIndex = 0
 
   return (
@@ -452,7 +454,10 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
           </ReactMarkdown>
         </div>
       )}
-      
+
+      {/* Citation traceability guarantee: explicit notice when no corpus authority backs this response */}
+      {showNoAuthorityNotice && <NoAuthorityNotice />}
+
       {/* Action Buttons - Only for assistant messages */}
       {!isUser && !isRevealing && (
         <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-slate-200 pt-3 sm:gap-2 dark:border-iris-300/15">
