@@ -1,14 +1,16 @@
 'use client'
 
 import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react'
-import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle } from 'lucide-react'
+import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle, FolderPlus, ListChecks } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useComplianceStore } from '@/lib/store/compliance-store'
 import { VersionHistorySidebar } from './version-history-sidebar'
+import { MattersDialog } from './matters-dialog'
 import { AIDisclaimer, AIDisclaimerBadge } from './ai-disclaimer'
 import { cn } from '@/lib/utils'
 import { type RAGResponse } from '@/lib/services/rag-api'
 import { exportToDocx } from '@/lib/utils/docx-export'
+import { exportToPdf } from '@/lib/utils/pdf-export'
 import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
 import { type DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { showToast } from '@/components/ui/toast'
@@ -20,6 +22,10 @@ import {
   renderAiUseDisclosureMarkdown,
   type DisclosureAuthority,
 } from '@/lib/services/compliance-persistence/ai-use-disclosure'
+import {
+  selectPrimaryFramework,
+  getFrameworkTemplate,
+} from '@/lib/services/local-research-data/framework-templates'
 
 interface ComplianceCanvasProps {
   content: string
@@ -41,11 +47,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   const [editContent, setEditContent] = useState('')
   const [showHistory, setShowHistory] = useState(false)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
+  const [showMattersDialog, setShowMattersDialog] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(externalDeepSearchResult || null)
   const [showDeepSearch, setShowDeepSearch] = useState(false)
   const [isMobileHeader, setIsMobileHeader] = useState(false)
   const [isCompactHeader, setIsCompactHeader] = useState(false)
+  const [showFrameworkChecklist, setShowFrameworkChecklist] = useState(false)
   const currentVersion = getCurrentVersion()
   const canvasArticleRef = useRef<HTMLElement>(null)
 
@@ -157,6 +165,24 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
     }
   }
 
+  const handleDownloadPdf = async () => {
+    setIsDownloading(true)
+    try {
+      const contentToDownload = buildExportContentWithDisclosure(currentVersion?.content || content)
+      await exportToPdf({
+        content: contentToDownload,
+        fileName: fileName || 'compliance-report',
+        title: 'Compliance Analysis Report',
+      })
+      setShowDownloadMenu(false)
+    } catch (error) {
+      console.error('Error exporting to PDF:', error)
+      showToast('Failed to export to PDF. Please try again.', 'error')
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
   const handleSave = () => {
     if (editContent !== currentVersion?.content) {
       const versionLabel = `Version ${useComplianceStore.getState().versions.length + 1}`
@@ -170,8 +196,41 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   // Always prioritize the content prop over stored versions for fresh analysis
   const displayContent = content || currentVersion?.content || ''
   const previewContent = formatReportMarkdownForPreview(displayContent)
+
+  // Build the report handed to the matters dialog (PRD P1-3). The compliance
+  // score is read from the "Compliance Score: NN%" line in the report body,
+  // falling back to the RAG confidence score when present.
+  const pendingMatterReport = useMemo(() => {
+    const savedContent = currentVersion?.content || content
+    const scoreMatch = savedContent.match(/Compliance Score:\s*(\d+)\s*%/i)
+    let complianceScore: number | null = null
+    if (scoreMatch) {
+      complianceScore = parseInt(scoreMatch[1], 10)
+    } else if (typeof ragResponse?.confidence_score === 'number') {
+      complianceScore = Math.round(ragResponse.confidence_score * 100)
+    }
+    return {
+      title: fileName || 'Compliance report',
+      content: savedContent,
+      complianceScore,
+    }
+  }, [content, currentVersion, fileName, ragResponse])
+
   const citationContext = useMemo(() => buildLegalCitationContext(ragResponse), [ragResponse])
   const showNoAuthorityNotice = shouldShowNoAuthorityNotice(ragResponse)
+
+  // Framework-specific report template (PRD P2-2). When the report maps to one
+  // of the bundled compliance frameworks, surface that framework's structured
+  // checklist. Returns null when no framework is confidently identified.
+  const frameworkTemplate = useMemo(() => {
+    const reportBody = content || currentVersion?.content || ''
+    const match = selectPrimaryFramework({
+      content: reportBody,
+      ragResponse,
+      searchQueries,
+    })
+    return match ? getFrameworkTemplate(match.framework) : null
+  }, [content, currentVersion, ragResponse, searchQueries])
   const renderCitationText = (children: ReactNode, scope: string) =>
     renderLegalCitationNodes(children, citationContext, `compliance-canvas-${scope}`)
 
@@ -718,6 +777,15 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                       <span>Markdown (.md)</span>
                     </button>
                     <button
+                      onClick={handleDownloadPdf}
+                      className="flex w-full items-center gap-2 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-iris-50 hover:text-iris-800 active:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
+                      role="menuitem"
+                      disabled={isDownloading}
+                    >
+                      <FileCheck className="h-4 w-4" aria-hidden="true" />
+                      <span>{isDownloading ? 'Exporting...' : 'PDF (.pdf)'}</span>
+                    </button>
+                    <button
                       onClick={handleDownloadDocx}
                       className="flex w-full items-center gap-2 rounded-b-lg px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-iris-50 hover:text-iris-800 active:bg-iris-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:text-slate-300 dark:hover:bg-iris-300/10 dark:active:bg-iris-300/15"
                       role="menuitem"
@@ -730,6 +798,22 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 </>
               )}
             </div>
+
+            {/* Save to Matter */}
+            <Button
+              onClick={() => setShowMattersDialog(true)}
+              variant="outline"
+              size="sm"
+              className={cn(
+                'h-9 gap-2 border-[#8A82DC] bg-[#FBFAFF]/90 text-slate-800 shadow-sm shadow-iris-950/8 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]',
+                isMobileHeader && 'h-10 w-10 justify-center gap-0 px-0',
+                isCompactHeader && 'h-9 w-9'
+              )}
+              aria-label="Save report to a matter"
+            >
+              <FolderPlus className="h-4 w-4" aria-hidden="true" />
+              <span className={cn('text-sm', isMobileHeader && 'sr-only')}>Save to matter</span>
+            </Button>
           </div>
         </header>
 
@@ -947,6 +1031,71 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               </div>
             )}
             
+            {/* Framework-specific checklist (PRD P2-2) */}
+            {displayContent && frameworkTemplate && (
+              <div className="mb-6 overflow-hidden rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/94 shadow-sm shadow-iris-950/8 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none">
+                <button
+                  type="button"
+                  onClick={() => setShowFrameworkChecklist((prev) => !prev)}
+                  className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[#EFECFF]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:hover:bg-iris-300/10"
+                  aria-expanded={showFrameworkChecklist}
+                  aria-controls="framework-checklist-panel"
+                >
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-iris-50 text-iris-700 dark:bg-iris-400/10 dark:text-iris-200">
+                    <ListChecks className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-display text-sm font-semibold text-neutral-900 dark:text-slate-100">
+                      Framework checklist
+                    </span>
+                    <span className="mt-0.5 block break-words text-xs text-neutral-600 [overflow-wrap:anywhere] dark:text-slate-400">
+                      {frameworkTemplate.title}
+                    </span>
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      'mt-1 h-4 w-4 shrink-0 text-iris-600 transition-transform dark:text-iris-200',
+                      showFrameworkChecklist && 'rotate-180'
+                    )}
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {showFrameworkChecklist && (
+                  <div
+                    id="framework-checklist-panel"
+                    className="border-t border-[#8A82DC] px-4 py-3 dark:border-iris-300/15"
+                  >
+                    {frameworkTemplate.summary && (
+                      <p className="mb-3 break-words text-xs leading-relaxed text-neutral-600 [overflow-wrap:anywhere] dark:text-slate-400">
+                        {frameworkTemplate.summary}
+                      </p>
+                    )}
+                    <div className="space-y-4">
+                      {frameworkTemplate.sections.map((section) => (
+                        <div key={section.heading}>
+                          <p className="mb-1.5 text-[0.7rem] font-bold uppercase tracking-normal text-iris-700 dark:text-iris-200">
+                            {section.heading}
+                          </p>
+                          <ul className="space-y-1.5">
+                            {section.items.map((item, itemIndex) => (
+                              <li
+                                key={itemIndex}
+                                className="flex items-start gap-2 text-sm leading-relaxed text-slate-700 dark:text-slate-200"
+                              >
+                                <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-iris-600 dark:text-iris-300" aria-hidden="true" />
+                                <span className="min-w-0 break-words [overflow-wrap:anywhere]">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {displayContent && (
               <div className="max-w-none space-y-1 break-words [overflow-wrap:anywhere]">
                 {renderContent(previewContent)}
@@ -955,6 +1104,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
           </article>
         )}
       </div>
+
+      {/* Matter / project workspace dialog (PRD P1-3) */}
+      <MattersDialog
+        open={showMattersDialog}
+        onOpenChange={setShowMattersDialog}
+        pendingReport={pendingMatterReport}
+      />
     </div>
   )
 }

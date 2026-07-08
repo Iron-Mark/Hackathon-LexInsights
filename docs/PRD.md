@@ -162,11 +162,15 @@ Reports export to Markdown and DOCX only ([compliance-canvas.tsx](../src/compone
 
 *Acceptance:* a compliance report exports to PDF with the same color-coded findings, checklist, and citations as the DOCX export; the PDF includes the P0-3 disclosure block.
 
+*Status (shipped 2026-07-08):* a "PDF (.pdf)" option now sits in the report download menu alongside Markdown and Word ([compliance-canvas.tsx](../src/components/chat/compliance-canvas.tsx)). PDF generation is client-side via jsPDF ([pdf-export.ts](../src/lib/utils/pdf-export.ts)), parsing the same Markdown as the DOCX path: headings, color-coded finding sections (green/amber/red), checklists, and bullets, with page breaks. It exports the same content the DOCX does, so the P0-3 AI-use disclosure block is included. Emoji status markers map to text colors rather than glyphs, since jsPDF's standard fonts don't render emoji.
+
 ### P1-2. Expand and version the corpus with visible coverage metadata
 
 271 authorities is the depth risk named in Section 5. The fix is two-part: grow the corpus toward 400+ and, more importantly, tell users what is and is not covered. The corpus already tracks per-source verification dates and a coverage map; surface them. A user who sees "this framework is covered, last verified 2026-06-25, these date ranges are not" trusts a small honest corpus more than a large silent one.
 
 *Acceptance:* the Help & Resources surface shows corpus size, framework coverage, and last-verified dates per source category; adding an authority still passes `check:local-rag:governance`; the corpus reaches 400+ authorities without regressing sub-second p95 latency.
+
+*Status (partial, 2026-07-08):* the coverage-disclosure half is shipped. Help & Resources now shows a "Corpus coverage" section (authorities, source families, frameworks, curated relations, plus a per-family table with counts and last-verified dates), computed by [coverage-summary.ts](../src/lib/services/local-research-data/coverage-summary.ts) from existing governance data (no hardcoded totals; the curated-relation count reconciled to 180 across [seo.ts](../src/lib/seo.ts), `/about`, and `/llms.txt`). Still open: growing the corpus toward 400+ authorities, which is a legal-content authoring effort (each authority needs a corpus record, source, evidence anchor, relations, and coverage-map entry) and was deliberately not auto-generated.
 
 ### P1-3. Matter and project workspace
 
@@ -174,11 +178,15 @@ Compliance is capped at 3 files per session ([compliance-upload.ts](../src/lib/u
 
 *Acceptance:* a user can create a matter, attach multiple documents and their reports to it, tag it, and reopen it later with all reports and versions intact (which depends on P0-1 landing first).
 
+*Status (first cut, 2026-07-08):* a matter workspace foundation is shipped. [matter-store.ts](../src/lib/store/matter-store.ts) is a zustand store persisted to IndexedDB (`matter-storage`, via the P0-1 idb adapter) with matters that hold tags and saved report snapshots. [matters-dialog.tsx](../src/components/chat/matters-dialog.tsx) lets a user create matters (name + tags), list them, view a matter's saved reports, and delete; a "Save to matter" button in the compliance report actions ([compliance-canvas.tsx](../src/components/chat/compliance-canvas.tsx)) saves the current report into a matter and it survives reloads. Open follow-ups: document-to-matter association (the `documentNames` field is modeled but not yet populated), rename/tag-edit UI, and a mobile visual-QA pass on the dialog.
+
 ### P2-1. Education and student tier with a visible entitlement surface
 
 3,962 people passed the 2024 Bar, and rivals monetize students directly (Anycase Edu at PHP 599/month, Jur.ph annual at PHP 167/month). The app currently gives users no client-side view of their limits; guardrails exist only server-side (30 requests/60s on `rag-proxy` POST, 12/60s on `document-text`). Ship a visible free/student tier with a clear entitlement display so the funnel that starts free has a reason to convert.
 
 *Acceptance:* an authenticated user sees their tier, remaining quota, and what a paid tier adds; a student verification path grants the education tier.
+
+*Status (partial, 2026-07-08):* the transparency surface is shipped. The profile dialog now shows a plan/limits section ([plan-limits-panel.tsx](../src/components/profile/plan-limits-panel.tsx)): the current "Free" tier, the real per-minute request limits (mirrored from `request-guardrails.ts` into client-safe constants in [plan-limits.ts](../src/lib/plan-limits.ts)), and what Education/Pro tiers would add. This closes the audit's "no client visibility into rate limits" gap. Deliberately deferred (needs a backend decision): real per-user quota metering, tier enforcement, and student verification.
 
 ### P2-2. Framework-specific report templates
 
@@ -186,11 +194,15 @@ Compliance produces one generic report format today. The corpus already carries 
 
 *Acceptance:* generating a report against a detected framework selects a matching template with framework-specific sections and checklist items; the template maps to one of the 45 bundled frameworks.
 
+*Status (shipped 2026-07-08):* [framework-templates.ts](../src/lib/services/local-research-data/framework-templates.ts) identifies the most relevant of the 45 bundled frameworks for a report (by intersecting the report's matched authorities with each framework's laws, plus trigger-phrase and title matching in the report text), degrading to none when confidence is low. The compliance report view ([compliance-canvas.tsx](../src/components/chat/compliance-canvas.tsx)) renders a collapsible "Framework checklist" panel with the matched framework's sequence and checkpoint items. Detection is high-confidence with a real RAG response (authorities resolve to framework laws) and degrades gracefully on thin content. A follow-up would add an explicit `matched_framework_id` to the RAG response for exact detection.
+
 ### P2-3. Progress indication for extraction and deep search
 
 Document extraction runs on a 15,000ms timeout and RAG proxy POSTs can run to 300,000ms, with no progress feedback. Deep Search and multi-file runs feel broken when they are merely slow. Add real progress so users wait instead of abandon.
 
 *Acceptance:* document extraction and Deep Search show step-level progress; a run approaching its timeout shows time-remaining rather than a static spinner.
+
+*Status (shipped 2026-07-08):* [rag-progress.tsx](../src/components/chat/rag-progress.tsx) now renders named step-level stages and a ticking elapsed-time indicator, with an amber "taking longer than usual" hint once a run passes 75% of its known timeout. It keeps the existing event-driven WebSocket stages and adds a time-estimated mode (extraction / research / deep-search) that never fabricates completion. [chat-container.tsx](../src/components/chat/chat-container.tsx) drives it with the real phase: extraction (15,000ms) then draft check (30,000ms) on upload, and elapsed time on the streamed research path. The deep-search WebSocket stream also gained a labeled cross-reference-expansion stage.
 
 ---
 
