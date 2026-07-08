@@ -20,6 +20,7 @@ import type {
   ReportFindingRecord,
   ReportVersionRecord,
 } from './types'
+import { SupabaseComplianceReportRepository } from './supabase-repository'
 
 // ---------------------------------------------------------------------------
 // Database row shapes (snake_case, as returned by Supabase / Postgres)
@@ -190,10 +191,16 @@ export class UnwiredComplianceReportRepository implements ComplianceReportReposi
 /**
  * Factory for the compliance report repository.
  *
- * Returns the unwired stub for now. Swap the return value for a
- * SupabaseComplianceReportRepository once P0-1 is implemented; no caller needs
- * to change because they depend on the ComplianceReportRepository interface.
+ * In the browser, returns the Supabase-backed implementation (P0-1 server
+ * path). On the server/build (no `window`), returns the unwired stub so that
+ * importing this module never constructs a Supabase client outside the client
+ * runtime. Callers depend only on the ComplianceReportRepository interface, so
+ * neither branch changes their code.
  */
 export function createComplianceReportRepository(): ComplianceReportRepository {
+  if (typeof window !== 'undefined') {
+    return new SupabaseComplianceReportRepository()
+  }
+
   return new UnwiredComplianceReportRepository()
 }

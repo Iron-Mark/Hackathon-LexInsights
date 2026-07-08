@@ -14,6 +14,7 @@ import { type DeepSearchResponse } from '@/lib/services/deep-search-api'
 import { showToast } from '@/components/ui/toast'
 import { announceToAssistiveTechnology, downloadBlob } from '@/lib/utils/browser-actions'
 import { buildLegalCitationContext, renderLegalCitationNodes } from './legal-citation'
+import { NoAuthorityNotice, shouldShowNoAuthorityNotice } from './no-authority-notice'
 
 interface ComplianceCanvasProps {
   content: string
@@ -149,6 +150,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   const displayContent = content || currentVersion?.content || ''
   const previewContent = formatReportMarkdownForPreview(displayContent)
   const citationContext = useMemo(() => buildLegalCitationContext(ragResponse), [ragResponse])
+  const showNoAuthorityNotice = shouldShowNoAuthorityNotice(ragResponse)
   const renderCitationText = (children: ReactNode, scope: string) =>
     renderLegalCitationNodes(children, citationContext, `compliance-canvas-${scope}`)
 
@@ -753,6 +755,9 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
             {/* AI Disclaimer - Always show at top when content is ready */}
             {displayContent && <AIDisclaimer />}
+
+            {/* Citation traceability guarantee: explicit notice when no corpus authority backs this report */}
+            {displayContent && showNoAuthorityNotice && <NoAuthorityNotice />}
 
             {/* Deep Search Results */}
             {showDeepSearch && deepSearchResult && (

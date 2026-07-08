@@ -34,6 +34,8 @@ export {
   mapVersionRow,
 } from './repository'
 
+export { SupabaseComplianceReportRepository } from './supabase-repository'
+
 export type {
   AiUseDisclosure,
   AiUseDisclosureInput,
