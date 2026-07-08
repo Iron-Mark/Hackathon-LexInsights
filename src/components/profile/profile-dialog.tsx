@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useRouter } from 'next/navigation'
+import { PlanLimitsPanel } from '@/components/profile/plan-limits-panel'
 
 interface ProfileDialogProps {
   open: boolean
@@ -95,6 +96,9 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
               </div>
             </div>
           </div>
+
+          {/* Plan & request limits */}
+          <PlanLimitsPanel />
 
           {/* Actions */}
           <div className="space-y-2 border-t border-slate-200 pt-4 dark:border-iris-300/15">

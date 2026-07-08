@@ -186,17 +186,23 @@ Compliance is capped at 3 files per session ([compliance-upload.ts](../src/lib/u
 
 *Acceptance:* an authenticated user sees their tier, remaining quota, and what a paid tier adds; a student verification path grants the education tier.
 
+*Status (partial, 2026-07-08):* the transparency surface is shipped. The profile dialog now shows a plan/limits section ([plan-limits-panel.tsx](../src/components/profile/plan-limits-panel.tsx)): the current "Free" tier, the real per-minute request limits (mirrored from `request-guardrails.ts` into client-safe constants in [plan-limits.ts](../src/lib/plan-limits.ts)), and what Education/Pro tiers would add. This closes the audit's "no client visibility into rate limits" gap. Deliberately deferred (needs a backend decision): real per-user quota metering, tier enforcement, and student verification.
+
 ### P2-2. Framework-specific report templates
 
 Compliance produces one generic report format today. The corpus already carries 45 framework packs; use them to select a template so an RA 10173 privacy review reads differently from an RA 9160 AML review. Framework-specific output sharpens quality & reinforces the compliance-over-research positioning.
 
 *Acceptance:* generating a report against a detected framework selects a matching template with framework-specific sections and checklist items; the template maps to one of the 45 bundled frameworks.
 
+*Status (shipped 2026-07-08):* [framework-templates.ts](../src/lib/services/local-research-data/framework-templates.ts) identifies the most relevant of the 45 bundled frameworks for a report (by intersecting the report's matched authorities with each framework's laws, plus trigger-phrase and title matching in the report text), degrading to none when confidence is low. The compliance report view ([compliance-canvas.tsx](../src/components/chat/compliance-canvas.tsx)) renders a collapsible "Framework checklist" panel with the matched framework's sequence and checkpoint items. Detection is high-confidence with a real RAG response (authorities resolve to framework laws) and degrades gracefully on thin content. A follow-up would add an explicit `matched_framework_id` to the RAG response for exact detection.
+
 ### P2-3. Progress indication for extraction and deep search
 
 Document extraction runs on a 15,000ms timeout and RAG proxy POSTs can run to 300,000ms, with no progress feedback. Deep Search and multi-file runs feel broken when they are merely slow. Add real progress so users wait instead of abandon.
 
 *Acceptance:* document extraction and Deep Search show step-level progress; a run approaching its timeout shows time-remaining rather than a static spinner.
+
+*Status (shipped 2026-07-08):* [rag-progress.tsx](../src/components/chat/rag-progress.tsx) now renders named step-level stages and a ticking elapsed-time indicator, with an amber "taking longer than usual" hint once a run passes 75% of its known timeout. It keeps the existing event-driven WebSocket stages and adds a time-estimated mode (extraction / research / deep-search) that never fabricates completion. [chat-container.tsx](../src/components/chat/chat-container.tsx) drives it with the real phase: extraction (15,000ms) then draft check (30,000ms) on upload, and elapsed time on the streamed research path. The deep-search WebSocket stream also gained a labeled cross-reference-expansion stage.
 
 ---
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react'
-import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle, FolderPlus } from 'lucide-react'
+import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle, FolderPlus, ListChecks } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useComplianceStore } from '@/lib/store/compliance-store'
 import { VersionHistorySidebar } from './version-history-sidebar'
@@ -22,6 +22,10 @@ import {
   renderAiUseDisclosureMarkdown,
   type DisclosureAuthority,
 } from '@/lib/services/compliance-persistence/ai-use-disclosure'
+import {
+  selectPrimaryFramework,
+  getFrameworkTemplate,
+} from '@/lib/services/local-research-data/framework-templates'
 
 interface ComplianceCanvasProps {
   content: string
@@ -49,6 +53,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   const [showDeepSearch, setShowDeepSearch] = useState(false)
   const [isMobileHeader, setIsMobileHeader] = useState(false)
   const [isCompactHeader, setIsCompactHeader] = useState(false)
+  const [showFrameworkChecklist, setShowFrameworkChecklist] = useState(false)
   const currentVersion = getCurrentVersion()
   const canvasArticleRef = useRef<HTMLElement>(null)
 
@@ -213,6 +218,19 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
 
   const citationContext = useMemo(() => buildLegalCitationContext(ragResponse), [ragResponse])
   const showNoAuthorityNotice = shouldShowNoAuthorityNotice(ragResponse)
+
+  // Framework-specific report template (PRD P2-2). When the report maps to one
+  // of the bundled compliance frameworks, surface that framework's structured
+  // checklist. Returns null when no framework is confidently identified.
+  const frameworkTemplate = useMemo(() => {
+    const reportBody = content || currentVersion?.content || ''
+    const match = selectPrimaryFramework({
+      content: reportBody,
+      ragResponse,
+      searchQueries,
+    })
+    return match ? getFrameworkTemplate(match.framework) : null
+  }, [content, currentVersion, ragResponse, searchQueries])
   const renderCitationText = (children: ReactNode, scope: string) =>
     renderLegalCitationNodes(children, citationContext, `compliance-canvas-${scope}`)
 
@@ -1013,6 +1031,71 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
               </div>
             )}
             
+            {/* Framework-specific checklist (PRD P2-2) */}
+            {displayContent && frameworkTemplate && (
+              <div className="mb-6 overflow-hidden rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/94 shadow-sm shadow-iris-950/8 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none">
+                <button
+                  type="button"
+                  onClick={() => setShowFrameworkChecklist((prev) => !prev)}
+                  className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[#EFECFF]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-400 focus-visible:ring-inset dark:hover:bg-iris-300/10"
+                  aria-expanded={showFrameworkChecklist}
+                  aria-controls="framework-checklist-panel"
+                >
+                  <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-iris-50 text-iris-700 dark:bg-iris-400/10 dark:text-iris-200">
+                    <ListChecks className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-display text-sm font-semibold text-neutral-900 dark:text-slate-100">
+                      Framework checklist
+                    </span>
+                    <span className="mt-0.5 block break-words text-xs text-neutral-600 [overflow-wrap:anywhere] dark:text-slate-400">
+                      {frameworkTemplate.title}
+                    </span>
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      'mt-1 h-4 w-4 shrink-0 text-iris-600 transition-transform dark:text-iris-200',
+                      showFrameworkChecklist && 'rotate-180'
+                    )}
+                    aria-hidden="true"
+                  />
+                </button>
+
+                {showFrameworkChecklist && (
+                  <div
+                    id="framework-checklist-panel"
+                    className="border-t border-[#8A82DC] px-4 py-3 dark:border-iris-300/15"
+                  >
+                    {frameworkTemplate.summary && (
+                      <p className="mb-3 break-words text-xs leading-relaxed text-neutral-600 [overflow-wrap:anywhere] dark:text-slate-400">
+                        {frameworkTemplate.summary}
+                      </p>
+                    )}
+                    <div className="space-y-4">
+                      {frameworkTemplate.sections.map((section) => (
+                        <div key={section.heading}>
+                          <p className="mb-1.5 text-[0.7rem] font-bold uppercase tracking-normal text-iris-700 dark:text-iris-200">
+                            {section.heading}
+                          </p>
+                          <ul className="space-y-1.5">
+                            {section.items.map((item, itemIndex) => (
+                              <li
+                                key={itemIndex}
+                                className="flex items-start gap-2 text-sm leading-relaxed text-slate-700 dark:text-slate-200"
+                              >
+                                <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-iris-600 dark:text-iris-300" aria-hidden="true" />
+                                <span className="min-w-0 break-words [overflow-wrap:anywhere]">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {displayContent && (
               <div className="max-w-none space-y-1 break-words [overflow-wrap:anywhere]">
                 {renderContent(previewContent)}
