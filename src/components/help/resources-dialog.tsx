@@ -1,7 +1,7 @@
 'use client'
 
 import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react'
-import { Globe, ExternalLink, BookOpen, FileText, ShieldCheck, Trash2, X } from 'lucide-react'
+import { Globe, ExternalLink, BookOpen, FileText, ShieldCheck, Trash2, X, Database } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import {
 import { TermsPrivacyPanel } from './terms-privacy-panel'
 import { clearPrivateClientState } from '@/lib/store/private-client-state'
 import { trackHelpResourcesOpen, trackSourceLinkClick } from '@/lib/analytics/events'
+import { buildCoverageSummary } from '@/lib/services/local-research-data/coverage-summary'
 
 interface ResourcesDialogProps {
   open: boolean
@@ -27,9 +28,39 @@ interface GovernmentResource {
   corpusCount?: number
 }
 
-const LOCAL_CORPUS_AUTHORITY_COUNT = 271
-const LOCAL_CORPUS_SOURCE_COUNT = 13
-const LOCAL_COMPLIANCE_FRAMEWORK_COUNT = 45
+// Derived once from the bundled local research corpus (pure + side-effect-free),
+// so every headline count stays honest and in sync with the underlying data.
+const COVERAGE_SUMMARY = buildCoverageSummary()
+const LOCAL_CORPUS_AUTHORITY_COUNT = COVERAGE_SUMMARY.totalAuthorities
+const LOCAL_CORPUS_SOURCE_COUNT = COVERAGE_SUMMARY.sourceFamilyCount
+const LOCAL_COMPLIANCE_FRAMEWORK_COUNT = COVERAGE_SUMMARY.frameworkCount
+
+const VERIFIED_DATE_MONTHS = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+]
+
+// Deterministic ISO (YYYY-MM-DD) -> "Jun 27, 2026" formatter. Avoids Date/locale
+// parsing so server and client render identically.
+function formatVerifiedDate(iso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso)
+
+  if (!match) {
+    return iso
+  }
+
+  const [, year, month, day] = match
+  const monthLabel = VERIFIED_DATE_MONTHS[Number(month) - 1] ?? month
+
+  return `${monthLabel} ${Number(day)}, ${year}`
+}
+
+const COVERAGE_HEADLINE_STATS: Array<{ label: string; value: number }> = [
+  { label: 'Authorities', value: COVERAGE_SUMMARY.totalAuthorities },
+  { label: 'Source families', value: COVERAGE_SUMMARY.sourceFamilyCount },
+  { label: 'Frameworks', value: COVERAGE_SUMMARY.frameworkCount },
+  { label: 'Authority relations', value: COVERAGE_SUMMARY.curatedRelationCount },
+]
 
 const GOVERNMENT_RESOURCES: GovernmentResource[] = [
   {
@@ -384,6 +415,95 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
             </aside>
 
             <div className="min-w-0 max-w-full space-y-7 overflow-x-hidden">
+              <section
+                aria-labelledby="corpus-coverage-heading"
+                className="min-w-0 max-w-full overflow-hidden rounded-xl border border-[#8A82DC] bg-[#F8F6FF] p-4 dark:border-iris-300/15 dark:bg-[#241f32] sm:p-5"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EFECFF] text-iris-800 dark:bg-iris-400/10 dark:text-iris-200">
+                    <Database className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3
+                      id="corpus-coverage-heading"
+                      className="text-sm font-bold text-slate-950 dark:text-slate-100"
+                    >
+                      Corpus coverage
+                    </h3>
+                    <p className="mt-1 text-sm leading-6 text-slate-700 dark:text-slate-300">
+                      Live counts from the bundled local research corpus that powers offline, providerless retrieval.
+                    </p>
+                  </div>
+                </div>
+
+                <dl className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {COVERAGE_HEADLINE_STATS.map(({ label, value }) => (
+                    <div
+                      key={label}
+                      className="rounded-lg border border-[#8A82DC]/60 bg-[#FBFAFF] px-3 py-2.5 dark:border-iris-300/12 dark:bg-[#1a1625]"
+                    >
+                      <dt className="text-[11px] font-semibold uppercase leading-none tracking-wide text-slate-600 dark:text-slate-500">
+                        {label}
+                      </dt>
+                      <dd className="mt-1 text-lg font-extrabold leading-none text-slate-950 dark:text-slate-100">
+                        {value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+
+                <div className="mt-4 max-w-full overflow-x-auto">
+                  <table className="w-full min-w-[22rem] border-collapse text-left text-sm">
+                    <caption className="sr-only">
+                      Local corpus authorities by source family, with each family&apos;s most recent verification date
+                    </caption>
+                    <thead>
+                      <tr className="border-b border-[#8A82DC]/70 dark:border-iris-300/15">
+                        <th
+                          scope="col"
+                          className="py-2 pr-3 text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-500"
+                        >
+                          Source family
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-3 py-2 text-right text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-500"
+                        >
+                          Authorities
+                        </th>
+                        <th
+                          scope="col"
+                          className="py-2 pl-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-500"
+                        >
+                          Last verified
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {COVERAGE_SUMMARY.families.map((family) => (
+                        <tr
+                          key={family.sourceName}
+                          className="border-b border-[#8A82DC]/40 last:border-0 dark:border-iris-300/10"
+                        >
+                          <th
+                            scope="row"
+                            className="py-2 pr-3 font-medium text-slate-800 dark:text-slate-200"
+                          >
+                            {family.sourceName}
+                          </th>
+                          <td className="px-3 py-2 text-right font-semibold tabular-nums text-slate-950 dark:text-slate-100">
+                            {family.authorityCount}
+                          </td>
+                          <td className="py-2 pl-3 text-right tabular-nums text-slate-700 dark:text-slate-300">
+                            {formatVerifiedDate(family.lastVerified)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+
               <div className="space-y-3 lg:hidden">
                 <p className="text-xs font-semibold uppercase text-slate-600 dark:text-slate-500">Categories</p>
                 <div

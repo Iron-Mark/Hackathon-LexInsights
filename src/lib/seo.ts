@@ -100,7 +100,10 @@ export const COVERAGE_FACTS = {
   authorities: 271,
   sources: 13,
   frameworks: 45,
-  relations: 181,
+  // Curated authority relations (distinct source/target/type triples, excluding
+  // the auto-generated per-framework workflow edges). Matches the value derived
+  // in local-research-data/coverage-summary.ts so all surfaces agree.
+  relations: 180,
 }
 
 export const FAQ_ITEMS: Array<{ question: string; answer: string }> = [

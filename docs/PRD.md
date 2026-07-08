@@ -170,11 +170,15 @@ Reports export to Markdown and DOCX only ([compliance-canvas.tsx](../src/compone
 
 *Acceptance:* the Help & Resources surface shows corpus size, framework coverage, and last-verified dates per source category; adding an authority still passes `check:local-rag:governance`; the corpus reaches 400+ authorities without regressing sub-second p95 latency.
 
+*Status (partial, 2026-07-08):* the coverage-disclosure half is shipped. Help & Resources now shows a "Corpus coverage" section (authorities, source families, frameworks, curated relations, plus a per-family table with counts and last-verified dates), computed by [coverage-summary.ts](../src/lib/services/local-research-data/coverage-summary.ts) from existing governance data (no hardcoded totals; the curated-relation count reconciled to 180 across [seo.ts](../src/lib/seo.ts), `/about`, and `/llms.txt`). Still open: growing the corpus toward 400+ authorities, which is a legal-content authoring effort (each authority needs a corpus record, source, evidence anchor, relations, and coverage-map entry) and was deliberately not auto-generated.
+
 ### P1-3. Matter and project workspace
 
 Compliance is capped at 3 files per session ([compliance-upload.ts](../src/lib/utils/compliance-upload.ts)) with no way to group documents or reports. An SME compliance officer reviews a matter, not a file. Add a matter container that groups uploaded documents, their reports, & version history under one heading, with tagging. This is the natural expansion of the compliance moat competitors do not have.
 
 *Acceptance:* a user can create a matter, attach multiple documents and their reports to it, tag it, and reopen it later with all reports and versions intact (which depends on P0-1 landing first).
+
+*Status (first cut, 2026-07-08):* a matter workspace foundation is shipped. [matter-store.ts](../src/lib/store/matter-store.ts) is a zustand store persisted to IndexedDB (`matter-storage`, via the P0-1 idb adapter) with matters that hold tags and saved report snapshots. [matters-dialog.tsx](../src/components/chat/matters-dialog.tsx) lets a user create matters (name + tags), list them, view a matter's saved reports, and delete; a "Save to matter" button in the compliance report actions ([compliance-canvas.tsx](../src/components/chat/compliance-canvas.tsx)) saves the current report into a matter and it survives reloads. Open follow-ups: document-to-matter association (the `documentNames` field is modeled but not yet populated), rename/tag-edit UI, and a mobile visual-QA pass on the dialog.
 
 ### P2-1. Education and student tier with a visible entitlement surface
 

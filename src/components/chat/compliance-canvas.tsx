@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react'
-import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle } from 'lucide-react'
+import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle, FolderPlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useComplianceStore } from '@/lib/store/compliance-store'
 import { VersionHistorySidebar } from './version-history-sidebar'
+import { MattersDialog } from './matters-dialog'
 import { AIDisclaimer, AIDisclaimerBadge } from './ai-disclaimer'
 import { cn } from '@/lib/utils'
 import { type RAGResponse } from '@/lib/services/rag-api'
@@ -42,6 +43,7 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   const [editContent, setEditContent] = useState('')
   const [showHistory, setShowHistory] = useState(false)
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
+  const [showMattersDialog, setShowMattersDialog] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(externalDeepSearchResult || null)
   const [showDeepSearch, setShowDeepSearch] = useState(false)
@@ -189,6 +191,26 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   // Always prioritize the content prop over stored versions for fresh analysis
   const displayContent = content || currentVersion?.content || ''
   const previewContent = formatReportMarkdownForPreview(displayContent)
+
+  // Build the report handed to the matters dialog (PRD P1-3). The compliance
+  // score is read from the "Compliance Score: NN%" line in the report body,
+  // falling back to the RAG confidence score when present.
+  const pendingMatterReport = useMemo(() => {
+    const savedContent = currentVersion?.content || content
+    const scoreMatch = savedContent.match(/Compliance Score:\s*(\d+)\s*%/i)
+    let complianceScore: number | null = null
+    if (scoreMatch) {
+      complianceScore = parseInt(scoreMatch[1], 10)
+    } else if (typeof ragResponse?.confidence_score === 'number') {
+      complianceScore = Math.round(ragResponse.confidence_score * 100)
+    }
+    return {
+      title: fileName || 'Compliance report',
+      content: savedContent,
+      complianceScore,
+    }
+  }, [content, currentVersion, fileName, ragResponse])
+
   const citationContext = useMemo(() => buildLegalCitationContext(ragResponse), [ragResponse])
   const showNoAuthorityNotice = shouldShowNoAuthorityNotice(ragResponse)
   const renderCitationText = (children: ReactNode, scope: string) =>
@@ -758,6 +780,22 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
                 </>
               )}
             </div>
+
+            {/* Save to Matter */}
+            <Button
+              onClick={() => setShowMattersDialog(true)}
+              variant="outline"
+              size="sm"
+              className={cn(
+                'h-9 gap-2 border-[#8A82DC] bg-[#FBFAFF]/90 text-slate-800 shadow-sm shadow-iris-950/8 hover:border-iris-600 hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#171322] dark:text-slate-200 dark:shadow-none dark:hover:border-iris-300/40 dark:hover:bg-iris-300/12 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#241f32]',
+                isMobileHeader && 'h-10 w-10 justify-center gap-0 px-0',
+                isCompactHeader && 'h-9 w-9'
+              )}
+              aria-label="Save report to a matter"
+            >
+              <FolderPlus className="h-4 w-4" aria-hidden="true" />
+              <span className={cn('text-sm', isMobileHeader && 'sr-only')}>Save to matter</span>
+            </Button>
           </div>
         </header>
 
@@ -983,6 +1021,13 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
           </article>
         )}
       </div>
+
+      {/* Matter / project workspace dialog (PRD P1-3) */}
+      <MattersDialog
+        open={showMattersDialog}
+        onOpenChange={setShowMattersDialog}
+        pendingReport={pendingMatterReport}
+      />
     </div>
   )
 }
