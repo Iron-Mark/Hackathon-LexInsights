@@ -29,11 +29,13 @@ jobs:
             echo "SUPABASE_URL / SUPABASE_ANON_KEY secrets not set; skipping keep-alive."
             exit 0
           fi
-          rest=$(curl -sS -o /dev/null -w "%{http_code}" \
-            "$SUPABASE_URL/rest/v1/" \
+          # GoTrue health returns 200 with the apikey header and counts as
+          # project activity, resetting the free-tier inactivity timer.
+          code=$(curl -sS -o /dev/null -w "%{http_code}" \
+            "$SUPABASE_URL/auth/v1/health" \
             -H "apikey: $SUPABASE_ANON_KEY" || echo "000")
-          echo "REST ping status: $rest"
-          auth=$(curl -sS -o /dev/null -w "%{http_code}" \
-            "$SUPABASE_URL/auth/v1/health" || echo "000")
-          echo "Auth health status: $auth"
+          echo "Supabase keep-alive ping status: $code"
+          if [ "$code" != "200" ]; then
+            echo "Warning: expected 200 from /auth/v1/health; the request still reached the project."
+          fi
           echo "Keep-alive ping complete."
