@@ -1,8 +1,18 @@
 import type { NextConfig } from "next";
 import path from "path";
+import { readFileSync } from "fs";
+
+const appVersion =
+  (JSON.parse(readFileSync(path.resolve(__dirname, "package.json"), "utf8")) as { version?: string })
+    .version ?? "0.0.0";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  env: {
+    // Single source of truth for the client-visible app version, used by the
+    // AI-use disclosure export (PRD P0-3 / A.M. No. 25-11-28-SC).
+    NEXT_PUBLIC_APP_VERSION: appVersion,
+  },
   allowedDevOrigins: ["127.0.0.1"],
   turbopack: {
     root: path.resolve(__dirname),

@@ -154,6 +154,8 @@ This is the requirement that turns a regulatory obligation into a feature nobody
 
 *Acceptance:* a compliance report can emit a disclosure artifact stating that AI-assisted research was used, which mode (`local-providerless` or remote), which authorities were cited with their verification dates, and the standing reminder to verify against official sources; the artifact exports with the report; wording is reviewed against the text of A.M. No. 25-11-28-SC.
 
+*Status (shipped 2026-07-08):* the disclosure builder ([ai-use-disclosure.ts](../src/lib/services/compliance-persistence/ai-use-disclosure.ts)) is now appended to every compliance report export (Markdown and DOCX) in [compliance-canvas.tsx](../src/components/chat/compliance-canvas.tsx). It declares the four A.M. No. 25-11-28-SC fields (tool, version, reason, human oversight), plus research mode, whether a generative model was invoked, and the cited authorities. The app version comes from `NEXT_PUBLIC_APP_VERSION` (set in [next.config.ts](../next.config.ts) from `package.json`). The generated wording remains a draft to review against the official issuance before use in a filing.
+
 ### P1-1. PDF export for compliance reports
 
 Reports export to Markdown and DOCX only ([compliance-canvas.tsx](../src/components/chat/compliance-canvas.tsx)). Regulators, NPC filings, & courts expect PDF. This is a documented gap in the product's own output formats, it is low-effort, and it removes a reason for a professional user to route the report through a second tool.
