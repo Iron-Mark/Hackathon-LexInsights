@@ -11,6 +11,12 @@ For the public GitHub project overview, use the repository root [README](../READ
 - [Setup](./guides/SETUP.md) - local installation and environment configuration.
 - [Contributing](./guides/CONTRIBUTING.md) - engineering and documentation rules.
 
+### Product
+
+- [Product Requirements (PRD)](./PRD.md) - product vision, personas, competitive landscape, positioning, and the prioritized P0/P1/P2 requirement backlog.
+- [Competitive Brief](./COMPETITIVE-BRIEF.md) - market analysis, competitor profiles, messaging comparison, positioning gaps, opportunities, and threats.
+- [Competitive Battlecard](./COMPETITIVE-BATTLECARD.md) - one-page sales reference: per-rival pitch, weaknesses, our differentiators, objection handling, and landmines.
+
 ### Reference
 
 - [Architecture](./reference/ARCHITECTURE.md) - source layout, runtime boundaries, and data flow.
