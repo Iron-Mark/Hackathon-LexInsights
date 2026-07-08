@@ -20,12 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${SITE_URL}/chat`,
-      lastModified: RELEASE_LAST_MODIFIED,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
       url: `${SITE_URL}/terms`,
       lastModified: LEGAL_LAST_MODIFIED,
       changeFrequency: 'yearly',
