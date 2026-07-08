@@ -321,6 +321,14 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const [canvasContent, setCanvasContent] = useState('')
   const [canvasFileName, setCanvasFileName] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  // Real operation phase for the compliance file-upload flow (extraction then
+  // draft analysis). Both phases are time-estimated (no backend stage events),
+  // but the phase transition itself is event-driven from the awaited steps.
+  const [processingPhase, setProcessingPhase] = useState<'extraction' | 'research' | null>(null)
+  const [processingStartedAt, setProcessingStartedAt] = useState<number | null>(null)
+  // Start time for the compliance RAG WebSocket flow, used for the elapsed-time
+  // indicator alongside the real backend stage events.
+  const [researchStartedAt, setResearchStartedAt] = useState<number | null>(null)
   const [deepSearchResult, setDeepSearchResult] = useState<DeepSearchResponse | null>(null)
   const [currentQuery, setCurrentQuery] = useState<string>('')
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -880,6 +888,16 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
     setTimeout(() => setIsTransitioning(false), 300)
   }
 
+  // Track the compliance RAG WebSocket flow start time so the progress card can
+  // show an honest elapsed-time indicator next to the real backend stages.
+  useEffect(() => {
+    if (loading && mode === 'compliance') {
+      setResearchStartedAt((previous) => previous ?? Date.now())
+    } else {
+      setResearchStartedAt(null)
+    }
+  }, [loading, mode])
+
   // Show canvas when we have a RAG response in compliance mode
   useEffect(() => {
     if (mode === 'compliance' && currentResponse) {
@@ -981,13 +999,21 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       
       // Show loading state
       setIsProcessing(true)
+      // Phase 1: document text extraction (document-text route, 15s timeout).
+      setProcessingPhase('extraction')
+      setProcessingStartedAt(Date.now())
       setShowCanvas(true)
       setCanvasContent('') // Clear previous content
       setCanvasFileName(file.name)
       setDeepSearchResult(null) // Clear previous deep search
-      
+
       try {
         const extractedDocument = await extractComplianceDocumentText(file)
+
+        // Phase 2: compliance draft analysis (draft-checker, 30s timeout).
+        // Reset the timer so the elapsed indicator reflects this phase.
+        setProcessingPhase('research')
+        setProcessingStartedAt(Date.now())
 
         const response = await checkDraft({
           draft_markdown: extractedDocument.text,
@@ -1015,6 +1041,8 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
         }
       } finally {
         setIsProcessing(false)
+        setProcessingPhase(null)
+        setProcessingStartedAt(null)
       }
     }
 
@@ -1108,9 +1136,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                   transition={{ duration: 0.2 }}
                   className="mb-4 rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/92 p-4 shadow-sm shadow-iris-950/8 dark:border-iris-300/15 dark:bg-[#241f32]"
                 >
-                  <RAGProgress 
-                    events={wsEvents} 
-                    isComplete={false} 
+                  <RAGProgress
+                    events={wsEvents}
+                    isComplete={false}
+                    startedAt={researchStartedAt ?? undefined}
                   />
                 </motion.div>
               )}
@@ -1180,7 +1209,18 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                     <AnimatePresence>
                       {isProcessing && (
                         <div className="mt-4 flex justify-start">
-                          <TypingIndicator />
+                          {processingPhase ? (
+                            <div className="w-full max-w-xl rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/92 p-4 shadow-sm shadow-iris-950/8 dark:border-iris-300/15 dark:bg-[#241f32]">
+                              <RAGProgress
+                                phase={processingPhase}
+                                startedAt={processingStartedAt ?? undefined}
+                                timeoutMs={processingPhase === 'extraction' ? 15000 : 30000}
+                                isComplete={false}
+                              />
+                            </div>
+                          ) : (
+                            <TypingIndicator />
+                          )}
                         </div>
                       )}
                     </AnimatePresence>
