@@ -44,6 +44,7 @@ interface MatterStore {
   removeTag: (matterId: string, tag: string) => void
   deleteMatter: (matterId: string) => void
   addReportToMatter: (matterId: string, report: NewMatterReport) => MatterReport | null
+  addDocumentToMatter: (matterId: string, documentName: string) => void
   removeReportFromMatter: (matterId: string, reportId: string) => void
   getMatter: (matterId: string) => Matter | undefined
   clearPrivateState: () => void
@@ -174,6 +175,25 @@ export const useMatterStore = create<MatterStore>()(
         }))
 
         return savedReport
+      },
+
+      addDocumentToMatter: (matterId: string, documentName: string) => {
+        const trimmed = documentName.trim()
+        if (!trimmed) return
+
+        set((state) => ({
+          matters: state.matters.map((matter) => {
+            if (matter.id !== matterId) return matter
+            if (matter.documentNames.some((existing) => existing.toLowerCase() === trimmed.toLowerCase())) {
+              return matter
+            }
+            return {
+              ...matter,
+              documentNames: [...matter.documentNames, trimmed],
+              updatedAt: new Date().toISOString(),
+            }
+          }),
+        }))
       },
 
       removeReportFromMatter: (matterId: string, reportId: string) => {
