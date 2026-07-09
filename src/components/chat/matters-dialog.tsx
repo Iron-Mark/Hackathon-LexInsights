@@ -1,7 +1,7 @@
 'use client'
 
 import { type FormEvent, useEffect, useMemo, useState } from 'react'
-import { FolderOpen, FolderPlus, FileText, Trash2, Tag, Plus, Check, X } from 'lucide-react'
+import { FolderOpen, FolderPlus, FileText, Files, Trash2, Tag, Plus, Pencil, Check, X } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,7 @@ interface PendingReport {
   title: string
   content: string
   complianceScore?: number | null
+  documentName?: string
 }
 
 interface MattersDialogProps {
@@ -47,13 +48,20 @@ export function MattersDialog({ open, onOpenChange, pendingReport }: MattersDial
   const createMatter = useMatterStore((state) => state.createMatter)
   const deleteMatter = useMatterStore((state) => state.deleteMatter)
   const addReportToMatter = useMatterStore((state) => state.addReportToMatter)
+  const addDocumentToMatter = useMatterStore((state) => state.addDocumentToMatter)
   const removeReportFromMatter = useMatterStore((state) => state.removeReportFromMatter)
+  const renameMatter = useMatterStore((state) => state.renameMatter)
+  const addTag = useMatterStore((state) => state.addTag)
+  const removeTag = useMatterStore((state) => state.removeTag)
 
   const [selectedMatterId, setSelectedMatterId] = useState<string | null>(null)
   const [newName, setNewName] = useState('')
   const [newTags, setNewTags] = useState('')
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
   const [savedMatterIds, setSavedMatterIds] = useState<string[]>([])
+  const [isRenaming, setIsRenaming] = useState(false)
+  const [renameValue, setRenameValue] = useState('')
+  const [newTagInput, setNewTagInput] = useState('')
 
   const selectedMatter = useMemo(
     () => matters.find((matter) => matter.id === selectedMatterId) ?? null,
@@ -79,8 +87,17 @@ export function MattersDialog({ open, onOpenChange, pendingReport }: MattersDial
       setNewTags('')
       setStatusMessage(null)
       setSavedMatterIds([])
+      setIsRenaming(false)
+      setRenameValue('')
+      setNewTagInput('')
     }
   }, [open])
+
+  // Reset per-matter edit UI when the selection changes.
+  useEffect(() => {
+    setIsRenaming(false)
+    setNewTagInput('')
+  }, [selectedMatterId])
 
   const handleCreateMatter = (event: FormEvent) => {
     event.preventDefault()
@@ -103,10 +120,36 @@ export function MattersDialog({ open, onOpenChange, pendingReport }: MattersDial
       complianceScore: pendingReport.complianceScore ?? null,
     })
     if (saved) {
+      if (pendingReport.documentName) {
+        addDocumentToMatter(matterId, pendingReport.documentName)
+      }
       setSelectedMatterId(matterId)
       setSavedMatterIds((prev) => (prev.includes(matterId) ? prev : [...prev, matterId]))
       setStatusMessage(`Saved report to "${matter?.name ?? 'matter'}".`)
     }
+  }
+
+  const startRename = () => {
+    if (!selectedMatter) return
+    setRenameValue(selectedMatter.name)
+    setIsRenaming(true)
+  }
+
+  const submitRename = (event: FormEvent) => {
+    event.preventDefault()
+    if (!selectedMatter) return
+    const value = renameValue.trim()
+    if (value) renameMatter(selectedMatter.id, value)
+    setIsRenaming(false)
+  }
+
+  const handleAddTag = (event: FormEvent) => {
+    event.preventDefault()
+    if (!selectedMatter) return
+    const value = newTagInput.trim()
+    if (!value) return
+    addTag(selectedMatter.id, value)
+    setNewTagInput('')
   }
 
   const scorePillClassName = (score: number) => {
@@ -237,10 +280,48 @@ export function MattersDialog({ open, onOpenChange, pendingReport }: MattersDial
             {selectedMatter ? (
               <div className="space-y-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <h3 className="break-words text-base font-bold text-slate-950 dark:text-slate-100">
-                      {selectedMatter.name}
-                    </h3>
+                  <div className="min-w-0 flex-1">
+                    {isRenaming ? (
+                      <form onSubmit={submitRename} className="flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={renameValue}
+                          onChange={(event) => setRenameValue(event.target.value)}
+                          aria-label="Matter name"
+                          autoFocus
+                          className="min-h-10 w-full min-w-0 rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-3 text-sm font-semibold text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-iris-500 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100"
+                        />
+                        <button
+                          type="submit"
+                          aria-label="Save name"
+                          className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-primary text-white transition-colors hover:bg-iris-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500"
+                        >
+                          <Check className="h-4 w-4" aria-hidden="true" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsRenaming(false)}
+                          aria-label="Cancel rename"
+                          className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-iris-300/10"
+                        >
+                          <X className="h-4 w-4" aria-hidden="true" />
+                        </button>
+                      </form>
+                    ) : (
+                      <div className="flex items-start gap-2">
+                        <h3 className="min-w-0 break-words text-base font-bold text-slate-950 dark:text-slate-100">
+                          {selectedMatter.name}
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={startRename}
+                          aria-label="Rename matter"
+                          className="flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-[#EFECFF] hover:text-iris-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 dark:text-slate-400 dark:hover:bg-iris-300/10 dark:hover:text-iris-100"
+                        >
+                          <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                        </button>
+                      </div>
+                    )}
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
                       Updated {formatSavedAt(selectedMatter.updatedAt)}
                     </p>
@@ -297,12 +378,63 @@ export function MattersDialog({ open, onOpenChange, pendingReport }: MattersDial
                       {selectedMatter.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center rounded-full bg-[#EFECFF] px-2.5 py-1 text-xs font-semibold text-iris-800 dark:bg-iris-300/12 dark:text-iris-200"
+                          className="inline-flex items-center gap-1 rounded-full bg-[#EFECFF] py-1 pl-2.5 pr-1 text-xs font-semibold text-iris-800 dark:bg-iris-300/12 dark:text-iris-200"
                         >
                           {tag}
+                          <button
+                            type="button"
+                            onClick={() => removeTag(selectedMatter.id, tag)}
+                            aria-label={`Remove tag ${tag}`}
+                            className="flex h-4 w-4 cursor-pointer items-center justify-center rounded-full text-iris-700 transition-colors hover:bg-iris-200 hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 dark:text-iris-200 dark:hover:bg-iris-300/25"
+                          >
+                            <X className="h-3 w-3" aria-hidden="true" />
+                          </button>
                         </span>
                       ))}
                     </div>
+                  )}
+                  <form onSubmit={handleAddTag} className="mt-2 flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={newTagInput}
+                      onChange={(event) => setNewTagInput(event.target.value)}
+                      placeholder="Add a tag"
+                      aria-label="Add a tag"
+                      className="min-h-10 w-full min-w-0 rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-3 text-sm text-slate-900 focus:border-primary focus:outline-none focus:ring-2 focus:ring-iris-500 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-100"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!newTagInput.trim()}
+                      aria-label="Add tag"
+                      className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-[#8A82DC] text-iris-700 transition-colors hover:bg-[#EFECFF] hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-iris-300/15 dark:text-iris-200 dark:hover:bg-iris-300/10"
+                    >
+                      <Plus className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  </form>
+                </div>
+
+                {/* Documents */}
+                <div>
+                  <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold uppercase text-slate-600 dark:text-slate-500">
+                    <Files className="h-3.5 w-3.5" aria-hidden="true" />
+                    Documents
+                  </p>
+                  {selectedMatter.documentNames.length === 0 ? (
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      No documents recorded yet. Saving a report records its source document here.
+                    </p>
+                  ) : (
+                    <ul className="flex flex-wrap gap-2">
+                      {selectedMatter.documentNames.map((doc) => (
+                        <li
+                          key={doc}
+                          className="inline-flex max-w-full items-center gap-1.5 rounded-lg border border-[#8A82DC] bg-[#FBFAFF] px-2.5 py-1 text-xs text-slate-700 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-slate-300"
+                        >
+                          <FileText className="h-3.5 w-3.5 shrink-0 text-iris-700 dark:text-iris-200" aria-hidden="true" />
+                          <span className="truncate">{doc}</span>
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </div>
 

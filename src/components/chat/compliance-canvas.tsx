@@ -213,6 +213,8 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
       title: fileName || 'Compliance report',
       content: savedContent,
       complianceScore,
+      // Record the analyzed document name against the matter (PRD P1-3 follow-up).
+      documentName: fileName,
     }
   }, [content, currentVersion, fileName, ragResponse])
 
