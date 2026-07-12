@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.dev https://challenges.cloudflare.com",
               "connect-src 'self' https: wss:",
-              "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.dev https://challenges.cloudflare.com",
+              "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.dev https://challenges.cloudflare.com https://www.youtube-nocookie.com",
               "form-action 'self'",
               "upgrade-insecure-requests",
             ].join('; '),

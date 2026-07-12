@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowLeft, ExternalLink, Github, PlayCircle, Sparkles } from 'lucide-react'
 
 import { EventGallery } from '@/components/about/event-gallery'
+import { YouTubeEmbed } from '@/components/about/youtube-embed'
 import {
   buildBreadcrumbStructuredData,
   buildEventMediaStructuredData,
@@ -10,6 +11,7 @@ import {
   buildProjectStructuredData,
   COVERAGE_FACTS,
   CURRENT_APP_URL,
+  DEMO_VIDEO_ID,
   DEMO_VIDEO_URL,
   FAQ_ITEMS,
   KEY_STATUTES,
@@ -223,16 +225,23 @@ export default function AboutPage() {
                 pitched. Tap any photo to open it full-screen.
               </p>
               <EventGallery />
-              <a
-                href={DEMO_VIDEO_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-iris-700 shadow-sm transition-colors hover:border-iris-300 hover:bg-iris-50 hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
-              >
-                <PlayCircle className="h-4 w-4" aria-hidden="true" />
-                Watch the CodeKada 2025 demo
-                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-              </a>
+              <div className="space-y-3">
+                <YouTubeEmbed
+                  videoId={DEMO_VIDEO_ID}
+                  title="LexInsights pitch and demo at CodeKada 2025"
+                  poster="/gallery/codekada-01.jpg"
+                />
+                <a
+                  href={DEMO_VIDEO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-iris-700 shadow-sm transition-colors hover:border-iris-300 hover:bg-iris-50 hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+                >
+                  <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                  Watch on YouTube
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
+              </div>
             </div>
           </section>
 

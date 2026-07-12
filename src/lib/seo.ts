@@ -14,9 +14,12 @@ export const LEGACY_SHOWCASE_URL = 'https://lexinsights.vercel.app'
 export const REPOSITORY_URL = 'https://github.com/Iron-Mark/Hackathon-LexInsights'
 export const PORTFOLIO_URL = 'https://www.marksiazon.dev'
 export const PORTFOLIO_CASE_STUDY_URL = 'https://www.marksiazon.dev/projects/lexinsights'
-// CodeKada 2025 pitch/demo video (public Google Drive). The Facebook event link
-// does not host the recording, so this is the direct link to it.
-export const DEMO_VIDEO_URL = 'https://drive.google.com/file/d/1Q85Q_VXqMroLvs3M9T_IRaqhEJk1Dxko/view'
+// CodeKada 2025 pitch/demo video, hosted on YouTube. The Facebook event link
+// does not host the recording, so these are the canonical links to it.
+export const DEMO_VIDEO_ID = 'Mqj4ABPXUS8'
+export const DEMO_VIDEO_URL = `https://www.youtube.com/watch?v=${DEMO_VIDEO_ID}`
+export const DEMO_VIDEO_EMBED_URL = `https://www.youtube.com/embed/${DEMO_VIDEO_ID}`
+export const DEMO_VIDEO_THUMBNAIL_URL = `https://i.ytimg.com/vi/${DEMO_VIDEO_ID}/maxresdefault.jpg`
 
 export const PHILIPPINE_COMPLIANCE_TOPICS = [
   'data privacy',
@@ -297,9 +300,6 @@ export function buildProjectStructuredData() {
 }
 
 export function buildEventMediaStructuredData() {
-  // Google Drive's /view link is a landing page; /preview is the embeddable player.
-  const demoVideoEmbedUrl = DEMO_VIDEO_URL.replace(/\/view.*$/, '/preview')
-
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -308,10 +308,10 @@ export function buildEventMediaStructuredData() {
         '@id': `${SITE_URL}/#demo-video`,
         name: DEMO_VIDEO.name,
         description: DEMO_VIDEO.description,
-        thumbnailUrl: [absoluteUrl(DEMO_VIDEO.thumbnail)],
+        thumbnailUrl: [DEMO_VIDEO_THUMBNAIL_URL, absoluteUrl(DEMO_VIDEO.thumbnail)],
         uploadDate: DEMO_VIDEO.uploadDate,
         url: DEMO_VIDEO_URL,
-        embedUrl: demoVideoEmbedUrl,
+        embedUrl: DEMO_VIDEO_EMBED_URL,
         inLanguage: 'en-PH',
         publisher: {
           '@id': `${SITE_URL}/#organization`,
