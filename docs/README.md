@@ -31,6 +31,7 @@ For the public GitHub project overview, use the repository root [README](../READ
 ### Operations
 
 - [Testing](./operations/TESTING.md) - local and CI quality gates.
+- [Manual QA Checklist](./operations/MANUAL-QA-CHECKLIST.md) - authenticated click-through for the UI surfaces added in the 2026-07-08 build cycle.
 - [Deployment](./operations/DEPLOYMENT.md) - Vercel deployment and production checks.
 - [RAG QA](./operations/RAG-QA.md) - source freshness, answer-quality, and citation trust gates.
 - [Incident Response](./operations/INCIDENT-RESPONSE.md) - security, privacy, availability, and data-handling incident workflow.
