@@ -12,6 +12,9 @@ export const LEGACY_SHOWCASE_URL = 'https://lexinsights.vercel.app'
 export const REPOSITORY_URL = 'https://github.com/Iron-Mark/Hackathon-LexInsights'
 export const PORTFOLIO_URL = 'https://www.marksiazon.dev'
 export const PORTFOLIO_CASE_STUDY_URL = 'https://www.marksiazon.dev/projects/lexinsights'
+// CodeKada 2025 pitch/demo video (public Google Drive). The Facebook event link
+// does not host the recording, so this is the direct link to it.
+export const DEMO_VIDEO_URL = 'https://drive.google.com/file/d/1Q85Q_VXqMroLvs3M9T_IRaqhEJk1Dxko/view'
 
 export const PHILIPPINE_COMPLIANCE_TOPICS = [
   'data privacy',

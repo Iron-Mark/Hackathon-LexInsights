@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {
+  DEMO_VIDEO_URL,
   LEGACY_SHOWCASE_URL,
   PORTFOLIO_CASE_STUDY_URL,
   REPOSITORY_URL,
@@ -71,6 +72,7 @@ const MAINTAINER_FACTS = [
 const PUBLIC_LINKS = [
   { label: 'GitHub repository', href: REPOSITORY_URL },
   { label: 'Read case study', href: PORTFOLIO_CASE_STUDY_URL },
+  { label: 'Watch demo video', href: DEMO_VIDEO_URL },
   { label: 'Legacy showcase', href: LEGACY_SHOWCASE_URL },
 ]
 

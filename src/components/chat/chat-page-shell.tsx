@@ -104,9 +104,9 @@ export function ChatPageShell({ chatId }: ChatPageShellProps) {
               <Menu className="h-5 w-5" aria-hidden="true" />
             </Button>
             {!isOpen && (
-              <div className="rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/90 px-3 py-1.5 shadow-md shadow-iris-950/12 backdrop-blur dark:border-iris-300/15 dark:bg-[#1b1728]/90 dark:shadow-none">
-                <p className="text-sm font-extrabold leading-4 text-slate-950 dark:text-white">LexInsights</p>
-                <p className="hidden text-[10px] font-semibold leading-3 text-slate-700 min-[380px]:block dark:text-slate-400">
+              <div className="px-1">
+                <p className="text-sm font-extrabold leading-4 text-slate-950 drop-shadow-sm dark:text-white">LexInsights</p>
+                <p className="hidden text-[10px] font-semibold leading-3 text-slate-700 drop-shadow-sm min-[380px]:block dark:text-slate-400">
                   Legal compliance assistant
                 </p>
               </div>

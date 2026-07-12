@@ -312,7 +312,7 @@ export function ResourcesDialog({ open, onOpenChange }: ResourcesDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex max-h-[92dvh] max-w-[calc(100vw-1rem)] flex-col gap-0 overflow-hidden border-[#8A82DC] bg-[#FBFAFF] p-0 dark:border-iris-300/15 dark:bg-[#171322] sm:max-h-[88dvh] sm:max-w-2xl lg:max-w-[min(calc(100vw-2rem),60rem)] xl:max-w-6xl">
         <DialogHeader className="shrink-0 border-b border-[#8A82DC] bg-[#F8F6FF] px-4 py-4 dark:border-iris-300/15 dark:bg-[#1a1625] sm:px-7 sm:py-5">
-          <div className="flex flex-col gap-4 pr-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:pr-8">
             <div className="grid min-w-0 grid-cols-[2.5rem_1fr] items-start gap-3 sm:grid-cols-[2.75rem_1fr]">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-iris-100 text-iris-700 dark:bg-iris-400/15 dark:text-iris-200 sm:h-11 sm:w-11">
                 <BookOpen className="h-5 w-5" aria-hidden="true" />
