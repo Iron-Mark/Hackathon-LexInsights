@@ -1,7 +1,7 @@
 'use client'
 
 import type { LucideIcon } from 'lucide-react'
-import { BrainCircuit, ChevronDown, ExternalLink, FileCheck2, GitBranch, Palette, ServerCog, Sparkles, UsersRound, Wrench } from 'lucide-react'
+import { BrainCircuit, ChevronDown, ExternalLink, FileCheck2, GitBranch, Images, Palette, ServerCog, Sparkles, UsersRound, Wrench } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,7 @@ import {
   PORTFOLIO_CASE_STUDY_URL,
   REPOSITORY_URL,
 } from '@/lib/seo'
+import { EventGallery } from '@/components/about/event-gallery'
 
 interface AttributionDialogProps {
   open: boolean
@@ -219,6 +220,19 @@ export function AttributionDialog({ open, onOpenChange }: AttributionDialogProps
             <p className="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
               The repository shows implementation context; the legacy showcase is retained as a historical reference.
             </p>
+          </section>
+
+          <section className="mt-5 border-t border-slate-200 pt-5 dark:border-iris-300/15" aria-labelledby="attribution-gallery">
+            <div className="flex items-center gap-2">
+              <Images className="h-4 w-4 text-iris-600 dark:text-iris-200" aria-hidden="true" />
+              <h3 id="attribution-gallery" className="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                Event Gallery
+              </h3>
+            </div>
+            <p className="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">
+              Moments from CodeKada 2025 on 8 November. Tap any photo to open it full-screen.
+            </p>
+            <EventGallery />
           </section>
         </div>
       </DialogContent>
