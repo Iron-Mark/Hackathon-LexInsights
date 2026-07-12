@@ -177,7 +177,7 @@ export function ChatList() {
   if (chats.length === 0) {
     return (
       <div className="flex flex-1 flex-col px-4 py-5">
-        <div className="rounded-lg border border-[#8A82DC] bg-[#FBFAFF]/92 p-4 shadow-sm shadow-iris-950/8 dark:border-iris-300/15 dark:bg-[#241f32] dark:shadow-none">
+        <div className="my-auto rounded-lg bg-[#FBFAFF]/92 p-4 shadow-sm shadow-iris-950/8 outline-1 outline-dashed outline-offset-[-4px] outline-slate-400/40 dark:bg-[#241f32] dark:shadow-none dark:outline-white/10">
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#EFECFF] text-iris-800 dark:bg-iris-400/15 dark:text-iris-200">
               <MessageSquarePlus className="h-5 w-5" aria-hidden="true" />
@@ -205,14 +205,7 @@ export function ChatList() {
           </button>
         </div>
 
-        <div className="mt-4 rounded-lg border border-dashed border-[#8A82DC] bg-[#F8F6FF]/70 px-4 py-3 text-left dark:border-iris-300/15 dark:bg-[#171322]/40">
-          <p className="text-[11px] font-semibold uppercase text-iris-800 dark:text-slate-500">Chat history</p>
-          <p className="mt-1 text-xs leading-5 text-slate-700 dark:text-slate-400">
-            Recent conversations will be listed here for quick return.
-          </p>
-        </div>
-
-        <div className="mt-auto pt-4">
+        <div className="pt-4">
           <SidebarLegalDisclaimer />
           <MaintainerCredit />
         </div>
