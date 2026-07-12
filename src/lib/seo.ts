@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import { DEMO_VIDEO, EVENT_GALLERY } from './event-media'
+
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://lexiph.vercel.app'
 export const SITE_NAME = 'LexInsights'
 export const SITE_TITLE = 'LexInsights - Philippine Legal Compliance Assistant'
@@ -289,6 +291,56 @@ export function buildProjectStructuredData() {
             sameAs: 'https://ph.linkedin.com/in/ashlyn-torres-120354329',
           },
         ],
+      },
+    ],
+  }
+}
+
+export function buildEventMediaStructuredData() {
+  // Google Drive's /view link is a landing page; /preview is the embeddable player.
+  const demoVideoEmbedUrl = DEMO_VIDEO_URL.replace(/\/view.*$/, '/preview')
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'VideoObject',
+        '@id': `${SITE_URL}/#demo-video`,
+        name: DEMO_VIDEO.name,
+        description: DEMO_VIDEO.description,
+        thumbnailUrl: [absoluteUrl(DEMO_VIDEO.thumbnail)],
+        uploadDate: DEMO_VIDEO.uploadDate,
+        url: DEMO_VIDEO_URL,
+        embedUrl: demoVideoEmbedUrl,
+        inLanguage: 'en-PH',
+        publisher: {
+          '@id': `${SITE_URL}/#organization`,
+        },
+        about: {
+          '@id': `${SITE_URL}/#app`,
+        },
+      },
+      {
+        '@type': 'ImageGallery',
+        '@id': `${SITE_URL}/#event-gallery`,
+        name: 'LexInsights at CodeKada 2025',
+        description:
+          'Event photos of the LexInsights team building and pitching their Philippine legal compliance assistant at DevKada CodeKada 2025.',
+        inLanguage: 'en-PH',
+        isPartOf: {
+          '@id': `${SITE_URL}/#website`,
+        },
+        about: {
+          '@id': `${SITE_URL}/#app`,
+        },
+        image: EVENT_GALLERY.map((img) => ({
+          '@type': 'ImageObject',
+          contentUrl: absoluteUrl(img.src),
+          url: absoluteUrl(img.src),
+          caption: img.caption,
+          description: img.alt,
+          creditText: SITE_NAME,
+        })),
       },
     ],
   }

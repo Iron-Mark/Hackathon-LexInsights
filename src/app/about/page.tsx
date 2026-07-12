@@ -1,13 +1,16 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, ExternalLink, Github, Sparkles } from 'lucide-react'
+import { ArrowLeft, ExternalLink, Github, PlayCircle, Sparkles } from 'lucide-react'
 
+import { EventGallery } from '@/components/about/event-gallery'
 import {
   buildBreadcrumbStructuredData,
+  buildEventMediaStructuredData,
   buildFaqStructuredData,
   buildProjectStructuredData,
   COVERAGE_FACTS,
   CURRENT_APP_URL,
+  DEMO_VIDEO_URL,
   FAQ_ITEMS,
   KEY_STATUTES,
   LEGACY_SHOWCASE_URL,
@@ -104,6 +107,10 @@ export default function AboutPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqStructuredData()) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildEventMediaStructuredData()) }}
       />
       <main className="min-h-dvh bg-[linear-gradient(180deg,#f7f6ff_0%,#ffffff_54%,#f8fafc_100%)] px-4 py-6 text-slate-950 dark:bg-[linear-gradient(180deg,#211a35_0%,#171322_55%,#120d1f_100%)] dark:text-slate-100 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
@@ -203,6 +210,29 @@ export default function AboutPage() {
                   </span>
                 </a>
               ))}
+            </div>
+          </section>
+
+          <section className="grid gap-6 border-t border-slate-200 py-8 dark:border-iris-300/15 lg:grid-cols-[14rem_1fr]">
+            <h2 className="text-sm font-extrabold uppercase text-slate-500 dark:text-slate-400">
+              Media
+            </h2>
+            <div className="space-y-5">
+              <p className="max-w-3xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+                Photos from DevKada CodeKada 2025 on 8 November, where LexInsights was built and
+                pitched. Tap any photo to open it full-screen.
+              </p>
+              <EventGallery />
+              <a
+                href={DEMO_VIDEO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-iris-700 shadow-sm transition-colors hover:border-iris-300 hover:bg-iris-50 hover:text-iris-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-iris-500 focus-visible:ring-offset-2 dark:border-iris-300/15 dark:bg-[#241f32] dark:text-iris-200 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10 dark:hover:text-iris-100 dark:focus-visible:ring-offset-[#171322]"
+              >
+                <PlayCircle className="h-4 w-4" aria-hidden="true" />
+                Watch the CodeKada 2025 demo
+                <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
             </div>
           </section>
 
