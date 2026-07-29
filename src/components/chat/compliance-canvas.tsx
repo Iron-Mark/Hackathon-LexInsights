@@ -1,14 +1,19 @@
 'use client'
 
-import { useState, useEffect, useMemo, useRef, type ReactNode } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback, type ReactNode } from 'react'
 import { FileText, Download, Edit3, Eye, History, Save, Search, FileCheck, ChevronDown, Sparkles, CheckCircle2, AlertTriangle, X, XCircle, FolderPlus, ListChecks } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { useComplianceStore } from '@/lib/store/compliance-store'
+import { useComplianceStore, type ComplianceVersion } from '@/lib/store/compliance-store'
+import { syncSavedComplianceVersion } from '@/lib/store/compliance-server-sync'
 import { VersionHistorySidebar } from './version-history-sidebar'
 import { MattersDialog } from './matters-dialog'
 import { AIDisclaimer, AIDisclaimerBadge } from './ai-disclaimer'
 import { cn } from '@/lib/utils'
-import { type RAGResponse } from '@/lib/services/rag-api'
+import { type RAGResponse, type DraftAnalysis } from '@/lib/services/rag-api'
+import {
+  extractFindingSeeds,
+  extractFindingSeedsFromMarkdown,
+} from '@/lib/services/compliance-persistence/findings-extractor'
 import { exportToDocx } from '@/lib/utils/docx-export'
 import { exportToPdf } from '@/lib/utils/pdf-export'
 import { formatReportMarkdownForPreview } from '@/lib/utils/practical-checklist'
@@ -31,12 +36,24 @@ interface ComplianceCanvasProps {
   content: string
   fileName?: string
   ragResponse?: RAGResponse
+  /**
+   * Structured draft-checker analysis backing the report, when available.
+   * Used for exact findings persistence (PRD P0-1) instead of re-parsing the
+   * rendered markdown.
+   */
+  draftAnalysis?: DraftAnalysis | null
   searchQueries?: string[]
   documentCount?: number
   deepSearchResult?: DeepSearchResponse | null
 }
 
-export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries, documentCount, deepSearchResult: externalDeepSearchResult }: ComplianceCanvasProps) {
+/** Read the score from the "Compliance Score: NN%" line in a report body. */
+function parseComplianceScore(markdown: string): number | null {
+  const scoreMatch = markdown.match(/Compliance Score:\s*(\d+)\s*%/i)
+  return scoreMatch ? parseInt(scoreMatch[1], 10) : null
+}
+
+export function ComplianceCanvas({ content, fileName, ragResponse, draftAnalysis, searchQueries, documentCount, deepSearchResult: externalDeepSearchResult }: ComplianceCanvasProps) {
   const { 
     isEditMode, 
     toggleEditMode, 
@@ -56,6 +73,49 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   const [showFrameworkChecklist, setShowFrameworkChecklist] = useState(false)
   const currentVersion = getCurrentVersion()
   const canvasArticleRef = useRef<HTMLElement>(null)
+
+  // Latest render context for server-side persistence (PRD P0-1), kept in a
+  // ref so the sync callback stays stable and the initial-version effect's
+  // dependency list stays unchanged. Assigned below, after frameworkTemplate.
+  const serverSyncContextRef = useRef<{
+    fileName?: string
+    draftAnalysis: DraftAnalysis | null
+    providerMode: RAGResponse['provider_mode']
+    frameworkId: string | null
+  }>({ fileName: undefined, draftAnalysis: null, providerMode: undefined, frameworkId: null })
+
+  // Mirror a saved version to Supabase (compliance_reports / report_versions /
+  // report_findings). Fire-and-forget: guests are a no-op and failures never
+  // block the local IndexedDB save. Structured findings come from the draft
+  // analysis when available; edited saves fall back to markdown parsing.
+  const syncVersionToServer = useCallback(
+    (version: ComplianceVersion, source: 'analysis' | 'edit') => {
+      const context = serverSyncContextRef.current
+      const findingSeeds =
+        source === 'analysis'
+          ? extractFindingSeeds({ analysis: context.draftAnalysis, markdown: version.content })
+          : extractFindingSeedsFromMarkdown(version.content)
+      const complianceScore =
+        source === 'analysis' && context.draftAnalysis
+          ? context.draftAnalysis.compliance_score
+          : parseComplianceScore(version.content)
+
+      void syncSavedComplianceVersion({
+        clientVersionId: version.id,
+        content: version.content,
+        label: version.label,
+        title: context.fileName || 'Compliance report',
+        complianceScore,
+        metadata: {
+          fileName: context.fileName ?? null,
+          providerMode: context.providerMode ?? 'local-providerless',
+          matchedFrameworkId: context.frameworkId,
+        },
+        findingSeeds,
+      })
+    },
+    []
+  )
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 767px)')
@@ -107,16 +167,46 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
     }
   }, [externalDeepSearchResult])
 
+  // Guards auto-versioning: each distinct analysis content is versioned once,
+  // which also keeps React StrictMode's double-invoked effect from adding a
+  // duplicate version (and a duplicate server report) in dev.
+  const autoVersionedContentRef = useRef<string | null>(null)
+  const hasFreshAnalysis = Boolean(draftAnalysis)
+
   // Initialize with current version or new content
   useEffect(() => {
+    if (content && !currentVersion) {
+      setEditContent(content)
+      if (autoVersionedContentRef.current !== content) {
+        autoVersionedContentRef.current = content
+        // Add initial version and mirror it server-side (PRD P0-1).
+        const initialVersion = addVersion(content, 'Initial Report')
+        syncVersionToServer(initialVersion, 'analysis')
+      }
+      return
+    }
+
+    if (
+      content &&
+      currentVersion &&
+      hasFreshAnalysis &&
+      content !== currentVersion.content &&
+      autoVersionedContentRef.current !== content
+    ) {
+      // A fresh document analysis arrived while version history already
+      // exists (e.g. after sign-in hydration restored an older report).
+      // Version it too, so the new analysis isn't silently lost on reload.
+      autoVersionedContentRef.current = content
+      setEditContent(content)
+      const analysisVersion = addVersion(content, 'New Analysis')
+      syncVersionToServer(analysisVersion, 'analysis')
+      return
+    }
+
     if (currentVersion) {
       setEditContent(currentVersion.content)
-    } else if (content) {
-      setEditContent(content)
-      // Add initial version
-      addVersion(content, 'Initial Report')
     }
-  }, [content, currentVersion, addVersion])
+  }, [content, currentVersion, addVersion, syncVersionToServer, hasFreshAnalysis])
 
   // Update edit content when version changes
   useEffect(() => {
@@ -186,8 +276,11 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   const handleSave = () => {
     if (editContent !== currentVersion?.content) {
       const versionLabel = `Version ${useComplianceStore.getState().versions.length + 1}`
-      addVersion(editContent, versionLabel)
-      
+      const savedVersion = addVersion(editContent, versionLabel)
+      // Mirror the edited save server-side (PRD P0-1); the markdown is the
+      // only findings source for a hand-edited version.
+      syncVersionToServer(savedVersion, 'edit')
+
       // Announce to screen readers
       announceToAssistiveTechnology('Changes saved as new version')
     }
@@ -202,11 +295,8 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
   // falling back to the RAG confidence score when present.
   const pendingMatterReport = useMemo(() => {
     const savedContent = currentVersion?.content || content
-    const scoreMatch = savedContent.match(/Compliance Score:\s*(\d+)\s*%/i)
-    let complianceScore: number | null = null
-    if (scoreMatch) {
-      complianceScore = parseInt(scoreMatch[1], 10)
-    } else if (typeof ragResponse?.confidence_score === 'number') {
+    let complianceScore: number | null = parseComplianceScore(savedContent)
+    if (complianceScore === null && typeof ragResponse?.confidence_score === 'number') {
       complianceScore = Math.round(ragResponse.confidence_score * 100)
     }
     return {
@@ -233,6 +323,16 @@ export function ComplianceCanvas({ content, fileName, ragResponse, searchQueries
     })
     return match ? getFrameworkTemplate(match.framework) : null
   }, [content, currentVersion, ragResponse, searchQueries])
+
+  // Keep the server-sync context at this render's values (PRD P0-1). The
+  // framework id prefers the template match, which already honors the exact
+  // matched_framework_id from the local engine (PRD P2-2 follow-up).
+  serverSyncContextRef.current = {
+    fileName,
+    draftAnalysis: draftAnalysis ?? null,
+    providerMode: ragResponse?.provider_mode,
+    frameworkId: frameworkTemplate?.id ?? ragResponse?.matched_framework_id ?? null,
+  }
   const renderCitationText = (children: ReactNode, scope: string) =>
     renderLegalCitationNodes(children, citationContext, `compliance-canvas-${scope}`)
 

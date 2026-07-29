@@ -49,7 +49,7 @@ try {
     mapReportRow,
     mapVersionRow,
     mapFindingRow,
-    createComplianceReportRepository,
+    UnwiredComplianceReportRepository,
     CompliancePersistenceNotWiredError,
   } = repository.module
 
@@ -135,7 +135,10 @@ try {
   assert.equal(coercedFinding.severity, 'amber', 'Unknown severity should coerce to amber')
 
   // --- Unwired repository throws loudly, never silently drops data ---
-  const repo = createComplianceReportRepository()
+  // (The environment-aware factory lives in factory.ts, which imports the
+  // Supabase implementation and so cannot load under this standalone
+  // transpile loader; the stub is what the factory returns off-browser.)
+  const repo = new UnwiredComplianceReportRepository()
   assert.throws(
     () => repo.createReport({}),
     CompliancePersistenceNotWiredError,
@@ -143,6 +146,8 @@ try {
   )
   assert.throws(() => repo.appendVersion({}), CompliancePersistenceNotWiredError)
   assert.throws(() => repo.listFindings('r1'), CompliancePersistenceNotWiredError)
+  assert.throws(() => repo.updateReport('r1', {}), CompliancePersistenceNotWiredError)
+  assert.throws(() => repo.deleteVersion('v1'), CompliancePersistenceNotWiredError)
 
   // --- AI-use disclosure (P0-3) ---
   const { buildAiUseDisclosure, renderAiUseDisclosureMarkdown } = disclosure.module

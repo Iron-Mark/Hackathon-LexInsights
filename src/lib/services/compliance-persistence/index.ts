@@ -1,10 +1,11 @@
 /**
  * Compliance report persistence (PRD P0-1).
  *
- * Scaffold barrel. Defines the server-side persistence contract for compliance
- * reports, versions, and normalized findings. Not yet wired into the app; the
- * factory returns a stub that throws. See database/migrations/
- * 0001_compliance_report_persistence.sql for the matching schema.
+ * Barrel for the server-side persistence contract, the Supabase
+ * implementation, the findings extractor, and the dual-write sync core.
+ * Wired into the app through src/lib/store/compliance-server-sync.ts. See
+ * database/migrations/0001_compliance_report_persistence.sql for the matching
+ * schema.
  */
 
 export type {
@@ -15,6 +16,7 @@ export type {
   NewReportVersion,
   ReportFindingRecord,
   ReportVersionRecord,
+  UpdateComplianceReportPatch,
 } from './types'
 
 export type {
@@ -27,14 +29,37 @@ export type {
 export {
   CompliancePersistenceNotWiredError,
   UnwiredComplianceReportRepository,
-  createComplianceReportRepository,
   isFindingSeverity,
   mapFindingRow,
   mapReportRow,
   mapVersionRow,
 } from './repository'
 
+export { createComplianceReportRepository } from './factory'
+
 export { SupabaseComplianceReportRepository } from './supabase-repository'
+
+export type {
+  DraftAnalysisLike,
+  DraftFindingLike,
+  FindingSeed,
+  FindingSeedSeverity,
+} from './findings-extractor'
+
+export {
+  extractFindingSeeds,
+  extractFindingSeedsFromAnalysis,
+  extractFindingSeedsFromMarkdown,
+} from './findings-extractor'
+
+export type {
+  ComplianceSyncState,
+  HydrationResult,
+  VersionSyncInput,
+  VersionSyncResult,
+} from './sync'
+
+export { performHydration, performVersionDelete, performVersionSync } from './sync'
 
 export type {
   AiUseDisclosure,
