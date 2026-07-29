@@ -91,6 +91,16 @@ export interface RAGResponse {
   fallback_used?: boolean
   fallback_reason?: string
   confidence_score?: number
+  /**
+   * Strongest bundled compliance-framework id detected by the local research
+   * engine (PRD P2-2 follow-up), matching the framework rendered in the
+   * report body. Absent on remote-RAG and older cached/persisted responses;
+   * consumers must treat absence as "fall back to fuzzy inference", never as
+   * "no framework".
+   */
+  matched_framework_id?: string
+  /** All detected framework ids, strongest first (at most two today). */
+  matched_framework_ids?: string[]
   retrieval_metadata?: {
     result_limit: number
     total_candidates: number

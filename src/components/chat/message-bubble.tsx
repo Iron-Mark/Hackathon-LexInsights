@@ -31,6 +31,17 @@ function stripMarkdownNode<T extends { node?: unknown }>(props: T): Omit<T, 'nod
   return domProps
 }
 
+/**
+ * Stable identity for a markdown element derived from its source position.
+ * Unlike a render-order counter (which mutates during render and drifts on
+ * partial re-renders), the position is fixed by the message content itself.
+ */
+function markdownNodeKey(node: unknown): string {
+  const start = (node as { position?: { start?: { line?: number; column?: number; offset?: number } } } | undefined)
+    ?.position?.start
+  return `${start?.line ?? 0}-${start?.column ?? 0}-${start?.offset ?? 0}`
+}
+
 function getRevealStep(contentLength: number) {
   if (contentLength <= 240) {
     return 2
@@ -233,7 +244,6 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
       isRevealing,
     })
   const showNoAuthorityNotice = !isUser && shouldShowNoAuthorityNotice(message.metadata?.ragResponse)
-  let checklistInputIndex = 0
 
   return (
     <div
@@ -320,6 +330,7 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                 <ol className="my-3 min-w-0 list-inside list-decimal space-y-2 break-words text-slate-700 [overflow-wrap:anywhere] dark:text-iris-100/72" {...stripMarkdownNode(props)} />
               ),
               li: (props) => {
+                const taskItemKey = markdownNodeKey(props.node)
                 const { className, children, ...domProps } = stripMarkdownNode(props)
                 const isTaskItem = typeof className === 'string' && className.includes('task-list-item')
 
@@ -330,7 +341,7 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                       {...domProps}
                     >
                       <label className="flex min-h-11 w-full cursor-pointer gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-relaxed shadow-sm transition-all duration-150 hover:border-iris-300 hover:bg-iris-50/80 active:scale-[0.99] dark:border-iris-300/15 dark:bg-[#171322]/60 dark:text-iris-100/80 dark:hover:border-iris-300/35 dark:hover:bg-iris-300/10">
-                        {renderCitationChildren(children, `task-li-${checklistInputIndex}`)}
+                        {renderCitationChildren(children, `task-li-${taskItemKey}`)}
                       </label>
                     </li>
                   )
@@ -349,6 +360,7 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                 )
               },
               input: (props) => {
+                const inputNodeKey = markdownNodeKey(props.node)
                 const { checked, className, disabled, readOnly, type, ...domProps } = stripMarkdownNode(props)
 
                 if (type !== 'checkbox') {
@@ -363,9 +375,8 @@ export function MessageBubble({ message, revealOnMount = false, onRevealComplete
                   )
                 }
 
-                const itemKey = `${message.id}-checklist-${checklistInputIndex}`
+                const itemKey = `${message.id}-checklist-${inputNodeKey}`
                 const itemChecked = checkedChecklistItems[itemKey] ?? Boolean(checked)
-                checklistInputIndex += 1
 
                 return (
                   <input

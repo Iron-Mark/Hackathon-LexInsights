@@ -47,12 +47,22 @@ CREATE POLICY "Users can view own report versions"
   TO authenticated
   USING ((SELECT auth.jwt()->>'sub') = user_id);
 
+-- WITH CHECK also verifies the parent report is the caller's own, so an
+-- authenticated user cannot attach versions to (or squat version numbers on)
+-- another user's report by guessing its UUID.
 DROP POLICY IF EXISTS "Users can create own report versions" ON public.report_versions;
 CREATE POLICY "Users can create own report versions"
   ON public.report_versions
   FOR INSERT
   TO authenticated
-  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
+  WITH CHECK (
+    (SELECT auth.jwt()->>'sub') = user_id
+    AND EXISTS (
+      SELECT 1 FROM public.compliance_reports
+      WHERE compliance_reports.id = report_versions.report_id
+        AND compliance_reports.user_id = (SELECT auth.jwt()->>'sub')
+    )
+  );
 
 DROP POLICY IF EXISTS "Users can delete own report versions" ON public.report_versions;
 CREATE POLICY "Users can delete own report versions"
@@ -99,12 +109,20 @@ CREATE POLICY "Users can view own report findings"
   TO authenticated
   USING ((SELECT auth.jwt()->>'sub') = user_id);
 
+-- Ownership of the parent report is verified, matching report_versions above.
 DROP POLICY IF EXISTS "Users can create own report findings" ON public.report_findings;
 CREATE POLICY "Users can create own report findings"
   ON public.report_findings
   FOR INSERT
   TO authenticated
-  WITH CHECK ((SELECT auth.jwt()->>'sub') = user_id);
+  WITH CHECK (
+    (SELECT auth.jwt()->>'sub') = user_id
+    AND EXISTS (
+      SELECT 1 FROM public.compliance_reports
+      WHERE compliance_reports.id = report_findings.report_id
+        AND compliance_reports.user_id = (SELECT auth.jwt()->>'sub')
+    )
+  );
 
 DROP POLICY IF EXISTS "Users can update own report findings" ON public.report_findings;
 CREATE POLICY "Users can update own report findings"
@@ -153,7 +171,9 @@ CREATE TRIGGER set_updated_at_report_findings
 -- =====================================================
 -- MIGRATION COMPLETE
 -- =====================================================
--- NOT wired into the application yet. The client-side seam that will call
--- these tables is defined in src/lib/services/compliance-persistence/. When
--- wiring, follow the existing Supabase call pattern in
--- src/lib/store/chat-store.ts (.from('chats').insert(...)).
+-- Wired into the application: the repository in
+-- src/lib/services/compliance-persistence/ is driven by the dual-write sync in
+-- src/lib/store/compliance-server-sync.ts (saves mirror to these tables for
+-- signed-in users; IndexedDB remains the local copy and the only store for
+-- guests). Apply this migration and configure Clerk as a Supabase third-party
+-- auth provider before expecting server persistence to succeed.

@@ -24,6 +24,13 @@ import { LEGAL_CORPUS } from './corpus'
 export interface FrameworkDetectionRagResponse {
   summary?: string
   search_queries_used?: string[]
+  /**
+   * Explicit framework id emitted by the local research engine (PRD P2-2
+   * follow-up). When present and known, detection is exact instead of
+   * inferred. Absent on remote-RAG, cached, and pre-change persisted
+   * responses, where detection falls back to the fuzzy signals below.
+   */
+  matched_framework_id?: string | null
   matched_documents?: Array<{
     statute?: string
     title?: string
@@ -57,6 +64,11 @@ export interface FrameworkMatch {
     triggerHits: number
     /** Whether the framework title appeared verbatim in the report text. */
     titleHit: boolean
+    /**
+     * Whether the response's explicit matched_framework_id named this
+     * framework (exact detection, PRD P2-2 follow-up).
+     */
+    exactIdHit?: boolean
   }
 }
 
@@ -82,9 +94,12 @@ export interface SelectFrameworksOptions {
   minScore?: number
 }
 
-// Scoring weights. Document retrieval is the most trustworthy signal because
-// those authorities are what the RAG pipeline actually surfaced; triggers and a
-// verbatim title mention are corroborating textual signals.
+// Scoring weights. An explicit matched_framework_id from the local engine is
+// authoritative (it names the framework outright); document retrieval is the
+// next most trustworthy signal because those authorities are what the RAG
+// pipeline actually surfaced; triggers and a verbatim title mention are
+// corroborating textual signals.
+const WEIGHT_EXACT_ID_HIT = 12
 const WEIGHT_DOCUMENT_HIT = 3
 const WEIGHT_TITLE_HIT = 4
 const WEIGHT_TRIGGER_HIT = 1
@@ -152,8 +167,8 @@ function containsPhrase(haystack: string, phrase: string): boolean {
 }
 
 function classifyConfidence(signals: FrameworkMatch['signals']): FrameworkConfidence {
-  const { documentHits, triggerHits, titleHit } = signals
-  if (titleHit || documentHits >= 2 || (documentHits >= 1 && triggerHits >= 2)) {
+  const { documentHits, triggerHits, titleHit, exactIdHit } = signals
+  if (exactIdHit || titleHit || documentHits >= 2 || (documentHits >= 1 && triggerHits >= 2)) {
     return 'high'
   }
   if (documentHits >= 1 || triggerHits >= 2) {
@@ -183,8 +198,14 @@ export function selectComplianceFrameworks(
 
   const matchedLawIds = resolveMatchedLawIds(input.ragResponse)
   const haystack = buildHaystack(input)
+  // Unknown ids (e.g. after a framework rename) are ignored so detection
+  // degrades to inference instead of pinning a stale id.
+  const exactId = input.ragResponse?.matched_framework_id ?? null
+  const exactIdKnown = exactId
+    ? COMPLIANCE_FRAMEWORKS.some((framework) => framework.id === exactId)
+    : false
 
-  if (matchedLawIds.size === 0 && !haystack) {
+  if (matchedLawIds.size === 0 && !haystack && !exactIdKnown) {
     return []
   }
 
@@ -204,18 +225,20 @@ export function selectComplianceFrameworks(
     }
 
     const titleHit = haystack ? containsPhrase(haystack, framework.title) : false
+    const exactIdHit = exactIdKnown && framework.id === exactId
 
     const documentHits = frameworkLawHits.length
     const triggerHits = triggerHitsList.length
 
     const score =
+      (exactIdHit ? WEIGHT_EXACT_ID_HIT : 0) +
       documentHits * WEIGHT_DOCUMENT_HIT +
       Math.min(triggerHits, MAX_TRIGGER_HITS_COUNTED) * WEIGHT_TRIGGER_HIT +
       (titleHit ? WEIGHT_TITLE_HIT : 0)
 
     if (score <= 0 || score < minScore) return
 
-    const signals = { documentHits, triggerHits, titleHit }
+    const signals = { documentHits, triggerHits, titleHit, exactIdHit }
 
     scored.push({
       order,

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Clock, Trash2, X } from 'lucide-react'
 import { useComplianceStore } from '@/lib/store/compliance-store'
+import { syncDeletedComplianceVersion } from '@/lib/store/compliance-server-sync'
 import { cn } from '@/lib/utils'
 import { formatVersionTimestamp } from '@/lib/utils/browser-actions'
 
@@ -80,6 +81,9 @@ export function VersionHistorySidebar() {
                         <button
                           onClick={() => {
                             deleteVersion(version.id)
+                            // Mirror the deletion server-side (PRD P0-1);
+                            // no-op for guests and unsynced versions.
+                            void syncDeletedComplianceVersion(version.id)
                             setConfirmDeleteId(null)
                           }}
                           className="flex h-11 w-11 items-center justify-center rounded bg-red-600 text-white transition-all hover:bg-red-700 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"

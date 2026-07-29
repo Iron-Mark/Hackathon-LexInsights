@@ -1,14 +1,13 @@
 /**
- * Compliance report repository contract + row mappers (PRD P0-1 scaffold).
+ * Compliance report repository contract + row mappers (PRD P0-1).
  *
- * The interface below is the seam the app will call to persist compliance
- * reports server-side instead of only to localStorage
+ * The interface below is the seam the app calls to persist compliance reports
+ * server-side alongside the IndexedDB store
  * (src/lib/store/compliance-store.ts). The row types and mapper functions are
- * pure and ready to use; the Supabase-backed implementation is intentionally
- * left unwired. `createComplianceReportRepository()` currently returns a stub
- * that throws, so importing this module cannot silently start hitting the
- * database. When wiring, add a SupabaseComplianceReportRepository that follows
- * the .from('chats').insert(...) pattern in src/lib/store/chat-store.ts.
+ * pure. This module deliberately has no value imports (types only) so that
+ * scripts/check-compliance-persistence-self-test.mjs can transpile and load it
+ * standalone; the environment-aware factory that returns the live
+ * SupabaseComplianceReportRepository lives in ./factory.
  */
 
 import type {
@@ -19,8 +18,8 @@ import type {
   NewReportVersion,
   ReportFindingRecord,
   ReportVersionRecord,
+  UpdateComplianceReportPatch,
 } from './types'
-import { SupabaseComplianceReportRepository } from './supabase-repository'
 
 // ---------------------------------------------------------------------------
 // Database row shapes (snake_case, as returned by Supabase / Postgres)
@@ -132,10 +131,12 @@ export interface ComplianceReportRepository {
   createReport(input: NewComplianceReport): Promise<ComplianceReportRecord>
   getReport(reportId: string): Promise<ComplianceReportRecord | null>
   listReports(userId: string): Promise<ComplianceReportRecord[]>
+  updateReport(reportId: string, patch: UpdateComplianceReportPatch): Promise<ComplianceReportRecord>
   deleteReport(reportId: string): Promise<void>
 
   appendVersion(input: NewReportVersion): Promise<ReportVersionRecord>
   listVersions(reportId: string): Promise<ReportVersionRecord[]>
+  deleteVersion(versionId: string): Promise<void>
 
   replaceFindings(reportId: string, findings: NewReportFinding[]): Promise<ReportFindingRecord[]>
   listFindings(reportId: string): Promise<ReportFindingRecord[]>
@@ -168,6 +169,9 @@ export class UnwiredComplianceReportRepository implements ComplianceReportReposi
   listReports(): Promise<ComplianceReportRecord[]> {
     throw new CompliancePersistenceNotWiredError('listReports')
   }
+  updateReport(): Promise<ComplianceReportRecord> {
+    throw new CompliancePersistenceNotWiredError('updateReport')
+  }
   deleteReport(): Promise<void> {
     throw new CompliancePersistenceNotWiredError('deleteReport')
   }
@@ -176,6 +180,9 @@ export class UnwiredComplianceReportRepository implements ComplianceReportReposi
   }
   listVersions(): Promise<ReportVersionRecord[]> {
     throw new CompliancePersistenceNotWiredError('listVersions')
+  }
+  deleteVersion(): Promise<void> {
+    throw new CompliancePersistenceNotWiredError('deleteVersion')
   }
   replaceFindings(): Promise<ReportFindingRecord[]> {
     throw new CompliancePersistenceNotWiredError('replaceFindings')
@@ -186,21 +193,4 @@ export class UnwiredComplianceReportRepository implements ComplianceReportReposi
   setFindingChecked(): Promise<void> {
     throw new CompliancePersistenceNotWiredError('setFindingChecked')
   }
-}
-
-/**
- * Factory for the compliance report repository.
- *
- * In the browser, returns the Supabase-backed implementation (P0-1 server
- * path). On the server/build (no `window`), returns the unwired stub so that
- * importing this module never constructs a Supabase client outside the client
- * runtime. Callers depend only on the ComplianceReportRepository interface, so
- * neither branch changes their code.
- */
-export function createComplianceReportRepository(): ComplianceReportRepository {
-  if (typeof window !== 'undefined') {
-    return new SupabaseComplianceReportRepository()
-  }
-
-  return new UnwiredComplianceReportRepository()
 }

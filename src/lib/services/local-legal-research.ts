@@ -1460,6 +1460,11 @@ export function runLocalResearch(params: RAGQuery, fallbackReason?: string): RAG
     }
   }
 
+  // Explicit framework detection (PRD P2-2 follow-up). Computed from the same
+  // resultDocuments that buildResearchSummary's framework section renders, so
+  // the structured id always matches the framework shown in the report body.
+  const frameworkMatches = getFrameworkMatches(query, resultDocuments)
+
   return {
     status: 'completed',
     query,
@@ -1473,6 +1478,11 @@ export function runLocalResearch(params: RAGQuery, fallbackReason?: string): RAG
     fallback_used: Boolean(fallbackReason),
     fallback_reason: fallbackReason,
     confidence_score: topRelevance,
+    matched_framework_id: frameworkMatches[0]?.framework.id,
+    matched_framework_ids:
+      frameworkMatches.length > 0
+        ? frameworkMatches.map((match) => match.framework.id)
+        : undefined,
     retrieval_metadata: retrievalMetadata,
     matched_documents: matchedDocuments.map((match) => {
       const source = getAuthoritySource(match.document)

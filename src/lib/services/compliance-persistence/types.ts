@@ -2,10 +2,11 @@
  * Domain types for server-side compliance report persistence (PRD P0-1).
  *
  * These mirror database/migrations/0001_compliance_report_persistence.sql and
- * the existing public.compliance_reports table in database/schema.sql. This
- * module is a scaffold: it defines the contract but is not yet wired into the
- * app. Reports still persist to localStorage via
- * src/lib/store/compliance-store.ts until the repository below is implemented.
+ * the existing public.compliance_reports table in database/schema.sql. The
+ * contract is wired into the app through ./sync (dual-write orchestration) and
+ * src/lib/store/compliance-server-sync.ts; IndexedDB
+ * (src/lib/store/compliance-store.ts) remains the always-available local copy
+ * and the only store for signed-out users.
  */
 
 export type FindingSeverity = 'green' | 'amber' | 'red'
@@ -61,6 +62,19 @@ export interface NewComplianceReport {
   documentId?: string | null
   title: string
   content: string
+  complianceScore?: number | null
+  metadata?: Record<string, unknown>
+}
+
+/**
+ * Partial update for an existing report. Only provided fields change; the
+ * report keeps its identity, versions, and findings. Used to keep the parent
+ * compliance_reports row at the latest saved content while report_versions
+ * stays the immutable history.
+ */
+export interface UpdateComplianceReportPatch {
+  title?: string
+  content?: string
   complianceScore?: number | null
   metadata?: Record<string, unknown>
 }

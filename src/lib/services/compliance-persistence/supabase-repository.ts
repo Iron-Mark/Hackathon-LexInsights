@@ -22,6 +22,7 @@ import type {
   NewReportVersion,
   ReportFindingRecord,
   ReportVersionRecord,
+  UpdateComplianceReportPatch,
 } from './types'
 import type {
   ComplianceReportRepository,
@@ -85,11 +86,35 @@ export class SupabaseComplianceReportRepository implements ComplianceReportRepos
       .from('compliance_reports')
       .select('*')
       .eq('user_id', userId)
-      .order('created_at', { ascending: false })
+      // Most recently touched first: hydration restores the lineage the user
+      // last worked on, not merely the one created last.
+      .order('updated_at', { ascending: false })
 
     if (error) fail('list compliance reports', error.message)
 
     return ((data ?? []) as unknown as ComplianceReportRow[]).map(mapReportRow)
+  }
+
+  async updateReport(
+    reportId: string,
+    patch: UpdateComplianceReportPatch
+  ): Promise<ComplianceReportRecord> {
+    const updates: Record<string, unknown> = {}
+    if (patch.title !== undefined) updates.title = patch.title
+    if (patch.content !== undefined) updates.content = patch.content
+    if (patch.complianceScore !== undefined) updates.compliance_score = patch.complianceScore
+    if (patch.metadata !== undefined) updates.metadata = patch.metadata
+
+    const { data, error } = await this.supabase
+      .from('compliance_reports')
+      .update(updates as never)
+      .eq('id', reportId)
+      .select()
+      .single()
+
+    if (error) fail('update compliance report', error.message)
+
+    return mapReportRow(data as unknown as ComplianceReportRow)
   }
 
   async deleteReport(reportId: string): Promise<void> {
@@ -134,6 +159,15 @@ export class SupabaseComplianceReportRepository implements ComplianceReportRepos
     if (error) fail('list report versions', error.message)
 
     return ((data ?? []) as unknown as ReportVersionRow[]).map(mapVersionRow)
+  }
+
+  async deleteVersion(versionId: string): Promise<void> {
+    const { error } = await this.supabase
+      .from('report_versions')
+      .delete()
+      .eq('id', versionId)
+
+    if (error) fail('delete report version', error.message)
   }
 
   // -------------------------------------------------------------------------
