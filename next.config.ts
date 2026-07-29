@@ -49,6 +49,10 @@ const nextConfig: NextConfig = {
               "font-src 'self' data:",
               "style-src 'self' 'unsafe-inline'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.dev https://challenges.cloudflare.com",
+              // Clerk spawns blob: web workers for session management; without
+              // an explicit worker-src the browser falls back to script-src
+              // and blocks them (console CSP violations on every page).
+              "worker-src 'self' blob:",
               "connect-src 'self' https: wss:",
               "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.dev https://challenges.cloudflare.com https://www.youtube-nocookie.com",
               "form-action 'self'",
