@@ -24,7 +24,9 @@ const publicPages: PublicPageExpectation[] = [
   },
 ]
 
-const expectedSitemapPaths = ['/', '/about', '/chat', '/terms', '/privacy']
+// /chat is deliberately absent: src/app/sitemap.ts lists only the marketing
+// and legal surfaces, with '/' as the app entry.
+const expectedSitemapPaths = ['/', '/about', '/terms', '/privacy']
 const excludedSitemapPathPatterns = [/^\/api(\/|$)/, /^\/auth(\/|$)/, /^\/documents(\/|$)/, /^\/test-rag$/, /^\/test-document$/]
 
 function collectJsonLdTypes(value: unknown): string[] {
@@ -160,9 +162,12 @@ test.describe('public discovery smoke checks', () => {
 
     expect(aiResponse.status()).toBe(200)
     expect(aiResponse.headers()['content-type']).toContain('text/plain')
+    // ai.txt has its own section structure (src/app/ai.txt/route.ts); the
+    // "What LexInsights Is" / "Public Pages" sections live in llms.txt.
     expect(ai).toContain('# LexInsights')
-    expect(ai).toContain('## What LexInsights Is')
-    expect(ai).toContain('## Public Pages')
+    expect(ai).toContain('## AI usage')
+    expect(ai).toContain('## Attribution')
+    expect(ai).toContain('## Standing reminder')
   })
 
   test('sitemap lists stable public URLs without dynamic lastmod values', async ({ request }) => {

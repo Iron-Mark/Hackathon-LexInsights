@@ -32,7 +32,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg dark:border-iris-300/15 dark:bg-[#171322]">
+      <DialogContent className="flex max-h-[85dvh] max-w-lg flex-col overflow-hidden dark:border-iris-300/15 dark:bg-[#171322]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 dark:text-slate-100">
             <User className="h-5 w-5 text-iris-600 dark:text-iris-200" />
@@ -40,7 +40,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto">
           {/* Avatar and Name */}
           <div className="flex flex-col items-center text-center">
             {avatarUrl ? (

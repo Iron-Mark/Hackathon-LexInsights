@@ -65,7 +65,11 @@ test.describe('accessibility behavior', () => {
     await page.setViewportSize({ width: 390, height: 844 })
 
     await page.goto('/chat')
-    await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), there/ })).toBeVisible()
+    // The empty state leads with the SEO h1; the greeting is a paragraph.
+    await expect(
+      page.getByRole('heading', { name: 'Philippine Legal Research & Compliance Assistant' })
+    ).toBeVisible()
+    await expect(page.getByText(/Good (morning|afternoon|evening), there/)).toBeVisible()
     await expect.poll(async () => page.evaluate(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)).toBe(true)
     await expectNoHorizontalOverflow(page)
 
