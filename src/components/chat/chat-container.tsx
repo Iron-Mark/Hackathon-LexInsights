@@ -16,7 +16,9 @@ import { useFileUploadStore } from '@/lib/store/file-upload-store'
 import { useSidebarStore } from '@/lib/store/sidebar-store'
 import type { Message } from '@/types'
 import type { DeepSearchResponse } from '@/lib/services/deep-search-api'
-import { checkDraft, type DraftCheckerResponse, type Finding } from '@/lib/services/rag-api'
+import { checkDraft, type DraftAnalysis, type DraftCheckerResponse, type Finding } from '@/lib/services/rag-api'
+import { useComplianceStore } from '@/lib/store/compliance-store'
+import { hydrateComplianceFromServer } from '@/lib/store/compliance-server-sync'
 import { AlertCircle, ChevronDown, FileText, RefreshCw, WifiOff, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -320,6 +322,10 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   const [showCanvas, setShowCanvas] = useState(false)
   const [canvasContent, setCanvasContent] = useState('')
   const [canvasFileName, setCanvasFileName] = useState('')
+  // Structured draft-checker analysis behind the current canvas content, used
+  // for exact findings persistence (PRD P0-1). Null when the canvas shows a
+  // RAG summary, an error report, or restored content.
+  const [canvasDraftAnalysis, setCanvasDraftAnalysis] = useState<DraftAnalysis | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   // Real operation phase for the compliance file-upload flow (extraction then
   // draft analysis). Both phases are time-estimated (no backend stage events),
@@ -904,12 +910,54 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       setShowCanvas(true)
       setCanvasContent(currentResponse.summary)
       setCanvasFileName('rag-analysis')
+      setCanvasDraftAnalysis(null)
     } else if (mode !== 'compliance') {
       setShowCanvas(false)
       setCanvasContent('')
       setCanvasFileName('')
+      setCanvasDraftAnalysis(null)
     }
   }, [mode, currentResponse])
+
+  // Reload the signed-in user's latest server report into the local store so
+  // a report survives clearing browser storage (PRD P0-1). No-op for guests
+  // and whenever local versions already exist.
+  useEffect(() => {
+    if (user?.id) {
+      void hydrateComplianceFromServer()
+    }
+  }, [user?.id])
+
+  const complianceVersions = useComplianceStore((state) => state.versions)
+  const complianceCurrentVersionId = useComplianceStore((state) => state.currentVersionId)
+  const complianceReportTitle = useComplianceStore((state) => state.serverReportTitle)
+
+  // Restore the last saved report into the canvas when compliance mode has
+  // nothing else to show (PRD P0-1): after a reload the versions survive in
+  // IndexedDB, and after a cache clear they rehydrate from Supabase above.
+  useEffect(() => {
+    if (mode !== 'compliance' || canvasContent || currentResponse || loading || isProcessing) {
+      return
+    }
+
+    const restored =
+      complianceVersions.find((version) => version.id === complianceCurrentVersionId) ?? null
+    if (!restored) return
+
+    setShowCanvas(true)
+    setCanvasContent(restored.content)
+    setCanvasFileName(complianceReportTitle || 'compliance-report')
+    setCanvasDraftAnalysis(null)
+  }, [
+    mode,
+    canvasContent,
+    currentResponse,
+    loading,
+    isProcessing,
+    complianceVersions,
+    complianceCurrentVersionId,
+    complianceReportTitle,
+  ])
 
   // Add RAG responses to messages in general mode
   // Note: This is handled by the chat store now, but keeping for backward compatibility
@@ -1005,6 +1053,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
       setShowCanvas(true)
       setCanvasContent('') // Clear previous content
       setCanvasFileName(file.name)
+      setCanvasDraftAnalysis(null)
       setDeepSearchResult(null) // Clear previous deep search
 
       try {
@@ -1026,11 +1075,13 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
         }
 
         setCanvasContent(formatDraftCheckerReport(file.name, query, response, extractedDocument))
+        setCanvasDraftAnalysis(response.analysis)
         showToast(`Compliance analysis complete for ${file.name}`, 'success')
         announceToAssistiveTechnology(`Compliance analysis complete for ${file.name}`)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown Draft Checker error'
         setCanvasContent(buildComplianceUnavailableReport(file.name, query, errorMessage))
+        setCanvasDraftAnalysis(null)
         if (isRagBackendUnavailableError(error)) {
           showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
             action: RAG_BACKEND_TOAST_ACTION,
@@ -1062,6 +1113,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
           // Keep the canvas open even when a full document analysis has not run.
           if (!canvasContent) {
             setCanvasContent(buildDeepSearchOnlyReport(file.name, query))
+            setCanvasDraftAnalysis(null)
           }
         }
       } else {
@@ -1355,6 +1407,7 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
                   content={canvasContent}
                   fileName={canvasFileName}
                   ragResponse={currentResponse || undefined}
+                  draftAnalysis={canvasDraftAnalysis}
                   searchQueries={currentResponse?.search_queries_used}
                   documentCount={currentResponse?.documents_found}
                   deepSearchResult={deepSearchResult}

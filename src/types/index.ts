@@ -27,6 +27,8 @@ export interface Message {
       provider_mode?: 'remote-rag' | 'local-providerless'
       fallback_used?: boolean
       confidence_score?: number
+      matched_framework_id?: string
+      matched_framework_ids?: string[]
       retrieval_metadata?: {
         result_limit: number
         total_candidates: number

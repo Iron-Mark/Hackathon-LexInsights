@@ -54,6 +54,9 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
+      - name: Unit tests
+        run: npm run test
+
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
