@@ -110,7 +110,12 @@ test.describe('LexInsights smoke checks', () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto('/chat')
 
-    await expect(page.getByRole('heading', { name: /Good (morning|afternoon|evening), there/ })).toBeVisible()
+    // The empty state leads with the SEO h1; the time-of-day greeting is a
+    // paragraph beneath it (see empty-state.tsx).
+    await expect(
+      page.getByRole('heading', { name: 'Philippine Legal Research & Compliance Assistant' })
+    ).toBeVisible()
+    await expect(page.getByText(/Good (morning|afternoon|evening), there/)).toBeVisible()
     await expect(chatInput(page)).toBeVisible()
     await expect(page.getByRole('button', { name: 'Open sidebar menu' })).toBeVisible()
     await expect.poll(async () => {
@@ -377,7 +382,8 @@ test.describe('LexInsights smoke checks', () => {
     await expect(completedAssistantMessage).toBeVisible({ timeout: 75_000 })
     await expect(page.getByRole('heading', { name: 'Answer' })).toBeVisible()
     await expect(completedAssistantMessage.getByText('Ecological Solid Waste Management Act of 2000').first()).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Run deep research' })).toBeVisible()
+    // Deep research is no longer a standalone button; it lives in the Mode
+    // menu as the "Research mode" toggle (chat-mode-toggle.tsx).
     await expect(page.getByRole('button', { name: 'Send standard message' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Mode: General' })).toBeVisible()
     await page.getByRole('button', { name: 'Mode: General' }).click()
