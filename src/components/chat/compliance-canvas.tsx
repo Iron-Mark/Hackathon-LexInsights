@@ -74,15 +74,22 @@ export function ComplianceCanvas({ content, fileName, ragResponse, draftAnalysis
   const currentVersion = getCurrentVersion()
   const canvasArticleRef = useRef<HTMLElement>(null)
 
-  // Latest render context for server-side persistence (PRD P0-1), kept in a
-  // ref so the sync callback stays stable and the initial-version effect's
-  // dependency list stays unchanged. Assigned below, after frameworkTemplate.
-  const serverSyncContextRef = useRef<{
-    fileName?: string
-    draftAnalysis: DraftAnalysis | null
-    providerMode: RAGResponse['provider_mode']
-    frameworkId: string | null
-  }>({ fileName: undefined, draftAnalysis: null, providerMode: undefined, frameworkId: null })
+  // Framework-specific report template (PRD P2-2). When the report maps to one
+  // of the bundled compliance frameworks, surface that framework's structured
+  // checklist. Honors the exact matched_framework_id from the local engine
+  // and returns null when no framework is confidently identified.
+  const frameworkTemplate = useMemo(() => {
+    const reportBody = content || currentVersion?.content || ''
+    const match = selectPrimaryFramework({
+      content: reportBody,
+      ragResponse,
+      searchQueries,
+    })
+    return match ? getFrameworkTemplate(match.framework) : null
+  }, [content, currentVersion, ragResponse, searchQueries])
+
+  const providerMode = ragResponse?.provider_mode
+  const matchedFrameworkId = frameworkTemplate?.id ?? ragResponse?.matched_framework_id ?? null
 
   // Mirror a saved version to Supabase (compliance_reports / report_versions /
   // report_findings). Fire-and-forget: guests are a no-op and failures never
@@ -90,31 +97,31 @@ export function ComplianceCanvas({ content, fileName, ragResponse, draftAnalysis
   // analysis when available; edited saves fall back to markdown parsing.
   const syncVersionToServer = useCallback(
     (version: ComplianceVersion, source: 'analysis' | 'edit') => {
-      const context = serverSyncContextRef.current
+      const analysis = draftAnalysis ?? null
       const findingSeeds =
         source === 'analysis'
-          ? extractFindingSeeds({ analysis: context.draftAnalysis, markdown: version.content })
+          ? extractFindingSeeds({ analysis, markdown: version.content })
           : extractFindingSeedsFromMarkdown(version.content)
       const complianceScore =
-        source === 'analysis' && context.draftAnalysis
-          ? context.draftAnalysis.compliance_score
+        source === 'analysis' && analysis
+          ? analysis.compliance_score
           : parseComplianceScore(version.content)
 
       void syncSavedComplianceVersion({
         clientVersionId: version.id,
         content: version.content,
         label: version.label,
-        title: context.fileName || 'Compliance report',
+        title: fileName || 'Compliance report',
         complianceScore,
         metadata: {
-          fileName: context.fileName ?? null,
-          providerMode: context.providerMode ?? 'local-providerless',
-          matchedFrameworkId: context.frameworkId,
+          fileName: fileName ?? null,
+          providerMode: providerMode ?? 'local-providerless',
+          matchedFrameworkId,
         },
         findingSeeds,
       })
     },
-    []
+    [draftAnalysis, fileName, providerMode, matchedFrameworkId]
   )
 
   useEffect(() => {
@@ -311,28 +318,6 @@ export function ComplianceCanvas({ content, fileName, ragResponse, draftAnalysis
   const citationContext = useMemo(() => buildLegalCitationContext(ragResponse), [ragResponse])
   const showNoAuthorityNotice = shouldShowNoAuthorityNotice(ragResponse)
 
-  // Framework-specific report template (PRD P2-2). When the report maps to one
-  // of the bundled compliance frameworks, surface that framework's structured
-  // checklist. Returns null when no framework is confidently identified.
-  const frameworkTemplate = useMemo(() => {
-    const reportBody = content || currentVersion?.content || ''
-    const match = selectPrimaryFramework({
-      content: reportBody,
-      ragResponse,
-      searchQueries,
-    })
-    return match ? getFrameworkTemplate(match.framework) : null
-  }, [content, currentVersion, ragResponse, searchQueries])
-
-  // Keep the server-sync context at this render's values (PRD P0-1). The
-  // framework id prefers the template match, which already honors the exact
-  // matched_framework_id from the local engine (PRD P2-2 follow-up).
-  serverSyncContextRef.current = {
-    fileName,
-    draftAnalysis: draftAnalysis ?? null,
-    providerMode: ragResponse?.provider_mode,
-    frameworkId: frameworkTemplate?.id ?? ragResponse?.matched_framework_id ?? null,
-  }
   const renderCitationText = (children: ReactNode, scope: string) =>
     renderLegalCitationNodes(children, citationContext, `compliance-canvas-${scope}`)
 
