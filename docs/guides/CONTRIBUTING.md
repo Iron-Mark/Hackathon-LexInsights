@@ -4,7 +4,7 @@
 
 From the repository root:
 
-```powershell
+```bash
 npm ci
 npm run lint -- --max-warnings=0
 npx tsc --noEmit

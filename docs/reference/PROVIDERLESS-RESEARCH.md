@@ -19,7 +19,7 @@ The implementation lives in [local-legal-research.ts](../../src/lib/services/loc
 
 Run the providerless self-test from the repository root:
 
-```powershell
+```bash
 npm run check:providerless:self-test
 npm run check:local-rag:golden
 npm run check:local-rag:performance

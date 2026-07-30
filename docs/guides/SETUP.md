@@ -12,7 +12,7 @@
 
 From the repository root:
 
-```powershell
+```bash
 npm ci
 ```
 
@@ -65,7 +65,7 @@ See [Database](../reference/DATABASE.md) for the table and storage notes.
 
 ## Run Locally
 
-```powershell
+```bash
 npm run dev
 ```
 
@@ -73,7 +73,7 @@ Open `http://localhost:3000`.
 
 ## Minimum Local Verification
 
-```powershell
+```bash
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm run test
@@ -84,6 +84,6 @@ npm run build
 
 For the full local gate, run:
 
-```powershell
+```bash
 npm run check:local
 ```

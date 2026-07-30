@@ -12,7 +12,7 @@
 
 From the repository root, run the full local gate:
 
-```powershell
+```bash
 npm run check:local
 ```
 

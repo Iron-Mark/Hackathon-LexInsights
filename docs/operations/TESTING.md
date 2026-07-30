@@ -4,7 +4,7 @@ Run commands from the repository root.
 
 ## Fast Checks
 
-```powershell
+```bash
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm run check:docs:self-test
@@ -14,7 +14,7 @@ npm run check:screenshots
 
 ## Unit Tests
 
-```powershell
+```bash
 npm run test
 npm run test:watch
 ```
@@ -23,7 +23,7 @@ Vitest ([vitest.config.mts](../../vitest.config.mts)) runs `src/**/*.test.ts` (p
 
 ## Build
 
-```powershell
+```bash
 npm run build
 npm run check:bundle
 ```
@@ -33,20 +33,20 @@ The bundle check reads the completed `.next` output and fails on oversized gener
 
 ## Readiness
 
-```powershell
+```bash
 npm run check:readiness:self-test
 npm run check:readiness -- --skip-external-checks
 ```
 
 Use the full readiness check only when environment values point to reachable Supabase and RAG services:
 
-```powershell
+```bash
 npm run check:readiness
 ```
 
 ## Deployment Checks
 
-```powershell
+```bash
 npm run check:deployment:self-test
 npm run check:live:self-test
 npm run check:rag-proxy:self-test
@@ -74,7 +74,7 @@ The release integrity check verifies SemVer formatting, package-lock version syn
 
 Against production:
 
-```powershell
+```bash
 $sha = (git rev-parse HEAD).Trim()
 npm run check:deployment -- --base-url https://lexiph.vercel.app --expect-sha $sha
 npm run check:live -- --base-url https://lexiph.vercel.app --expect-sha $sha
@@ -86,7 +86,7 @@ Before deploying a commit that is not live yet, use `npm run check:deployment --
 
 Before publishing a GitHub release for an already-created tag, run:
 
-```powershell
+```bash
 npm run check:release:tag
 ```
 
@@ -94,7 +94,7 @@ This strict mode requires `HEAD` to have a matching `v<package version>` tag. Do
 
 ## Browser Smoke
 
-```powershell
+```bash
 npm run smoke:browser
 ```
 
@@ -104,7 +104,7 @@ The smoke suite enables `ENABLE_DIAGNOSTIC_ROUTES=true` for its managed local se
 
 ## Full Local Gate
 
-```powershell
+```bash
 npm run check:local
 ```
 

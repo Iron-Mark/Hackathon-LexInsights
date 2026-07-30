@@ -4,7 +4,7 @@ Run commands from the repository root unless noted.
 
 ## Install Fails
 
-```powershell
+```bash
 Remove-Item -Recurse -Force node_modules
 Remove-Item -Force package-lock.json
 npm install
@@ -47,7 +47,7 @@ Known production failure modes:
 
 Run:
 
-```powershell
+```bash
 npm run check:readiness -- --skip-external-checks
 ```
 
@@ -79,7 +79,7 @@ NEXT_PUBLIC_USE_RAG_PROXY=true
 
 Check proxy health:
 
-```powershell
+```bash
 curl "http://localhost:3000/api/rag-proxy?endpoint=/api/research/health"
 ```
 
@@ -103,14 +103,14 @@ If a PDF upload fails with a `422` from `/api/document-text` (`Document extracti
 
 Run the focused checks:
 
-```powershell
+```bash
 npm run check:document-text:self-test
 npm run check:document-extraction:self-test
 ```
 
 ## Unit Tests Fail
 
-```powershell
+```bash
 npm run test
 npm run test:watch
 ```
@@ -121,7 +121,7 @@ Vitest is configured in [vitest.config.mts](../../vitest.config.mts); tests are 
 
 All Markdown should live in [docs](../README.md). Update links relative to the file containing the link, then run:
 
-```powershell
+```bash
 npm run check:docs:self-test
 npm run check:docs
 ```
@@ -130,7 +130,7 @@ npm run check:docs
 
 Check:
 
-```powershell
+```bash
 curl https://lexiph.vercel.app/api/version
 ```
 

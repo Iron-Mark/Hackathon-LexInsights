@@ -53,7 +53,7 @@ Leave `NEXT_PUBLIC_RAG_PROVIDER_MODE` unset or set to `local-providerless` for t
 
 From the repository root:
 
-```powershell
+```bash
 npm ci
 npm run check:deployment -- --base-url https://lexiph.vercel.app --local-only
 npm run check:local
@@ -63,7 +63,7 @@ npm run check:local
 
 If backend credentials are not available locally, at minimum run:
 
-```powershell
+```bash
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
 npm run test
@@ -80,7 +80,7 @@ The bundle check expects a completed production build in `.next`. Use `npm run c
 
 ## Deploy
 
-```powershell
+```bash
 npm run deploy:prod
 ```
 
@@ -88,7 +88,7 @@ The deploy helper refuses dirty worktrees, prints the exact expected commit SHA,
 
 For a fast operator-only rehearsal without deploying:
 
-```powershell
+```bash
 npm run deploy:prod -- --preflight-only
 ```
 
@@ -96,7 +96,7 @@ Use `--skip-local-checks` only after the same commit has already passed the full
 
 ## Post-Deployment
 
-```powershell
+```bash
 $sha = (git rev-parse HEAD).Trim()
 npm run check:deployment -- --base-url https://lexiph.vercel.app --expect-sha $sha
 npm run check:live -- --base-url https://lexiph.vercel.app --expect-sha $sha
@@ -106,7 +106,7 @@ Post-deploy checks should compare the production app to the commit that was just
 
 When Vercel project ownership or aliases are unclear:
 
-```powershell
+```bash
 npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes
 npm run check:deployment -- --base-url https://lexiph.vercel.app --with-vercel-cli --discover-vercel-scopes --vercel-scope marksiazon-dev
 ```

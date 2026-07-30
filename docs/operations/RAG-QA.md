@@ -4,7 +4,7 @@ LexInsights uses providerless local RAG as the public default. The quality gates
 
 ## Source Freshness
 
-```powershell
+```bash
 npm run check:local-rag:sources
 ```
 
@@ -14,7 +14,7 @@ This check does not call live government sites, so it stays deterministic: it ru
 
 For opt-in live URL status review, run the live audit:
 
-```powershell
+```bash
 npm run check:local-rag:sources:live
 ```
 
@@ -22,7 +22,7 @@ The alias samples 10 URLs with `--allow-failures`, so it is report-only. The aud
 
 ## Answer Quality
 
-```powershell
+```bash
 npm run check:local-rag:answers
 ```
 
