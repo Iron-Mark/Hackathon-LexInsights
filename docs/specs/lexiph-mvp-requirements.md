@@ -1,5 +1,7 @@
 # Requirements Document
 
+> **Status: Historical.** This is the original MVP requirements document; the product has since shipped and evolved well past it. It is preserved as-is for context. For current feature status, see [docs/PRD.md](../PRD.md).
+
 ## Introduction
 
 LexInsights is a Philippine legal compliance chat assistant with a ChatGPT-style interface. The MVP focuses on user authentication and a polished chat UI foundation, built with Next.js 14, Supabase, Zustand, and Tailwind CSS. The system enables users to create accounts, authenticate securely, and access a clean chat interface that will eventually provide AI-powered legal compliance assistance.

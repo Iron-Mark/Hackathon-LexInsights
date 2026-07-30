@@ -1,5 +1,7 @@
 # Requirements Document
 
+> **Status: Historical.** This spec covers the legacy email/password form components, which were superseded by the Clerk-hosted auth flow and are no longer imported anywhere. It is preserved as-is for context. For current behavior, see [auth-flow.spec.md](./auth-flow.spec.md) and the code.
+
 ## Introduction
 
 This specification addresses improvements to the authentication forms (login and signup) to enhance user experience and accessibility compliance. The focus is on improving placeholder text, labels, and form field guidance to provide clearer instructions and better support for assistive technologies.

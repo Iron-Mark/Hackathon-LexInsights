@@ -1,5 +1,7 @@
 # App Root Migration
 
+> **Status: Historical.** This documents a migration that is complete; the repository has had the app at its root ever since. It is preserved as a record of the move. For the current layout, see [docs/reference/ARCHITECTURE.md](../reference/ARCHITECTURE.md).
+
 The Next.js app now lives at the repository root. Contributors can open `Hackathon-LexInsights/`, run `npm ci`, and use npm scripts without changing into a nested app folder.
 
 ## Current Layout

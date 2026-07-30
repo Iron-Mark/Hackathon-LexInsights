@@ -1,5 +1,7 @@
 # Design Document: Auth Form Accessibility Improvements
 
+> **Status: Historical.** This spec covers the legacy email/password form components, which were superseded by the Clerk-hosted auth flow and are no longer imported anywhere. It is preserved as-is for context. For current behavior, see [auth-flow.spec.md](./auth-flow.spec.md) and the code.
+
 ## Overview
 
 This design focuses on improving the user experience and accessibility of authentication forms by enhancing placeholder text, maintaining proper label-placeholder relationships, and ensuring WCAG compliance. The improvements will be applied to both login and signup forms to maintain consistency across the authentication flow.

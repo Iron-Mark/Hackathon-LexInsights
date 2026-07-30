@@ -23,18 +23,7 @@ Preview captures are kept as the README smoke-check pair.
 
 ![LexInsights archive cover showing legal chat, document review, source-first answers, and local RAG research](docs/assets/lexinsights-archive-cover.png)
 
-Feature-by-feature screenshots, viewport coverage, light and dark theme captures, and showcase mockups are documented in [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md).
-
-Repository visual assets:
-
-- GitHub social preview: [docs/assets/lexinsights-github-social.png](docs/assets/lexinsights-github-social.png)
-- Dark social preview variant: [docs/assets/lexinsights-github-social-dark.png](docs/assets/lexinsights-github-social-dark.png)
-- Compliance report screenshot: [docs/assets/lexinsights-compliance-report.png](docs/assets/lexinsights-compliance-report.png)
-- Light-mode desktop capture: [docs/assets/lexinsights-chat-desktop-light.png](docs/assets/lexinsights-chat-desktop-light.png)
-- Light-mode compliance capture: [docs/assets/lexinsights-compliance-report-light.png](docs/assets/lexinsights-compliance-report-light.png)
-- Light-mode mobile resources capture: [docs/assets/lexinsights-help-mobile-light.png](docs/assets/lexinsights-help-mobile-light.png)
-- Providerless RAG flow diagram: [docs/assets/lexinsights-rag-flow.svg](docs/assets/lexinsights-rag-flow.svg)
-- PWA screenshots: [public/screenshots/desktop-wide.png](public/screenshots/desktop-wide.png), [public/screenshots/mobile-chat.png](public/screenshots/mobile-chat.png)
+Feature-by-feature screenshots, viewport coverage, light and dark theme captures, showcase mockups, and all repository visual assets (social previews, light-mode captures, the providerless RAG flow diagram, PWA screenshots) are documented in [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md).
 
 ## Project Trust
 
@@ -49,27 +38,18 @@ Repository visual assets:
 - Reviews text, Markdown, PDF, Word, and legacy DOC content for compliance issues.
 - Uses a bundled local corpus for providerless legal research when external AI/RAG providers are unavailable or disabled.
 - Detects citations, source support, confidence signals, and practical compliance checklist items.
+- Exports compliance reports as Markdown, Word, or PDF, each with the A.M. No. 25-11-28-SC AI-use disclosure appended.
+- Signs users in with Clerk (Supabase third-party auth is live in production); signed-in users' compliance reports sync to Supabase and survive clearing browser storage, while guests stay local-only.
 - Provides public source, terms, privacy, attribution, PWA, and answer-engine discovery surfaces.
 
 ## Reviewer Walkthrough
 
 1. Open [lexiph.vercel.app](https://lexiph.vercel.app) and start from the chat prompt cards.
 2. Ask a Philippine legal question that includes a statute or compliance scenario.
-3. Switch into compliance mode and inspect the generated report, citations, research metadata, and export controls.
+3. Switch into compliance mode and inspect the generated report, citations, research metadata, and export controls (sign in first to keep report history in the cloud).
 4. Open Help & Resources to review the primary-source directory used for verification.
 5. Check `/about`, `/terms`, and `/privacy` for public context, legal notices, and data-handling posture.
 6. Review the [screenshot catalog](docs/SCREENSHOTS.md) for captured desktop, tablet, mobile, light theme, dark theme, and small-phone states.
-
-## What To Look For
-
-- Philippine legal research flow: prompt cards, legal chat, and answer structure are tuned for local statutes and compliance questions.
-- Compliance mode: the report view groups research metadata, status, confidence, sources, and generated analysis.
-- Citation support: cited statutes are surfaced inline and backed by source metadata where available.
-- Source metadata: retrieved documents, match reasons, confidence, local timing, and candidate counts are exposed for inspection.
-- Providerless local RAG fallback: bundled local research still works when external providers are unavailable or disabled.
-- Export and report workflow: compliance outputs include actions for history, editing, and downloadable formats.
-- Mobile responsiveness: small-phone captures cover compact navigation, sticky areas, scrolled states, and theme behavior.
-- Public trust pages: About, Terms, Privacy, Help & Resources, PWA fallback, crawler files, and attribution surfaces are included.
 
 ## Current Public Surfaces
 
@@ -79,17 +59,9 @@ Repository visual assets:
 - `/robots.txt`, `/sitemap.xml`, `/llms.txt`, and `/ai.txt` support search, answer-engine, and crawler discovery.
 - `/api/version` and `/api/readiness` support lean deployment and health verification without exposing secrets, raw targets, or repository ownership details.
 
-## Quality And Release Checks
-
-- CI runs lint, typecheck, production dependency audit, docs checks, release checks, PWA checks, screenshot validation, production bundle checks, build, and browser smoke tests.
-- Local providerless RAG is covered by golden-query, answer-quality, source-freshness, performance, governance, and optional live-source audits.
-- `/terms` and `/privacy` are public production notices for service use, data handling, retention, security, and Philippine privacy rights.
-- Help & Resources keeps official source links close to the assistant so generated answers can be checked against primary authorities.
-- Production deployments are verified against `/api/version` and `/api/readiness` so `lexiph.vercel.app` can be matched to the intended commit.
-
 ## Local Development
 
-```powershell
+```bash
 npm install
 npm run dev
 ```
@@ -100,11 +72,14 @@ Copy `.env.example` to `.env.local` and fill provider values as needed. Provider
 
 ## Verification
 
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests, production dependency audit, docs/release/PWA/screenshot checks, local RAG QA (golden-query, answer-quality, source-freshness, performance, governance), build, production bundle checks, and browser smoke tests on every push and pull request to `main`. See [docs/operations/TESTING.md](docs/operations/TESTING.md) for the full matrix.
+
 Use the same core gates as CI:
 
-```powershell
+```bash
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
+npm run test
 npm audit --omit=dev
 npm run check:docs
 npm run check:pwa
@@ -115,16 +90,18 @@ npm run smoke:browser
 
 For the full local release gate:
 
-```powershell
+```bash
 npm run check:local
 ```
 
 For production:
 
-```powershell
+```bash
 npm run check:deployment -- --base-url https://lexiph.vercel.app
 npm run check:live -- --base-url https://lexiph.vercel.app
 ```
+
+Production deployments are verified against `/api/version` and `/api/readiness` so `lexiph.vercel.app` can be matched to the intended commit.
 
 ## Documentation
 

@@ -25,14 +25,25 @@ Check:
 - Clerk redirect URLs in `.env.local`
 - The route protection rules in [proxy.ts](../../src/proxy.ts)
 
+## Clerk Fails With Worker CSP Violations
+
+The CSP in [next.config.ts](../../next.config.ts) includes `worker-src 'self' blob:` because Clerk spawns blob workers. If the browser console reports worker CSP violations, the deployment or fork is serving a config without that directive; redeploy with the current one.
+
 ## Supabase Requests Fail
 
 Check:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-- RLS policies from [database/schema.sql](../../database/schema.sql)
+- Clerk is configured as a Supabase third-party auth provider. The client authenticates with a Clerk token ([src/lib/supabase/client.ts](../../src/lib/supabase/client.ts)), and every policy keys on `auth.jwt()->>'sub'` resolving to the Clerk user id; without this wiring, RLS denies all signed-in requests.
+- RLS policies from [database/schema.sql](../../database/schema.sql) and [database/migrations/0001_compliance_report_persistence.sql](../../database/migrations/0001_compliance_report_persistence.sql)
 - Storage policies from [database/storage.sql](../../database/storage.sql)
+
+Known production failure modes:
+
+- `401` on table requests while signed in: usually a stale Clerk session issued before the Supabase third-party auth integration was enabled. Sign out and back in to mint a fresh token.
+- `400` on `documents` bucket requests: [database/storage.sql](../../database/storage.sql) was never applied, so `storage.objects` has no policies for the bucket. Apply it in the SQL editor.
+- SQL looks applied but tables or policies are missing: the Supabase SQL editor runs only the highlighted selection when text is selected. Clear the selection (or select the entire file) before running schema, migration, or storage SQL.
 
 Run:
 
@@ -41,6 +52,14 @@ npm run check:readiness -- --skip-external-checks
 ```
 
 Use the full readiness check when the external services should be reachable.
+
+## Compliance Report Missing on Another Device
+
+Compliance reports dual-write: IndexedDB is the local source of truth, and signed-in users mirror reports to Supabase in the background. Guests stay local-only by design, and a server failure never blocks the local save (a one-time toast reports it). If a signed-in user's reports do not appear on another device:
+
+- Confirm [database/migrations/0001_compliance_report_persistence.sql](../../database/migrations/0001_compliance_report_persistence.sql) was applied; without it, the server mirror silently no-ops.
+- Confirm Clerk third-party auth is wired in Supabase (see above), and sign out and back in if table requests return `401`.
+- Run `npm run check:compliance-persistence:self-test` to validate the persistence layer itself.
 
 ## RAG Requests Fail
 
@@ -66,52 +85,21 @@ curl "http://localhost:3000/api/rag-proxy?endpoint=/api/research/health"
 
 If the proxy returns an upstream error in remote mode, verify `NEXT_PUBLIC_RAG_API_URL` and backend availability.
 
-If local mode does not return a result, try a narrower query with a statute number or issuance such as `RA 9003`, `RA 10173`, `NPC Circular No. 16-03`, `NPC Advisory No. 2026-02`, `NPC Circular No. 2023-06`, `NPC Circular No. 2023-04`, `NPC Circular No. 2022-04`, `NPC Circular No. 2020-03`, `NPC Advisory No. 2025-02`, `RA 10175`, `Cybercrime Prevention Act IRR`, `A.M. No. 17-11-03-SC`, `Rule on Cybercrime Warrants`, `RA 11058`, `RA 7160`, `RA 10121`, `RA 12287`, `RA 10667`, `RA 11765`, `RA 8484`, `RA 4200`, `BP 22`, `RA 9285`, `RA 10142`, `RA 9510`, `RA 386`, `EO 209`, `Act No. 3753`, `RA 9048`, `RA 10172`, `RA 11642`, `RA 11222`, `RA 11767`, `A.M. No. 02-8-13-SC`, `Rules of Court`, `A.M. No. 08-8-7-SC`, `1987 Constitution`, `Act No. 3815`, `Rules of Criminal Procedure`, `RA 9344`, `RA 9165`, `RA 10591`, `BP 880`, `RA 9745`, `RA 9520`, `RA 7042`, `RA 11647`, `RA 8762`, `RA 11595`, `RA 11057`, `CA 613`, `CA 473`, `RA 9139`, `RA 9225`, `RA 11983`, `RA 8239`, `RA 10022`, `RA 11641`, `BP 881`, `RA 8189`, `RA 7166`, `RA 9006`, `RA 8436`, `RA 9369`, `RA 10742`, `RA 11768`, `RA 11934`, `RA 11976`, `RA 12023`, `RA 4136`, `RA 11659`, `PD 1529`, `RA 11573`, `RA 10023`, `RA 11231`, `RA 6657`, `RA 9700`, `RA 11953`, `RA 8371`, `RA 8435`, `RA 10068`, `RA 10611`, `RA 11321`, `RA 3019`, `RA 6713`, `PD 1445`, `RA 7080`, `RA 10149`, `RA 6758`, `RA 11199`, `RA 8291`, `RA 9679`, `RA 10606`, `RA 11210`, `RA 8187`, `RA 10361`, `PD 442`, `RA 8293`, `RA 8799`, `RA 9711`, `RA 11223`, `RA 11332`, `RA 9211`, `RA 11900`, `RA 11166`, `RA 10152`, `RA 7719`, `RA 11215`, `RA 10354`, `RA 11036`, `RA 9262`, `RA 9994`, `RA 7277`, `RA 9442`, `RA 10070`, `RA 10524`, `RA 10754`, `PD 1096`, `PD 856`, `BP 344`, `RA 7610`, `RA 8042`, `RA 1405`, `RA 7653`, `RA 11211`, `RA 8791`, `RA 9474`, `RA 8556`, `RA 10607`, `RA 9829`, `RA 10846`, `RA 7581`, `RA 7638`, `RA 8479`, `RA 11592`, `RA 9367`, `RA 9513`, `RA 9729`, `RA 7942`, `RA 10533`, `RA 10931`, `RA 9470`, `RA 11310`, or `RA 11861`. The local corpus is intentionally bounded and does not search live government sites.
+If local mode does not return a result, try a narrower query with an exact statute or issuance citation such as `RA 10173`, `NPC Circular No. 16-03`, `RA 10175`, `RA 11976`, or `DOLE Department Order No. 147-15`, or add concrete slice-specific terms (for example `beneficial ownership disclosure`, `tax declaration`, or `pre-emptive evacuation`). The local corpus is intentionally bounded and does not search live government sites; per-slice coverage and suggested query terms are documented in [Providerless Research](../reference/PROVIDERLESS-RESEARCH.md).
 
-For the expanded local workflow packs, try `RA 11898` for EPR and plastic-packaging recovery, `RA 11127` for operators of payment systems, `RA 10168` for CFT/sanctions and AMLC asset-freeze workflows, `RA 11479` for anti-terrorism designation and proscription safeguards, `RA 8479` for downstream oil and fuel retail, `RA 11592` for LPG cylinders/refilling/dealers, `RA 9367` for biofuel blends, or `RA 7638` for DOE coordination/monitoring.
-
-For the DRRM/imminent-disaster slice, try `RA 10121` for local DRRM planning, hazard mapping, early warning, evacuation, vulnerable groups, drills, LDRRMF/QRF, and reporting; or `RA 12287` for state of imminent disaster, forecasted hazard, pre-disaster risk assessment, anticipatory action, pre-emptive evacuation, relief prepositioning, special trust fund, national DRRM fund, OCD monitoring, non-occurrence handling, and false hazard information. Providerless mode cannot verify live hazard forecasts, actual declarations, fund balances, LGU plans, procurement records, or current NDRRMC/OCD/Regional DRRM Council issuances; confirm those with current official sources and qualified counsel.
-
-For the Cybercrime Prevention Act IRR and Rule on Cybercrime Warrants slice, try `Cybercrime Prevention Act IRR`, `RA 10175 IRR`, `A.M. No. 17-11-03-SC`, `Rule on Cybercrime Warrants`, `WDCD`, `WICD`, `WSSECD`, `WECD`, `probable cause`, `preservation order`, `traffic data`, `content data`, `subscriber information`, `computer data`, `service provider`, `cyber warrant`, `forensic image`, `inventory`, `return`, `Office of Cybercrime`, `CICC`, `CERT`, `electronic evidence`, or `chain of custody`. Providerless mode cannot verify current DOJ/OOC, CICC, PNP/NBI, prosecutor, cybercrime court, court-rule, warrant form, preservation-order, service-provider, evidence-custody, privacy, or case-specific facts; confirm those with current official issuances, the relevant authority or provider, incident records, and qualified counsel.
-
-For the AMLC 2018 AMLA IRR slice, try `AMLC 2018 AMLA IRR`, `AMLA IRR`, `RA 9160 IRR`, `covered persons`, `customer due diligence`, `beneficial ownership`, `covered transaction report`, `suspicious transaction report`, `recordkeeping`, `AMLC reporting`, `confidentiality`, `tipping-off`, or `AML compliance program`. Providerless mode cannot verify current AMLC amendments, registration status, reporting portal behavior, actual CTR or STR filings, sanctions hits, freeze orders, customer risk facts, or regulated-entity records; confirm those with AMLC, BSP or the relevant regulator, current official issuances, internal records, and qualified counsel.
-
-For the labor implementation slice, try `DOLE Department Order No. 147-15` for termination due process, twin notice, notice to explain, hearing or conference, just cause, authorized cause, separation pay, final pay, and dismissal records; `DOLE Department Order No. 174-17` for contracting/subcontracting, labor-only contracting, contractor registration, service agreements, principal/contractor roles, supervision boundaries, payroll, and benefits records; or `DOLE Department Order No. 198-18` for OSH programs, safety officers, safety committees, worker training, PPE, workplace accident reports, DOLE inspections, and corrective action. Providerless mode cannot verify current DOLE or NLRC guidance, later issuances, actual contractor registration, company handbook or CBA terms, worker facts, OSH thresholds, training status, incident facts, or inspection status; confirm those with DOLE, NLRC or court guidance, employer records, official issuances, and qualified labor counsel.
-
-For the SEC official-contact slice, try `SEC Memorandum Circular No. 28, s. 2020` or `SEC MC 28` for official email address, official cellphone number, authorized representative, MC28 portal, corporate contact owner, notice routing, and reportorial records. Providerless mode cannot verify current MC28 portal behavior, filing deadlines, later SEC issuances, actual contact authority, access credentials, entity records, or reportorial status; confirm those with SEC, current portal instructions, corporate records, and qualified counsel.
-
-For the SEC beneficial ownership/HARBOR slice, try `SEC MC 15 s. 2025`, `beneficial ownership disclosure`, `HARBOR portal`, `GIS`, `ultimate beneficial owner`, `nominee`, `control person`, `authorized filer`, or `corporate secretary records`. Providerless mode cannot verify live HARBOR portal behavior, credentials, entity coverage, actual beneficial-owner facts, filing deadlines, SEC acceptance, later SEC issuances, or reportorial status; confirm those with SEC, current HARBOR instructions, corporate records, and qualified counsel.
-
-For the Internet Transactions Act IRR slice, try `Joint Administrative Order No. 24-03, s. 2024`, `RA 11967 IRR`, or `Internet Transactions Act IRR` for online merchant onboarding, seller verification, e-marketplace platform responsibilities, takedown or corrective action, consumer redress, E-Commerce Bureau routing, and transaction records. If a broad marketplace query is weak, include concrete terms such as `online merchant`, `e-retailer`, `e-marketplace`, `digital platform`, `merchant onboarding`, `seller information`, `seller verification`, `product listing`, `notice and action`, `takedown`, `complaint`, `refund`, `transaction record`, and `online business database`. Providerless mode cannot verify current DTI or E-Commerce Bureau advisories, platform-registration status, seller identity, product facts, delivery facts, payment facts, tax treatment, complaint deadlines, or sector-regulator requirements; confirm those with DTI, the relevant regulator, platform records, transaction documents, current official issuances, and qualified counsel.
-
-For the BSP financial-consumer/fraud/VASP slice, try `BSP Circular No. 1160, s. 2022` for financial consumer protection regulations, market conduct, transparent pricing, complaint handling, fraud response, and consumer data protection; `BSP Circular No. 1169, s. 2023` for consumer assistance mechanisms, complaint intake, acknowledgment, resolution timelines, escalation, root-cause analysis, and remediation; `BSP Circular No. 1140, s. 2022` for fraud management systems, monitoring, customer authentication, account takeover, incident response, and fraud reporting; or `BSP Circular No. 1108, s. 2021` for VASP registration, crypto exchange custody, wallet-address records, CDD, transaction monitoring, cybersecurity, and consumer disclosures. Providerless mode cannot verify current BSP amendments, MORB/MORNBFI updates, AMLC guidance, entity licensing or VASP registration, fraud case facts, wallet ownership, live complaint deadlines, or supervisory reporting status; confirm those with BSP, AMLC, regulated-entity records, current official issuances, and qualified counsel.
-
-For the EOPT/BIR implementation slice, try `RA 11976`, `RR 3-2024`, `RR 4-2024`, `RR 5-2024`, `RR 6-2024`, `RR 7-2024`, `RR 8-2024`, `RR 11-2024`, or `RMC 77-2024` for VAT or percentage-tax treatment, filing and payment, refund claims, reduced penalties, taxpayer classification, COR, sales or service invoices, official receipt transition, unused official receipts, ATP, serial numbers, and BIR circular clarifications. Providerless mode cannot verify current BIR forms, portal procedures, registration status, actual taxpayer classification, invoice approval, unused-form inventory, refund eligibility, rates, deadlines, or later issuances; confirm those with BIR, current official issuances, accounting records, and qualified tax counsel.
-
-For the digital-services VAT/NRDSP slice, try `RA 12023` for VAT on Digital Services, nonresident digital service providers, marketplace/platform signals, registration, invoicing, remittance, and BIR digital-services VAT implementation. If a broad query is weak, include concrete terms such as `VAT on Digital Services`, `NRDSP`, `nonresident digital service provider`, `digital service provider`, `online marketplace`, `platform`, `BIR registration`, `invoice`, `remittance`, and `reverse charge`. Providerless mode cannot verify current BIR issuances, portal procedures, actual registration or filing status, taxpayer classification, transaction facts, accounting treatment, or current agency interpretation; confirm those with BIR, current official issuances, internal records, and qualified tax counsel.
-
-For the privacy-operations/NPC-compliance slice, try `RA 10173` for the Data Privacy Act, `Data Privacy Act IRR` for PIC/PIP roles and lawful-processing implementation, `NPC Circular No. 16-03` for personal data breach management, `NPC Advisory No. 2026-02` for DBNMS submissions, `NPC Circular No. 2023-06` for security safeguards, `NPC Circular No. 2023-04` for consent, `NPC Circular No. 2022-04` for DPO designation, DPS registration, and automated decision-making/profiling notification, `NPC Circular No. 2020-03` for data sharing agreements, or `NPC Advisory No. 2025-02` for privacy engineering. If a broad privacy query is weak, include concrete terms such as `lawful processing`, `DPO`, `PIC`, `PIP`, `DPS registration`, `privacy notice`, `consent withdrawal`, `data subject rights`, `data sharing agreement`, `DSA`, `outsourcing`, `personal data breach`, `DBNMS`, `security safeguards`, `processor`, `vendor`, `PIA`, `privacy by design`, `automated decision-making`, and `profiling`. Providerless mode cannot verify live DBNMS submissions, NPC portal account status, actual breach facts, current registration status, organization-specific thresholds, or current agency interpretation; confirm those with NPC, current official issuances, internal records, and qualified counsel.
-
-For the education/inclusive-learning slice, try `RA 9155` for basic education governance, `RA 10157` for kindergarten, `RA 12199` for current early childhood/ECCD, `RA 10650` for open distance learning, or `RA 11650` for inclusive learning and learners with disabilities. Use `RA 10410` only for historical Early Years Act context; it was repealed by RA 12199. Verify current ECCD answers against current DepEd, CHED, TESDA, ECCD Council, and LGU issuances because providerless mode does not search live agency updates.
-
-For the PWD/senior benefits and accessibility slice, try `RA 9994` for senior-citizen benefits, `RA 7277` for PWD rights, `RA 9442` for PWD privileges and anti-discrimination signals, `RA 10070` for PDAO, `RA 10524` for PWD employment, `RA 10754` for PWD discounts and VAT exemptions, or `BP 344` for physical accessibility. If a broad query is weak, include concrete terms such as `PDAO`, `PWD ID`, `discount`, `VAT exemption`, `reasonable accommodation`, `accessible service channel`, `PWD employment`, `complaint`, `confidential records`, `OSCA`, and the relevant local office. Providerless mode cannot verify eligibility, actual ID validity, local budget, current DSWD/NCDA/BIR guidance, or establishment-specific tax treatment; confirm those with the relevant LGU, PDAO/OSCA, DSWD, NCDA, BIR, official issuances, and qualified counsel.
-
-For the public-land/free-patent/agrarian-reform slice, try `RA 11573` for imperfect or incomplete title confirmation, `RA 10023` for residential free patents, `RA 11231` for agricultural free patents, `RA 6657` and `RA 9700` for CARP/CARPER coverage, or `RA 11953` for agrarian emancipation and debt condonation. If a broad land query is weak, include concrete terms such as `alienable and disposable land`, `DENR CENRO`, `Register of Deeds`, `DAR clearance`, `CLOA`, `ARB`, `LandBank amortization`, `debt condonation`, and the relevant LGU. Providerless mode cannot verify actual land classification, cadastral surveys, title encumbrances, DAR/DENR case status, LandBank balances, or local zoning; confirm those with DENR, DAR, LandBank, the Register of Deeds, the LGU, official issuances, and qualified counsel.
-
-For the real property valuation/RPT/local assessment slice, try `RA 12001`, `BLGF MC No. 001-2025`, `RPVARA IRR`, `real property valuation`, `schedule of market values`, `SMV`, `tax declaration`, `assessment roll`, `real property tax`, `RPT`, `local assessor`, `local treasurer`, `Local Board of Assessment Appeals`, or `Central Board of Assessment Appeals`. Providerless mode cannot verify current BLGF issuances, local SMV adoption status, tax declarations, assessment rolls, cadastral data, title encumbrances, RPT balances, delinquency status, appeal deadlines, or LGU-specific procedures; confirm those with BLGF/DOF, the relevant LGU assessor and treasurer, appeal boards, source documents, official issuances, and qualified counsel.
-
-For the child adoption/foundling/civil-status slice, try `RA 11642` for domestic administrative adoption, alternative child care, NACC, child placement, matching, custody, and post-adoption confidentiality; `RA 11222` for simulated birth rectification, adoption-linked birth-certificate correction, and civil-registry records; or `RA 11767` for foundling recognition, birth registration, child identity, service access, and confidentiality. If a broad query is weak, include concrete terms such as `administrative adoption`, `alternative child care`, `NACC`, `DSWD`, `local social welfare`, `simulated birth rectification`, `foundling recognition`, `birth certificate`, `local civil registrar`, `civil registry`, `child identity`, `LGU`, and `confidentiality`. Providerless mode cannot verify actual child status, eligibility, consent, custody, matching, agency case status, civil-registry live records, passport or school eligibility, benefits access, or current agency procedures; confirm those with NACC, DSWD, local social welfare, the local civil registrar, the relevant LGU, official issuances, and qualified counsel.
+Providerless answers cannot verify live portal behavior, filings, registration status, fund balances, or case-specific facts. Confirm those with the relevant agency, current official issuances, and qualified counsel.
 
 For draft checks, upload Markdown, plain text, PDF, DOCX, or DOC files up to 5MB. Markdown and text files are read in the browser. PDF and Word files are posted to `/api/document-text` for server-side extraction before their text is reviewed.
 
 ## Document Extraction Fails
 
-Check the upload type and size first:
+Check the upload type, size, and count first:
 
 - Supported: `.md`, `.markdown`, `.txt`, `.text`, `.pdf`, `.docx`, `.doc`
 - Maximum size: 5MB
+- Maximum 3 documents per session
 
-If a PDF upload returns `Document extraction did not find readable text`, it may be a scanned image-only PDF. OCR is not bundled. Convert it to selectable text before uploading.
+If a PDF upload fails with a `422` from `/api/document-text` (`Document extraction did not find readable text`), it is most likely a scanned image-only PDF. OCR is intentionally not bundled, so this is expected behavior, not a regression. Convert the document to selectable text before uploading.
 
 Run the focused checks:
 
@@ -119,6 +107,15 @@ Run the focused checks:
 npm run check:document-text:self-test
 npm run check:document-extraction:self-test
 ```
+
+## Unit Tests Fail
+
+```powershell
+npm run test
+npm run test:watch
+```
+
+Vitest is configured in [vitest.config.mts](../../vitest.config.mts); tests are co-located as `src/**/*.test.ts` and run in the `node` environment. The same `npm run test` runs in CI and inside `npm run check:local`.
 
 ## Markdown Link Check Fails
 

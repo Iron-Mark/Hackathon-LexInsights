@@ -43,10 +43,17 @@ NEXT_PUBLIC_USE_RAG_PROXY=true
 
 Leave `NEXT_PUBLIC_RAG_PROVIDER_MODE` unset or set to `local-providerless` for the production default. In that mode, `/api/readiness` and `npm run check:live` skip remote RAG health as noncritical providerless checks.
 
+## Production Database and Auth
+
+- Apply [database/schema.sql](../../database/schema.sql), [database/migrations/0001_compliance_report_persistence.sql](../../database/migrations/0001_compliance_report_persistence.sql), and [database/storage.sql](../../database/storage.sql) to the production Supabase project. Without the migration, server-side compliance-report persistence for signed-in users silently no-ops.
+- Configure Clerk as a Supabase third-party auth provider in both dashboards. The client authenticates Supabase requests with a Clerk token ([src/lib/supabase/client.ts](../../src/lib/supabase/client.ts)), and all RLS and storage policies key on `auth.jwt()->>'sub'` resolving to the Clerk user id. Signed-in Supabase requests fail without this wiring.
+- [supabase-keepalive.yml](../../.github/workflows/supabase-keepalive.yml) pings Supabase on a schedule so the free-tier production project does not pause. Keep it enabled.
+
 ## Pre-Deployment
 
+From the repository root:
+
 ```powershell
-cd "C:\Users\ultim\_ Local Codes\Hackathon-LexInsights"
 npm ci
 npm run check:deployment -- --base-url https://lexiph.vercel.app --local-only
 npm run check:local
@@ -59,20 +66,22 @@ If backend credentials are not available locally, at minimum run:
 ```powershell
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
+npm run test
+npm audit --omit=dev
 npm run check:docs:self-test
 npm run check:docs
-node scripts/check-readme-screenshots.mjs
+npm run check:screenshots
 npm run check:release
 npm run build
-node scripts/check-production-bundle.mjs
+npm run check:bundle
 ```
 
-The bundle check expects a completed production build in `.next`. Use `node scripts/check-production-bundle.mjs --strict-client-rag` only when the intended release must not ship the providerless local legal corpus in browser chunks.
+The bundle check expects a completed production build in `.next`. Use `npm run check:bundle -- --strict-client-rag` only when the intended release must not ship the providerless local legal corpus in browser chunks.
 
 ## Deploy
 
 ```powershell
-node scripts/deploy-vercel.mjs
+npm run deploy:prod
 ```
 
 The deploy helper refuses dirty worktrees, prints the exact expected commit SHA, runs a fast local deployment preflight, runs `npm run check:local`, deploys with `COMMIT_SHA` and `NEXT_PUBLIC_APP_COMMIT_SHA`, then verifies the live deployment against that same SHA.
@@ -80,7 +89,7 @@ The deploy helper refuses dirty worktrees, prints the exact expected commit SHA,
 For a fast operator-only rehearsal without deploying:
 
 ```powershell
-node scripts/deploy-vercel.mjs --preflight-only
+npm run deploy:prod -- --preflight-only
 ```
 
 Use `--skip-local-checks` only after the same commit has already passed the full local or CI gate.

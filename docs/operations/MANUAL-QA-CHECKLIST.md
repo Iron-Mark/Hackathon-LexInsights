@@ -1,11 +1,12 @@
 # Manual QA Checklist
 
-Covers the UI surfaces added in the 2026-07-08 build cycle (PRD P0-1 through P2-3 plus the P1-3 matter follow-ups). These are build-verified (`tsc`, `eslint`, `npm run build`) and their guest-reachable parts were browser-checked, but the surfaces behind an authenticated upload flow were not eyeballed. This checklist clears that gap in one pass.
+Covers the UI surfaces from the July 2026 build cycles (PRD P0-1 through P2-3, the P1-3 matter follow-ups, and the 2026-07-28 P0-1 server-sync wiring) that automated gates do not eyeball — especially the flows behind sign-in and an authenticated upload.
 
 ## Setup
 
 - Run locally: `npm run dev`, open `http://localhost:3000`. Or test production after a `dev` -> `main` release at `https://lexiph.vercel.app`.
 - Sign in (Clerk) so the profile and persistence paths are active.
+- For the server-sync items in section 5, the target environment's Supabase project must have [database/migrations/0001_compliance_report_persistence.sql](../../database/migrations/0001_compliance_report_persistence.sql) applied and Clerk configured as a Supabase third-party auth provider — otherwise those items will report false failures.
 - Have a sample document ready: [docs/samples/sample-barangay-disaster-plan.md](../samples/sample-barangay-disaster-plan.md).
 - Check each item at desktop width and again at a 375px phone width; watch for horizontal page scroll (there should be none).
 
@@ -19,6 +20,7 @@ Covers the UI surfaces added in the 2026-07-08 build cycle (PRD P0-1 through P2-
 ## 2. Plan and limits (P2-1)
 
 - [ ] Open the profile dialog. A plan/limits section shows the "Free" tier, the per-minute request limits (research 30, document extraction 12, etc.), and a note on what Education/Pro would add. No overflow at 375px.
+- [ ] The dialog body scrolls within a constrained height (short viewport or high zoom) instead of clipping the plan/limits content (scroll fix, 2026-07-29).
 
 ## 3. Compliance report flow (P1-1, P0-2, P0-3, P2-2, P2-3)
 
@@ -43,12 +45,21 @@ From a compliance report, use "Save to matter".
 - [ ] Delete a saved report (per-row x) and delete a matter; both work.
 - [ ] Dialog has no horizontal overflow at 375px; the two-pane layout stacks to one column.
 
-## 5. Persistence (P0-1, client-side / IndexedDB)
+## 5. Persistence (P0-1)
+
+Local (IndexedDB, all users):
 
 - [ ] After saving a report and creating a matter, reload the page. The compliance report version history and the matter (with its reports, tags, and documents) are still there.
 - [ ] In DevTools -> Application -> IndexedDB, a `lexinsights` database holds the `compliance-storage` and `matter-storage` keys.
 
+Server sync (Supabase, signed-in only — see the Setup prerequisite):
+
+- [ ] Signed in, save a report version. Rows appear in `compliance_reports`, `report_versions`, and `report_findings` for your Clerk user id (or verify indirectly with the next item).
+- [ ] Clear site data (DevTools -> Application -> Clear site data), reload, and sign in again. The report and its version history rehydrate from the server into the canvas.
+- [ ] As a guest, save a report version and confirm (Network tab) no Supabase writes fire; the report stays browser-only.
+- [ ] With the server unreachable (e.g. offline after page load), a signed-in save still succeeds locally and shows a one-time "Cloud save is unavailable right now" toast instead of blocking or erroring.
+
 ## Notes
 
-- Server-side compliance persistence (Supabase) is intentionally not wired; reports persist client-side per device. See PRD P0-1.
+- IndexedDB is the local source of truth; signed-in saves dual-write to Supabase, guests stay local-only, and matters remain client-side per device. See PRD P0-1.
 - Tier enforcement and student verification are not implemented (transparency surface only). See PRD P2-1.

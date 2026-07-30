@@ -3,16 +3,16 @@
 | Field | Value |
 |---|---|
 | For | LexInsights (`lexiph.vercel.app`), version 0.5.2 |
-| Date | 2026-07-08 |
+| Date | 2026-07-30 |
 | Status | Draft for review |
 | Companion docs | [Competitive Brief](./COMPETITIVE-BRIEF.md), [PRD](./PRD.md) |
-| Research freshness | Competitor pricing, funding, and launch dates researched 2026-07-08; re-verify before external use |
+| Research freshness | Competitor pricing, funding, and launch dates researched 2026-07-08; re-verify before external use. Product claims re-verified against the repo 2026-07-30 |
 
 A one-page reference for positioning LexInsights against the tools a Philippine lawyer, SME, or student actually considers. Numbers are here so a claim can be checked, not taken on faith. Update it the day a competitor ships a compliance feature, because that is the day the middle section changes.
 
 ## LexInsights in one paragraph
 
-LexInsights answers Philippine legal questions & scores uploaded documents for compliance against 45 frameworks, from a bundled corpus of 271 authorities that runs with no AI provider attached. Local mode is deterministic template generation; it calls no model, so it has no generative step in which to invent a case name. Target users are price-sensitive solo & small-firm lawyers, SME compliance officers, and law students. Entry is guest-first and free. The one thing it does that no Philippine-native rival does: take a PDF and return a 0-to-100 score with green, amber, or red findings mapped to named statutes.
+LexInsights answers Philippine legal questions & scores uploaded documents for compliance against 45 frameworks, from a bundled corpus of 271 authorities that runs with no AI provider attached. Local mode is deterministic template generation; it calls no model, so it has no generative step in which to invent a case name. Target users are price-sensitive solo & small-firm lawyers, SME compliance officers, and law students. Entry is guest-first and free. The one thing it does that no Philippine-native rival does: take a PDF and return a 0-to-100 score with green, amber, or red findings mapped to named statutes. The report exports to Markdown, DOCX, or PDF, each with an A.M. No. 25-11-28-SC AI-use disclosure block appended, and a signed-in user's reports persist server-side with version history.
 
 ---
 
@@ -24,7 +24,7 @@ LexInsights answers Philippine legal questions & scores uploaded documents for c
 
 **Where they're weak.** They do research, not document compliance. There's no evidence of a feature that ingests a company's policy and scores it against RA 10173 or RA 9160. Their scale claim is also a metered subscription, not a free-at-entry product.
 
-**Our counter.** LexInsights owns the compliance-scoring job Anycase doesn't sell, and it runs providerless so it degrades to local research instead of a spinner when a backend times out. The corpus is smaller by design and honest about it; every one of the 271 authorities carries a source and a verification date.
+**Our counter.** LexInsights owns the compliance-scoring job Anycase doesn't sell, and it runs providerless so it degrades to local research instead of a spinner when a backend times out. The corpus is smaller by design and honest about it; every one of the 271 authorities carries a source and a verification date, and Help & Resources publishes per-family counts with last-verified dates.
 
 | If the prospect says | Respond with |
 |---|---|
@@ -43,14 +43,14 @@ LexInsights answers Philippine legal questions & scores uploaded documents for c
 
 **Where they're weak.** They lead with contract review & research, not framework-mapped compliance scoring for SMEs, and there's no providerless story; a hosted AI tool is only as available as its backend.
 
-**Our counter.** Same citation-first thesis, plus two things Intellegal doesn't sell: a 0-to-100 compliance score against 45 named PH frameworks, and a deterministic local mode with no model in the loop. Ground the pitch on the AI-use disclosure regime (A.M. No. 25-11-28-SC, 18 February 2026); that is a feature neither team has shipped, and it's on the LexInsights roadmap as P0-3.
+**Our counter.** Same citation-first thesis, plus two things Intellegal doesn't sell: a 0-to-100 compliance score against 45 named PH frameworks, and a deterministic local mode with no model in the loop. Ground the pitch on the AI-use disclosure regime (A.M. No. 25-11-28-SC, 18 February 2026): LexInsights ships it today — every report export (Markdown, DOCX, PDF) appends a disclosure block — and Intellegal sells nothing equivalent.
 
 | If the prospect says | Respond with |
 |---|---|
 | "Intellegal also shows its citations." | "Good, they should. The difference is what happens with no match: LexInsights says 'no authority found' out loud instead of filling the gap. And it scores documents against 45 frameworks, which is a different product than research." |
-| "Intellegal is a funded company; you're a hackathon project." | "Fair. Judge the output, not the org chart. Ask both tools the same RA 10173 question and check whether every cited section resolves to a real Lawphil page." |
+| "Intellegal is a funded company; you're a hackathon project." | "Fair. Judge the output, not the org chart. Ask both tools the same RA 10173 question and check whether every cited section resolves to a real Lawphil page. And the output is durable: a signed-in user's compliance report persists server-side with immutable version history and survives a cleared browser — unit-tested, not hand-waved." |
 
-**Landmine to set:** "Does the tool keep working if its AI provider is down, and does it give you an AI-use disclosure you can attach to a filing?"
+**Landmine to set:** "Does the tool keep working if its AI provider is down, and does it give you an AI-use disclosure you can attach to a filing?" LexInsights answers yes to both; make the prospect ask Intellegal the same.
 
 ---
 
@@ -77,7 +77,7 @@ LexInsights answers Philippine legal questions & scores uploaded documents for c
 
 **CD Asia / CD Technologies.** Established 1994, with Supreme Court decisions in full text back to 1901. This is the depth benchmark, and LexInsights won't match a 130-year archive. Don't try. Compete on the compliance-scoring workflow & the free entry point, not on archive size.
 
-**Westlaw, Lexis+ AI, Harvey.** Priced for firms, not solos: Westlaw runs USD 150 to USD 400 per user per month, full stacks USD 10,000 to USD 20,000+ a year, and Harvey (valued near USD 11 billion in March 2026) sells enterprise seats to the AmLaw 100. They also hallucinate: Stanford (2025) put Lexis+ AI above 17% and Westlaw's AI research above 34%. The counter is one sentence: a Filipino solo or SME isn't signing a five-figure annual contract, and the paid tools aren't clean anyway.
+**Westlaw, Lexis+ AI, Harvey.** Priced for firms, not solos, and not hallucination-free either (pricing, valuations, and the Stanford error rates are in the [Competitive Brief](./COMPETITIVE-BRIEF.md)). The counter is one sentence: a Filipino solo or SME isn't signing a five-figure annual contract, and the paid tools aren't clean anyway.
 
 ---
 
@@ -85,7 +85,7 @@ LexInsights answers Philippine legal questions & scores uploaded documents for c
 
 **We tend to win when** the prospect needs to score a document against a Philippine framework, is price-sensitive, values a citation they can click, or needs an AI-use disclosure for court-bound work under A.M. No. 25-11-28-SC.
 
-**We tend to lose when** the prospect needs deep case-law archives (CD Asia's 1901-onward corpus), wants the resource breadth Anycase advertises, or already trusts a funded rival's brand over a hackathon-stage tool. The answer to the last two is the same: ship P0 and P1 from the PRD, and grow the 271-authority corpus toward 400+ with visible coverage dates.
+**We tend to lose when** the prospect needs deep case-law archives (CD Asia's 1901-onward corpus), wants the resource breadth Anycase advertises, or already trusts a funded rival's brand over a hackathon-stage tool. The [PRD](./PRD.md)'s P0/P1 answer has shipped — server-persisted reports, the citation-traceability guarantee, the disclosure export, PDF export, visible coverage dates in Help & Resources — so what remains is growing the 271-authority corpus toward 400+ (P1-2).
 
 ## Maintenance
 

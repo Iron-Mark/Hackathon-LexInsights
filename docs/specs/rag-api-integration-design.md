@@ -1,5 +1,7 @@
 # Design Document - RAG API Integration
 
+> **Status: Historical.** This spec records the original RAG API integration design, which has since shipped and evolved (the default research path is now the local providerless engine). It is preserved as-is for context. For current behavior, see [docs/reference/PROVIDERLESS-RESEARCH.md](../reference/PROVIDERLESS-RESEARCH.md) and the code.
+
 ## Overview
 
 This design document outlines the technical architecture for integrating the Philippine Legislation Research API (RAG API) into the LexInsights application. The integration will provide intelligent legislation search and summarization capabilities through a well-structured service layer, state management, and UI components. The design follows the existing LexInsights architecture patterns using Next.js 14, TypeScript, Zustand for state management, and Tailwind CSS for styling.

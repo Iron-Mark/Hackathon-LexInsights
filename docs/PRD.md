@@ -148,6 +148,8 @@ Shipping this costs something, and that cost is the point: the tool will visibly
 
 *Acceptance:* every assistant response in both modes either renders at least one inline citation resolving to a corpus authority, or renders an explicit "no supporting authority in the local corpus" notice; a golden-query test asserts the no-match state for a query with no corpus support; no response presents an unlinked statute number as if it were sourced.
 
+*Status (shipped 2026-07-09):* the explicit no-authority state shipped in [no-authority-notice.tsx](../src/components/chat/no-authority-notice.tsx) — any assistant response in either mode that resolves to no corpus authority (no matched documents and no known citations, or a `no_results`/`error` status) renders the "no supporting authority in the local corpus" notice, while unresolved statute mentions stay plain text rather than fabricated links; the golden-query gate asserts the no-result state for unrelated queries.
+
 ### P0-3. AI-use disclosure and provenance export for court-bound work
 
 A.M. No. 25-11-28-SC (resolved 18 February 2026) requires plain-language disclosure of AI use in court-bound work and holds the filer personally responsible. No Philippine competitor has built for this. LexInsights already captures the raw material every disclosure needs: provider mode, fallback status, matched authorities, retrieval diagnostics, & per-source verification dates. Assemble it into a disclosure block a user can attach to a report or filing.
