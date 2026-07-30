@@ -63,7 +63,7 @@ Compliance mode accepts up to 3 files per session, each capped at 5MB, in PDF, W
 
 The gap that matters most is in the data layer. The schema defines 6 tables: `profiles`, `chats`, `messages`, `documents`, `compliance_reports`, and `search_history`. The app writes to `chats`, `messages`, and `documents`. It never writes to `compliance_reports` or `search_history`; a repository-wide search for `from('compliance_reports')` returns zero call sites. Compliance reports and their entire version history persist to browser `localStorage` under the key `compliance-storage` ([compliance-store.ts:102](../src/lib/store/compliance-store.ts)). The flagship feature's output is not in the database, even though a table with row-level security, four indexes, & a 0-to-100 CHECK constraint was built to hold it. Clear the browser, lose the report.
 
-Quality gates are the opposite story; they are unusually strong for a hackathon-stage app. Twenty-five `check:*` scripts gate releases, including five local-RAG gates that test retrieval quality, answer quality, source freshness, sub-second performance, & corpus governance. Governance (`check:local-rag:governance`) fails the build on an orphan record, a missing source, a future verification date, or an unmarked coverage gap. Testing above that layer is thin: an end-to-end Playwright smoke suite, Chromium only, and no unit-test framework.
+Quality gates are the opposite story; they are unusually strong for a hackathon-stage app. Twenty-six `check:*` scripts gate releases, including five local-RAG gates that test retrieval quality, answer quality, source freshness, sub-second performance, & corpus governance. Governance (`check:local-rag:governance`) fails the build on an orphan record, a missing source, a future verification date, or an unmarked coverage gap. Above that layer: a Vitest unit suite (35 tests, added 2026-07-28, in CI and `check:local`) and an end-to-end Playwright smoke suite, Chromium only.
 
 ---
 
@@ -147,6 +147,8 @@ Citation rendering already exists ([legal-citation.tsx](../src/components/chat/l
 Shipping this costs something, and that cost is the point: the tool will visibly say "I found no authority for this" more often than ChatGPT will, because ChatGPT fills the gap with an invented case. Choosing the honest empty state over a confident fabrication is the reason a lawyer can file work that touched this tool.
 
 *Acceptance:* every assistant response in both modes either renders at least one inline citation resolving to a corpus authority, or renders an explicit "no supporting authority in the local corpus" notice; a golden-query test asserts the no-match state for a query with no corpus support; no response presents an unlinked statute number as if it were sourced.
+
+*Status (shipped 2026-07-09):* the explicit no-authority state shipped in [no-authority-notice.tsx](../src/components/chat/no-authority-notice.tsx) — any assistant response in either mode that resolves to no corpus authority (no matched documents and no known citations, or a `no_results`/`error` status) renders the "no supporting authority in the local corpus" notice, while unresolved statute mentions stay plain text rather than fabricated links; the golden-query gate asserts the no-result state for unrelated queries.
 
 ### P0-3. AI-use disclosure and provenance export for court-bound work
 

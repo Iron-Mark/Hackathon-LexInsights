@@ -4,29 +4,29 @@ LexInsights uses providerless local RAG as the public default. The quality gates
 
 ## Source Freshness
 
-```powershell
+```bash
 npm run check:local-rag:sources
 ```
 
 This offline check validates that every corpus record has source metadata and coverage metadata, uses HTTPS, stays on a reviewed source host, has a valid non-future catalog or verification date, and keeps minimum provenance-note coverage. It also prints the split between `verified` and `seeded` records so public UI and maintainers do not overstate source freshness.
 
-This check does not call live government sites. Keep it deterministic for CI.
+This check does not call live government sites, so it stays deterministic: it runs inside `npm run check:local` and in CI ([ci.yml](../../.github/workflows/ci.yml), "Local RAG source-freshness check").
 
-For opt-in live URL status review, run the standalone live audit directly:
+For opt-in live URL status review, run the live audit:
 
-```powershell
-node scripts/check-local-rag-source-live.mjs --sample 10
+```bash
+npm run check:local-rag:sources:live
 ```
 
-The live audit reads `AUTHORITY_SOURCES`, checks each selected URL with `HEAD`, falls back to a small `GET` request when needed, enforces bounded timeout and concurrency, and prints a summary with failed source IDs. Use `--limit <n>` or `--sample <n>` for safe runs, plus `--timeout-ms <n>`, `--concurrency <n>`, and `--report <path>` when you need a JSON report. Direct runs exit nonzero when selected URLs fail; use `--allow-failures` for report-only sampling. Do not wire this script into `check:local` or CI because official sites can block, throttle, redirect, or temporarily fail.
+The alias samples 10 URLs with `--allow-failures`, so it is report-only. The audit reads `AUTHORITY_SOURCES`, checks each selected URL with `HEAD`, falls back to a small `GET` request when needed, enforces bounded timeout and concurrency, and prints a summary with failed source IDs. For custom runs, invoke `node scripts/check-local-rag-source-live.mjs` directly with `--limit <n>` or `--sample <n>`, plus `--timeout-ms <n>`, `--concurrency <n>`, and `--report <path>` when you need a JSON report; direct runs without `--allow-failures` exit nonzero when selected URLs fail. Do not wire this script into `check:local` or CI because official sites can block, throttle, redirect, or temporarily fail.
 
 ## Answer Quality
 
-```powershell
+```bash
 npm run check:local-rag:answers
 ```
 
-This gate runs a fixed set of realistic Philippine legal research prompts through `runLocalResearch` with deep search enabled. Each case asserts completion, local-providerless mode, confidence threshold, required authorities, forbidden authorities where relevant, expected answer fragments, unknown-citation handling, and HTTPS source metadata on top matches.
+This gate runs a fixed set of realistic Philippine legal research prompts through `runLocalResearch` with deep search enabled. Each case asserts completion, local-providerless mode, confidence threshold, required authorities, forbidden authorities where relevant, expected answer fragments, unknown-citation handling, and HTTPS source metadata on top matches. It runs inside `npm run check:local` and in CI ("Local RAG answer-quality check").
 
 The prompt cases live in `tests/fixtures/rag-golden/answer-quality-cases.json`. The fixture schema is documented in `tests/fixtures/rag-golden/README.md`; update that fixture when adding or tuning answer-quality scenarios.
 

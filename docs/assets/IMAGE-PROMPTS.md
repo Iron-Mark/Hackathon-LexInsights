@@ -1,6 +1,6 @@
 # LexInsights Image Notes
 
-Assets refreshed on July 2, 2026.
+Assets refreshed on July 2, 2026. The source screenshots inside the composites predate the 2026-07-09 SEO/H1 changes and the 2026-07-12 empty-state/mobile polish, so a cover refresh is due before the next external showcase.
 
 The current GitHub and archive cover images are deterministic composites built from real project assets. They are not AI mockups and should stay visually aligned with the shipped app.
 
@@ -44,6 +44,14 @@ Recommended use:
 Source inputs:
 - `public/logo/LOGO-0.5-NOBG.png`
 - `docs/assets/lexinsights-compliance-report.png`
+
+### Other Assets In This Directory
+
+- `lexinsights-github-social-dark.png` — dark variant of the GitHub social preview.
+- `lexinsights-chat-desktop.png` / `lexinsights-chat-desktop-light.png` — desktop chat captures (dark/light); the dark one is a README Product Preview image validated by `npm run check:screenshots`.
+- `lexinsights-help-mobile.png` / `lexinsights-help-mobile-light.png` — mobile Help & Resources captures (dark/light); the dark one is the second validated README Product Preview image.
+- `lexinsights-compliance-report.png` / `lexinsights-compliance-report-light.png` — compliance report captures (dark/light), used as composite inputs above.
+- `lexinsights-rag-flow.svg` — providerless research flow diagram.
 
 ## Refinement Direction
 

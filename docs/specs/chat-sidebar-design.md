@@ -1,5 +1,7 @@
 # Chat Sidebar Design Document
 
+> **Status: Historical.** This spec records the original design for a feature that has since shipped and evolved (the shipped sidebar uses the iris design system, not the slate palette specced here). It is preserved as-is for context. For current behavior, see [docs/reference/UI.md](../reference/UI.md) and the code.
+
 ## Overview
 
 The chat sidebar feature adds a persistent left-side navigation panel to the chat interface, enabling users to view, navigate, and manage their chat conversations. The design follows modern chat application patterns (ChatGPT, Gemini) with a collapsible sidebar, responsive behavior, and smooth transitions.

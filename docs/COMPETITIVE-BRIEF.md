@@ -3,10 +3,10 @@
 | Field | Value |
 |---|---|
 | Subject | LexInsights (`lexiph.vercel.app`), version 0.5.2 |
-| Date | 2026-07-08 |
+| Date | 2026-07-30 |
 | Status | Draft for review |
 | Companion docs | [PRD](./PRD.md), [Battlecard](./COMPETITIVE-BATTLECARD.md) |
-| Research freshness | Product numbers read from the repo; market and competitor numbers web-researched 2026-07-08 and worth re-verifying before external use |
+| Research freshness | Product numbers read from the repo 2026-07-30; market and competitor numbers web-researched 2026-07-08 and worth re-verifying before external use |
 
 This is the analysis behind the [PRD](./PRD.md) and the [Battlecard](./COMPETITIVE-BATTLECARD.md). It maps who LexInsights competes with, where the open ground is, & what to do about it. Nearly every claim carries a number so a reader can check it.
 
@@ -14,7 +14,7 @@ This is the analysis behind the [PRD](./PRD.md) and the [Battlecard](./COMPETITI
 
 The Philippine legal-AI market has research tools and no compliance-scoring tool. Intellegal, Anycase, & Jur.ph all answer legal questions; none takes a company's document and scores it against a named Philippine framework. That gap is LexInsights' opening, and it points at a persona nobody else serves: the SME compliance officer facing RA 10173, where National Privacy Commission fines reach PHP 5,000,000 per act.
 
-The biggest opportunity is the SME compliance lane plus a disclosure feature the Supreme Court just made mandatory (A.M. No. 25-11-28-SC, 18 February 2026). The biggest threat is corpus depth: 271 authorities is small next to Anycase's claimed 90,000+ resources and CD Asia's Supreme Court archive back to 1901, and one fabricated citation under the new disclosure regime is reputational ruin.
+The biggest opportunity is the SME compliance lane plus a disclosure feature the Supreme Court made mandatory (A.M. No. 25-11-28-SC, 18 February 2026) — a disclosure block LexInsights now appends to every report export. The biggest threat is corpus depth: 271 authorities is small next to Anycase's claimed 90,000+ resources and CD Asia's Supreme Court archive back to 1901, and one fabricated citation under the new disclosure regime is reputational ruin.
 
 ## Competitor profiles
 
@@ -30,23 +30,13 @@ The biggest opportunity is the SME compliance lane plus a disclosure feature the
 
 **Horizontal AI (ChatGPT, Claude, Gemini, Perplexity).** Free to USD 20/month, ubiquitous, & Taglish-fluent. This is the real incumbent. It's also the source of the problem the whole category exists to solve: GPT-4 hallucinated on roughly 58% of verifiable legal questions (Dahl et al., 2024), and roughly 1,450 court cases now flag AI-fabricated citations.
 
-## Messaging comparison
-
-| Dimension | LexInsights | Intellegal | Anycase | ChatGPT |
-|---|---|---|---|---|
-| Primary claim | Providerless PH research plus document compliance scoring | Verifiable, citation-first PH research and review | Scale: 5,000+ users, 90,000+ resources | General assistant for anything |
-| Target buyer | Solo/small firm, SME compliance officer, student | PH lawyers, firms | PH lawyers, students | Everyone |
-| Key differentiator | 0-100 compliance score vs 45 frameworks; no model in local mode | Every claim traces to a source | Corpus breadth and a student tier | Zero friction, free |
-| Pricing posture | Free at entry | Subscription | PHP 999/599 per month | Free to USD 20/mo |
-| Core weakness | 271-authority corpus depth | No compliance scoring, no providerless mode | Research only, metered | Fabricates ~58% on legal questions |
-
 ## Positioning and content gaps
 
-Two gaps sit unclaimed, and both favor LexInsights.
+Two gaps favored LexInsights when this brief was first drafted; both are now shipped features, so the job is defending them, not claiming them.
 
-**Document compliance scoring for SMEs.** Every PH-native rival does research; none scores an uploaded document against RA 10173, RA 9160, or RA 10175 and returns green, amber, or red findings with a 0-to-100 score. LexInsights already ships this. The gap is that the flagship output isn't persisted server-side yet, which the PRD addresses as [P0-1](./PRD.md).
+**Document compliance scoring for SMEs.** Every PH-native rival does research; none scores an uploaded document against RA 10173, RA 9160, or RA 10175 and returns green, amber, or red findings with a 0-to-100 score. LexInsights ships this, and since 2026-07-28 a signed-in user's report also persists server-side ([P0-1](./PRD.md)): Supabase rows with immutable version history and normalized findings, behind live Clerk third-party auth with RLS keyed to the Clerk user id, so a report survives clearing browser storage. That is an audit trail a rival has to rebuild, not just a feature to copy.
 
-**AI-use disclosure for court-bound work.** A.M. No. 25-11-28-SC (18 February 2026) requires plain-language disclosure of AI use and puts responsibility on the filer. No competitor has built a disclosure or provenance export. LexInsights already captures the raw material (provider mode, matched authorities, per-source verification dates); assembling it is [P0-3](./PRD.md).
+**AI-use disclosure for court-bound work.** A.M. No. 25-11-28-SC (18 February 2026) requires plain-language disclosure of AI use and puts responsibility on the filer. No competitor has built a disclosure or provenance export; LexInsights shipped one 2026-07-08 ([P0-3](./PRD.md)) — a disclosure block (tool, mode, cited authorities, verification dates) appended to every Markdown, DOCX, and PDF report export.
 
 ## Opportunities
 
@@ -54,16 +44,14 @@ The SME compliance officer is the widest open lane; no PH-native tool targets a 
 
 ## Threats
 
-Corpus depth is the credibility risk. 271 authorities against 90,000+ claimed and a 1901-onward archive is a real gap, and the mitigation is honesty about coverage plus growth toward 400+ ([PRD P1-2](./PRD.md)). Hallucination liability is existential: even purpose-built RAG tools miss 17% to 34%, so one bad PH citation ends trust. Funded rivals moving first is the third threat; Intellegal launched June 2026 and Anycase could add a compliance module and out-resource a four-person team. The habit of reaching for free ChatGPT is the fourth, and the only answer is the traceability guarantee a general chatbot structurally can't make.
+Corpus depth is the credibility risk. 271 authorities against 90,000+ claimed and a 1901-onward archive is a real gap; the coverage-honesty half of the mitigation has shipped (per-family counts and last-verified dates in Help & Resources), leaving growth toward 400+ ([PRD P1-2](./PRD.md)). Hallucination liability is existential: even purpose-built RAG tools miss 17% to 34%, so one bad PH citation ends trust. Funded rivals moving first is the third threat; Intellegal launched June 2026 and Anycase could add a compliance module and out-resource a four-person team. The habit of reaching for free ChatGPT is the fourth, and the only answer is the traceability guarantee a general chatbot structurally can't make.
 
 ## Recommended actions
 
-**This cycle, ship the trust foundation.** Persist compliance reports server-side with an audit trail ([P0-1](./PRD.md)), guarantee every answer links a source or shows an explicit "no authority found" state ([P0-2](./PRD.md)), and ship the AI-use disclosure export ([P0-3](./PRD.md)). These convert the current strengths into defensible ones.
+The entire trust foundation has shipped and is tracked as status in the [PRD](./PRD.md): server-side persistence with an audit trail (P0-1, 2026-07-28), the citation-traceability guarantee with an explicit "no supporting authority" state (P0-2, 2026-07-09), the AI-use disclosure export (P0-3), PDF export (P1-1), and published corpus/framework coverage with per-source verification dates (P1-2, coverage half). What remains:
 
-**Claim the compliance lane in the messaging.** Lead every public surface with the one job no PH rival sells: score my document against a Philippine framework. Pair it with the disclosure hook.
+**Claim the compliance lane in the messaging.** Lead every public surface with the one job no PH rival sells: score my document against a Philippine framework. Pair it with the shipped disclosure export.
 
-**Blunt the depth attack with honesty.** Publish corpus size, framework coverage, & per-source verification dates ([P1-2](./PRD.md)) so a small honest corpus reads as more trustworthy than a large silent one.
+**Grow the corpus toward 400+ ([P1-2](./PRD.md)).** Coverage disclosure is live; volume is the remaining half of the depth defense.
 
 **Own the student funnel early.** A free entry tier plus a student path captures the 2024 Bar cohort before Anycase's PHP 599 education tier does ([P2-1](./PRD.md)).
-
-**Ship PDF export.** Regulators, NPC filings, and courts expect PDF, and reports export only Markdown and DOCX today ([P1-1](./PRD.md)).

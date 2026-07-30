@@ -8,6 +8,7 @@ This map explains how LexInsights product controls support Philippine legal rese
 - The bundled corpus includes RA 10173, the Data Privacy Act IRR, NPC breach-management, security, consent, registration, data-sharing, and privacy-engineering materials.
 - `/api/version` and `/api/readiness` keep public diagnostic output lean, with detailed diagnostics limited to local checks or token-gated requests.
 - Sign-out clears RAG, compliance, upload, guest-chat, and fallback-chat browser storage keys.
+- Signed-in users' compliance reports also persist server-side in Supabase under row-level security keyed to the Clerk user id, with an append-only version audit trail; guest reports are never synced. Server rows survive sign-out and clearing browser storage; the retention window for persisted reports is an open decision tracked in the PRD.
 - Document uploads are capped at 5MB and server extraction now validates PDF/Word signatures before parsing.
 
 ## DICT And Cyber Incident Readiness
@@ -27,5 +28,6 @@ This map explains how LexInsights product controls support Philippine legal rese
 
 - Unknown citations are surfaced without invented source details.
 - Citation dialogs show source tier, provenance state, evidence anchors, related authorities, matched signals, and official-source links when metadata exists.
-- RAG source freshness and answer-quality gates run offline and are included in the full local quality gate.
+- Every compliance-report export appends an AI-use disclosure covering the tool, version, reason for use, and degree of human oversight, following A.M. No. 25-11-28-SC.
+- RAG source freshness and answer-quality gates run offline and are included in the full local quality gate, alongside the vitest unit-test gate that also runs in CI.
 - Golden, performance, governance, source, and answer checks should all be updated when the corpus changes materially.

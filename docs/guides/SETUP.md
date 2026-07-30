@@ -10,8 +10,9 @@
 
 ## Install
 
-```powershell
-cd "C:\Users\ultim\_ Local Codes\Hackathon-LexInsights"
+From the repository root:
+
+```bash
 npm ci
 ```
 
@@ -48,18 +49,23 @@ Compliance uploads support browser-readable `.md`, `.markdown`, `.txt`, and `.te
 Run the SQL files in this order:
 
 1. [database/schema.sql](../../database/schema.sql)
-2. [database/storage.sql](../../database/storage.sql)
-3. Optional seed data from one of:
+2. [database/migrations/0001_compliance_report_persistence.sql](../../database/migrations/0001_compliance_report_persistence.sql)
+3. [database/storage.sql](../../database/storage.sql) after creating the private `documents` storage bucket
+4. Optional seed data from one of:
    - [database/seed-admin.sql](../../database/seed-admin.sql)
    - [database/seed-ken.sql](../../database/seed-ken.sql)
    - [database/seed-mark.sql](../../database/seed-mark.sql)
    - [database/seed-mock.sql](../../database/seed-mock.sql)
 
+The migration adds the `report_versions` and `report_findings` tables. Without it, server-side compliance-report persistence for signed-in users silently no-ops.
+
+Also configure Clerk as a Supabase third-party auth provider in both dashboards. The browser client authenticates every Supabase request with a Clerk token ([src/lib/supabase/client.ts](../../src/lib/supabase/client.ts)), and all RLS and storage policies key on `auth.jwt()->>'sub'` resolving to the Clerk user id. Without this wiring, signed-in Supabase requests are denied.
+
 See [Database](../reference/DATABASE.md) for the table and storage notes.
 
 ## Run Locally
 
-```powershell
+```bash
 npm run dev
 ```
 
@@ -67,9 +73,10 @@ Open `http://localhost:3000`.
 
 ## Minimum Local Verification
 
-```powershell
+```bash
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
+npm run test
 npm run check:docs:self-test
 npm run check:docs
 npm run build
@@ -77,6 +84,6 @@ npm run build
 
 For the full local gate, run:
 
-```powershell
+```bash
 npm run check:local
 ```

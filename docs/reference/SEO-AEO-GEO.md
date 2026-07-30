@@ -6,7 +6,7 @@ LexInsights keeps public discovery focused on the product entry points and legal
 
 - Home: `https://lexiph.vercel.app/`
 - About / project profile: `https://lexiph.vercel.app/about`
-- Chat entry: `https://lexiph.vercel.app/chat`
+- Chat entry: `https://lexiph.vercel.app/chat` (robots-allowed but intentionally excluded from the sitemap; the sitemap contains only `/`, `/about`, `/terms`, and `/privacy`)
 - Terms: `https://lexiph.vercel.app/terms`
 - Privacy: `https://lexiph.vercel.app/privacy`
 - Sitemap: `https://lexiph.vercel.app/sitemap.xml`
@@ -26,7 +26,7 @@ The legacy showcase remains available at `https://lexinsights.vercel.app` only a
 
 ## Answer Engine Optimization
 
-- `/llms.txt` gives retrieval systems a concise source of truth for what LexInsights is, what it can do, what it is not, public URLs, official source orientation, portfolio attribution, and a suggested summary. It also states quantified coverage (271 authorities, 13 source families, 45 frameworks, 181 relations) and links key statutes (RA 10173, RA 10175, RA 9160, RA 9775, RA 9003) so engines have citable, attributable facts.
+- `/llms.txt` gives retrieval systems a concise source of truth for what LexInsights is, what it can do, what it is not, public URLs, official source orientation, portfolio attribution, and a suggested summary. It also states quantified coverage (271 authorities, 13 source families, 45 frameworks, 180 relations as of 2026-07-30) and links key statutes (RA 10173, RA 10175, RA 9160, RA 9775, RA 9003) so engines have citable, attributable facts. The numbers render from `COVERAGE_FACTS` in `src/lib/seo.ts`, kept in sync with the derived counts in `src/lib/services/local-research-data/coverage-summary.ts` — do not hardcode them elsewhere.
 - `/ai.txt` serves a short AI-usage and attribution statement, distinct from `/llms.txt`, for tools that look for a short AI-facing text endpoint.
 - The app avoids claiming official legal authority. Public summaries consistently say generated legal analysis should be verified against official sources, counsel, or the relevant authority.
 
@@ -43,7 +43,7 @@ The legacy showcase remains available at `https://lexinsights.vercel.app` only a
 Before release, check:
 
 - `/robots.txt` returns the expected allow/disallow policy.
-- `/sitemap.xml` lists only canonical public URLs.
+- `/sitemap.xml` lists exactly `/`, `/about`, `/terms`, and `/privacy`.
 - `/llms.txt` returns plain text with current product facts.
 - `/about` returns a public project profile with current app, portfolio, case study, legacy showcase, and repository links.
 - `/terms` and `/privacy` return public legal pages with correct metadata.

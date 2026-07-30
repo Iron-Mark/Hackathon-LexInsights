@@ -26,6 +26,9 @@ Expected handling:
 - Treat `/api/readiness` and `/api/version` as operational diagnostics, not as legal or user data endpoints.
 - Use providerless local research as the public default unless a remote RAG provider is intentionally configured and monitored.
 - Keep request validation, upload size limits, document signature checks, CSP, and HSTS enabled for public deployments.
+- Signed-in users' compliance reports, versions, and findings persist server-side in Supabase Postgres (`compliance_reports`, `report_versions`, `report_findings`) behind row-level security keyed to the Clerk user id (`auth.jwt()->>'sub'`). Apply `database/schema.sql` and `database/migrations/0001_compliance_report_persistence.sql`, and keep RLS enabled on these tables.
+- Keep Clerk configured as the Supabase third-party auth provider; RLS and the storage policies on the private `documents` bucket both resolve the user from the Clerk-issued JWT.
+- Keep `npm audit --omit=dev` clean; it is a CI gate, and remaining advisories are devDependency-only.
 - Follow [Incident Response](docs/operations/INCIDENT-RESPONSE.md) for security, privacy, availability, and data-handling incidents.
 
 ## Legal And Data Notice

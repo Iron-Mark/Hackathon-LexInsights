@@ -1,5 +1,7 @@
 # Implementation Plan
 
+> **Status: Historical.** This is the original MVP task plan; the work has shipped and the checkboxes below no longer track anything. It is preserved as-is for context. For current feature status, see [docs/PRD.md](../PRD.md).
+
 - [x] 1. Set up project foundation and dependencies
 
 

@@ -11,6 +11,7 @@ The implementation lives in [local-legal-research.ts](../../src/lib/services/loc
 - Deep Search still uses the same service contract, but local mode expands cross-references instead of downloading PDFs or calling an AI provider.
 - Draft checking works locally for browser-readable plain text and Markdown files. [document-text.ts](../../src/lib/utils/document-text.ts) normalizes BOMs, line endings, and null bytes before local review. PDF, DOCX, and DOC files are extracted through `/api/document-text` before review.
 - Responses include `provider_mode`, `fallback_used`, `fallback_reason`, and `confidence_score` when available.
+- Completed local responses carry `matched_framework_id` (the strongest bundled compliance-framework match) and `matched_framework_ids` (all matches, strongest first). Consumers must treat absence as "fall back to fuzzy inference", not "no framework" — remote-RAG and older cached/persisted responses do not carry the fields.
 - Local responses include retrieval diagnostics for candidate count, score threshold, citation coverage, source type counts, provenance coverage, relation paths, coverage warnings, local corpus limits, source support level, and sub-second processing time.
 - The UI shows a local-mode notice and keeps storing research responses in chat history.
 
@@ -18,7 +19,7 @@ The implementation lives in [local-legal-research.ts](../../src/lib/services/loc
 
 Run the providerless self-test from the repository root:
 
-```powershell
+```bash
 npm run check:providerless:self-test
 npm run check:local-rag:golden
 npm run check:local-rag:performance
@@ -29,42 +30,20 @@ npm run check:document-extraction:self-test
 
 The self-test compiles [local-legal-research.ts](../../src/lib/services/local-legal-research.ts) and its local data modules with TypeScript, then executes them in Node. It verifies:
 
-- Corpus coverage for core statutes and official issuances, including procurement, PPPs and concessions, government service delivery, digital government and e-governance, public ICT governance, AI governance and privacy guidance, cybercrime, consumer protection, online marketplaces and internet transactions, competition, financial consumer protection, financial-account scams, payment systems and settlement infrastructure, BSP supervision, banking, lending companies, financing companies, insurance, pre-need plans, PDIC and deposit insurance, AML/CFT and sanctions controls, access-device fraud, anti-wiretapping, bouncing checks, ADR, insolvency, credit information, civil contracts, family status, civil registry records and corrections, adoption, alternative child care, simulated birth rectification, foundling recognition, notarization, evidence, small claims, constitutional rights, criminal complaints, Revised Penal Code issues, criminal procedure, juvenile justice, dangerous drugs, firearms, public assemblies, anti-terrorism designation and proscription safeguards, anti-torture, cooperatives, foreign investment, retail trade, secured transactions, movable collateral, immigration, visas, passports, citizenship, naturalization, OFW/DMW assistance, elections, voter registration, campaign materials, automated election systems, SK/youth governance, public health, notifiable diseases, tobacco, vape products, HIV and AIDS policy, immunization, blood services, cancer control, reproductive health, hazardous substances, EPR plastic-packaging recovery and DENR reporting, environmental impact assessment, ECC conditions, wildlife permits, forestry and timber controls, tourism enterprises, DOT accreditation, hospitality, guest-record, visitor-safety controls, domestic shipping, seafarer STCW certification, Coast Guard maritime safety, Filipino seafarer welfare, civil aviation, airport and aircraft safety, port authority, cargo handling, SIM registration, electric power, public telecommunications, water districts, customs, tax administration, EOPT/BIR implementation, VAT on Digital Services, NRDSP, BIR digital-services VAT implementation, NIRC, TRAIN, CREATE, CREATE MORE, corporate tax incentives, PhilSys, public accountability, barangay justice, local complaint routing, administrative code, civil service, public personnel actions, administrative discipline, anti-graft, ethics, COA audit, GOCC governance, public-sector compensation, employee benefits, SSS, GSIS, Pag-IBIG, PhilHealth, telecommuting and remote work, service charges, wage orders, breastfeeding and lactation support, maternity and paternity leave, kasambahay, DOLE termination due-process guidance, DOLE contracting/subcontracting guidance, DOLE OSH implementation guidance, SEC official email/mobile contact guidance, women and GAD programs, OSAEC/CSAEM child online protection, transport, driver-license validity, seat belts, motorcycle helmets, drunk/drugged driving, distracted driving, child restraints, public services, land titles, imperfect/incomplete title confirmation, residential and agricultural free patents, public land classification, CARP/CARPER, CLOA/ARB controls, DAR clearance, agrarian emancipation, FPIC, agriculture, organic agriculture, food safety, protected areas, labor, health, social welfare, IP, securities, FDA, heritage, built environment, contractor licensing, architecture, civil engineering, electrical engineering, mechanical engineering, plumbing, sanitation, accessibility, child protection, migrant workers, bank secrecy, price controls, MSME/BMBE support, renewable energy, climate, fisheries, mining, education, records, FOI, housing, subdivision and condominium buyers, HOA governance, residential rent control, realty installment buyers, real estate service practitioners, and social-benefit topics.
-- Downstream fuels and local energy coverage for oil industry deregulation, petroleum product quality and pricing/stock reporting, LPG cylinder and refilling/dealer controls, biofuel blend mandates, and DOE coordination/monitoring.
-- RA 9003, RA 11058, and RA 10173 research matching.
-- DOLE Department Order No. 147-15, DOLE Department Order No. 174-17, DOLE Department Order No. 198-18, SEC Memorandum Circular No. 28, s. 2020, SEC Memorandum Circular No. 1, s. 2021, SEC Memorandum Circular No. 15, s. 2025, and SEC HARBOR research matching for termination due process, contracting/subcontracting, OSH implementation, official email/mobile contact, beneficial ownership disclosure, HARBOR portal, GIS/reportorial, authorized filer, nominee/control-person, and corporate transparency workflows.
-- NPC Circular No. 16-03, NPC Advisory No. 2026-02, NPC Circular No. 2023-06, NPC Circular No. 2023-04, NPC Circular No. 2022-04, NPC Circular No. 2020-03, and NPC Advisory No. 2025-02 research matching for privacy operations, breach management, DBNMS submissions, personal-data security safeguards, consent, DPO/DPS registration, data sharing agreements, and privacy engineering workflows.
-- Hospital and patient-rights coverage for RA 10932, RA 8344, RA 9439, and RA 4226.
-- RA 11898, RA 11127, BSP Circular No. 1160, s. 2022, BSP Circular No. 1169, s. 2023, BSP Circular No. 1140, s. 2022, BSP Circular No. 1108, s. 2021, RA 10168, and RA 11479 research matching for EPR, national payment systems, financial consumer protection, consumer assistance, fraud management, VASP/virtual-asset, terrorism-financing prevention, and anti-terrorism workflows.
-- RA 8479, RA 11592, RA 9367, and RA 7638 research matching for downstream oil, LPG, biofuel, and DOE coordination workflows.
-- RA 9155, RA 10157, RA 12199, RA 10650, and RA 11650 research matching for education governance, kindergarten, current early childhood/ECCD, open distance learning, and inclusive learning for learners with disabilities. RA 10410 is retained only as historical/superseded Early Years Act context because RA 12199 repealed and replaced it in 2025.
-- RA 11573, RA 10023, RA 11231, RA 6657, RA 9700, and RA 11953 research matching for imperfect/incomplete land title, residential and agricultural free patents, public land classification, CARP/CARPER, CLOA/ARB controls, DAR clearance, agrarian emancipation, and debt-condonation workflows.
-- RA 12001 and BLGF MC No. 001-2025 RPVARA IRR research matching for real property valuation, RPT, local assessment, schedule of market values (SMV), tax declarations, assessor/treasurer workflows, and assessment appeals.
-- RA 11642, RA 11222, and RA 11767 research matching for administrative adoption, alternative child care, simulated birth rectification, foundling recognition, child identity, civil registry, and confidentiality workflows.
-- RA 9994, RA 7277, RA 9442, RA 10070, RA 10524, and RA 10754 research matching for senior-citizen benefits, PWD accessibility, PWD privileges, PDAO local implementation, PWD employment, discounts, VAT exemptions, and benefit-record privacy workflows.
-- RA 11976 and BIR EOPT implementation matching for VAT, percentage tax, filing/payment, refunds, reduced penalties, taxpayer classification, registration, invoices, official receipt transition, COR, ATP, unused-form, and BIR circular workflow signals.
-- RA 12023 research matching for VAT on Digital Services, NRDSP, and BIR digital-services VAT implementation workflows.
-- RA 12009, RA 11966, RA 11032, RA 12254, RA 10844, RA 10175, the Cybercrime Prevention Act IRR, RA 7394, RA 11967, Joint Administrative Order No. 24-03, s. 2024, RA 10667, RA 11765, RA 12010, RA 8484, RA 4200, BP 22, RA 9285, RA 10142, RA 9510, RA 386, EO 209 s. 1987, Act No. 3753, RA 9048, RA 10172, A.M. No. 02-8-13-SC, Rules of Court evidence rules, A.M. No. 08-8-7-SC, the 1987 Constitution, Act No. 3815, Rules of Criminal Procedure, RA 9344, RA 9165 dangerous-drugs coverage, RA 10591, BP 880, RA 9745, RA 9520, RA 7042, RA 11647, RA 8762, RA 11595, RA 11057, CA 613, CA 473, RA 9139, RA 9225, RA 11983, RA 8239, RA 10022, RA 11641, BP 881, RA 8189, RA 7166, RA 9006, RA 8436, RA 9369, RA 10742, RA 11768, RA 6969, PD 1586, RA 9147, PD 705, RA 9593, RA 9295, RA 10635, RA 9993, RA 12021, RA 9497, PD 857, RA 11285, RA 11934, RA 9995, RA 10627, RA 10863, RA 11976, RA 12023, RA 8424, RA 10963, RA 11534, RA 12066, RA 11055, RA 11038, EO 292 s. 1987, PD 807, RA 4136, RA 10930, RA 8750, RA 10054, RA 10586, RA 10913, RA 11229, RA 11659, RA 9136, RA 7925, PD 198, RA 8371, PD 1529, RA 8435, RA 10068, RA 10611, RA 11321, RA 3019, RA 6713, PD 1445, RA 7080, RA 10149, RA 6758, RA 11199, RA 8291, RA 9679, RA 10606, RA 11210, RA 8187, RA 10361, PD 442, RA 11165, RA 11360, RA 6727, RA 10028, RA 10911, RA 11036, RA 9262, RA 9710, RA 10364, RA 11930, RA 8293, RA 8799, RA 9711, RA 11223, RA 11332, RA 9211, RA 11900, RA 11166, RA 10152, RA 7719, RA 11215, RA 10354, RA 10066, PD 1096, RA 4566, RA 9266, RA 544, RA 7920, RA 8495, RA 1378, PD 856, BP 344, RA 7610, RA 8042, RA 1405, RA 7653, RA 11211, RA 8791, RA 9474, RA 8556, RA 10607, RA 9829, RA 10846, RA 7581, RA 9178, RA 9501, RA 9513, RA 9729, RA 8550, RA 7942, RA 10533, RA 10931, RA 7279, RA 11201, PD 957, RA 9904, RA 9653, RA 6552, RA 9646, RA 9470, EO 2 s. 2016, RA 11310, RA 11861, RA 11596, and RA 11510 research matching.
+- Research matching for the topics and citations recorded in [coverage-map.ts](../../src/lib/services/local-research-data/coverage-map.ts) — representative examples: RA 9003 solid waste, RA 10173 privacy operations, RA 11058 OSH, RA 11976 EOPT/BIR implementation, and DOLE/SEC/NPC/BSP issuance workflows.
 - Common citation formats such as `R.A. No. 10173` and `RA No. 8792`.
 - Deep Search providerless metadata.
 - Second Brain Lite provenance metadata, evidence anchors, relation paths, seeded-coverage warnings, and unknown-citation safety.
 - No-result behavior for unrelated queries.
-- Draft warnings when a cited Republic Act is outside the bundled local corpus.
-- Draft warnings for thin hospital emergency-care, no-deposit, refusal-to-treat, discharge, patient-detention, and health-facility licensing controls.
-- Draft warnings for thin EPR, plastic-packaging recovery, DENR reporting, environmental impact, ECC, wildlife, tree-cutting, timber, forest-land, watershed, tourism, hospitality, guest safety, travel-service, aviation, maritime, port, cargo-handling, seafarer credential, and seafarer-welfare controls.
-- Draft warnings for thin downstream oil/fuel retail, petroleum product quality/pricing/stock reporting, LPG cylinder/refilling/dealer, biofuel blend, and DOE coordination/monitoring controls.
-- Draft warnings for thin EOPT/BIR implementation, digital-services VAT, NRDSP, marketplace/platform, invoicing, official-receipt transition, registration, remittance, taxpayer-classification, refund, and tax-verification controls.
-- Draft warnings for thin procurement, PPP/concession, digital-government, service-delivery, barangay complaint routing, public-accountability, anti-graft, ethics, public-funds audit, GOCC governance, compensation, civil-service personnel actions, SSS, GSIS, Pag-IBIG, PhilHealth, telecommuting, service-charge, wage-order, breastfeeding/lactation, maternity leave, paternity leave, kasambahay, access-device fraud, wiretapping/recordings, bouncing checks, ADR, insolvency, credit information, civil contracts, family status, civil registry records and corrections, adoption, foundling, simulated-birth, child-status, notarization, evidence custody, small claims, constitutional rights, criminal complaints, criminal procedure, juvenile justice, dangerous-drugs, firearms, public assembly, anti-terrorism designation and proscription due-process safeguards, custody and anti-torture safeguards, cooperative governance, foreign investment, retail trade entry, secured transactions, transport and road-safety, public-service and utility, land-title, public land, free patent, imperfect-title, agrarian-reform, CLOA/ARB, DAR-clearance, debt-condonation, FPIC, agriculture, organic-agriculture, food-safety, Sagip Saka, cyber incident, OSAEC/CSAEM child online safety, women and gender-equality controls, consumer-protection, internet-transaction, financial-consumer, financial-account scam, payment-system operator, clearing, settlement, CFT/sanctions, AMLC asset-freeze and watchlist, BSP supervision, banking operations, lending-company, financing-company, insurance, pre-need, deposit-insurance, hazardous-waste, competition, SIM/mobile-number, labor, mental-health, anti-trafficking, IP, securities, health-product, disease-reporting, tobacco, vape-product, HIV-confidentiality, child-immunization, blood-services, cancer-control, reproductive-health, senior-citizen, PWD, PDAO, PWD discount/VAT-exemption, PWD employment, built-environment, sanitation, child-protection, migrant-worker, bank-secrecy, price-control, renewable-energy, climate, fisheries, mining, education, records, FOI, housing, social-assistance, solo-parent, and child-marriage controls.
-- Draft warnings for thin real-property valuation, RPT, SMV, tax-declaration, assessment-roll, assessor/treasurer, notice, appeal, property-record custody, privacy, and retention controls.
-- Red findings for risky privacy and penalty drafting.
-- Green findings for a stronger solid-waste ordinance draft.
+- Draft warnings when a cited Republic Act is outside the bundled local corpus, and thin-control warnings for each topic slice covered by the draft-checker heuristics.
+- Red findings for risky privacy and penalty drafting, and green findings for a stronger solid-waste ordinance draft.
 - Local health-check metadata.
 
-The golden-query check focuses on retrieval quality: exact citations, citation variants, direct topic matches, privacy-operations/NPC-compliance workflows, AI governance and public-sector automation guidance, financial-institution research, public-accountability/procurement workflows, public-personnel appointment and discipline workflows, barangay justice and local complaint workflows, e-governance/public-ICT workflows, PPP infrastructure workflows, workplace pay/flexible-work workflows, labor termination due-process workflows, labor contracting/subcontracting workflows, OSH IRR workflows, SEC official email/mobile contact workflows, civil-registry corrections, adoption/foundling/civil-status workflows, election controls, women-protection workflows, hospital emergency-care and patient-rights workflows, PWD benefits/PDAO/accessibility/employment workflows, OSAEC/CSAEM online-child-protection workflows, internet-transaction and Internet Transactions Act IRR workflows, financial-account scam workflows, payment-system operator and settlement workflows, BSP financial-consumer, consumer-assistance, fraud-management, and VASP workflows, CFT/sanctions and AMLC asset-freeze workflows, anti-terrorism designation/proscription safeguards, business tax registration/invoicing/incentives workflows, EOPT/BIR implementation workflows, digital-services VAT/NRDSP/BIR implementation workflows, EPR/plastic-packaging recovery workflows, environmental impact/wildlife/forestry workflows, tourism/hospitality/travel-service workflows, aviation/maritime/ports/seafarer workflows, real-estate housing buyer/HOA/tenant workflows, road-safety driver/vehicle workflows, built-environment licensed-professional workflows, critical utility/electric-power/telecom/water-service workflows, downstream fuels/local energy workflows, immigration/passport/citizenship workflows, agriculture/food-safety workflows, education governance/inclusive-learning workflows, public-land/free-patent/agrarian-reform workflows, local ranking metadata, and no-result behavior for unrelated queries. The performance check benchmarks uncached exact-citation, AI-governance, privacy-operations/NPC-compliance workflow, deep-workflow, payment-system/CFT workflow, internet-transactions IRR marketplace workflow, BSP consumer/fraud/VASP workflow, labor implementation and SEC contact workflow, EOPT/BIR implementation workflow, digital-services VAT/NRDSP workflow, downstream-fuels/local-energy workflow, education-governance/inclusive-learning workflow, PWD benefits/accessibility workflow, public-land/free-patent/agrarian-reform workflow, child-adoption/foundling/civil-status workflow, unrelated no-result, and warm-cache local queries.
+The golden-query check ([check-local-rag-golden-self-test.mjs](../../scripts/check-local-rag-golden-self-test.mjs)) asserts retrieval quality: exact citations, citation variants, direct topic matches, workflow probes for each bundled topic slice, local ranking metadata, and no-result behavior for unrelated queries. The performance check ([check-local-rag-performance-self-test.mjs](../../scripts/check-local-rag-performance-self-test.mjs)) benchmarks uncached and warm-cache latency across representative citation, workflow, and no-result queries. Both derive their probe lists from the same bundled slices, so corpus changes surface as gate failures rather than silent drift.
 
-The same gates include exact-citation and workflow probes for RA 12001 and BLGF MC No. 001-2025 RPVARA IRR, including SMV, tax declaration, assessment roll, RPT billing/collection, assessor/treasurer, notice, publication, appeal, and property-record safeguards.
+Vitest unit tests co-located with the data modules ([framework-templates.test.ts](../../src/lib/services/local-research-data/framework-templates.test.ts), [local-research-frameworks.test.ts](../../src/lib/services/local-research-frameworks.test.ts)) run via `npm run test` and are part of CI.
 
-The document tests cover Markdown/text normalization and deterministic PDF/DOCX extraction. `npm run check:local` includes these self-tests, so release gates catch providerless and ingestion regressions before browser smoke starts.
+The document tests cover Markdown/text normalization and deterministic PDF/DOCX extraction. `npm run check:local` includes the unit tests and all of these self-tests, so release gates catch providerless and ingestion regressions before browser smoke starts.
 
 ## Document Ingestion
 
@@ -82,25 +61,29 @@ The upload limit is 5MB. Scanned image-only PDFs may fail with `Document extract
 The providerless research path is deterministic:
 
 1. Normalize the query, strip punctuation, remove common stop words, and extract Republic Act numbers from common formats such as `RA 9003`, `RA No. 9003`, `R.A. No. 9003`, and `Republic Act Number 9003`.
-2. Analyze direct query terms, narrow legal synonyms, and softer topic-expansion terms separately. Topic triggers include waste, EPR, plastic packaging, recovery targets, DENR reporting, privacy, DPO designation, personal data processing system registration, DPS registration, NPC registration, automated decision-making, profiling, personal-data breach, DBNMS, breach notification, consent withdrawal, data sharing agreement, DSA, privacy engineering, privacy by design, systems life cycle, privacy release gates, workplace safety, flexible work, service charges, wage orders, lactation support, fire safety, DRRM, public accountability, barangay justice, local complaint routing, civil service, public personnel actions, administrative discipline, PPPs, digital government, e-governance, public ICT, online marketplaces, financial-account scams, payment-system operators, clearing, settlement, financial institutions, AMLC, CFT, sanctions, asset freezes, watchlists, anti-terrorism designation, proscription, due-process safeguards, business tax, digital services VAT, VAT on Digital Services, NRDSP, nonresident digital service provider, BIR digital-services VAT implementation, NIRC, TRAIN, CREATE, CREATE MORE, corporate tax incentives, road safety, driver-license renewal, seat belts, motorcycle helmets, drunk/drugged driving, distracted driving, child restraints, electric utilities, downstream oil, fuel retail, petroleum product quality, pump prices, stock reporting, LPG cylinders, LPG refillers, LPG dealers, biofuel blends, DOE coordination, energy monitoring, public telecommunications, water districts, environmental impact assessment, ECC, EIS, wildlife permits, tree cutting, timber transport, forestry permits, tourism, hotels, resorts, travel agencies, tour operators, DOT accreditation, visitor safety, domestic shipping, ferries, seafarers, STCW, manning agencies, Coast Guard incidents, ports, cargo handling, aviation, airports, aircraft, air operators, construction permits, contractor licensing, signed and sealed plans, architecture, civil engineering, electrical engineering, mechanical engineering, plumbing, civil documents, public health, environment, education, basic education governance, kindergarten, early childhood care and development, ECCD, open distance learning, inclusive education, learners with disabilities, inclusive learning resource centers, records, PDAO, PWD ID, PWD discounts, PWD VAT exemptions, PWD employment, public land, free patents, imperfect and incomplete titles, alienable and disposable land, DENR CENRO/PENRO records, CARP, CARPER, CLOA, agrarian reform beneficiaries, DAR clearance, agrarian emancipation, debt condonation, housing, subdivision and condominium buyers, HOA dues, rent control, Maceda installment buyers, real estate brokers, and social benefits.
-   Current bundled expansions also include termination due process, twin notice, notice to explain, labor-only contracting, contractor registration, OSH program, safety officer, safety committee, workplace accident reports, DOLE inspection, SEC official email, official cellphone number, MC28 portal, authorized representative, and corporate contact records.
+2. Analyze direct query terms, narrow legal synonyms, and softer topic-expansion terms separately. The topic triggers live in [topic-expansions.ts](../../src/lib/services/local-research-data/topic-expansions.ts).
 3. Score candidate documents from precomputed token, citation, alias, topic, IDF, field-weight, framework, and provenance indexes. Exact citations, statutes, titles, short titles, aliases, topics, keywords, summaries, obligations, and common gaps have separate weights, and broad expansion hits are capped so they cannot overwhelm direct evidence.
 4. Require meaningful direct evidence before returning a local match. A single incidental word should produce `no_results`, while exact citations and strong phrase/topic matches remain eligible.
-5. Add a local compliance-framework section when a query matches a cross-law workflow such as incident response, privacy operations and NPC compliance, AI governance and public-sector automation, financial-account scam response, payment systems/CFT/sanctions controls, digital-government/public-ICT services, LGU service delivery, barangay justice and local complaint routing, public accountability and government funds, public-personnel appointment and discipline, employee benefits and social insurance, workplace pay/flexible-work/family-support controls, consumer/commerce/online marketplace controls, business tax registration/invoicing/incentives, digital-services VAT/NRDSP/BIR implementation controls, real-estate housing buyer/HOA/tenant protection, road-safety driver/vehicle compliance, critical utility/energy/telecom/water-service controls, downstream fuel/LPG/biofuel/DOE monitoring controls, tourism/hospitality/events/travel-service controls, aviation/maritime/ports/seafarer operations, banking/lending/insurance/financial-institution controls, payments/credit/evidence/dispute resolution, civil documents/family status/small claims, rights/criminal enforcement/public order/custody, business market entry/ownership/cooperatives/secured finance, immigration/citizenship/passports/OFW records, elections/campaigns/voter registration/SK governance, education governance and inclusive learning, public-health disease reporting and sensitive health records, environmental operations, EPR/plastic-packaging recovery, environmental impact/wildlife/forestry controls, mobility and land/agriculture workflows, public land/free patent/agrarian reform workflows, health and welfare, senior/PWD benefits, PDAO service delivery, PWD accessibility, PWD employment, IP/investment/product claims, PPPs, or procurement/imports.
+5. Add a local compliance-framework section when a query matches a cross-law workflow. The framework triggers live in [compliance-frameworks.ts](../../src/lib/services/local-research-data/compliance-frameworks.ts).
 6. In Deep Search, add capped relation expansion from curated authority relationships so related authorities can appear without outranking exact citations or direct matches.
-7. Return the top matches with source links, citation coverage, matched terms, evidence anchors, provenance status, relation paths, retrieval metadata, practical checklists, and common gaps. Standard local research returns up to six matches; deep local search returns up to ten and can include framework authorities.
-8. Generate Markdown through templates only. Local mode does not call an AI model.
+7. Return the top matches with source links, citation coverage, matched terms, evidence anchors, provenance status, relation paths, retrieval metadata, practical checklists, and common gaps. Standard local research returns up to six matches; deep local search returns up to twelve and can include framework authorities.
+8. Generate Markdown through templates only. Local mode does not call an AI model. Detected framework ids are emitted as `matched_framework_id`/`matched_framework_ids` (see Runtime Behavior).
 
 ## Second Brain Lite Governance
 
 The providerless corpus has a lightweight knowledge/provenance layer under [local-research-data](../../src/lib/services/local-research-data):
 
+- `corpus.ts` is the bundled authority corpus itself (271 entries).
 - `authority-sources.ts` is the canonical local source registry for source name, URL, authority type, source tier, verification date, provenance status, and catalog tags.
 - `evidence-anchors.ts` creates short evidence anchors for summaries, obligations, and common gaps without storing long source excerpts.
 - `authority-relations.ts` records curated amendment, guidance, cross-reference, and workflow relationships used by local Deep Search.
 - `coverage-map.ts` records whether an authority is covered by golden queries, draft checks, framework coverage, or explicitly seeded status.
+- `compliance-frameworks.ts` defines the bundled cross-law framework packs; framework membership is itself validated by the governance gate.
+- `framework-templates.ts` maps a compliance report to a bundled framework (exact detection via the emitted framework id, fuzzy inference otherwise) and feeds the compliance-canvas Framework checklist.
+- `topic-expansions.ts` holds the softer topic-expansion triggers used by query analysis.
+- `coverage-summary.ts` derives the advertised coverage counts (271 authorities, 13 source families, 45 frameworks, 180 curated relations) that `COVERAGE_FACTS` in `src/lib/seo.ts` must match.
 
-When adding or changing an authority, update or verify all four governance surfaces. A complete local authority should have:
+When adding or changing an authority, update or verify every affected governance surface above. A complete local authority should have:
 
 1. A corpus record.
 2. A canonical source record.
@@ -112,229 +95,31 @@ When adding or changing an authority, update or verify all four governance surfa
 
 ## Local Compliance Frameworks
 
-When a query spans multiple topics, local mode can synthesize a practical cross-law checklist from bundled framework packs:
-
-- Data, cyber, and mobile incident response.
-- Privacy operations, NPC compliance, breach notification, DBNMS, consent, DPO/DPS registration, data sharing, and privacy engineering workflows.
-- AI governance, privacy, and public-sector automation.
-- Financial account scam, mule account, and wallet fraud response.
-- Digital government, e-governance, and public ICT.
-- LGU ordinance, permit, and service delivery.
-- Barangay justice and local complaint routing.
-- Public accountability, ethics, audit, and government funds.
-- Public personnel appointment and discipline.
-- Employee benefits, leave, and social insurance.
-- Workplace pay, termination due process, contracting/subcontracting, flexible work, OSH implementation, and family support.
-- Environmental operations and facility controls.
-- EPR, plastic packaging, recovery targets, and DENR reporting.
-- Environmental impact, wildlife, and forestry controls.
-- Health facilities, emergency care, no-deposit treatment, patient discharge, and patient-rights workflows.
-- Built environment, licensed professionals, sanitation, accessibility, and public facilities.
-- Mobility, land, agriculture, and community rights.
-- Public land, free patent, land-title confirmation, CARP/CARPER, CLOA/ARB, DAR clearance, and agrarian emancipation workflows.
-- Real property valuation, RPT, local assessment, SMV, assessor/treasurer, and assessment-appeal workflows.
-- Road safety, driver, and vehicle compliance.
-- Critical utilities, energy, telecom, and water services.
-- Downstream oil/fuel retail, petroleum product quality/pricing/stock reporting, LPG cylinders/refilling/dealers, biofuel blends, and DOE coordination/monitoring.
-- Tourism, hospitality, events, and travel services.
-- Aviation, maritime, ports, and seafarer operations.
-- Consumer, financial, commerce, AML, and tax workflows.
-- Business tax registration, EOPT implementation, invoicing, filing, refunds, penalties, taxpayer classification, and incentives.
-- Digital-services VAT, NRDSP, and BIR implementation workflows.
-- Banking, lending, insurance, pre-need, and deposit-insurance workflows.
-- Payment systems, CFT/sanctions, AMLC asset-freeze, and watchlist controls.
-- AMLC 2018 AMLA IRR implementation coverage for covered persons, customer due diligence, beneficial ownership, CTR/STR, recordkeeping, confidentiality, and AML compliance programs.
-- Payments, credit, evidence, and dispute resolution.
-- Civil documents, family status, evidence, and small claims.
-- Rights, criminal enforcement, public order, and custody.
-- Business market entry, SEC official contact, ownership, cooperative, and secured finance.
-- Immigration, citizenship, passports, and overseas Filipino records.
-- Elections, civic participation, campaigns, and youth governance.
-- Public health, disease reporting, and sensitive health records.
-- Workplace, school, public safety, DRRM, imminent-disaster declaration, anticipatory action, and protection.
-- Health, welfare, accessibility, and protection.
-- Education governance, inclusive learning, housing, records, and social benefits.
-- Real estate, housing buyer, HOA, and tenant protection.
-- IP, investment, health product, and market claims.
-- Imports, public procurement, assets, and audit.
-
-## DRRM and Imminent Disaster Slice
-
-This slice treats disaster planning as an LGU/public-safety workflow, not a live hazard forecast:
-
-- RA 10121 remains the baseline DRRM anchor for local DRRM councils or offices, hazard mapping, early warning, contingency planning, evacuation, vulnerable groups, drills, LDRRMF/QRF, and post-event reporting.
-- RA 12287 adds the newer state-of-imminent-disaster mechanism for forecasted hazards, pre-disaster risk assessment, anticipatory action, pre-emptive evacuation, relief prepositioning, special trust fund or national DRRM fund handling, OCD monitoring, non-occurrence handling, and false hazard or manipulated assessment safeguards.
-
-Providerless local mode can connect RA 12287 to RA 10121 and RA 7160 when the query or draft supplies direct disaster, imminent-disaster, LGU, evacuation, or fund evidence. It does not verify live weather bulletins, hazard forecasts, local declarations, fund balances, procurement records, LGU plans, or current NDRRMC/OCD/Regional DRRM Council issuances; users should verify outputs with the relevant official sources and qualified counsel.
-
-## Digital Services VAT and NRDSP Slice
-
-This slice treats RA 12023 questions as tax-compliance workflow prompts, not live BIR status checks:
-
-- RA 12023 covers VAT on Digital Services and is the local demo anchor for digital-service provider, nonresident digital service provider (NRDSP), marketplace/platform, registration, invoicing, remittance, and BIR implementation signals when the query supplies them.
-- BIR digital-services VAT implementation references are conservative local context only; providerless mode does not search live Revenue Regulations, revenue memoranda, portal notices, registration pages, or other current BIR issuances.
-
-Providerless local mode can connect RA 12023 to NIRC/VAT, tax registration, invoicing, online marketplace, e-commerce, consumer, and cross-border digital-service workflows when the query or draft supplies direct evidence. It does not verify current BIR issuances, registration status, taxpayer classification, actual transactions, portal procedures, rates, deadlines, or filing/remittance outcomes; users should verify outputs with BIR, current official issuances, source documents, accounting records, and qualified tax counsel.
-
-## EOPT and BIR Implementation Slice
-
-This slice treats RA 11976 questions as BIR implementation workflows, not live taxpayer-status checks:
-
-- RA 11976 remains the statutory anchor for Ease of Paying Taxes, taxpayer rights, registration, invoicing, filing, payment, refund, and taxpayer-classification signals.
-- BIR Revenue Regulations Nos. 3-2024, 4-2024, 5-2024, 6-2024, 7-2024, 8-2024, and 11-2024 add local implementation anchors for VAT and percentage-tax treatment, filing and payment, refunds, reduced interest or penalties for micro and small taxpayers, registration and invoicing, taxpayer classification, and transitory invoice or official-receipt rules.
-- BIR Revenue Memorandum Circular No. 77-2024 adds clarification signals for EOPT invoicing, service invoices, sales invoices, official receipts, unused forms, ATP or serial-number records, and transition handling.
-
-Providerless local mode can connect EOPT to NIRC, VAT, percentage tax, filing and payment, refunds, reduced penalties, taxpayer classification, COR, invoice templates, unused official receipts, ATP or serial controls, and digital-services VAT when the query or draft supplies direct evidence. It does not verify current BIR forms, portal procedures, actual taxpayer classification, registration status, invoice approval, ATP status, unused-form inventory, refund eligibility, rates, deadlines, or later issuances; users should verify outputs with BIR, current official issuances, source documents, accounting records, and qualified tax counsel.
-
-## Labor Implementation Slice
-
-This slice treats labor questions as implementation workflows tied to PD 442 and DOLE guidance, not as live DOLE or NLRC status checks:
-
-- DOLE Department Order No. 147-15 covers termination due-process guidance for Book VI, including just cause, authorized cause, twin notice, notice to explain, hearing or conference, final decision, separation pay, final pay, preventive suspension, and records.
-- DOLE Department Order No. 174-17 covers contracting and subcontracting guidance, including labor-only contracting risk, legitimate job contracting, contractor registration, service agreements, principal/contractor roles, worker deployment, supervision boundaries, payroll, benefits, and complaint records.
-- DOLE Department Order No. 198-18 covers the OSH Law IRR for RA 11058, including OSH programs, safety officers, safety committees, worker safety training, PPE, workplace accident or illness reports, DOLE inspection, and corrective action records.
-
-Providerless local mode can connect these authorities to workplace pay, flexible-work, family-support, safety, payroll, privacy, and complaint workflows when the query or draft supplies direct evidence. It does not verify current DOLE forms, contractor registration status, NLRC or court rulings, company handbook or CBA terms, actual control/economic-dependence facts, OSH thresholds, training status, or workplace incident facts; users should verify outputs with DOLE, NLRC or court guidance, current official issuances, employment records, and qualified labor counsel.
-
-## SEC Official Contact Slice
-
-This slice treats SEC Memorandum Circular No. 28, s. 2020 questions as corporate contact-record workflows, not live MC28 portal checks:
-
-- SEC Memorandum Circular No. 28, s. 2020 covers official email addresses and official cellphone numbers for SEC notices, transactions, reportorial communication, authorized representatives, and covered corporate or registered-agent records.
-
-Providerless local mode can connect SEC MC28 to RA 11232, business registration, corporate governance, reportorial records, portal-confirmation, privacy, and access-control workflows when the query or draft supplies direct evidence. It does not verify current MC28 portal behavior, filing deadlines, later SEC issuances, actual contact authority, access credentials, or reportorial status; users should verify outputs with SEC, current portal instructions, entity records, and qualified counsel.
-
-## SEC Beneficial Ownership and HARBOR Slice
-
-This slice treats SEC beneficial ownership questions as corporate reportorial, ownership-transparency, and portal-filing workflows, not live SEC filing checks:
-
-- SEC Memorandum Circular No. 1, s. 2021 covers beneficial ownership transparency signals for preventing misuse of corporations, including ownership/control evidence, nominees, accountable records, and corporate transparency controls.
-- SEC Memorandum Circular No. 15, s. 2025 covers revised beneficial ownership disclosure rules for beneficial-owner identification, direct/indirect ownership, control persons, GIS or BO records, authorized filers, corporate secretary review, privacy safeguards, and SEC reportorial workflows.
-- SEC HARBOR covers the beneficial ownership registry/portal workflow signal, including filer access, portal submissions, confirmation records, update triggers, account ownership, and sensitive-owner data safeguards.
-
-Providerless local mode can connect SEC BO/HARBOR to RA 11232, SEC MC28, AMLA customer due diligence, privacy, corporate governance, business-registration, and records-retention workflows when the query or draft supplies direct evidence. It does not verify current HARBOR portal behavior, user credentials, filing deadlines, SEC acceptance, actual beneficial owners, entity coverage, corporate records, or later SEC issuances; users should verify outputs with SEC, the live HARBOR portal, entity records, and qualified counsel.
-
-## PWD Benefits, PDAO, and Accessibility Slice
-
-This slice treats disability and senior-benefit questions as service-delivery workflows, not only general social-welfare lookups:
-
-- RA 9994 covers senior-citizen benefits, discounts, VAT treatment, OSCA coordination, health/social services, and benefit-record safeguards.
-- RA 7277 remains the main Magna Carta anchor for persons with disabilities, accessibility, equal opportunity, rehabilitation, education, health, employment, and social participation.
-- RA 9442 expands PWD privileges and adds anti-ridicule/anti-vilification signals for front-line public and commercial services.
-- RA 10070 covers the PDAO or local PWD focal-person implementation mechanism for LGU programs, registries, referrals, and complaints.
-- RA 10524 covers PWD employment, reserved-position and inclusive-hiring signals, ability-based qualifications, reasonable accommodation, and confidential applicant or employee records.
-- RA 10754 covers PWD discounts, VAT exemptions, benefit verification, commercial-establishment workflows, tax/POS documentation, and benefit-record privacy.
-- BP 344 covers built-environment accessibility for facilities, transport points, service counters, routes, parking, toilets, signage, and inspection/correction workflows.
-
-Providerless local mode can connect these authorities to OSCA, PDAO, social welfare, health, employment, front-line service, tax, building, and privacy workflows when the query or draft supplies direct evidence. It does not verify actual eligibility, ID validity, current BIR or DSWD guidance, establishment-specific tax treatment, local budget, or individual benefit entitlement; users should verify outputs with the relevant LGU, PDAO/OSCA, DSWD, NCDA, BIR, official law text, and qualified counsel.
-
-## Privacy Operations and NPC Compliance Slice
-
-This slice treats RA 10173 questions as operational privacy programs, not only general data-privacy lookups:
-
-- RA 10173 remains the primary Data Privacy Act anchor for lawful processing, rights, accountability, security, breach notification, and NPC oversight.
-- The Data Privacy Act IRR is now a dedicated implementation anchor for PIC/PIP role classification, lawful processing, privacy notices, data-subject rights, data sharing, outsourcing, security measures, DPO or registration signals, breach duties, and accountability controls.
-- NPC Circular No. 16-03 covers personal data breach management, including discovery, risk assessment, containment, notification, remediation, and breach records.
-- NPC Advisory No. 2026-02 covers Data Breach Notification Management System filing workflow, authorized filers, supporting evidence, and supplemental submissions.
-- NPC Circular No. 2023-06 covers security of personal data in government and private-sector processing, including organizational, physical, and technical safeguards.
-- NPC Circular No. 2023-04 covers consent management, including informed and freely given consent, withdrawal, notices, optional processing, sensitive data, minors, marketing, and profiling.
-- NPC Circular No. 2022-04 covers DPO designation, personal data processing system registration, automated decision-making or profiling notification, and NPC Seal of Registration context.
-- NPC Circular No. 2020-03 covers data sharing agreements, including purpose, lawful basis, parties, data categories, safeguards, rights, breach responsibility, retention, and return.
-- NPC Advisory No. 2025-02 covers privacy engineering in systems life cycle processes, including privacy by design, data-flow maps, PIA signals, release gates, operations, and decommissioning.
-
-Providerless local mode can connect these authorities to lawful processing, DPO, PIC/PIP, system owner, vendor, data recipient, breach-response, consent, registration, data-sharing, outsourcing, privacy-engineering, and AI/profiling workflows when the query or draft supplies direct evidence. It does not verify live DBNMS submissions, NPC portal account status, actual breach facts, organization-specific registration thresholds, current portal behavior, or current agency interpretations; users should verify outputs with NPC official issuances, current portal guidance, organization records, and qualified counsel.
-
-## Education and Inclusive Learning Slice
-
-This slice treats education questions as cross-agency governance and learner-support workflows, not only school-benefit lookups:
-
-- RA 9155 covers basic education governance, DepEd authority, field-office accountability, school heads, school/community participation, learning centers, and alternative learning systems.
-- RA 10157 covers kindergarten as part of the basic education system and is a key anchor for early-grade access questions.
-- RA 12199 is the current ECCD/early childhood authority. It strengthens the Early Childhood Care and Development System, covers children below five through ECCD Council/LGU implementation, coordinates with DepEd for ages five to eight, and incorporates inclusion duties for children with disabilities. RA 10410 should appear only as historical/superseded Early Years Act context because RA 12199 repealed it in 2025.
-- RA 10650 covers open distance learning in tertiary education, including higher education and technical education delivery pathways.
-- RA 11650 covers inclusive education for learners with disabilities, including inclusive learning resource centers, child find, reasonable accommodation, individualized support, accessible learning materials, and family/community participation.
-
-Providerless local mode can connect these authorities to DepEd, CHED, TESDA, ECCD Council, LGU, school-level, accessibility, reasonable-accommodation, and learner-support workflows when the query or draft supplies direct evidence. It does not verify current implementing rules, local budgets, school-specific policies, accreditation status, or individual eligibility; users should compare outputs with official law text, IRRs, DepEd/CHED/TESDA/ECCD Council issuances, LGU rules, and qualified counsel before making compliance decisions.
-
-## Public Land, Free Patent, and Agrarian Reform Slice
-
-This slice treats land-tenure questions as multi-office workflows rather than a single title lookup:
-
-- RA 11573 covers confirmation of imperfect and incomplete titles, especially when a query mentions judicial or administrative confirmation, alienable and disposable land, or public-land classification.
-- RA 10023 covers residential free patents and helps distinguish residential public-land titling from agricultural patents and ordinary deed/title registration.
-- RA 11231 covers agricultural free patents and related registration restrictions, separate from CARP/CARPER land-award controls.
-- RA 6657 and RA 9700 cover CARP/CARPER agrarian-reform coverage, distribution, retention, conversion, and beneficiary safeguards.
-- RA 11953 covers agrarian emancipation and debt condonation for agrarian reform beneficiaries, including LandBank-related amortization context.
-
-Providerless local mode can connect these authorities to DENR CENRO/PENRO public-land classification, Register of Deeds title records, DAR clearance, CLOA/ARB checks, LandBank amortization/debt-condonation context, LGU land-use and zoning signals, and FPIC/housing/agriculture overlaps when the query or draft supplies direct evidence. It does not verify cadastral status, actual land classification, survey plans, pending DAR/DENR cases, liens, adverse claims, conversion approvals, local zoning, LandBank account status, or current agency issuances; users should verify outputs with DENR, DAR, LandBank, the Register of Deeds, the relevant LGU, official law text, and qualified counsel.
-
-## Real Property Valuation, RPT, and Local Assessment Slice
-
-This slice treats real property valuation and RPT questions as local assessment workflows, not title, zoning, or live LGU account lookups:
-
-- RA 12001 is the statutory anchor for real property valuation and assessment reform, including valuation standards, SMV signals, assessor functions, tax declarations, assessment rolls, and RPT administration.
-- BLGF MC No. 001-2025 is the local IRR anchor for RA 12001 workflows, including BLGF/DOF implementation context, local assessment operations, SMV preparation/adoption, notices, publication, appeals, and records handling.
-- Providerless local mode separates valuation/assessment/RPT workflows from ordinary BIR tax, real-estate service licensing, land-title registration, and public-land/free-patent workflows.
-
-Providerless local mode can connect RA 12001 and the RPVARA IRR to LGU assessor and treasurer operations, sanggunian and BLGF/DOF review signals, Local Board and Central Board of Assessment Appeals routes, tax declarations, assessment rolls, SMV evidence, billing, payment, delinquency, correction, privacy, and retention controls when the query or draft supplies direct evidence. It does not verify current BLGF issuances, local SMV adoption status, property classification, tax-declaration records, assessment rolls, cadastral data, title encumbrances, RPT account balances, delinquency status, appeal deadlines, or LGU-specific procedures; users should verify outputs with BLGF/DOF, the relevant LGU assessor and treasurer, appeal boards, Register of Deeds records where relevant, current official issuances, source documents, and qualified counsel.
-
-## Child Adoption, Foundling, and Civil Status Slice
-
-This slice treats child-status questions as sensitive multi-office workflows rather than ordinary records requests:
-
-- RA 11642 covers domestic administrative adoption and alternative child care, including NACC-centered child placement, social case review, matching, custody, and confidentiality controls.
-- RA 11222 covers simulated birth rectification and helps separate adoption-linked rectification from ordinary clerical civil-registry correction.
-- RA 11767 covers foundling recognition and protection, including identity, birth-registration, child-protection, school, travel, and benefits-access signals.
-
-Providerless local mode can connect these authorities to NACC, DSWD, local social welfare, local civil registrar, LGU/barangay, school, passport, benefits, family-status, civil-registry, privacy, and child-protection workflows when the query or draft supplies direct evidence. It does not verify an actual child case, eligibility, consent, custody, matching, court or administrative order, civil-registry status, agency case status, passport eligibility, school enrollment status, or service entitlement; users should verify outputs with NACC, DSWD, the local civil registrar, the relevant LGU, official agency issuances, and qualified counsel.
-
-## Cybercrime IRR and Warrant Procedure Slice
-
-This slice treats the DOJ-DILG-DOST Cybercrime Prevention Act IRR and A.M. No. 17-11-03-SC Rule on Cybercrime Warrants as implementation and court-process guidance for RA 10175 rather than a live law-enforcement check:
-
-- The IRR covers law-enforcement authorities, computer data, traffic data, content data, subscriber information, preservation and disclosure workflows, service-provider coordination, search and seizure, cyber warrants, electronic evidence, Office of Cybercrime, CICC, CERT coordination, and privacy safeguards.
-- The Rule on Cybercrime Warrants covers WDCD, WICD, WSSECD, and WECD routing, probable cause, service-provider disclosure, interception, search, seizure, examination, forensic image handling, inventory, return, chain of custody, retention, destruction, confidentiality, and remedies.
-- Providerless local mode connects the IRR and warrant rule to cyber incident response, financial-account scam evidence, payment-system fraud escalation, digital-government/public-ICT services, privacy operations, AI governance, service-provider coordination, electronic-record workflows, and court-process safeguards when the query supplies direct implementation evidence.
-
-Providerless mode does not verify current DOJ Office of Cybercrime, CICC, PNP, NBI, prosecutor, cybercrime court, warrant form, provider response, evidence-custody, preservation-order, or case-specific facts. Users should verify outputs with DOJ/OOC, CICC, the relevant law-enforcement or court process, service-provider records, official court issuances, incident evidence, privacy counsel, and qualified legal counsel.
-
-## AMLC 2018 AMLA IRR Slice
-
-This slice treats the official AMLC 2018 AMLA IRR, using the January 2021 amendment PDF, as implementation guidance for RA 9160 rather than a live AMLC reporting-status check:
-
-- The AMLA IRR covers covered-person classification, customer due diligence, KYC, beneficial ownership, source-of-funds review, covered transaction reports, suspicious transaction reports, transaction monitoring, record retention, AML compliance program ownership, confidentiality, anti-tipping-off controls, freeze or inquiry coordination, and AMLC reporting escalation.
-- Providerless local mode connects the IRR to payment-system, VASP, wallet, remittance, financial-account scam, fraud-management, CFT/sanctions, and financial-institution workflows when the query supplies direct AML implementation evidence.
-
-Providerless mode does not verify current AMLC amendments, reporting portal behavior, covered-person registration, actual customer risk facts, live CTR or STR filings, sanctions hits, account holds, freeze orders, or enforcement status. Users should verify outputs with AMLC, BSP or other sector regulators, official issuances, regulated-entity records, transaction evidence, and qualified counsel.
-
-## BSP Financial Consumer, Fraud, and VASP Slice
-
-This slice treats BSP-supervised financial-consumer questions as implementation workflows rather than only statute lookups:
-
-- BSP Circular No. 1160, s. 2022 supports RA 11765 financial consumer protection implementation, including market conduct, transparent pricing, consumer data, complaints, and fraud-response controls.
-- BSP Circular No. 1169, s. 2023 covers consumer assistance mechanisms for intake, acknowledgment, resolution timelines, escalation, root-cause analysis, reporting, and remediation.
-- BSP Circular No. 1140, s. 2022 covers robust fraud management system expectations, including governance, prevention, monitoring, detection, investigation, incident response, reporting, and corrective action.
-- BSP Circular No. 1108, s. 2021 covers virtual asset service provider guidance, including registration, AML/CFT, customer due diligence, transaction monitoring, custody, cybersecurity, outsourcing, and consumer disclosures.
-
-Providerless local mode can connect these circulars to RA 11765, RA 12010, RA 11127, RA 9160, RA 10173, financial-account scams, payments, VASP/crypto, complaint handling, and consumer remediation workflows when the query or draft supplies direct evidence. It does not verify current BSP circular amendments, MORB/MORNBFI updates, AMLC guidance, VASP registration status, entity licensing, fraud case facts, wallet ownership, actual complaint timelines, or live supervisory reporting; users should verify outputs with BSP, AMLC, official issuances, regulated-entity records, and qualified counsel.
-
-## Internet Transactions IRR Slice
-
-This slice treats online-commerce questions as role-based workflows rather than only a consumer-law lookup:
-
-- RA 11967 covers internet transactions, online merchants, e-marketplaces, digital platforms, seller information, consumer redress, and E-Commerce Bureau oversight.
-- Joint Administrative Order No. 24-03, s. 2024 adds official implementing-rule detail for merchant onboarding, seller verification, platform responsibilities, notices, complaints, takedown or corrective action, transaction records, and agency routing.
-
-Providerless local mode can connect these authorities to RA 7394 consumer protection, RA 8792 e-commerce records, RA 10173 privacy, RA 12023 digital-services VAT, logistics/payment evidence, tax invoices, and marketplace dispute workflows when the query or draft supplies direct evidence. It does not verify current DTI, E-Commerce Bureau, sector-agency, platform-registration, database, tax, seller-identity, complaint, delivery, or product-specific facts; users should verify outputs with DTI, the relevant regulator, official issuances, platform records, transaction documents, and qualified counsel.
-
-## Customs and Import Clearance Slice
-
-This slice treats import questions as a customs workflow rather than only a procurement or logistics lookup:
-
-- RA 10863 covers the Customs Modernization and Tariff Act, including import/export declarations, valuation, tariff classification, duties and taxes, customs brokers, bonded operations, enforcement, seizure, forfeiture, protest, appeal, and post-clearance records.
-- BOC CAO No. 09-2020 adds formal-entry workflow guidance for consumption import entries, goods declaration, supporting documents, assessment, examination, payment, regulated-goods controls, release, and audit-ready records.
-
-Providerless local mode can connect these authorities to public procurement, food safety, FDA-regulated products, agricultural economic sabotage, tax, asset acceptance, and audit workflows when the query or draft supplies direct evidence. It does not verify current BOC electronic-system behavior, port instructions, tariff treatment, commodity permits, shipment status, broker authority, or case-specific customs facts; users should verify outputs with the Bureau of Customs, relevant product regulators, shipment documents, current official issuances, qualified counsel, and licensed customs professionals.
+When a query spans multiple topics, local mode can synthesize a practical cross-law checklist from the 45 framework packs bundled in [compliance-frameworks.ts](../../src/lib/services/local-research-data/compliance-frameworks.ts) — for example data/cyber incident response, privacy operations and NPC compliance, financial-account scam response, LGU service delivery, workplace pay and OSH implementation, EPR and DENR reporting, EOPT/BIR implementation, and payment-system/CFT controls. The pack list in the data module is the source of truth; the governance gate validates framework membership.
+
+## Topic Slices
+
+Each bundled topic slice follows the same pattern: it treats matching queries as compliance workflows anchored to the listed authorities, connects related corpus authorities when the query or draft supplies direct evidence, and never verifies live agency data — portal behavior, filing or registration status, case facts, account records, forms, deadlines, or later issuances. Verify outputs with the listed agency, current official issuances, source documents, and qualified counsel.
+
+| Slice | Anchor authorities | Verify with |
+| --- | --- | --- |
+| DRRM and imminent disaster | RA 10121; RA 12287 (with RA 7160) | NDRRMC/OCD, LGU records |
+| Digital-services VAT and NRDSP | RA 12023 | BIR, tax counsel |
+| EOPT and BIR implementation | RA 11976; BIR RR Nos. 3- to 8-2024 and 11-2024; RMC 77-2024 | BIR, tax counsel |
+| Labor implementation | PD 442; DOLE DO 147-15, 174-17, 198-18 | DOLE, NLRC, labor counsel |
+| SEC official contact | SEC MC No. 28, s. 2020 (with RA 11232) | SEC, current portal instructions |
+| SEC beneficial ownership and HARBOR | SEC MC No. 1, s. 2021; SEC MC No. 15, s. 2025; SEC HARBOR | SEC, live HARBOR portal |
+| PWD benefits, PDAO, and accessibility | RA 9994, RA 7277, RA 9442, RA 10070, RA 10524, RA 10754, BP 344 | LGU/PDAO/OSCA, DSWD, NCDA, BIR |
+| Privacy operations and NPC compliance | RA 10173 and its IRR; NPC Circulars 16-03, 2020-03, 2022-04, 2023-04, 2023-06; NPC Advisories 2025-02, 2026-02 | NPC, live DBNMS/portal guidance |
+| Education and inclusive learning | RA 9155, RA 10157, RA 12199, RA 10650, RA 11650 (RA 10410 is retained only as superseded historical context — RA 12199 repealed it in 2025) | DepEd, CHED, TESDA, ECCD Council |
+| Public land, free patent, and agrarian reform | RA 11573, RA 10023, RA 11231, RA 6657, RA 9700, RA 11953 | DENR, DAR, LandBank, Register of Deeds, LGU |
+| Real property valuation, RPT, and local assessment | RA 12001; BLGF MC No. 001-2025 (RPVARA IRR) | BLGF/DOF, LGU assessor/treasurer, assessment appeal boards |
+| Child adoption, foundling, and civil status | RA 11642, RA 11222, RA 11767 | NACC, DSWD, local civil registrar |
+| Cybercrime IRR and warrant procedure | DOJ-DILG-DOST RA 10175 IRR; A.M. No. 17-11-03-SC | DOJ/OOC, CICC, courts |
+| AMLC 2018 AMLA IRR | RA 9160 2018 IRR (January 2021 amendment) | AMLC, BSP or sector regulator |
+| BSP financial consumer, fraud, and VASP | BSP Circulars 1108, 1140, 1160, 1169 | BSP, AMLC |
+| Internet transactions IRR | RA 11967; JAO No. 24-03, s. 2024 | DTI, E-Commerce Bureau |
+| Customs and import clearance | RA 10863; BOC CAO No. 09-2020 | Bureau of Customs, licensed customs professionals |
 
 ## Draft Checker Algorithm
 
@@ -344,7 +129,7 @@ The providerless draft checker uses structural and topic-specific heuristics:
 - Prioritizes explicitly cited local-corpus authorities in finding references.
 - Flags amber findings when a draft cites a Republic Act that is not in the bundled local corpus.
 - Flags red findings when penalties appear without notice, hearing, appeal, or reconsideration safeguards.
-- Adds topic checks for privacy, privacy operations, DPO ownership, PIC/PIP roles, personal data processing system inventory, DPS registration, consent and withdrawal, privacy notices, data-subject rights, data sharing agreements, breach notification, DBNMS filing, security safeguards, processor/vendor oversight, privacy engineering, privacy by design, PIA, profiling, automated decision-making, solid waste, EPR plastic-packaging recovery targets, DENR reporting, workplace safety, telecommuting, service charges, wage orders, breastfeeding and lactation support, fire safety, DRRM, imminent disaster, anticipatory action, pre-disaster risk assessment, water quality, air quality, digital records, digital government, public ICT, e-governance, PPPs, procurement, government service delivery, barangay complaint routing, public accountability, anti-graft, ethics and SALN/gifts, public-funds audit, plunder-risk indicators, GOCC governance, public-sector compensation, civil-service personnel actions, administrative discipline, SSS, GSIS, Pag-IBIG, PhilHealth, maternity leave, paternity leave, kasambahay employment, access-device fraud, wiretapping and recording, bouncing checks, ADR, insolvency, credit information, payment-system operators, clearing and settlement, BSP supervision, banking operations, lending companies, financing companies, insurance, pre-need plans, deposit insurance, CFT/sanctions controls, AMLC asset-freeze and watchlist workflows, civil contracts, family status, civil registry records and corrections, adoption, foundling, simulated birth, child status, notarization, evidence custody, small claims, constitutional rights, criminal complaint intake, criminal procedure, juvenile justice, dangerous-drugs handling, firearms, public assembly, anti-terrorism designation and proscription due-process safeguards, custody and anti-torture safeguards, cooperative governance, foreign investment, retail trade entry, secured transactions, immigration status, passports and travel documents, citizenship re-acquisition, naturalization, OFW/DMW records, election process, voter registration, campaign materials and finance, automated election systems, SK/youth governance, disease reporting, tobacco controls, vape-product controls, HIV confidentiality, child immunization, blood services, cancer control, reproductive health, transport, road-safety driver/vehicle compliance, public-service operators, electric utilities, public telecommunications, water districts, land-title verification, public-land classification, free-patent eligibility, imperfect-title confirmation, agricultural free patents, residential free patents, CARP/CARPER, CLOA/ARB, DAR clearance, agrarian emancipation, LandBank debt-condonation context, FPIC, agriculture support, organic agriculture, food safety, Sagip Saka enterprise support, cyber incidents, OSAEC/CSAEM child online safety, consumer protection, internet transactions, competition, financial consumers, financial-account scams, hazardous substances, environmental impact assessment, ECC conditions, wildlife, forestry, tree-cutting, timber transport, tourism, hospitality, guest safety, travel services, domestic shipping, ferries, seafarer STCW credentials, seafarer welfare, Coast Guard incidents, port cargo handling, aviation safety, airport and aircraft operations, energy efficiency, downstream oil and fuel retail, petroleum product quality, price monitoring, stock reporting, LPG cylinders/refilling/dealers, biofuel blend mandates, DOE coordination and monitoring, SIM and mobile-number data, private image abuse, women and gender equality, harassment, bullying, customs, tax administration, digital services VAT, VAT on Digital Services, NRDSP, nonresident digital service provider, BIR digital-services VAT implementation, NIRC, TRAIN, CREATE, CREATE MORE, corporate tax incentives, PhilSys identity handling, protected areas, labor, age discrimination, mental health, VAWC, trafficking, IP, securities, FDA-regulated products, health service delivery, cultural heritage, senior-citizen benefits, PWD accessibility, PDAO ownership, PWD discount/VAT-exemption, PWD employment, building and occupancy, licensed contractor and professional construction controls, sanitation, physical accessibility, child protection, migrant workers, bank deposits, price controls, micro and small business support, renewable energy, climate action, fisheries, mining, education governance, kindergarten, early childhood/ECCD, open distance learning, inclusive education, learners with disabilities, student aid, alternative learning, records management, FOI requests, housing, subdivision and condominium buyer protection, HOA governance, residential rent control, realty installment buyer protection, real estate service licensing, social assistance, solo-parent benefits, and child-marriage prevention.
+- Adds topic-specific checks for every bundled topic slice (privacy operations, solid waste and EPR, workplace safety, public accountability, tax and customs administration, land and agrarian workflows, health, education, transport, and the rest). The checker heuristics live alongside the corpus data and drift is caught by the self-test's thin-control warnings.
 - Adds focused warnings for thin termination due-process, contracting/subcontracting, OSH implementation, and SEC official-contact provisions when drafts cite or imply those workflows.
 - Computes a conservative compliance score from green, amber, and red findings.
 
@@ -352,272 +137,8 @@ This catches common drafting gaps. It does not determine legality, validity, or 
 
 ## Bundled Corpus
 
-The local corpus intentionally stays small and auditable:
-
-- [RA 9003 - Ecological Solid Waste Management Act of 2000](https://lawphil.net/statutes/repacts/ra2001/ra_9003_2001.html)
-- [RA 11898 - Extended Producer Responsibility Act of 2022](https://lawphil.net/statutes/repacts/ra2022/ra_11898_2022.html)
-- [RA 10173 - Data Privacy Act of 2012](https://privacy.gov.ph/data-privacy-act/)
-- [Data Privacy Act IRR - Implementing Rules and Regulations of RA 10173](https://privacy.gov.ph/implementing-rules-regulations-data-privacy-act-2012/)
-- [NPC Circular No. 16-03 - Personal Data Breach Management](https://privacy.gov.ph/wp-content/uploads/2022/01/sgd-npc-circular-16-03-personal-data-breach-management.pdf)
-- [NPC Advisory No. 2026-02 - Guidelines on Submitting Notifications through the DBNMS](https://privacy.gov.ph/wp-content/uploads/2026/02/NPC-Advisory-No.-2026-02-Guidelines-on-Submitting-Notifications-through-the-DBNMS.pdf)
-- [NPC Circular No. 2023-06 - Security of Personal Data](https://privacy.gov.ph/wp-content/uploads/2024/03/NPC-Circular-Repeal-16-01-Signed.pdf)
-- [NPC Circular No. 2023-04 - Guidelines on Consent](https://privacy.gov.ph/wp-content/uploads/2023/11/NPC-Circular-No.-2023-04_Guidelines-on-Consent_07Nov2023.pdf)
-- [NPC Circular No. 2022-04 - Registration, DPO, Automated Decision-Making or Profiling, and NPC Seal](https://privacy.gov.ph/wp-content/uploads/2023/05/Circular-2022-04-1.pdf)
-- [NPC Circular No. 2020-03 - Data Sharing Agreements](https://privacy.gov.ph/wp-content/uploads/2021/01/Circular-Data-Sharing-Agreement-amending-16-02-21-Dec-2020-clean-copy-FINAL-LYA-and-JDN-signed-minor-edit.pdf)
-- [NPC Advisory No. 2025-02 - Privacy Engineering in Systems Life Cycle Processes](https://privacy.gov.ph/wp-content/uploads/2025/09/NPC-Advisory-No.-2025-02-Guidelines-on-Privacy-Engineering-in-Systems-Life-Cycle-Processes.pdf)
-- [RA 11058 - Occupational Safety and Health Standards Act](https://lawphil.net/statutes/repacts/ra2018/ra_11058_2018.html)
-- [RA 9514 - Fire Code of the Philippines of 2008](https://lawphil.net/statutes/repacts/ra2008/ra_9514_2008.html)
-- [RA 7160 - Local Government Code of 1991](https://lawphil.net/statutes/repacts/ra1991/ra_7160_1991.html)
-- [EO 292, s. 1987 - Administrative Code of 1987](https://lawphil.net/executive/execord/eo1987/eo_292_1987.html)
-- [PD 807 - Civil Service Decree of the Philippines](https://lawphil.net/statutes/presdecs/pd1975/pd_807_1975.html)
-- [RA 10121 - Philippine Disaster Risk Reduction and Management Act of 2010](https://lawphil.net/statutes/repacts/ra2010/ra_10121_2010.html)
-- [RA 12287 - Declaration of State of Imminent Disaster Act](https://lawphil.net/statutes/repacts/ra2025/ra_12287_2025.html)
-- [RA 8749 - Philippine Clean Air Act of 1999](https://www.lawphil.net/statutes/repacts/ra1999/ra_8749_1999.html)
-- [RA 9275 - Philippine Clean Water Act of 2004](https://lawphil.net/statutes/repacts/ra2004/ra_9275_2004.html)
-- [PD 1586 - Philippine Environmental Impact Statement System](https://lawphil.net/statutes/presdecs/pd1978/pd_1586_1978.html)
-- [RA 9147 - Wildlife Resources Conservation and Protection Act](https://lawphil.net/statutes/repacts/ra2001/ra_9147_2001.html)
-- [PD 705 - Revised Forestry Code of the Philippines](https://lawphil.net/statutes/presdecs/pd1975/pd_705_1975.html)
-- [RA 9593 - Tourism Act of 2009](https://lawphil.net/statutes/repacts/ra2009/ra_9593_2009.html)
-- [RA 11232 - Revised Corporation Code of the Philippines](https://lawphil.net/statutes/repacts/ra2019/ra_11232_2019.html)
-- [RA 11313 - Safe Spaces Act](https://lawphil.net/statutes/repacts/ra2019/ra_11313_2019.html)
-- [RA 9710 - Magna Carta of Women](https://lawphil.net/statutes/repacts/ra2009/ra_9710_2009.html)
-- [RA 8792 - Electronic Commerce Act of 2000](https://lawphil.net/statutes/repacts/ra2000/ra_8792_2000.html)
-- [RA 11967 - Internet Transactions Act of 2023](https://lawphil.net/statutes/repacts/ra2023/ra_11967_2023.html)
-- [RA 10844 - Department of Information and Communications Technology Act of 2015](https://lawphil.net/statutes/repacts/ra2016/ra_10844_2016.html)
-- [RA 12254 - E-Governance Act](https://lawphil.net/statutes/repacts/ra2025/ra_12254_2025.html)
-- [RA 12009 - New Government Procurement Act](https://lawphil.net/statutes/repacts/ra2024/ra_12009_2024.html)
-- [RA 11966 - Public-Private Partnership Code of the Philippines](https://lawphil.net/statutes/repacts/ra2023/ra_11966_2023.html)
-- [RA 11032 - Ease of Doing Business and Efficient Government Service Delivery Act of 2018](https://lawphil.net/statutes/repacts/ra2018/ra_11032_2018.html)
-- [RA 10175 - Cybercrime Prevention Act of 2012](https://lawphil.net/statutes/repacts/ra2012/ra_10175_2012.html)
-- [Cybercrime Prevention Act IRR - DOJ-DILG-DOST Rules Implementing RA 10175](https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/10/71685)
-- [A.M. No. 17-11-03-SC - Rule on Cybercrime Warrants](https://oca.judiciary.gov.ph/wp-content/uploads/A.M.-No.-17-11-03-SC.pdf)
-- [RA 7394 - Consumer Act of the Philippines](https://lawphil.net/statutes/repacts/ra1992/ra_7394_1992.html)
-- [RA 10667 - Philippine Competition Act](https://lawphil.net/statutes/repacts/ra2015/ra_10667_2015.html)
-- [Joint Administrative Order No. 24-03, s. 2024 - Internet Transactions Act IRR](https://dtiwebfiles.s3.ap-southeast-1.amazonaws.com/e-commerce/JAO-24-03+RA11967+IRR.pdf)
-- [RA 11765 - Financial Products and Services Consumer Protection Act](https://lawphil.net/statutes/repacts/ra2022/ra_11765_2022.html)
-- [RA 12010 - Anti-Financial Account Scamming Act](https://lawphil.net/statutes/repacts/ra2024/ra_12010_2024.html)
-- [RA 11127 - National Payment Systems Act](https://lawphil.net/statutes/repacts/ra2018/ra_11127_2018.html)
-- [2018 AMLA IRR - Implementing Rules and Regulations of the AMLA, January 2021 amendment PDF](https://www.amlc.gov.ph/images/PDFs/2018%20IRR%20%282021%20JAN%20AMENDMENT%29.pdf)
-- [BSP Circular No. 1160, s. 2022 - Financial Consumer Protection Regulations](https://www.bsp.gov.ph/Regulations/Issuances/2022/1160.pdf)
-- [BSP Circular No. 1169, s. 2023 - Consumer Assistance Mechanism](https://www.bsp.gov.ph/Regulations/Issuances/2023/1169.pdf)
-- [BSP Circular No. 1140, s. 2022 - Fraud Management System Guidelines](https://www.bsp.gov.ph/Regulations/Issuances/2022/1140.pdf)
-- [BSP Circular No. 1108, s. 2021 - Virtual Asset Service Provider Guidelines](https://www.bsp.gov.ph/Regulations/Issuances/2021/1108.pdf)
-- [RA 8484 - Access Devices Regulation Act of 1998](https://lawphil.net/statutes/repacts/ra1998/ra_8484_1998.html)
-- [RA 4200 - Anti-Wiretapping Law](https://lawphil.net/statutes/repacts/ra1965/ra_4200_1965.html)
-- [BP 22 - Bouncing Checks Law](https://lawphil.net/statutes/bataspam/bp1979/bp_22_1979.html)
-- [RA 9285 - Alternative Dispute Resolution Act of 2004](https://lawphil.net/statutes/repacts/ra2004/ra_9285_2004.html)
-- [RA 10142 - Financial Rehabilitation and Insolvency Act of 2010](https://lawphil.net/statutes/repacts/ra2010/ra_10142_2010.html)
-- [RA 9510 - Credit Information System Act](https://lawphil.net/statutes/repacts/ra2008/ra_9510_2008.html)
-- [RA 386 - Civil Code of the Philippines](https://lawphil.net/statutes/repacts/ra1949/ra_386_1949.html)
-- [EO 209, s. 1987 - Family Code of the Philippines](https://lawphil.net/executive/execord/eo1987/eo_209_1987.html)
-- [Act No. 3753 - Civil Registry Law](https://lawphil.net/statutes/acts/act1930/act_3753_1930.html)
-- [RA 9048 - Clerical or Typographical Error Correction in Civil Registry Entries](https://lawphil.net/statutes/repacts/ra2001/ra_9048_2001.html)
-- [RA 10172 - Administrative Correction of Sex, Day, and Month in Civil Registry Entries](https://lawphil.net/statutes/repacts/ra2012/ra_10172_2012.html)
-- [A.M. No. 02-8-13-SC - 2004 Rules on Notarial Practice](https://lawphil.net/courts/supreme/am/am_02_8_13_sc_2008.html)
-- [Rules of Court - Rules on Evidence](https://lawphil.net/courts/rules/rc_128-134_evidence.html)
-- [A.M. No. 08-8-7-SC - Rule of Procedure for Small Claims Cases](https://lawphil.net/courts/supreme/am/am_08_8_7_sc_2008.html)
-- [1987 Constitution of the Republic of the Philippines](https://lawphil.net/consti/cons1987.html)
-- [Act No. 3815 - Revised Penal Code](https://lawphil.net/statutes/acts/act1930/act_3815_1930.html)
-- [Rules of Court - Rules on Criminal Procedure](https://lawphil.net/courts/rules/rc_110-127_crim.html)
-- [RA 9344 - Juvenile Justice and Welfare Act of 2006](https://lawphil.net/statutes/repacts/ra2006/ra_9344_2006.html)
-- [RA 9165 - Comprehensive Dangerous Drugs Act of 2002](https://lawphil.net/statutes/repacts/ra2002/ra_9165_2002.html)
-- [RA 10591 - Comprehensive Firearms and Ammunition Regulation Act](https://lawphil.net/statutes/repacts/ra2013/ra_10591_2013.html)
-- [BP 880 - Public Assembly Act of 1985](https://lawphil.net/statutes/bataspam/bp1985/bp_880_1985.html)
-- [RA 10168 - Terrorism Financing Prevention and Suppression Act of 2012](https://lawphil.net/statutes/repacts/ra2012/ra_10168_2012.html)
-- [RA 11479 - Anti-Terrorism Act of 2020](https://lawphil.net/statutes/repacts/ra2020/ra_11479_2020.html)
-- [RA 9745 - Anti-Torture Act of 2009](https://lawphil.net/statutes/repacts/ra2009/ra_9745_2009.html)
-- [RA 9520 - Philippine Cooperative Code of 2008](https://lawphil.net/statutes/repacts/ra2009/ra_9520_2009.html)
-- [RA 7042 - Foreign Investments Act of 1991](https://lawphil.net/statutes/repacts/ra1991/ra_7042_1991.html)
-- [RA 11647 - Amendments to the Foreign Investments Act](https://lawphil.net/statutes/repacts/ra2022/ra_11647_2022.html)
-- [RA 8762 - Retail Trade Liberalization Act of 2000](https://lawphil.net/statutes/repacts/ra2000/ra_8762_2000.html)
-- [RA 11595 - Amendments to the Retail Trade Liberalization Act](https://lawphil.net/statutes/repacts/ra2021/ra_11595_2021.html)
-- [RA 11057 - Personal Property Security Act](https://lawphil.net/statutes/repacts/ra2018/ra_11057_2018.html)
-- [RA 6969 - Toxic Substances and Hazardous and Nuclear Wastes Control Act of 1990](https://lawphil.net/statutes/repacts/ra1990/ra_6969_1990.html)
-- [RA 11285 - Energy Efficiency and Conservation Act](https://lawphil.net/statutes/repacts/ra2019/ra_11285_2019.html)
-- [RA 7638 - Department of Energy Act of 1992](https://lawphil.net/statutes/repacts/ra1992/ra_7638_1992.html)
-- [RA 8479 - Downstream Oil Industry Deregulation Act of 1998](https://lawphil.net/statutes/repacts/ra1998/ra_8479_1998.html)
-- [RA 11592 - LPG Industry Regulation Act](https://lawphil.net/statutes/repacts/ra2021/ra_11592_2021.html)
-- [RA 9367 - Biofuels Act of 2006](https://lawphil.net/statutes/repacts/ra2007/ra_9367_2007.html)
-- [RA 9136 - Electric Power Industry Reform Act of 2001](https://lawphil.net/statutes/repacts/ra2001/ra_9136_2001.html)
-- [RA 7925 - Public Telecommunications Policy Act of the Philippines](https://lawphil.net/statutes/repacts/ra1995/ra_7925_1995.html)
-- [PD 198 - Provincial Water Utilities Act of 1973](https://lawphil.net/statutes/presdecs/pd1973/pd_198_1973.html)
-- [RA 11934 - SIM Registration Act](https://lawphil.net/statutes/repacts/ra2022/ra_11934_2022.html)
-- [RA 9995 - Anti-Photo and Video Voyeurism Act of 2009](https://lawphil.net/statutes/repacts/ra2010/ra_9995_2010.html)
-- [RA 7877 - Anti-Sexual Harassment Act of 1995](https://lawphil.net/statutes/repacts/ra1995/ra_7877_1995.html)
-- [RA 10627 - Anti-Bullying Act of 2013](https://lawphil.net/statutes/repacts/ra2013/ra_10627_2013.html)
-- [RA 11930 - Anti-OSAEC and Anti-CSAEM Act](https://lawphil.net/statutes/repacts/ra2022/ra_11930_2022.html)
-- [RA 10863 - Customs Modernization and Tariff Act](https://lawphil.net/statutes/repacts/ra2016/ra_10863_2016.html)
-- [BOC CAO No. 09-2020 - Formal Entry Process for Consumption](https://customs.gov.ph/wp-content/uploads/2020/08/CAO-09-2020.pdf)
-- [RA 12022 - Anti-Agricultural Sabotage Act](https://lawphil.net/statutes/repacts/ra2024/ra_12022_2024.html)
-- [RA 11976 - Ease of Paying Taxes Act](https://lawphil.net/statutes/repacts/ra2024/ra_11976_2024.html)
-- [BIR RR 3-2024 - EOPT VAT and Percentage Tax Regulations](https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.3-%202024.pdf)
-- [BIR RR 4-2024 - EOPT Filing and Payment Regulations](https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%204-%202024.pdf)
-- [BIR RR 5-2024 - EOPT Tax Refund Regulations](https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%205%20-2024.pdf)
-- [BIR RR 6-2024 - Reduced Interest and Penalty Rates for Micro and Small Taxpayers](https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%206-%202024.pdf)
-- [BIR RR 7-2024 - EOPT Registration and Invoicing Regulations](https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%207-%202024.pdf)
-- [BIR RR 8-2024 - EOPT Taxpayer Classification Regulations](https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%208-%202024.pdf)
-- [BIR RR 11-2024 - EOPT Invoicing Transitory Amendments](https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2011-2024.pdf)
-- [BIR RMC 77-2024 - Clarifications on EOPT Invoicing Requirements](https://bir-cdn.bir.gov.ph/BIR/pdf/RMC%20No.%2077-2024.pdf)
-- [RA 12023 - Value-Added Tax on Digital Services](https://lawphil.net/statutes/repacts/ra2024/ra_12023_2024.html)
-- [RA 8424 - National Internal Revenue Code of 1997](https://lawphil.net/statutes/repacts/ra1997/ra_8424_1997.html)
-- [RA 10963 - TRAIN Law](https://lawphil.net/statutes/repacts/ra2017/ra_10963_2017.html)
-- [RA 11534 - CREATE Act](https://lawphil.net/statutes/repacts/ra2021/ra_11534_2021.html)
-- [RA 12066 - CREATE MORE Act](https://lawphil.net/statutes/repacts/ra2024/ra_12066_2024.html)
-- [RA 11055 - Philippine Identification System Act](https://lawphil.net/statutes/repacts/ra2018/ra_11055_2018.html)
-- [RA 11038 - Expanded National Integrated Protected Areas System Act of 2018](https://lawphil.net/statutes/repacts/ra2018/ra_11038_2018.html)
-- [PD 442 - Labor Code of the Philippines](https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html)
-- [DOLE Department Order No. 147-15 - Labor Code Book VI Implementing Rules](https://www.dole.gov.ph/php_assets/uploads/2017/07/Dept-Order-No_-147-15.pdf)
-- [DOLE Department Order No. 174-17 - Contracting and Subcontracting Rules](https://www.dole.gov.ph/news/department-order-no-174-17-rules-implementing-articles-106-to-109-of-the-labor-code-as-amended/)
-- [DOLE Department Order No. 198-18 - OSH Law IRR](https://www.dole.gov.ph/news/department-order-198-18-implementing-rules-and-regulations-of-republic-act-no-11058-an-act-strengthening-compliance-with-occupational-safety-and-health-standards-and-providing-penalties-for-viola/)
-- [RA 11165 - Telecommuting Act](https://lawphil.net/statutes/repacts/ra2018/ra_11165_2018.html)
-- [RA 11360 - Service Charge Law](https://lawphil.net/statutes/repacts/ra2019/ra_11360_2019.html)
-- [RA 6727 - Wage Rationalization Act](https://lawphil.net/statutes/repacts/ra1989/ra_6727_1989.html)
-- [SEC Memorandum Circular No. 28, s. 2020 - Official Email and Mobile Contact Requirements](https://www.sec.gov.ph/mc-2020/mc-no-28-s-2020/)
-- [SEC Memorandum Circular No. 1, s. 2021 - Beneficial Ownership Transparency Guidelines](https://www.sec.gov.ph/mc-2021/mc-no-01-s-2021/)
-- [SEC Memorandum Circular No. 15, s. 2025 - Revised Beneficial Ownership Disclosure Rules](https://www.sec.gov.ph/mc-2025/sec-mc-no-15-series-of-2025/)
-- [SEC HARBOR - Beneficial Ownership Registry](https://www.sec.gov.ph/aml-cft/harbor/)
-- [RA 10028 - Expanded Breastfeeding Promotion Act of 2009](https://lawphil.net/statutes/repacts/ra2010/ra_10028_2010.html)
-- [RA 10911 - Anti-Age Discrimination in Employment Act](https://lawphil.net/statutes/repacts/ra2016/ra_10911_2016.html)
-- [RA 11036 - Mental Health Act](https://lawphil.net/statutes/repacts/ra2018/ra_11036_2018.html)
-- [RA 9262 - Anti-Violence Against Women and Their Children Act of 2004](https://lawphil.net/statutes/repacts/ra2004/ra_9262_2004.html)
-- [RA 10364 - Expanded Anti-Trafficking in Persons Act of 2012](https://lawphil.net/statutes/repacts/ra2013/ra_10364_2013.html)
-- [RA 8293 - Intellectual Property Code of the Philippines](https://lawphil.net/statutes/repacts/ra1997/ra_8293_1997.html)
-- [RA 8799 - Securities Regulation Code](https://lawphil.net/statutes/repacts/ra2000/ra_8799_2000.html)
-- [RA 9711 - Food and Drug Administration Act of 2009](https://lawphil.net/statutes/repacts/ra2009/ra_9711_2009.html)
-- [RA 11223 - Universal Health Care Act](https://lawphil.net/statutes/repacts/ra2019/ra_11223_2019.html)
-- [RA 10932 - Anti-Hospital Deposit Law Amendments](https://lawphil.net/statutes/repacts/ra2017/ra_10932_2017.html)
-- [RA 8344 - Anti-Hospital Refusal and Deposit Law](https://lawphil.net/statutes/repacts/ra1997/ra_8344_1997.html)
-- [RA 9439 - Hospital Detention Law](https://lawphil.net/statutes/repacts/ra2007/ra_9439_2007.html)
-- [RA 4226 - Hospital Licensure Act](https://lawphil.net/statutes/repacts/ra1965/ra_4226_1965.html)
-- [RA 11332 - Mandatory Reporting of Notifiable Diseases and Health Events of Public Health Concern Act](https://lawphil.net/statutes/repacts/ra2019/ra_11332_2019.html)
-- [RA 9211 - Tobacco Regulation Act of 2003](https://lawphil.net/statutes/repacts/ra2003/ra_9211_2003.html)
-- [RA 11900 - Vaporized Nicotine and Non-Nicotine Products Regulation Act](https://lawphil.net/statutes/repacts/ra2022/ra_11900_2022.html)
-- [RA 10643 - Graphic Health Warnings Law](https://lawphil.net/statutes/repacts/ra2014/ra_10643_2014.html)
-- [RA 11166 - Philippine HIV and AIDS Policy Act](https://lawphil.net/statutes/repacts/ra2018/ra_11166_2018.html)
-- [RA 10152 - Mandatory Infants and Children Health Immunization Act](https://lawphil.net/statutes/repacts/ra2011/ra_10152_2011.html)
-- [RA 7719 - National Blood Services Act of 1994](https://lawphil.net/statutes/repacts/ra1994/ra_7719_1994.html)
-- [RA 11215 - National Integrated Cancer Control Act](https://lawphil.net/statutes/repacts/ra2019/ra_11215_2019.html)
-- [RA 10354 - Responsible Parenthood and Reproductive Health Act of 2012](https://lawphil.net/statutes/repacts/ra2012/ra_10354_2012.html)
-- [RA 10918 - Philippine Pharmacy Act](https://lawphil.net/statutes/repacts/ra2016/ra_10918_2016.html)
-- [RA 9502 - Universally Accessible Cheaper and Quality Medicines Act](https://lawphil.net/statutes/repacts/ra2008/ra_9502_2008.html)
-- [RA 10066 - National Cultural Heritage Act of 2009](https://lawphil.net/statutes/repacts/ra2010/ra_10066_2010.html)
-- [RA 9994 - Expanded Senior Citizens Act of 2010](https://lawphil.net/statutes/repacts/ra2010/ra_9994_2010.html)
-- [RA 7277 - Magna Carta for Disabled Persons](https://lawphil.net/statutes/repacts/ra1992/ra_7277_1992.html)
-- [PD 1096 - National Building Code of the Philippines](https://elibrary.judiciary.gov.ph/thebookshelf/showdocs/11/53320)
-- [RA 4566 - Contractors License Law](https://lawphil.net/statutes/repacts/ra1965/ra_4566_1965.html)
-- [RA 9266 - Architecture Act of 2004](https://lawphil.net/statutes/repacts/ra2004/ra_9266_2004.html)
-- [RA 8981 - PRC Modernization Act of 2000](https://lawphil.net/statutes/repacts/ra2000/ra_8981_2000.html)
-- [RA 10912 - Continuing Professional Development Act of 2016](https://lawphil.net/statutes/repacts/ra2016/ra_10912_2016.html)
-- [RA 544 - Civil Engineering Law](https://lawphil.net/statutes/repacts/ra1950/ra_544_1950.html)
-- [RA 7920 - New Electrical Engineering Law](https://lawphil.net/statutes/repacts/ra1995/ra_7920_1995.html)
-- [RA 8495 - Philippine Mechanical Engineering Act of 1998](https://lawphil.net/statutes/repacts/ra1998/ra_8495_1998.html)
-- [RA 1378 - Plumbing Law](https://lawphil.net/statutes/repacts/ra1955/ra_1378_1955.html)
-- [PD 856 - Code on Sanitation of the Philippines](https://lawphil.net/statutes/presdecs/pd1975/pd_856_1975.html)
-- [BP 344 - Accessibility Law](https://lawphil.net/statutes/bataspam/bp1983/bp_344_1983.html)
-- [RA 7610 - Special Protection of Children Against Abuse, Exploitation and Discrimination Act](https://lawphil.net/statutes/repacts/ra1992/ra_7610_1992.html)
-- [RA 8042 - Migrant Workers and Overseas Filipinos Act of 1995](https://lawphil.net/statutes/repacts/ra1995/ra_8042_1995.html)
-- [RA 10022 - Amendments to the Migrant Workers and Overseas Filipinos Act](https://lawphil.net/statutes/repacts/ra2010/ra_10022_2010.html)
-- [RA 11641 - Department of Migrant Workers Act](https://lawphil.net/statutes/repacts/ra2021/ra_11641_2021.html)
-- [CA 613 - Philippine Immigration Act of 1940](https://lawphil.net/statutes/comacts/ca1940/ca_613_1940.html)
-- [CA 473 - Revised Naturalization Law](https://lawphil.net/statutes/comacts/ca1939/ca_473_1939.html)
-- [RA 9139 - Administrative Naturalization Law of 2000](https://lawphil.net/statutes/repacts/ra2001/ra_9139_2001.html)
-- [RA 9225 - Citizenship Retention and Re-acquisition Act of 2003](https://lawphil.net/statutes/repacts/ra2003/ra_9225_2003.html)
-- [RA 11983 - New Philippine Passport Act](https://lawphil.net/statutes/repacts/ra2024/ra_11983_2024.html)
-- [RA 8239 - Philippine Passport Act of 1996](https://lawphil.net/statutes/repacts/ra1996/ra_8239_1996.html)
-- [BP 881 - Omnibus Election Code of the Philippines](https://lawphil.net/statutes/bataspam/bp1985/bp_881_1985.html)
-- [RA 8189 - Voter's Registration Act of 1996](https://lawphil.net/statutes/repacts/ra1996/ra_8189_1996.html)
-- [RA 7166 - Synchronized National and Local Elections Act](https://lawphil.net/statutes/repacts/ra1991/ra_7166_1991.html)
-- [RA 9006 - Fair Election Act](https://lawphil.net/statutes/repacts/ra2001/ra_9006_2001.html)
-- [RA 8436 - Automated Election System Act](https://lawphil.net/statutes/repacts/ra1997/ra_8436_1997.html)
-- [RA 9369 - Automated Election System Act amendments](https://lawphil.net/statutes/repacts/ra2007/ra_9369_2007.html)
-- [RA 10742 - Sangguniang Kabataan Reform Act of 2015](https://lawphil.net/statutes/repacts/ra2016/ra_10742_2016.html)
-- [RA 11768 - Strengthening the Sangguniang Kabataan Reform Act](https://lawphil.net/statutes/repacts/ra2022/ra_11768_2022.html)
-- [RA 1405 - Law on Secrecy of Bank Deposits](https://lawphil.net/statutes/repacts/ra1955/ra_1405_1955.html)
-- [RA 7653 - New Central Bank Act](https://lawphil.net/statutes/repacts/ra1993/ra_7653_1993.html)
-- [RA 11211 - Amendments to the New Central Bank Act](https://lawphil.net/statutes/repacts/ra2019/ra_11211_2019.html)
-- [RA 8791 - General Banking Law of 2000](https://lawphil.net/statutes/repacts/ra2000/ra_8791_2000.html)
-- [RA 9474 - Lending Company Regulation Act of 2007](https://lawphil.net/statutes/repacts/ra2007/ra_9474_2007.html)
-- [RA 8556 - Financing Company Act of 1998](https://lawphil.net/statutes/repacts/ra1998/ra_8556_1998.html)
-- [RA 10607 - Insurance Code Amendments](https://lawphil.net/statutes/repacts/ra2013/ra_10607_2013.html)
-- [RA 9829 - Pre-Need Code of the Philippines](https://lawphil.net/statutes/repacts/ra2009/ra_9829_2009.html)
-- [RA 10846 - Amendments to the PDIC Charter](https://lawphil.net/statutes/repacts/ra2016/ra_10846_2016.html)
-- [RA 7581 - Price Act](https://lawphil.net/statutes/repacts/ra1992/ra_7581_1992.html)
-- [RA 9178 - Barangay Micro Business Enterprises Act of 2002](https://lawphil.net/statutes/repacts/ra2002/ra_9178_2002.html)
-- [RA 9501 - Magna Carta for Micro, Small and Medium Enterprises](https://lawphil.net/statutes/repacts/ra2008/ra_9501_2008.html)
-- [RA 9513 - Renewable Energy Act of 2008](https://lawphil.net/statutes/repacts/ra2008/ra_9513_2008.html)
-- [RA 9729 - Climate Change Act of 2009](https://lawphil.net/statutes/repacts/ra2009/ra_9729_2009.html)
-- [RA 8550 - Philippine Fisheries Code of 1998](https://lawphil.net/statutes/repacts/ra1998/ra_8550_1998.html)
-- [RA 7942 - Philippine Mining Act of 1995](https://lawphil.net/statutes/repacts/ra1995/ra_7942_1995.html)
-- [RA 9295 - Domestic Shipping Development Act of 2004](https://lawphil.net/statutes/repacts/ra2004/ra_9295_2004.html)
-- [RA 10635 - MARINA STCW Administration Act](https://lawphil.net/statutes/repacts/ra2014/ra_10635_2014.html)
-- [RA 9993 - Philippine Coast Guard Law of 2009](https://lawphil.net/statutes/repacts/ra2010/ra_9993_2010.html)
-- [RA 12021 - Magna Carta of Filipino Seafarers](https://lawphil.net/statutes/repacts/ra2024/ra_12021_2024.html)
-- [RA 9497 - Civil Aviation Authority Act of 2008](https://lawphil.net/statutes/repacts/ra2008/ra_9497_2008.html)
-- [PD 857 - Revised Charter of the Philippine Ports Authority](https://lawphil.net/statutes/presdecs/pd1975/pd_857_1975.html)
-- [RA 9155 - Governance of Basic Education Act of 2001](https://lawphil.net/statutes/repacts/ra2001/ra_9155_2001.html)
-- [RA 10157 - Kindergarten Education Act](https://lawphil.net/statutes/repacts/ra2012/ra_10157_2012.html)
-- [RA 12199 - Early Childhood Care and Development System Act](https://lawphil.net/statutes/repacts/ra2025/ra_12199_2025.html)
-- [RA 10410 - Early Years Act of 2013 (historical; repealed by RA 12199)](https://lawphil.net/statutes/repacts/ra2013/ra_10410_2013.html)
-- [RA 10533 - Enhanced Basic Education Act of 2013](https://lawphil.net/statutes/repacts/ra2013/ra_10533_2013.html)
-- [RA 10650 - Open Distance Learning Act](https://lawphil.net/statutes/repacts/ra2014/ra_10650_2014.html)
-- [RA 10931 - Universal Access to Quality Tertiary Education Act](https://lawphil.net/statutes/repacts/ra2017/ra_10931_2017.html)
-- [RA 11650 - Instituting a Policy of Inclusion and Services for Learners with Disabilities in Support of Inclusive Education Act](https://lawphil.net/statutes/repacts/ra2022/ra_11650_2022.html)
-- [RA 7279 - Urban Development and Housing Act of 1992](https://lawphil.net/statutes/repacts/ra1992/ra_7279_1992.html)
-- [RA 11201 - Department of Human Settlements and Urban Development Act](https://lawphil.net/statutes/repacts/ra2019/ra_11201_2019.html)
-- [PD 957 - Subdivision and Condominium Buyers Protective Decree](https://lawphil.net/statutes/presdecs/pd1976/pd_957_1976.html)
-- [RA 4726 - Condominium Act](https://lawphil.net/statutes/repacts/ra1966/ra_4726_1966.html)
-- [BP 220 - Economic and Socialized Housing Law](https://lawphil.net/statutes/bataspam/bp1982/bp_220_1982.html)
-- [RA 9904 - Magna Carta for Homeowners and Homeowners Associations](https://lawphil.net/statutes/repacts/ra2010/ra_9904_2010.html)
-- [RA 9653 - Rent Control Act of 2009](https://lawphil.net/statutes/repacts/ra2009/ra_9653_2009.html)
-- [RA 6552 - Realty Installment Buyer Protection Act](https://lawphil.net/statutes/repacts/ra1972/ra_6552_1972.html)
-- [RA 9646 - Real Estate Service Act of the Philippines](https://lawphil.net/statutes/repacts/ra2009/ra_9646_2009.html)
-- [RA 9470 - National Archives of the Philippines Act of 2007](https://lawphil.net/statutes/repacts/ra2007/ra_9470_2007.html)
-- [EO 2, s. 2016 - Freedom of Information Executive Order](https://lawphil.net/executive/execord/eo2016/eo_2_2016.html)
-- [RA 11310 - Pantawid Pamilyang Pilipino Program Act](https://lawphil.net/statutes/repacts/ra2019/ra_11310_2019.html)
-- [RA 11861 - Expanded Solo Parents Welfare Act](https://lawphil.net/statutes/repacts/ra2022/ra_11861_2022.html)
-- [RA 11596 - Prohibition of Child Marriage Law](https://lawphil.net/statutes/repacts/ra2021/ra_11596_2021.html)
-- [RA 11642 - Domestic Administrative Adoption and Alternative Child Care Act](https://lawphil.net/statutes/repacts/ra2022/ra_11642_2022.html)
-- [RA 11222 - Simulated Birth Rectification Act](https://lawphil.net/statutes/repacts/ra2019/ra_11222_2019.html)
-- [RA 11767 - Foundling Recognition and Protection Act](https://lawphil.net/statutes/repacts/ra2022/ra_11767_2022.html)
-- [RA 11510 - Alternative Learning System Act](https://lawphil.net/statutes/repacts/ra2020/ra_11510_2020.html)
-- [RA 4136 - Land Transportation and Traffic Code](https://lawphil.net/statutes/repacts/ra1964/ra_4136_1964.html)
-- [RA 10930 - Driver License Validity Extension Act](https://lawphil.net/statutes/repacts/ra2017/ra_10930_2017.html)
-- [RA 8750 - Seat Belts Use Act of 1999](https://lawphil.net/statutes/repacts/ra1999/ra_8750_1999.html)
-- [RA 10054 - Motorcycle Helmet Act of 2009](https://lawphil.net/statutes/repacts/ra2010/ra_10054_2010.html)
-- [RA 10586 - Anti-Drunk and Drugged Driving Act of 2013](https://lawphil.net/statutes/repacts/ra2013/ra_10586_2013.html)
-- [RA 10913 - Anti-Distracted Driving Act](https://lawphil.net/statutes/repacts/ra2016/ra_10913_2016.html)
-- [RA 11229 - Child Safety in Motor Vehicles Act](https://lawphil.net/statutes/repacts/ra2019/ra_11229_2019.html)
-- [RA 11659 - Public Service Act Amendments](https://lawphil.net/statutes/repacts/ra2022/ra_11659_2022.html)
-- [RA 8371 - Indigenous Peoples Rights Act of 1997](https://lawphil.net/statutes/repacts/ra1997/ra_8371_1997.html)
-- [PD 1529 - Property Registration Decree](https://lawphil.net/statutes/presdecs/pd1978/pd_1529_1978.html)
-- [RA 11573 - Confirmation of Imperfect and Incomplete Titles Amendments](https://lawphil.net/statutes/repacts/ra2021/ra_11573_2021.html)
-- [RA 10023 - Residential Free Patent Act](https://lawphil.net/statutes/repacts/ra2010/ra_10023_2010.html)
-- [RA 11231 - Agricultural Free Patent Reform Act](https://lawphil.net/statutes/repacts/ra2019/ra_11231_2019.html)
-- [RA 6657 - Comprehensive Agrarian Reform Law of 1988](https://lawphil.net/statutes/repacts/ra1988/ra_6657_1988.html)
-- [RA 9700 - CARPER Amendments](https://lawphil.net/statutes/repacts/ra2009/ra_9700_2009.html)
-- [RA 11953 - New Agrarian Emancipation Act](https://lawphil.net/statutes/repacts/ra2023/ra_11953_2023.html)
-- [RA 12001 - Real Property Valuation and Assessment Reform Act](https://lawphil.net/statutes/repacts/ra2024/ra_12001_2024.html)
-- [BLGF MC No. 001-2025 - RPVARA IRR](https://blgf.gov.ph/wp-content/uploads/2025/03/BLGF-MC-No.-001.2025-IRR-of-RA-No.-12001-or-the-RPVARA-Reform-Act-6-Jan-2025-Approved-3.pdf)
-- [RA 8435 - Agriculture and Fisheries Modernization Act of 1997](https://lawphil.net/statutes/repacts/ra1997/ra_8435_1997.html)
-- [RA 10068 - Organic Agriculture Act of 2010](https://lawphil.net/statutes/repacts/ra2010/ra_10068_2010.html)
-- [RA 10611 - Food Safety Act of 2013](https://lawphil.net/statutes/repacts/ra2013/ra_10611_2013.html)
-- [RA 11321 - Sagip Saka Act](https://lawphil.net/statutes/repacts/ra2019/ra_11321_2019.html)
-- [RA 3019 - Anti-Graft and Corrupt Practices Act](https://lawphil.net/statutes/repacts/ra1960/ra_3019_1960.html)
-- [RA 6713 - Code of Conduct and Ethical Standards for Public Officials and Employees](https://lawphil.net/statutes/repacts/ra1989/ra_6713_1989.html)
-- [PD 1445 - Government Auditing Code of the Philippines](https://lawphil.net/statutes/presdecs/pd1978/pd_1445_1978.html)
-- [RA 7080 - Plunder Act](https://lawphil.net/statutes/repacts/ra1991/ra_7080_1991.html)
-- [RA 10149 - GOCC Governance Act of 2011](https://lawphil.net/statutes/repacts/ra2011/ra_10149_2011.html)
-- [RA 6758 - Compensation and Position Classification Act of 1989](https://lawphil.net/statutes/repacts/ra1989/ra_6758_1989.html)
-- [RA 11199 - Social Security Act of 2018](https://lawphil.net/statutes/repacts/ra2019/ra_11199_2019.html)
-- [RA 8291 - Government Service Insurance System Act of 1997](https://lawphil.net/statutes/repacts/ra1997/ra_8291_1997.html)
-- [RA 9679 - Home Development Mutual Fund Law of 2009](https://lawphil.net/statutes/repacts/ra2009/ra_9679_2009.html)
-- [RA 10606 - National Health Insurance Act of 2013](https://lawphil.net/statutes/repacts/ra2013/ra_10606_2013.html)
-- [RA 11210 - 105-Day Expanded Maternity Leave Law](https://lawphil.net/statutes/repacts/ra2019/ra_11210_2019.html)
-- [RA 8187 - Paternity Leave Act of 1996](https://lawphil.net/statutes/repacts/ra1996/ra_8187_1996.html)
-- [RA 10361 - Domestic Workers Act or Batas Kasambahay](https://lawphil.net/statutes/repacts/ra2013/ra_10361_2013.html)
+The local corpus intentionally stays small and auditable: 271 authorities across 13 official source families, with 45 framework packs and 180 curated relations (counts derived by [coverage-summary.ts](../../src/lib/services/local-research-data/coverage-summary.ts)). The canonical registry is [corpus.ts](../../src/lib/services/local-research-data/corpus.ts) with source metadata in [authority-sources.ts](../../src/lib/services/local-research-data/authority-sources.ts) — the governance gate validates those files, so this doc no longer maintains a duplicate link list.
 
 ## Limits
 
-Providerless mode does not search live government sites, new issuances, court decisions, local ordinances, amendments, implementing rules, agency circulars, school policies, budget releases, land records, survey plans, cadastral data, title encumbrances, child case files, civil-registry live records, or facts outside the query or draft text. Treat it as a resilient research aid and drafting checklist, not legal advice. For privacy-operations and NPC-compliance questions, verify RA 10173, the Data Privacy Act IRR, NPC Circular No. 16-03, NPC Advisory No. 2026-02, NPC Circular No. 2023-06, NPC Circular No. 2023-04, NPC Circular No. 2022-04, NPC Circular No. 2020-03, NPC Advisory No. 2025-02, live DBNMS procedures, registration status, and organization-specific facts with NPC, current official issuances, internal records, and qualified counsel. For AMLA IRR questions, verify the AMLC 2018 AMLA IRR, current AMLC issuances, reporting guidelines, covered-person registration, portal procedures, CTR/STR filing facts, sanctions or freeze-order facts, and regulated-entity records with AMLC, BSP or the relevant regulator, official sources, internal records, and qualified counsel. For SEC beneficial-ownership and HARBOR questions, verify SEC MC No. 1, s. 2021, SEC MC No. 15, s. 2025, live HARBOR portal instructions, entity coverage, beneficial-owner facts, authorized-filer credentials, GIS/reportorial records, filing deadlines, and later SEC issuances with SEC, corporate records, and qualified counsel. For EOPT questions, verify RA 11976, BIR RR 3-2024, RR 4-2024, RR 5-2024, RR 6-2024, RR 7-2024, RR 8-2024, RR 11-2024, RMC 77-2024, current BIR forms, registration and filing portals, taxpayer classification, invoice/ATP facts, unused-form inventory, refund eligibility, transaction records, and accounting treatment with BIR, official sources, internal records, and qualified tax counsel. For digital-services VAT and NRDSP questions, verify RA 12023, current BIR issuances, registration/filing portal instructions, taxpayer facts, transaction records, and accounting treatment with BIR, official sources, internal records, and qualified tax counsel. For DOLE termination, contracting/subcontracting, and OSH questions, verify DOLE Department Order No. 147-15, DOLE Department Order No. 174-17, DOLE Department Order No. 198-18, current DOLE and NLRC guidance, later issuances, contractor registration status, OSH forms and thresholds, company records, CBA or handbook terms, and workplace facts with official sources and qualified labor counsel. For SEC official-contact questions, verify SEC Memorandum Circular No. 28, s. 2020, current MC28 portal instructions, filing deadlines, later SEC issuances, entity records, contact authority, access credentials, and reportorial status with SEC and qualified counsel. For education and inclusive-learning questions, verify RA 9155, RA 10157, RA 12199, RA 10650, RA 11650, and related authorities against current official sources; treat RA 10410 only as superseded historical context unless the question asks about the prior Early Years Act framework. For public-land, free-patent, and agrarian-reform questions, verify RA 11573, RA 10023, RA 11231, RA 6657, RA 9700, RA 11953, and related records with DENR, DAR, LandBank, the Register of Deeds, the relevant LGU, current issuances, and qualified counsel. For adoption, foundling, simulated-birth, or child-status questions, verify RA 11642, RA 11222, RA 11767, and case-specific facts with NACC, DSWD, the local civil registrar, the relevant LGU, current agency procedures, and qualified counsel. Consult qualified legal counsel before making compliance decisions.
-
-For real-property valuation, RPT, and local assessment questions, verify RA 12001, BLGF MC No. 001-2025 RPVARA IRR, current BLGF/DOF issuances, local SMV adoption status, tax declarations, assessment rolls, notices, publication, payment/delinquency facts, appeal-board procedure, property records, and LGU assessor/treasurer practice with official sources, source documents, the relevant LGU, and qualified counsel.
+Providerless mode does not search live government sites, new issuances, court decisions, local ordinances, amendments, implementing rules, agency circulars, or any facts outside the query or draft text. Treat it as a resilient research aid and drafting checklist, not legal advice; verify outputs against the "Verify with" column of the slice table above, current official issuances, and qualified counsel before making compliance decisions.
