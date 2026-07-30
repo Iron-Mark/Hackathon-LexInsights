@@ -186,6 +186,39 @@ export async function syncDeletedComplianceVersion(clientVersionId: string): Pro
 }
 
 /**
+ * Delete every cloud-persisted compliance report the signed-in user owns
+ * (PRD §11 retention: reports are kept until the user deletes them, so this
+ * is the user-facing bulk-deletion control). Local browser copies are NOT
+ * touched — only the Supabase mirror. Clears the store's server linkage so a
+ * later save re-creates a fresh report. Returns true on success; false for
+ * guests or on failure.
+ */
+export async function deleteAllCloudComplianceReports(): Promise<boolean> {
+  const user = useAuthStore.getState().user
+  if (!user) return false
+
+  try {
+    // Queued behind in-flight saves so a concurrent sync cannot re-create a
+    // row mid-delete and leave half a report behind.
+    await enqueue(() => createComplianceReportRepository().deleteAllReports(user.id))
+
+    const store = useComplianceStore.getState()
+    if (useAuthStore.getState().user?.id === user.id) {
+      for (const clientVersionId of Object.keys(store.serverVersionIds)) {
+        store.unlinkServerVersion(clientVersionId)
+      }
+      store.setServerReportId(null)
+      store.setServerReportTitle(null)
+    }
+
+    return true
+  } catch (error) {
+    notifySyncFailure('delete cloud reports', error)
+    return false
+  }
+}
+
+/**
  * Reload the signed-in user's latest server report into the local store so a
  * report survives clearing browser storage (PRD P0-1 acceptance). Waits for
  * IndexedDB rehydration first and only seeds when the local store is truly

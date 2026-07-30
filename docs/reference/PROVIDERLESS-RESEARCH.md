@@ -73,7 +73,7 @@ The providerless research path is deterministic:
 
 The providerless corpus has a lightweight knowledge/provenance layer under [local-research-data](../../src/lib/services/local-research-data):
 
-- `corpus.ts` is the bundled authority corpus itself (271 entries).
+- `corpus.ts` is the bundled authority corpus itself (305 entries).
 - `authority-sources.ts` is the canonical local source registry for source name, URL, authority type, source tier, verification date, provenance status, and catalog tags.
 - `evidence-anchors.ts` creates short evidence anchors for summaries, obligations, and common gaps without storing long source excerpts.
 - `authority-relations.ts` records curated amendment, guidance, cross-reference, and workflow relationships used by local Deep Search.
@@ -81,7 +81,7 @@ The providerless corpus has a lightweight knowledge/provenance layer under [loca
 - `compliance-frameworks.ts` defines the bundled cross-law framework packs; framework membership is itself validated by the governance gate.
 - `framework-templates.ts` maps a compliance report to a bundled framework (exact detection via the emitted framework id, fuzzy inference otherwise) and feeds the compliance-canvas Framework checklist.
 - `topic-expansions.ts` holds the softer topic-expansion triggers used by query analysis.
-- `coverage-summary.ts` derives the advertised coverage counts (271 authorities, 13 source families, 45 frameworks, 180 curated relations) that `COVERAGE_FACTS` in `src/lib/seo.ts` must match.
+- `coverage-summary.ts` derives the advertised coverage counts (305 authorities, 13 source families, 45 frameworks, 188 curated relations) that `COVERAGE_FACTS` in `src/lib/seo.ts` must match.
 
 When adding or changing an authority, update or verify every affected governance surface above. A complete local authority should have:
 
@@ -137,7 +137,7 @@ This catches common drafting gaps. It does not determine legality, validity, or 
 
 ## Bundled Corpus
 
-The local corpus intentionally stays small and auditable: 271 authorities across 13 official source families, with 45 framework packs and 180 curated relations (counts derived by [coverage-summary.ts](../../src/lib/services/local-research-data/coverage-summary.ts)). The canonical registry is [corpus.ts](../../src/lib/services/local-research-data/corpus.ts) with source metadata in [authority-sources.ts](../../src/lib/services/local-research-data/authority-sources.ts) — the governance gate validates those files, so this doc no longer maintains a duplicate link list.
+The local corpus intentionally stays small and auditable: 305 authorities across 13 official source families, with 45 framework packs and 188 curated relations (counts derived by [coverage-summary.ts](../../src/lib/services/local-research-data/coverage-summary.ts)). The canonical registry is [corpus.ts](../../src/lib/services/local-research-data/corpus.ts) with source metadata in [authority-sources.ts](../../src/lib/services/local-research-data/authority-sources.ts) — the governance gate validates those files, so this doc no longer maintains a duplicate link list.
 
 ## Limits
 

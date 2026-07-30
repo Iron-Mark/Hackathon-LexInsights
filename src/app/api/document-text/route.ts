@@ -3,7 +3,7 @@ import {
   MAX_BROWSER_TEXT_DOCUMENT_BYTES,
   getComplianceDocumentSupport,
 } from '@/lib/utils/document-text'
-import { extractServerDocumentText } from '@/lib/utils/server-document-extraction'
+import { NO_READABLE_TEXT_ERROR_NAME, extractServerDocumentText } from '@/lib/utils/server-document-extraction'
 import {
   buildPublicApiErrorBody,
   buildThrottleErrorBody,
@@ -196,6 +196,18 @@ export async function POST(request: NextRequest) {
       errorName: error instanceof Error ? error.name : typeof error,
       fileType: file.type,
     })
+
+    if (error instanceof Error && error.name === NO_READABLE_TEXT_ERROR_NAME) {
+      return jsonError(
+        422,
+        'No extractable text was found in this document. Scanned or image-only PDFs are not supported because LexInsights does not run OCR. Export a text-based PDF, or upload a .docx, .md, or .txt version instead.',
+        context,
+        'document_no_readable_text',
+        { fileType: file.type },
+        throttle
+      )
+    }
+
     return jsonError(422, 'Document extraction failed. Try a cleaner PDF or Word file, or paste the text directly.', context, 'document_extraction_failed', {
       fileType: file.type,
     }, throttle)

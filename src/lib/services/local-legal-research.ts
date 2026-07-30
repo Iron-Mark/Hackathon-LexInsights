@@ -814,40 +814,80 @@ function getFrameworkMatches(query: string, rankedDocuments: RankedDocument[]) {
 function addFrameworkDocumentsForDeepSearch(query: string, rankedDocuments: RankedDocument[]) {
   const existingDocumentIds = new Set(rankedDocuments.map((match) => match.document.id))
   const frameworkMatches = getFrameworkMatches(query, rankedDocuments)
-  const frameworkDocuments = frameworkMatches.flatMap((match) => (
-    match.framework.lawIds
+
+  // Composite-evidence ranking for framework members:
+  // - A member that is ALSO a direct candidate gets its score floored at the
+  //   injection base and then a bonus proportional to how strongly its
+  //   framework matched the query. Direct + membership is stronger evidence
+  //   than either signal alone, so these must outrank both pure-framework
+  //   injections and non-members that merely graze the query on generic
+  //   terms — the drift that otherwise appears as the corpus grows.
+  // - A member with NO direct evidence keeps the conservative injection floor
+  //   so a single large pack cannot flood the deep result list.
+  const injectionBase = rankedDocuments[0]?.score ? rankedDocuments[0].score * 0.45 : 2
+  const memberBonus = new Map<string, { bonus: number; matchedTerms: string[] }>()
+  const frameworkDocuments = frameworkMatches.flatMap((match) => {
+    const bonus = match.score * 1.5
+    const frameworkTerms = unique([
+      ...match.triggerMatches,
+      `framework: ${match.framework.title}`,
+    ])
+
+    return match.framework.lawIds
       .map((lawId) => getDocumentById(lawId))
       .filter((document): document is LocalLegalDocument => {
         if (!document) {
           return false
         }
 
-        return !existingDocumentIds.has(document.id)
+        if (existingDocumentIds.has(document.id)) {
+          const existing = memberBonus.get(document.id)
+          if (!existing || bonus > existing.bonus) {
+            memberBonus.set(document.id, { bonus, matchedTerms: frameworkTerms })
+          }
+          return false
+        }
+
+        return true
       })
       .map((document) => {
         existingDocumentIds.add(document.id)
 
         return {
           document,
-          score: Math.max(MINIMUM_SCORE + match.score * 1.5, rankedDocuments[0]?.score ? rankedDocuments[0].score * 0.45 : 2),
+          score: Math.max(MINIMUM_SCORE + bonus, injectionBase),
           relevance: 0.42,
-          matchedTerms: unique([
-            ...match.triggerMatches,
-            `framework: ${match.framework.title}`,
-          ]),
+          matchedTerms: frameworkTerms,
           supportingFields: [],
           supportLevel: 'framework' as const,
           directEvidenceScore: WEAK_MATCH_MINIMUM_DIRECT_EVIDENCE,
           directMatchCount: MINIMUM_DIRECT_TERM_MATCHES,
         }
       })
-  ))
+  })
 
-  if (frameworkDocuments.length === 0) {
+  if (frameworkDocuments.length === 0 && memberBonus.size === 0) {
     return rankedDocuments
   }
 
-  const combinedDocuments = [...rankedDocuments, ...frameworkDocuments]
+  const flooredRankedDocuments = rankedDocuments.map((result) => {
+    const member = memberBonus.get(result.document.id)
+
+    if (!member) {
+      return result
+    }
+
+    return {
+      ...result,
+      // The raw-score fraction keeps floored members ordered by their own
+      // direct evidence, so a member matching the query's distinctive terms
+      // outranks pack-mates that only graze it on generic ones.
+      score: Math.max(result.score, injectionBase) + member.bonus + result.score * 0.05,
+      matchedTerms: unique([...result.matchedTerms, ...member.matchedTerms]),
+    }
+  })
+
+  const combinedDocuments = [...flooredRankedDocuments, ...frameworkDocuments]
   const maxScore = Math.max(...combinedDocuments.map((result) => result.score), 1)
 
   return combinedDocuments

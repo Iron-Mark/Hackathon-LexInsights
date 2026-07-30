@@ -2,7 +2,19 @@
 
 ## [Unreleased]
 
-Merged to `main` between 2026-07-02 and 2026-07-29.
+Merged to `main` between 2026-07-02 and 2026-07-29, plus the 2026-07-30 batch below.
+
+### Added (2026-07-30)
+
+- Corpus growth batch (P1-2): 34 curated statutes (labor, AML/financial-crime, consumer finance, SME, LGU/public-health, tax, transport) bring the local corpus to 305 authorities with 188 curated relations; new entries carry seeded provenance pending live URL verification.
+- Free-tier daily quota metering (P2-1): compliance analyses capped at 20/day per browser, with a live usage meter in the plan panel; only successful analyses count.
+- Retention decision implemented (PRD §11): cloud reports are kept until the user deletes them; new "Delete cloud report data" control in the profile dialog removes all server rows while keeping browser-local copies.
+- Composite-evidence score floor for compliance-framework pack members in deep search, so corpus growth cannot silently push pack members out of workflow results.
+
+### Fixed (2026-07-30)
+
+- Scanned/image-only PDFs now get a specific error explaining OCR is unsupported (dedicated `document_no_readable_text` API error type), instead of a generic extraction failure; extraction error bodies also surface their human-readable message correctly in the UI.
+- README preview screenshots recaptured against the current UI (dark chat desktop, mobile Help & Resources with the live corpus-coverage panel).
 
 ### Added
 

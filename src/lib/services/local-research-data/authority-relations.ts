@@ -1262,6 +1262,62 @@ const CURATED_RELATIONS: LocalAuthorityRelation[] = [
     label: 'Family Code and Civil Code private-law relationship',
     weight: 0.9,
   },
+  {
+    sourceId: 'ra-9231',
+    targetId: 'ra-7610',
+    type: 'amends',
+    label: 'Worst-forms-of-child-labor amendments to the special child protection law',
+    weight: 1.25,
+  },
+  {
+    sourceId: 'ra-10927',
+    targetId: 'ra-9160',
+    type: 'amends',
+    label: 'Casino covered-person amendments to the Anti-Money Laundering Act',
+    weight: 1.25,
+  },
+  {
+    sourceId: 'ra-11449',
+    targetId: 'ra-8484',
+    type: 'amends',
+    label: 'Skimming and fraud-penalty amendments to the Access Devices Regulation Act',
+    weight: 1.25,
+  },
+  {
+    sourceId: 'ra-11862',
+    targetId: 'ra-10364',
+    type: 'amends',
+    label: 'Expanded anti-trafficking amendments to the trafficking-in-persons framework',
+    weight: 1.25,
+  },
+  {
+    sourceId: 'ra-12009',
+    targetId: 'ra-9184',
+    type: 'supersedes',
+    label: 'New Government Procurement Act supersedes the 2003 procurement law for new procurements',
+    weight: 1.2,
+  },
+  {
+    sourceId: 'ra-7641',
+    targetId: 'pd-442',
+    type: 'amends',
+    label: 'Retirement pay amendment to the Labor Code',
+    weight: 1.2,
+  },
+  {
+    sourceId: 'ra-9481',
+    targetId: 'pd-442',
+    type: 'amends',
+    label: 'Self-organization and union-registration amendments to the Labor Code',
+    weight: 1.2,
+  },
+  {
+    sourceId: 'ra-10666',
+    targetId: 'ra-11229',
+    type: 'workflow_related_to',
+    label: 'Child motorcycle-passenger and child-restraint road-safety workflow relationship',
+    weight: 0.85,
+  },
 ]
 
 const FRAMEWORK_RELATIONS: LocalAuthorityRelation[] = COMPLIANCE_FRAMEWORKS.flatMap((framework) => (

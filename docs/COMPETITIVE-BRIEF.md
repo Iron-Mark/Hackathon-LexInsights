@@ -14,7 +14,7 @@ This is the analysis behind the [PRD](./PRD.md) and the [Battlecard](./COMPETITI
 
 The Philippine legal-AI market has research tools and no compliance-scoring tool. Intellegal, Anycase, & Jur.ph all answer legal questions; none takes a company's document and scores it against a named Philippine framework. That gap is LexInsights' opening, and it points at a persona nobody else serves: the SME compliance officer facing RA 10173, where National Privacy Commission fines reach PHP 5,000,000 per act.
 
-The biggest opportunity is the SME compliance lane plus a disclosure feature the Supreme Court made mandatory (A.M. No. 25-11-28-SC, 18 February 2026) — a disclosure block LexInsights now appends to every report export. The biggest threat is corpus depth: 271 authorities is small next to Anycase's claimed 90,000+ resources and CD Asia's Supreme Court archive back to 1901, and one fabricated citation under the new disclosure regime is reputational ruin.
+The biggest opportunity is the SME compliance lane plus a disclosure feature the Supreme Court made mandatory (A.M. No. 25-11-28-SC, 18 February 2026) — a disclosure block LexInsights now appends to every report export. The biggest threat is corpus depth: 305 authorities is small next to Anycase's claimed 90,000+ resources and CD Asia's Supreme Court archive back to 1901, and one fabricated citation under the new disclosure regime is reputational ruin.
 
 ## Competitor profiles
 
@@ -44,7 +44,7 @@ The SME compliance officer is the widest open lane; no PH-native tool targets a 
 
 ## Threats
 
-Corpus depth is the credibility risk. 271 authorities against 90,000+ claimed and a 1901-onward archive is a real gap; the coverage-honesty half of the mitigation has shipped (per-family counts and last-verified dates in Help & Resources), leaving growth toward 400+ ([PRD P1-2](./PRD.md)). Hallucination liability is existential: even purpose-built RAG tools miss 17% to 34%, so one bad PH citation ends trust. Funded rivals moving first is the third threat; Intellegal launched June 2026 and Anycase could add a compliance module and out-resource a four-person team. The habit of reaching for free ChatGPT is the fourth, and the only answer is the traceability guarantee a general chatbot structurally can't make.
+Corpus depth is the credibility risk. 305 authorities against 90,000+ claimed and a 1901-onward archive is a real gap; the coverage-honesty half of the mitigation has shipped (per-family counts and last-verified dates in Help & Resources), leaving growth toward 400+ ([PRD P1-2](./PRD.md)). Hallucination liability is existential: even purpose-built RAG tools miss 17% to 34%, so one bad PH citation ends trust. Funded rivals moving first is the third threat; Intellegal launched June 2026 and Anycase could add a compliance module and out-resource a four-person team. The habit of reaching for free ChatGPT is the fourth, and the only answer is the traceability guarantee a general chatbot structurally can't make.
 
 ## Recommended actions
 

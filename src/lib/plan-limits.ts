@@ -104,3 +104,33 @@ export function formatPerMinute(limit: PlanRequestLimit): string {
   const unit = limit.windowSeconds === 60 ? 'min' : `${limit.windowSeconds}s`
   return `${limit.max} / ${unit}`
 }
+
+export type PlanDailyQuota = {
+  /** Stable id used as the meter storage key segment. */
+  id: string
+  /** Human-readable name of the metered capability. */
+  label: string
+  /** Short description of what the quota covers and when it resets. */
+  description: string
+  /** Maximum successful uses per calendar day (local time). */
+  maxPerDay: number
+}
+
+/**
+ * Daily quotas for the current (Free) tier, enforced client-side per browser
+ * (P2-1). Unlike the per-minute request limits above — which mirror server
+ * throttles — these are metered where the product actually runs: the app is
+ * guest-first and local-first, so the meter lives in this browser's storage
+ * alongside the rest of the user's data. Only successful compliance analyses
+ * count; failed extractions do not burn quota.
+ */
+export const FREE_TIER_DAILY_QUOTAS: readonly PlanDailyQuota[] = [
+  {
+    id: 'compliance-analyses',
+    label: 'Compliance analyses',
+    description: 'Document compliance checks per day. Resets at midnight local time.',
+    maxPerDay: 20,
+  },
+] as const
+
+export const COMPLIANCE_ANALYSES_DAILY_QUOTA = FREE_TIER_DAILY_QUOTAS[0]

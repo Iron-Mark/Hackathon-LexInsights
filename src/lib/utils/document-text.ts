@@ -74,6 +74,18 @@ export function normalizeBrowserDocumentText(value: string) {
     .replace(/\u0000/g, '')
 }
 
+/**
+ * Client-side mirror of the server's scanned/image-only-PDF error. Set as the
+ * thrown error's `name` when the document-text route reports
+ * `document_no_readable_text` (or the extracted body is empty), so the UI can
+ * explain that OCR is unsupported instead of showing a generic failure.
+ */
+export const NO_READABLE_TEXT_DOCUMENT_ERROR_NAME = 'DocumentNoReadableTextError'
+
+export function isNoReadableTextDocumentError(error: unknown): error is Error {
+  return error instanceof Error && error.name === NO_READABLE_TEXT_DOCUMENT_ERROR_NAME
+}
+
 function isDocumentExtractionMode(value: unknown): value is DocumentExtractionMode {
   return (
     value === 'browser-text' ||
@@ -134,14 +146,29 @@ export async function extractComplianceDocumentText(file: BrowserDocumentFile): 
     method: 'POST',
     body: formData,
   })
-  const body = await response.json().catch(() => null) as Partial<ExtractedDocumentText> & { error?: string } | null
+  const body = await response.json().catch(() => null) as
+    | (Partial<ExtractedDocumentText> & { detail?: string; error?: { type?: string } })
+    | null
 
   if (!response.ok) {
-    throw new Error(body?.error || `Document text extraction failed with HTTP ${response.status}.`)
+    // Error bodies are `{ detail, error: { type, ... } }` (buildPublicApiErrorBody);
+    // `detail` carries the human-readable message.
+    const detail = typeof body?.detail === 'string' && body.detail.trim()
+      ? body.detail
+      : `Document text extraction failed with HTTP ${response.status}.`
+    const error = new Error(detail)
+
+    if (body?.error?.type === 'document_no_readable_text') {
+      error.name = NO_READABLE_TEXT_DOCUMENT_ERROR_NAME
+    }
+
+    throw error
   }
 
   if (!body?.text?.trim()) {
-    throw new Error('Document extraction did not return readable text.')
+    const error = new Error('Document extraction did not return readable text.')
+    error.name = NO_READABLE_TEXT_DOCUMENT_ERROR_NAME
+    throw error
   }
 
   return {

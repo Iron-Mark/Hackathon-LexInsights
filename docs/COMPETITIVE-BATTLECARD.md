@@ -12,7 +12,7 @@ A one-page reference for positioning LexInsights against the tools a Philippine 
 
 ## LexInsights in one paragraph
 
-LexInsights answers Philippine legal questions & scores uploaded documents for compliance against 45 frameworks, from a bundled corpus of 271 authorities that runs with no AI provider attached. Local mode is deterministic template generation; it calls no model, so it has no generative step in which to invent a case name. Target users are price-sensitive solo & small-firm lawyers, SME compliance officers, and law students. Entry is guest-first and free. The one thing it does that no Philippine-native rival does: take a PDF and return a 0-to-100 score with green, amber, or red findings mapped to named statutes. The report exports to Markdown, DOCX, or PDF, each with an A.M. No. 25-11-28-SC AI-use disclosure block appended, and a signed-in user's reports persist server-side with version history.
+LexInsights answers Philippine legal questions & scores uploaded documents for compliance against 45 frameworks, from a bundled corpus of 305 authorities that runs with no AI provider attached. Local mode is deterministic template generation; it calls no model, so it has no generative step in which to invent a case name. Target users are price-sensitive solo & small-firm lawyers, SME compliance officers, and law students. Entry is guest-first and free. The one thing it does that no Philippine-native rival does: take a PDF and return a 0-to-100 score with green, amber, or red findings mapped to named statutes. The report exports to Markdown, DOCX, or PDF, each with an A.M. No. 25-11-28-SC AI-use disclosure block appended, and a signed-in user's reports persist server-side with version history.
 
 ---
 
@@ -20,15 +20,15 @@ LexInsights answers Philippine legal questions & scores uploaded documents for c
 
 **Their pitch.** An AI legal research assistant for Philippine lawyers and students, marketed on scale: it claims 5,000+ users and a library of 90,000+ resources. Pricing is public: PHP 999/month Pro, PHP 599/month for the education tier, and 15 free credits over two weeks.
 
-**Where they genuinely win.** Corpus breadth. 90,000+ claimed resources dwarfs a 271-authority bundle, and a paid education tier at PHP 599 already courts the student funnel. Say so plainly; a battlecard that pretends the rival is weak gets a rep laughed out of the room.
+**Where they genuinely win.** Corpus breadth. 90,000+ claimed resources dwarfs a 305-authority bundle, and a paid education tier at PHP 599 already courts the student funnel. Say so plainly; a battlecard that pretends the rival is weak gets a rep laughed out of the room.
 
 **Where they're weak.** They do research, not document compliance. There's no evidence of a feature that ingests a company's policy and scores it against RA 10173 or RA 9160. Their scale claim is also a metered subscription, not a free-at-entry product.
 
-**Our counter.** LexInsights owns the compliance-scoring job Anycase doesn't sell, and it runs providerless so it degrades to local research instead of a spinner when a backend times out. The corpus is smaller by design and honest about it; every one of the 271 authorities carries a source and a verification date, and Help & Resources publishes per-family counts with last-verified dates.
+**Our counter.** LexInsights owns the compliance-scoring job Anycase doesn't sell, and it runs providerless so it degrades to local research instead of a spinner when a backend times out. The corpus is smaller by design and honest about it; every one of the 305 authorities carries a source and a verification date (34 added 2026-07-30 carry seeded provenance pending live verification), and Help & Resources publishes per-family counts with last-verified dates.
 
 | If the prospect says | Respond with |
 |---|---|
-| "Anycase has 90,000+ resources; you have 271." | "For research breadth, true. But Anycase answers questions; it doesn't take your data privacy manual and score it green/amber/red against RA 10173. That's the job LexInsights is built for, and it's free to try without a login." |
+| "Anycase has 90,000+ resources; you have 305." | "For research breadth, true. But Anycase answers questions; it doesn't take your data privacy manual and score it green/amber/red against RA 10173. That's the job LexInsights is built for, and it's free to try without a login." |
 | "Anycase already has a student tier." | "At PHP 599 a month. LexInsights is free at entry with real citations, so a bar reviewee pays nothing to check a statute." |
 
 **Landmine to set:** "When you upload a company policy, do you get a compliance score and findings, or just an answer you still have to interpret?"
@@ -62,11 +62,11 @@ LexInsights answers Philippine legal questions & scores uploaded documents for c
 
 **Where they're weak.** It fabricates. Dahl et al. (2024) measured GPT-4 hallucinating on roughly 58% of verifiable legal questions. The failure mode is a real-looking citation attached to a wrong or invented case, which is how *Mata v. Avianca* became a USD 5,000 sanction on 22 June 2023 over six fake cases. Roughly 1,450 court cases worldwide now flag AI-fabricated citations.
 
-**Our counter.** LexInsights has no generative step in local mode, so it can't invent a citation the way a general chatbot does. Every answer either links to one of 271 named authorities or says it found none. Under the Supreme Court's disclosure regime, "I used a tool that can't fabricate a citation, and here's the provenance" is a defensible sentence; "I asked ChatGPT" is not.
+**Our counter.** LexInsights has no generative step in local mode, so it can't invent a citation the way a general chatbot does. Every answer either links to one of 305 named authorities or says it found none. Under the Supreme Court's disclosure regime, "I used a tool that can't fabricate a citation, and here's the provenance" is a defensible sentence; "I asked ChatGPT" is not.
 
 | If the prospect says | Respond with |
 |---|---|
-| "ChatGPT already answers my legal questions." | "It also invents cases about 58% of the time on verifiable questions. LexInsights answers from 271 named PH authorities or tells you it has none. One of those you can file; the other got a lawyer sanctioned USD 5,000." |
+| "ChatGPT already answers my legal questions." | "It also invents cases about 58% of the time on verifiable questions. LexInsights answers from 305 named PH authorities or tells you it has none. One of those you can file; the other got a lawyer sanctioned USD 5,000." |
 | "ChatGPT is free." | "So is LexInsights at entry, and it won't hand you a citation that doesn't exist." |
 
 **Landmine to set:** "When ChatGPT gives you a Republic Act number, how do you confirm the section it cites actually says what it claims?"
@@ -85,7 +85,7 @@ LexInsights answers Philippine legal questions & scores uploaded documents for c
 
 **We tend to win when** the prospect needs to score a document against a Philippine framework, is price-sensitive, values a citation they can click, or needs an AI-use disclosure for court-bound work under A.M. No. 25-11-28-SC.
 
-**We tend to lose when** the prospect needs deep case-law archives (CD Asia's 1901-onward corpus), wants the resource breadth Anycase advertises, or already trusts a funded rival's brand over a hackathon-stage tool. The [PRD](./PRD.md)'s P0/P1 answer has shipped — server-persisted reports, the citation-traceability guarantee, the disclosure export, PDF export, visible coverage dates in Help & Resources — so what remains is growing the 271-authority corpus toward 400+ (P1-2).
+**We tend to lose when** the prospect needs deep case-law archives (CD Asia's 1901-onward corpus), wants the resource breadth Anycase advertises, or already trusts a funded rival's brand over a hackathon-stage tool. The [PRD](./PRD.md)'s P0/P1 answer has shipped — server-persisted reports, the citation-traceability guarantee, the disclosure export, PDF export, visible coverage dates in Help & Resources — so what remains is growing the 305-authority corpus toward 400+ (P1-2).
 
 ## Maintenance
 

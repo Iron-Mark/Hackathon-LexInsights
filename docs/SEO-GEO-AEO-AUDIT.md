@@ -14,7 +14,7 @@
 
 ## Executive summary
 
-For a hackathon-stage app the technical plumbing is ahead of its competitors: programmatic `robots.ts` and `sitemap.ts`, self-referential canonicals, structured data (Organization, WebSite, SoftwareApplication, Person, SoftwareSourceCode, BreadcrumbList, plus FAQPage since remediation), full Open Graph/Twitter, a PWA manifest, and both `/llms.txt` and `/ai.txt` from one source of truth in `src/lib/seo.ts`. The problem was never infrastructure. Two of the three highest-impact moves shipped in the remediation — the `/` vs `/chat` duplicate content and dual empty-H1 are fixed, and quotable facts (corpus numbers, named statutes, FAQ schema) now sit on crawlable surfaces. The third remains open: the site is still a chat shell whose 271-authority corpus, 45 frameworks, and compliance checklists live behind a JS-gated UI, so the play is answer-first content (`/learn` statute explainers, checklist/template pages) to win the compliance-ops SERPs that jurisprudence-focused rivals ignore.
+For a hackathon-stage app the technical plumbing is ahead of its competitors: programmatic `robots.ts` and `sitemap.ts`, self-referential canonicals, structured data (Organization, WebSite, SoftwareApplication, Person, SoftwareSourceCode, BreadcrumbList, plus FAQPage since remediation), full Open Graph/Twitter, a PWA manifest, and both `/llms.txt` and `/ai.txt` from one source of truth in `src/lib/seo.ts`. The problem was never infrastructure. Two of the three highest-impact moves shipped in the remediation — the `/` vs `/chat` duplicate content and dual empty-H1 are fixed, and quotable facts (corpus numbers, named statutes, FAQ schema) now sit on crawlable surfaces. The third remains open: the site is still a chat shell whose 305-authority corpus, 45 frameworks, and compliance checklists live behind a JS-gated UI, so the play is answer-first content (`/learn` statute explainers, checklist/template pages) to win the compliance-ops SERPs that jurisprudence-focused rivals ignore.
 
 ## Technical checklist
 
@@ -32,7 +32,7 @@ The duplicate-content, H1, title-length, and SearchAction defects found on 2026-
 
 ## GEO findings (generative engines)
 
-`/llms.txt` follows the llmstxt.org convention and all AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) are allowed via `*`. The three gaps found on 2026-07-08 — no quantified facts, no statute citations, `ai.txt` a byte-identical clone of `llms.txt` — are all fixed: `llms.txt` now carries a `## Corpus and Coverage` block (271 authorities, 45 frameworks, 13 source families, 180 curated relations, deterministic no-model note) plus named statutes with official-source links, and `ai.txt` is a distinct AI-usage/attribution statement.
+`/llms.txt` follows the llmstxt.org convention and all AI crawlers (GPTBot, ClaudeBot, PerplexityBot, Google-Extended) are allowed via `*`. The three gaps found on 2026-07-08 — no quantified facts, no statute citations, `ai.txt` a byte-identical clone of `llms.txt` — are all fixed: `llms.txt` now carries a `## Corpus and Coverage` block (305 authorities, 45 frameworks, 13 source families, 188 curated relations as of 2026-07-30, deterministic no-model note) plus named statutes with official-source links, and `ai.txt` is a distinct AI-usage/attribution statement.
 
 ## AEO findings (answer engines / featured snippets)
 

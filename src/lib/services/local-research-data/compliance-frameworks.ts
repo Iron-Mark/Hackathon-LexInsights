@@ -415,6 +415,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'ra-7160',
       'eo-292-1987',
       'pd-807',
+      'eo-2-2016',
     ],
     summary:
       'Use this when public officers, public funds, PPPs, concessions, official discretion, supplier or beneficiary selection, GOCCs, compensation, civil service, personnel actions, gifts, conflicts, liquidation, or COA audit exposure overlap.',
@@ -1746,6 +1747,7 @@ export const COMPLIANCE_FRAMEWORKS: LocalComplianceFramework[] = [
       'ra-10627',
       'ra-9775',
       'ra-11930',
+      'ra-10175',
       'ra-9514',
       'ra-10121',
       'ra-12287',

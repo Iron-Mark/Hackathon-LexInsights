@@ -13,7 +13,7 @@ Covers the UI surfaces from the July 2026 build cycles (PRD P0-1 through P2-3, t
 ## 1. Guest-reachable (quick, no login)
 
 - [ ] Home `/`: exactly one visible-or-`sr-only` `<h1>` ("Philippine Legal Research & Compliance Assistant"); no horizontal scroll.
-- [ ] `/about`: FAQ section renders; a "Coverage" block shows 271 authorities / 13 source families / 45 frameworks; key statute links (RA 10173, RA 10175, RA 9160, RA 9775, RA 9003) open official sources.
+- [ ] `/about`: FAQ section renders; a "Coverage" block shows 305 authorities / 13 source families / 45 frameworks; key statute links (RA 10173, RA 10175, RA 9160, RA 9775, RA 9003) open official sources.
 - [ ] Help & Resources dialog -> "Corpus coverage": four stat tiles plus a per-source-family table with authority counts and last-verified dates (e.g. Lawphil 230, Jun 27 2026). Table scrolls inside its own box on mobile; the page does not.
 - [ ] `/llms.txt`: includes a "Corpus and Coverage" section and a "Key Philippine laws covered" list. `/ai.txt` is a distinct AI-usage statement (not a copy of `/llms.txt`).
 
