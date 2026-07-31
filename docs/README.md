@@ -13,7 +13,7 @@ For the public GitHub project overview, use the repository root [README](../READ
 
 ### Product
 
-- [Product Requirements (PRD)](./PRD.md) - product vision, personas, competitive landscape, positioning, and the prioritized P0/P1/P2 requirement backlog.
+- [Product Requirements (PRD)](./PRD.md) - product vision, personas, competitive landscape, positioning, and the prioritized P0/P1/P2 requirement backlog. Carries dated per-requirement status updates and is the source of truth for current feature status.
 - [Competitive Brief](./COMPETITIVE-BRIEF.md) - market analysis, competitor profiles, messaging comparison, positioning gaps, opportunities, and threats.
 - [Competitive Battlecard](./COMPETITIVE-BATTLECARD.md) - one-page sales reference: per-rival pitch, weaknesses, our differentiators, objection handling, and landmines.
 
@@ -23,14 +23,14 @@ For the public GitHub project overview, use the repository root [README](../READ
 - [API](./reference/API.md) - internal routes, RAG proxy behavior, providerless fallback, and upstream contracts.
 - [Providerless Research](./reference/PROVIDERLESS-RESEARCH.md) - local fallback algorithm, corpus, draft checks, and limits.
 - [Philippine Compliance Mapping](./reference/PH-COMPLIANCE-MAPPING.md) - product controls mapped to privacy, ICT, accessibility, and research-integrity expectations.
-- [Database](./reference/DATABASE.md) - Supabase schema, storage, and seed scripts.
+- [Database](./reference/DATABASE.md) - Supabase schema, numbered migrations (report persistence tables with Clerk-sub RLS), storage, and seed scripts.
 - [UI](./reference/UI.md) - design system, accessibility, and responsive conventions.
 - [SEO, AEO, and GEO](./reference/SEO-AEO-GEO.md) - public discovery, answer-engine files, structured data, and crawl policy.
 - [SEO / GEO / AEO Audit](./SEO-GEO-AEO-AUDIT.md) - dated audit of technical SEO, generative-engine, and answer-engine readiness, with a remediation log.
 
 ### Operations
 
-- [Testing](./operations/TESTING.md) - local and CI quality gates.
+- [Testing](./operations/TESTING.md) - local and CI quality gates, including the Vitest unit-test layer (`npm run test`).
 - [Manual QA Checklist](./operations/MANUAL-QA-CHECKLIST.md) - authenticated click-through for the UI surfaces added in the 2026-07-08 build cycle.
 - [Deployment](./operations/DEPLOYMENT.md) - Vercel deployment and production checks.
 - [RAG QA](./operations/RAG-QA.md) - source freshness, answer-quality, and citation trust gates.
@@ -43,34 +43,14 @@ For the public GitHub project overview, use the repository root [README](../READ
 
 ### Supporting Material
 
-- [Specs](./specs) - historical product and implementation planning material. Use the guides, reference, and operations docs above as the current shipping source of truth.
+- [Screenshot Catalog](./SCREENSHOTS.md) - feature, viewport, and theme captures plus showcase mockups and repository visual assets.
+- [Image Prompts](./assets/IMAGE-PROMPTS.md) - provenance and usage notes for the cover and social preview assets.
+- [Specs](./specs) - historical records of designs that have since shipped, kept as-is for context. Use the guides, reference, and operations docs above as the current shipping source of truth.
 - [Sample barangay disaster plan](./samples/sample-barangay-disaster-plan.md) - sample Markdown input for DRRM and imminent-disaster compliance review.
 
 ## Current Repository Shape
 
-```text
-Hackathon-LexInsights/
-|-- README.md
-|-- database/
-|-- docs/
-|   |-- README.md
-|   |-- guides/
-|   |-- operations/
-|   |-- reference/
-|   |-- samples/
-|   `-- specs/
-|-- public/
-|-- scripts/
-|-- src/
-|   |-- app/
-|   |-- components/
-|   |-- hooks/
-|   |-- lib/
-|   |-- proxy.ts
-|   `-- types/
-|-- tests/
-`-- package.json
-```
+See [Architecture](./reference/ARCHITECTURE.md) for the current source layout, runtime boundaries, and data flow. Database schema and numbered migrations live in [database/](../database), and CI plus the Supabase keep-alive workflow live in [.github/workflows/](../.github/workflows).
 
 ## Documentation Rules
 

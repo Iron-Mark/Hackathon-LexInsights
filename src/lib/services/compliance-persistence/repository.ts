@@ -133,6 +133,12 @@ export interface ComplianceReportRepository {
   listReports(userId: string): Promise<ComplianceReportRecord[]>
   updateReport(reportId: string, patch: UpdateComplianceReportPatch): Promise<ComplianceReportRecord>
   deleteReport(reportId: string): Promise<void>
+  /**
+   * Delete every report the user owns (versions/findings cascade via FK).
+   * Backs the user-initiated "delete cloud report data" control — the PRD §11
+   * retention answer is user-controlled deletion, not a time-based purge.
+   */
+  deleteAllReports(userId: string): Promise<void>
 
   appendVersion(input: NewReportVersion): Promise<ReportVersionRecord>
   listVersions(reportId: string): Promise<ReportVersionRecord[]>
@@ -174,6 +180,9 @@ export class UnwiredComplianceReportRepository implements ComplianceReportReposi
   }
   deleteReport(): Promise<void> {
     throw new CompliancePersistenceNotWiredError('deleteReport')
+  }
+  deleteAllReports(): Promise<void> {
+    throw new CompliancePersistenceNotWiredError('deleteAllReports')
   }
   appendVersion(): Promise<ReportVersionRecord> {
     throw new CompliancePersistenceNotWiredError('appendVersion')

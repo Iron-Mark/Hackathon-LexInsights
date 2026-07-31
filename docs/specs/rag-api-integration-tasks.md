@@ -1,5 +1,7 @@
 # Implementation Plan - RAG API Integration
 
+> **Status: Historical.** This is the original RAG API integration task plan; the work has shipped and the checkboxes below no longer track anything. It is preserved as-is for context. For current behavior, see [docs/reference/PROVIDERLESS-RESEARCH.md](../reference/PROVIDERLESS-RESEARCH.md) and the code.
+
 - [x] 1. Create API Service Layer
 
 

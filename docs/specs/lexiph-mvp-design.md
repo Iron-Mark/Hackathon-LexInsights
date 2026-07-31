@@ -1,5 +1,7 @@
 # Design Document
 
+> **Status: Historical.** This is the original MVP design document; the product has since shipped and evolved well past it. It is preserved as-is for context and no longer reflects the current implementation. For current behavior, see [docs/reference/ARCHITECTURE.md](../reference/ARCHITECTURE.md) and [docs/PRD.md](../PRD.md).
+
 ## Overview
 
 LexInsights is a Next.js 14 application using the App Router architecture with TypeScript. The system implements a ChatGPT-inspired interface for Philippine legal compliance assistance. The MVP focuses on authentication infrastructure and UI foundation, leveraging Supabase for backend services, Zustand for client-side state management, and shadcn/ui with Tailwind CSS for the interface.

@@ -1,5 +1,7 @@
 # Requirements Document
 
+> **Status: Historical.** This spec records the original design for a feature that has since shipped and evolved. It is preserved as-is for context and no longer reflects the current implementation. For current behavior, see [docs/reference/UI.md](../reference/UI.md) and the code.
+
 ## Introduction
 
 This feature defines the layout and behavior of the chat interface in both empty and active states. In the empty state, the interface presents a welcoming greeting, centered input box, and suggestion examples. Once the user sends a message or clicks a suggestion, the layout transitions to position the input box at the bottom with messages displayed above.

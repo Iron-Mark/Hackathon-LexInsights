@@ -26,7 +26,9 @@ import { DragDropOverlay } from './drag-drop-overlay'
 import { showToast } from '@/components/ui/toast'
 import { EmptyState } from './empty-state'
 import { CenteredInput } from './centered-input'
-import { extractComplianceDocumentText, type ExtractedDocumentText } from '@/lib/utils/document-text'
+import { extractComplianceDocumentText, isNoReadableTextDocumentError, type ExtractedDocumentText } from '@/lib/utils/document-text'
+import { COMPLIANCE_ANALYSES_DAILY_QUOTA } from '@/lib/plan-limits'
+import { getDailyQuotaUsage, recordDailyQuotaUse } from '@/lib/quota'
 import {
   RAG_BACKEND_TOAST_ACTION,
   RAG_BACKEND_UNAVAILABLE_MESSAGE,
@@ -1044,7 +1046,20 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
   useEffect(() => {
     const handleFileUpload = async (event: CustomEvent<FileUploadedEventDetail>) => {
       const { file, query } = event.detail
-      
+
+      // P2-1: free-tier daily quota, metered in this browser. Checked before
+      // any work starts; only successful analyses are recorded below.
+      const quotaUsage = getDailyQuotaUsage(COMPLIANCE_ANALYSES_DAILY_QUOTA)
+      if (quotaUsage.exhausted) {
+        showToast(
+          `Daily compliance-analysis limit reached (${quotaUsage.quota.maxPerDay}/day on the Free tier). The quota resets at midnight.`,
+          'error',
+          { durationMs: 10000 }
+        )
+        announceToAssistiveTechnology('Daily compliance analysis limit reached.')
+        return
+      }
+
       // Show loading state
       setIsProcessing(true)
       // Phase 1: document text extraction (document-text route, 15s timeout).
@@ -1076,13 +1091,20 @@ export function ChatContainer({ messages: initialMessages }: ChatContainerProps)
 
         setCanvasContent(formatDraftCheckerReport(file.name, query, response, extractedDocument))
         setCanvasDraftAnalysis(response.analysis)
+        recordDailyQuotaUse(COMPLIANCE_ANALYSES_DAILY_QUOTA)
         showToast(`Compliance analysis complete for ${file.name}`, 'success')
         announceToAssistiveTechnology(`Compliance analysis complete for ${file.name}`)
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown Draft Checker error'
         setCanvasContent(buildComplianceUnavailableReport(file.name, query, errorMessage))
         setCanvasDraftAnalysis(null)
-        if (isRagBackendUnavailableError(error)) {
+        if (isNoReadableTextDocumentError(error)) {
+          showToast(
+            'This file has no extractable text — likely a scanned or image-only PDF. Upload a text-based PDF, .docx, .md, or .txt file instead.',
+            'error',
+            { durationMs: 10000 }
+          )
+        } else if (isRagBackendUnavailableError(error)) {
           showToast(RAG_BACKEND_UNAVAILABLE_MESSAGE, 'info', {
             action: RAG_BACKEND_TOAST_ACTION,
             durationMs: 10000,

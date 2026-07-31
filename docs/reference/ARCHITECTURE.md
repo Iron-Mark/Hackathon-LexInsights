@@ -16,10 +16,12 @@ Hackathon-LexInsights/
 |   |-- lib/               # Auth, services, stores, Supabase client, utilities
 |   |-- proxy.ts           # Clerk route protection proxy
 |   `-- types/             # Shared TypeScript domain types
-`-- tests/                 # Playwright and API test utilities
+`-- tests/                 # Playwright e2e and API test utilities
 ```
 
 The TypeScript alias `@/*` resolves to `src/*`. Keep application imports inside this boundary. Import project metadata or configuration outside `src` with explicit relative paths.
+
+Two test layers exist: vitest unit tests co-located with source as `*.test.ts` files inside `src/` (configured by `vitest.config.mts`, run with `npm run test`, gated in CI and `check:local`), and Playwright e2e in `tests/e2e` (`npm run smoke:browser`).
 
 ## App Routes
 
@@ -28,6 +30,8 @@ The TypeScript alias `@/*` resolves to `src/*`. Keep application imports inside 
 - `/chat` - empty or active chat workspace.
 - `/chat/[chatId]` - chat workspace with a selected chat.
 - `/documents` - uploaded document management.
+- `/about`, `/privacy`, `/terms` - public trust pages.
+- `/llms.txt`, `/ai.txt` - AI discovery routes, plus `robots.ts`, `sitemap.ts`, and `manifest.ts` metadata routes.
 - `/test-rag` - maintainer-only legal research diagnostic surface, available only when `ENABLE_DIAGNOSTIC_ROUTES=true`.
 - `/test-document` - maintainer-only compliance document ingestion diagnostic surface, available only when `ENABLE_DIAGNOSTIC_ROUTES=true`.
 - `/offline` - PWA offline page.
@@ -38,6 +42,7 @@ The TypeScript alias `@/*` resolves to `src/*`. Keep application imports inside 
 - `/api/document-text` - server-side PDF and Word text extraction for compliance document uploads.
 - `/api/readiness` - backend readiness checks for Supabase configuration, RAG health, and proxy health.
 - `/api/version` - build and source metadata for deployment verification.
+- `/api/analytics` - privacy-safe first-party product events (see [API.md](./API.md)).
 
 ## Client State
 
@@ -49,7 +54,10 @@ Zustand stores under [src/lib/store](../../src/lib/store) own client state:
 - `file-upload-store` - uploaded file state.
 - `rag-store` - RAG request state, response caching, and local fallback notifications.
 - `sidebar-store` - responsive sidebar state.
-- `compliance-store` - compliance canvas and version history state.
+- `compliance-store` - compliance canvas and version history state, persisted to IndexedDB and mirrored to Supabase for signed-in users.
+- `matter-store` - matter/project workspace state, persisted to IndexedDB.
+
+Supporting modules in the same folder: `idb-storage` (IndexedDB adapter for zustand `persist`, with localStorage fallback and migration), `compliance-server-sync` (browser glue that mirrors compliance saves to Supabase), and `private-client-state` (clears private browser storage keys on sign-out).
 
 Route-level duplication is intentionally kept low. Shared protected-route behavior lives in [use-protected-route.ts](../../src/hooks/use-protected-route.ts), responsive sidebar behavior lives in [use-responsive-sidebar.ts](../../src/hooks/use-responsive-sidebar.ts), and chat routes render through [chat-page-shell.tsx](../../src/components/chat/chat-page-shell.tsx).
 
@@ -62,6 +70,12 @@ By default, browser RAG calls go through `/api/rag-proxy`; direct browser calls 
 Remote RAG is optional at runtime and opt-in through `NEXT_PUBLIC_RAG_PROVIDER_MODE=remote-rag`. [rag-api.ts](../../src/lib/services/rag-api.ts) uses [local-legal-research.ts](../../src/lib/services/local-legal-research.ts) by default, with corpus and framework data under [local-research-data](../../src/lib/services/local-research-data). Remote mode falls back locally when the provider is unavailable. Local mode provides deterministic research, Deep Search cross-reference expansion, ranking diagnostics, and draft checks without AI providers.
 
 Compliance document ingestion is split between [document-text.ts](../../src/lib/utils/document-text.ts) for browser-readable text and [server-document-extraction.ts](../../src/lib/utils/server-document-extraction.ts) for PDF and Word extraction behind `/api/document-text`.
+
+## Compliance Persistence
+
+Compliance reports dual-write. IndexedDB (zustand `persist` via `idb-storage`) is the local source of truth; signed-in users additionally mirror every saved version to Supabase (`compliance_reports`, `report_versions`, `report_findings`, provisioned by [0001_compliance_report_persistence.sql](../../database/migrations/0001_compliance_report_persistence.sql) with RLS keyed to the Clerk user id). Guests are a silent no-op, and a server failure never blocks a local save (one-time toast).
+
+The service layer lives in [src/lib/services/compliance-persistence](../../src/lib/services/compliance-persistence): `repository.ts` (interface plus unwired stub), `supabase-repository.ts` (Supabase implementation), `factory.ts` (environment-aware selection), `sync.ts` (pure save/delete/hydration core), `findings-extractor.ts` (normalizes findings rows), and `types.ts`. The browser glue is [compliance-server-sync.ts](../../src/lib/store/compliance-server-sync.ts), which bridges the zustand stores to the sync core through one serial queue and exposes `syncSavedComplianceVersion`, `syncDeletedComplianceVersion`, and `hydrateComplianceFromServer` (called on sign-in with an empty local store, so reports survive clearing browser storage).
 
 ## Engineering Principles
 

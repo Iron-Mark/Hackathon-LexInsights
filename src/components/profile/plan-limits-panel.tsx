@@ -1,12 +1,15 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { Gauge, Sparkles } from 'lucide-react'
 import {
   CURRENT_TIER,
+  FREE_TIER_DAILY_QUOTAS,
   FREE_TIER_LIMITS,
   FUTURE_TIERS,
   formatPerMinute,
 } from '@/lib/plan-limits'
+import { getDailyQuotaUsage, type DailyQuotaUsage } from '@/lib/quota'
 
 /**
  * Read-only transparency surface for the current plan tier and its per-minute
@@ -14,6 +17,13 @@ import {
  * server-side throttle configuration so users can see the quotas that apply.
  */
 export function PlanLimitsPanel() {
+  // Read usage on mount (client-only): the meter lives in localStorage.
+  const [dailyUsage, setDailyUsage] = useState<DailyQuotaUsage[]>([])
+
+  useEffect(() => {
+    setDailyUsage(FREE_TIER_DAILY_QUOTAS.map((quota) => getDailyQuotaUsage(quota)))
+  }, [])
+
   return (
     <section
       aria-labelledby="plan-limits-heading"
@@ -54,6 +64,40 @@ export function PlanLimitsPanel() {
       </div>
 
       <div className="rounded-lg bg-slate-50 p-3 dark:bg-[#241f32]">
+        <p className="mb-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+          Daily quotas (this browser)
+        </p>
+        <ul className="space-y-2">
+          {dailyUsage.map((usage) => (
+            <li key={usage.quota.id}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-sm text-slate-950 dark:text-slate-100">{usage.quota.label}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{usage.quota.description}</p>
+                </div>
+                <span className="mt-0.5 flex-shrink-0 whitespace-nowrap font-mono text-xs font-medium text-iris-700 dark:text-iris-200">
+                  {usage.used} / {usage.quota.maxPerDay}
+                </span>
+              </div>
+              <div
+                role="progressbar"
+                aria-label={`${usage.quota.label} used today`}
+                aria-valuemin={0}
+                aria-valuemax={usage.quota.maxPerDay}
+                aria-valuenow={usage.used}
+                className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-iris-300/15"
+              >
+                <div
+                  className="h-full rounded-full bg-iris-500 transition-[width] dark:bg-iris-300"
+                  style={{ width: `${Math.min(100, (usage.used / usage.quota.maxPerDay) * 100)}%` }}
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="rounded-lg bg-slate-50 p-3 dark:bg-[#241f32]">
         <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
           <Sparkles className="h-3.5 w-3.5" />
           What Education &amp; Pro would add
@@ -67,7 +111,8 @@ export function PlanLimitsPanel() {
           ))}
         </ul>
         <p className="mt-2 text-[11px] leading-relaxed text-slate-400 dark:text-slate-500">
-          Tiers are directional only. Enforcement and student verification are not yet available.
+          Free-tier daily quotas are enforced in this browser. Education and Pro remain directional;
+          billing and student verification are not yet available.
         </p>
       </div>
     </section>

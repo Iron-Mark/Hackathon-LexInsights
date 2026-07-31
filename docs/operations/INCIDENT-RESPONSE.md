@@ -14,9 +14,9 @@ Use this runbook for LexInsights security, privacy, availability, or data-handli
 Classify impact across these tracks:
 
 - Security: unauthorized access, secret exposure, account/session issue, dependency vulnerability, injection, route abuse, or supply-chain issue.
-- Privacy: personal information, sensitive personal information, uploaded documents, chat content, account metadata, or browser-local fallback data.
-- Availability: outage, degraded provider, failed deployment, broken PWA, or storage/provider interruption.
-- Integrity: incorrect deployment, stale source corpus, broken RAG citation metadata, or corrupted saved chats.
+- Privacy: personal information, sensitive personal information, uploaded documents, chat content, account metadata, server-persisted compliance report content (Supabase `compliance_reports`, `report_versions`, `report_findings` rows for signed-in users), or browser-local fallback data.
+- Availability: outage, degraded provider, failed deployment, broken PWA, or storage/provider interruption — including the Supabase free-tier inactivity pause, which [supabase-keepalive.yml](../../.github/workflows/supabase-keepalive.yml) exists to prevent.
+- Integrity: incorrect deployment, stale source corpus, broken RAG citation metadata, corrupted saved chats, or divergence between local (IndexedDB) and server-side copies of a compliance report.
 
 ## PH Privacy And ICT Coordination
 
@@ -29,7 +29,8 @@ Document the assessment, including why notification was or was not required, who
 ## Response Checklist
 
 - Freeze relevant logs and deployment metadata.
-- Rotate exposed keys and revoke affected sessions.
+- Rotate exposed keys and revoke affected sessions. Supabase and Clerk are linked through third-party auth (RLS trusts `auth.jwt()->>'sub'` from Clerk tokens), so rotate and revoke on both sides together — rotating one alone can leave sessions live on the other.
+- For incidents touching server-persisted report data, review the Supabase RLS policies and actual row exposure on `compliance_reports`, `report_versions`, and `report_findings` (policies key on the Clerk `sub` claim; see [database/migrations](../../database/migrations)).
 - Patch the route, dependency, configuration, or deployment source.
 - Add or update regression tests before closing the incident when feasible.
 - Review whether public diagnostics exposed more than intended.

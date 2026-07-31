@@ -2,14 +2,18 @@
 
 ## Local Workflow
 
-```powershell
-cd "C:\Users\ultim\_ Local Codes\Hackathon-LexInsights"
+From the repository root:
+
+```bash
 npm ci
 npm run lint -- --max-warnings=0
 npx tsc --noEmit
+npm run test
 npm run check:docs
 npm run build
 ```
+
+`npm run check:local` runs the full pre-PR gate in one command. CI ([.github/workflows/ci.yml](../../.github/workflows/ci.yml)) enforces the same gate — lint and unit tests through `npm audit --omit=dev`, the self-test battery, build, and browser smoke — on every push to `main` and every pull request targeting `main`.
 
 ## Source Organization
 
@@ -17,12 +21,19 @@ npm run build
 - Put reusable client hooks under `src/hooks`.
 - Put shared services under `src/lib/services`.
 - Put shared domain types under `src/types`.
-- Put SQL under `database`.
+- Put SQL under `database`. `database/schema.sql` is the baseline; put schema changes in numbered files under `database/migrations`.
 - Put all Markdown under root `docs`.
 - Put setup and contribution docs under `docs/guides`.
 - Put runtime and implementation reference under `docs/reference`.
 - Put release, testing, deployment, and support docs under `docs/operations`.
 - Put sample upload documents under `docs/samples`.
+
+## Unit Tests
+
+- Run with `npm run test` (single pass) or `npm run test:watch` (vitest, configured in [vitest.config.mts](../../vitest.config.mts)).
+- Co-locate tests with their module as `src/**/*.test.ts`; standalone suites can live under `tests/unit`. Playwright specs stay in `tests/e2e`.
+- Tests run in the `node` environment by default; a DOM-dependent file can opt into jsdom with a `// @vitest-environment jsdom` pragma.
+- New service and persistence logic is expected to ship with unit coverage.
 
 ## Code Style
 
@@ -43,6 +54,8 @@ npm run build
 
 - Lint passes.
 - Typecheck passes.
+- Unit tests pass (`npm run test`).
+- `npm audit --omit=dev` reports no production advisories.
 - Docs link check passes.
 - Build passes.
 - Browser smoke passes when the change affects navigation, auth, chat, uploads, or layout.

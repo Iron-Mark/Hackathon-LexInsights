@@ -99,7 +99,7 @@ Color must not be the only status indicator. Pair status color with text, icons,
 - Compliance mode placeholder: upload/review language, e.g. `Upload or ask...`.
 - Mode switcher belongs near the composer, not as a separate tab strip.
 - Composer outer click may focus the textarea only when the click is inside the intentional input shell.
-- The send button and research button must clearly distinguish standard send from deeper analysis.
+- The composer has a single send button (plus upload). Deeper analysis is the `Research mode` toggle inside the Mode menu ([chat-mode-toggle.tsx](../../src/components/chat/chat-mode-toggle.tsx)) — do not reintroduce a separate research button in the composer.
 - Keep disclaimer copy below the composer, not as a large blocking panel.
 
 ## Empty State And Prompt Cards
@@ -115,6 +115,7 @@ Color must not be the only status indicator. Pair status color with text, icons,
 - Assistant reports should prioritize readable legal structure over decorative chrome.
 - Streaming should reveal text progressively and feel plausible, while respecting reduced motion.
 - `Practical Checklist` bullets render as checkbox-style rows.
+- The compliance canvas includes a collapsible `Framework checklist` panel and a `Save to matter` action with a matters dialog ([compliance-canvas.tsx](../../src/components/chat/compliance-canvas.tsx), [matters-dialog.tsx](../../src/components/chat/matters-dialog.tsx)); new canvas surfaces should follow their card/dialog density.
 - Providerless reports should not repeat `Query:` inside the answer body because the user message already shows the query.
 - Export actions should wrap on 320px screens and preserve `.docx` wording.
 
@@ -149,20 +150,4 @@ Check these before shipping a UI change:
 
 ## Pre-Ship UI Gate
 
-Run or manually verify:
-
-```powershell
-npm run lint -- --max-warnings=0
-npx tsc --noEmit
-npm run check:docs
-npm run check:pwa
-npm run build
-npm run smoke:browser
-```
-
-For production:
-
-```powershell
-npm run check:deployment -- --base-url https://lexiph.vercel.app
-npm run check:live -- --base-url https://lexiph.vercel.app
-```
+The canonical release-gate command lists live in [SHIP-READINESS.md](../operations/SHIP-READINESS.md) and [TESTING.md](../operations/TESTING.md) — run `npm run check:local` before shipping a UI change. Note that the gate includes `npm run test` (vitest unit tests), so components with co-located tests must pass them, and `npm run smoke:browser` for the browser smoke. UI-specific manual verification is the Responsive QA Matrix above.

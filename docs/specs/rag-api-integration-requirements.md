@@ -1,5 +1,7 @@
 # Requirements Document - RAG API Integration
 
+> **Status: Historical.** This spec records the original RAG API integration requirements, which have since shipped and evolved (the default research path is now the local providerless engine). It is preserved as-is for context. For current behavior, see [docs/reference/PROVIDERLESS-RESEARCH.md](../reference/PROVIDERLESS-RESEARCH.md) and the code.
+
 ## Introduction
 
 This document outlines the requirements for integrating the Philippine Legislation Research API (RAG API) into the LexInsights application. The RAG API provides intelligent search and summarization of Philippine legislation, enabling users to query laws, regulations, and compliance requirements through natural language questions. The integration will enhance the compliance chat mode by providing authoritative, context-aware responses backed by actual legislation documents.

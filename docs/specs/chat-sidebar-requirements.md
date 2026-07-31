@@ -1,5 +1,7 @@
 # Requirements Document
 
+> **Status: Historical.** This spec records the original design for a feature that has since shipped and evolved. It is preserved as-is for context and no longer reflects the current implementation. For current behavior, see [docs/reference/UI.md](../reference/UI.md) and the code.
+
 ## Introduction
 
 This feature adds a collapsible side navigation bar to the chat interface that displays a list of chat conversations, similar to ChatGPT and Gemini interfaces. Users can view their chat history, navigate between different conversations, and manage their chats from the sidebar.

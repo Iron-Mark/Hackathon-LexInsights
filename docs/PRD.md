@@ -63,7 +63,7 @@ Compliance mode accepts up to 3 files per session, each capped at 5MB, in PDF, W
 
 The gap that matters most is in the data layer. The schema defines 6 tables: `profiles`, `chats`, `messages`, `documents`, `compliance_reports`, and `search_history`. The app writes to `chats`, `messages`, and `documents`. It never writes to `compliance_reports` or `search_history`; a repository-wide search for `from('compliance_reports')` returns zero call sites. Compliance reports and their entire version history persist to browser `localStorage` under the key `compliance-storage` ([compliance-store.ts:102](../src/lib/store/compliance-store.ts)). The flagship feature's output is not in the database, even though a table with row-level security, four indexes, & a 0-to-100 CHECK constraint was built to hold it. Clear the browser, lose the report.
 
-Quality gates are the opposite story; they are unusually strong for a hackathon-stage app. Twenty-five `check:*` scripts gate releases, including five local-RAG gates that test retrieval quality, answer quality, source freshness, sub-second performance, & corpus governance. Governance (`check:local-rag:governance`) fails the build on an orphan record, a missing source, a future verification date, or an unmarked coverage gap. Testing above that layer is thin: an end-to-end Playwright smoke suite, Chromium only, and no unit-test framework.
+Quality gates are the opposite story; they are unusually strong for a hackathon-stage app. Twenty-six `check:*` scripts gate releases, including five local-RAG gates that test retrieval quality, answer quality, source freshness, sub-second performance, & corpus governance. Governance (`check:local-rag:governance`) fails the build on an orphan record, a missing source, a future verification date, or an unmarked coverage gap. Above that layer: a Vitest unit suite (35 tests, added 2026-07-28, in CI and `check:local`) and an end-to-end Playwright smoke suite, Chromium only.
 
 ---
 
@@ -148,6 +148,8 @@ Shipping this costs something, and that cost is the point: the tool will visibly
 
 *Acceptance:* every assistant response in both modes either renders at least one inline citation resolving to a corpus authority, or renders an explicit "no supporting authority in the local corpus" notice; a golden-query test asserts the no-match state for a query with no corpus support; no response presents an unlinked statute number as if it were sourced.
 
+*Status (shipped 2026-07-09):* the explicit no-authority state shipped in [no-authority-notice.tsx](../src/components/chat/no-authority-notice.tsx) — any assistant response in either mode that resolves to no corpus authority (no matched documents and no known citations, or a `no_results`/`error` status) renders the "no supporting authority in the local corpus" notice, while unresolved statute mentions stay plain text rather than fabricated links; the golden-query gate asserts the no-result state for unrelated queries.
+
 ### P0-3. AI-use disclosure and provenance export for court-bound work
 
 A.M. No. 25-11-28-SC (resolved 18 February 2026) requires plain-language disclosure of AI use in court-bound work and holds the filer personally responsible. No Philippine competitor has built for this. LexInsights already captures the raw material every disclosure needs: provider mode, fallback status, matched authorities, retrieval diagnostics, & per-source verification dates. Assemble it into a disclosure block a user can attach to a report or filing.
@@ -174,6 +176,8 @@ Reports export to Markdown and DOCX only ([compliance-canvas.tsx](../src/compone
 
 *Status (partial, 2026-07-08):* the coverage-disclosure half is shipped. Help & Resources now shows a "Corpus coverage" section (authorities, source families, frameworks, curated relations, plus a per-family table with counts and last-verified dates), computed by [coverage-summary.ts](../src/lib/services/local-research-data/coverage-summary.ts) from existing governance data (no hardcoded totals; the curated-relation count reconciled to 180 across [seo.ts](../src/lib/seo.ts), `/about`, and `/llms.txt`). Still open: growing the corpus toward 400+ authorities, which is a legal-content authoring effort (each authority needs a corpus record, source, evidence anchor, relations, and coverage-map entry) and was deliberately not auto-generated.
 
+*Update (2026-07-30):* first growth batch shipped — 34 curated statutes added (labor, AML/financial-crime, consumer finance, SME, LGU/public-health, tax, transport), bringing the corpus to 305 authorities and 188 curated relations. New entries carry `seeded` provenance with explicit source notes because their Lawphil URLs follow the canonical pattern but were not live-verified at authoring time — run `npm run check:local-rag:sources:live` before relying on them operationally. The batch surfaced and fixed a retrieval-drift class: framework-pack members now get a composite-evidence score floor in deep search ([local-legal-research.ts](../src/lib/services/local-legal-research.ts) `addFrameworkDocumentsForDeepSearch`) so corpus growth cannot silently push pack members out of workflow results. All five local-RAG gates pass at 305; remaining to 400+ is further authoring batches.
+
 ### P1-3. Matter and project workspace
 
 Compliance is capped at 3 files per session ([compliance-upload.ts](../src/lib/utils/compliance-upload.ts)) with no way to group documents or reports. An SME compliance officer reviews a matter, not a file. Add a matter container that groups uploaded documents, their reports, & version history under one heading, with tagging. This is the natural expansion of the compliance moat competitors do not have.
@@ -189,6 +193,8 @@ Compliance is capped at 3 files per session ([compliance-upload.ts](../src/lib/u
 *Acceptance:* an authenticated user sees their tier, remaining quota, and what a paid tier adds; a student verification path grants the education tier.
 
 *Status (partial, 2026-07-08):* the transparency surface is shipped. The profile dialog now shows a plan/limits section ([plan-limits-panel.tsx](../src/components/profile/plan-limits-panel.tsx)): the current "Free" tier, the real per-minute request limits (mirrored from `request-guardrails.ts` into client-safe constants in [plan-limits.ts](../src/lib/plan-limits.ts)), and what Education/Pro tiers would add. This closes the audit's "no client visibility into rate limits" gap. Deliberately deferred (needs a backend decision): real per-user quota metering, tier enforcement, and student verification.
+
+*Update (2026-07-30):* quota metering shipped for the Free tier. Compliance analyses are capped at 20/day, metered client-side per browser ([quota.ts](../src/lib/quota.ts), enforced at the analysis entry point in [chat-container.tsx](../src/components/chat/chat-container.tsx)); only successful analyses burn quota, the meter degrades open if storage is unavailable, and the plan panel shows a live used/remaining bar. Client-side metering matches the guest-first, local-first architecture — there is still no billing backend, so per-account server-side quotas, paid-tier enforcement, and student verification remain deferred.
 
 ### P2-2. Framework-specific report templates
 
@@ -238,7 +244,7 @@ Three phases, ordered so trust lands before growth.
 ## 11. Open questions and assumptions
 
 - Does `profiles` get populated by a Clerk webhook, or is it, like `compliance_reports`, a provisioned-but-unused table? The application has no `from('profiles')` write path in `src`; confirm before P0-1 builds on it.
-- What is the intended retention window for a persisted compliance report, given the RA 10173 posture the product markets? P0-1 needs a retention answer, not just a table.
+- What is the intended retention window for a persisted compliance report, given the RA 10173 posture the product markets? P0-1 needs a retention answer, not just a table. *Answered 2026-07-30:* retention is user-controlled, not time-based — cloud reports are kept while the account exists because they serve as A.M. No. 25-11-28-SC audit artifacts, and auto-purging a disclosure trail would undermine the product's core use. The RA 10173 data-subject half is a deletion control, not a window: per-version deletion already syncs to the server, and the profile dialog now has "Delete cloud report data" (`deleteAllCloudComplianceReports` in [compliance-server-sync.ts](../src/lib/store/compliance-server-sync.ts)), which removes every server row for the user (versions/findings cascade) while leaving browser-local copies intact.
 - Is the remote RAG upstream (`devkada.resqlink.org`) a maintained dependency or a demo relic? It shapes how much the disclosure block must distinguish local from remote provenance.
 - The compliance score is a 0-to-100 integer with no user-facing rubric. Should the rubric be published, so a score is defensible, or kept internal? This affects P0-3's disclosure wording.
 

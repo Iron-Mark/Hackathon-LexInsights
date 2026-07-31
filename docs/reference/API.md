@@ -21,7 +21,7 @@ Returns app identity, package version, current deployment metadata, and optional
 
 Useful checks:
 
-```powershell
+```bash
 curl http://localhost:3000/api/version
 curl "http://localhost:3000/api/version?expectedSha=<commit>"
 ```
@@ -37,7 +37,7 @@ Query parameters:
 
 Examples:
 
-```powershell
+```bash
 curl "http://localhost:3000/api/readiness?timeoutMs=10000"
 curl "http://localhost:3000/api/readiness?externalChecks=skip"
 ```
@@ -53,7 +53,7 @@ Query parameters:
 
 Example:
 
-```powershell
+```bash
 curl "http://localhost:3000/api/rag-proxy?endpoint=/api/research/health"
 ```
 
@@ -178,7 +178,7 @@ Request:
 }
 ```
 
-Response shape used by the app:
+Response shape used by the app (abridged):
 
 ```json
 {
@@ -191,35 +191,14 @@ Response shape used by the app:
   "provider_mode": "local-providerless",
   "fallback_used": true,
   "confidence_score": 0.91,
+  "matched_framework_id": "environmental-operations",
+  "matched_framework_ids": ["environmental-operations"],
   "retrieval_metadata": {
     "result_limit": 6,
     "total_candidates": 12,
     "top_score": 42.5,
-    "score_threshold": 1.25,
     "citation_numbers": ["9003"],
-    "known_citation_numbers": ["9003"],
-    "unknown_citation_numbers": [],
-    "source_type_counts": {
-      "statute": 6
-    },
-    "provenance_coverage": {
-      "seeded": 5,
-      "verified": 1
-    },
-    "relation_paths": [
-      {
-        "source": "RA 9003",
-        "relation_type": "workflow_related_to",
-        "target": "RA 7160",
-        "label": "Local solid waste planning and LGU implementation workflow"
-      }
-    ],
-    "coverage_warnings": [
-      "Local results are deterministic and should be checked against current official issuances."
-    ],
-    "local_corpus_limitations": [
-      "Bundled local corpus only; no live web, agency-site crawl, court-decision crawl, or embedding provider was used."
-    ],
+    "coverage_warnings": ["..."],
     "processing_ms": 8
   },
   "matched_documents": [
@@ -229,19 +208,13 @@ Response shape used by the app:
       "source_name": "Lawphil",
       "source_url": "https://lawphil.net/statutes/repacts/ra2001/ra_9003_2001.html",
       "relevance_score": 0.95,
-      "matched_terms": ["RA 9003", "solid waste"],
-      "support_level": "direct",
-      "authority_type": "statute",
-      "source_tier": "official-primary",
-      "source_last_verified": "2026-06-25",
-      "provenance_status": "seeded",
-      "supporting_fields": ["citation", "title", "topics"]
+      "matched_terms": ["RA 9003", "solid waste"]
     }
   ]
 }
 ```
 
-When local fallback is used, `provider_mode` is `local-providerless`, `fallback_used` is `true`, and `fallback_reason` may describe the remote failure. Local responses may include `retrieval_metadata` so diagnostics can show candidate count, result limits, top score, score threshold, normalized citation numbers, known or unknown citation coverage, source type counts, provenance coverage, relation paths, coverage warnings, local corpus limits, and local processing time. `matched_documents` may also include local-only trust fields such as `support_level`, `authority_type`, `source_tier`, `source_last_verified`, `provenance_status`, `evidence_anchors`, `related_authorities`, and `supporting_fields`.
+When local fallback is used, `provider_mode` is `local-providerless`, `fallback_used` is `true`, and `fallback_reason` may describe the remote failure. Completed local responses also carry top-level `matched_framework_id` and `matched_framework_ids` identifying the compliance framework pack or packs the query matched; the app uses these for exact framework-checklist detection and persists them into chat metadata. The full field lists for `retrieval_metadata` (ranking diagnostics, citation coverage, relation paths, corpus limits) and per-document local trust fields (`support_level`, `authority_type`, `source_tier`, provenance and evidence fields) are typed in [rag-api.ts](../../src/lib/services/rag-api.ts).
 
 ### Deep Search
 
