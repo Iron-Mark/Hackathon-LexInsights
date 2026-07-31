@@ -126,6 +126,15 @@ export class SupabaseComplianceReportRepository implements ComplianceReportRepos
     if (error) fail('delete compliance report', error.message)
   }
 
+  async deleteAllReports(userId: string): Promise<void> {
+    const { error } = await this.supabase
+      .from('compliance_reports')
+      .delete()
+      .eq('user_id', userId)
+
+    if (error) fail('delete all compliance reports', error.message)
+  }
+
   // -------------------------------------------------------------------------
   // Versions (public.report_versions, append-only)
   // -------------------------------------------------------------------------

@@ -112,6 +112,14 @@ function fakeRepo(): FakeRepo {
       repo.reports = repo.reports.filter((report) => report.id !== reportId)
     },
 
+    async deleteAllReports(userId: string) {
+      repo.calls.push('deleteAllReports')
+      if (repo.failOn.has('deleteAllReports')) throw new Error('deleteAllReports failed')
+      const ownedIds = new Set(repo.reports.filter((report) => report.userId === userId).map((report) => report.id))
+      repo.reports = repo.reports.filter((report) => !ownedIds.has(report.id))
+      repo.versions = repo.versions.filter((version) => !ownedIds.has(version.reportId))
+    },
+
     async appendVersion(input: NewReportVersion) {
       repo.calls.push('appendVersion')
       if (repo.failOn.has('appendVersion')) throw new Error('appendVersion failed')

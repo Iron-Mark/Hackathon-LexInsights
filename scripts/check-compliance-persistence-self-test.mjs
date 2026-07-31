@@ -148,6 +148,7 @@ try {
   assert.throws(() => repo.listFindings('r1'), CompliancePersistenceNotWiredError)
   assert.throws(() => repo.updateReport('r1', {}), CompliancePersistenceNotWiredError)
   assert.throws(() => repo.deleteVersion('v1'), CompliancePersistenceNotWiredError)
+  assert.throws(() => repo.deleteAllReports('u1'), CompliancePersistenceNotWiredError)
 
   // --- AI-use disclosure (P0-3) ---
   const { buildAiUseDisclosure, renderAiUseDisclosureMarkdown } = disclosure.module

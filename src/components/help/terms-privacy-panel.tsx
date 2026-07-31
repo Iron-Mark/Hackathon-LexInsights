@@ -151,7 +151,7 @@ const privacySections = [
     icon: Database,
     title: 'Retention',
     body:
-      'Guest data may remain in the browser or local session. Signed-in workspace data may be retained while the account or feature remains active, unless deleted earlier, required for security, or retained to meet legal and operational needs.',
+      'Guest data may remain in the browser or local session. Signed-in workspace data, including cloud-synced compliance reports, is retained while the account remains active and until you delete it — per report version from the history sidebar, or all cloud report data at once from the profile dialog — unless removal is required for security or retention is needed to meet legal and operational obligations.',
   },
   {
     icon: SlidersHorizontal,

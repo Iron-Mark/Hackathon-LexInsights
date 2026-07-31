@@ -105,13 +105,13 @@ export function buildBaseStructuredData() {
 }
 
 export const COVERAGE_FACTS = {
-  authorities: 271,
+  authorities: 305,
   sources: 13,
   frameworks: 45,
   // Curated authority relations (distinct source/target/type triples, excluding
   // the auto-generated per-framework workflow edges). Matches the value derived
   // in local-research-data/coverage-summary.ts so all surfaces agree.
-  relations: 180,
+  relations: 188,
 }
 
 export const FAQ_ITEMS: Array<{ question: string; answer: string }> = [

@@ -7,6 +7,14 @@ import {
 
 export const MAX_EXTRACTED_DOCUMENT_TEXT_CHARS = 250000
 
+/**
+ * Error name marking an upload that extracted structurally but produced no
+ * readable text — the scanned/image-only PDF case. The document-text route
+ * maps this to a dedicated 422 error type so the client can explain that OCR
+ * is not supported, instead of showing the generic extraction failure.
+ */
+export const NO_READABLE_TEXT_ERROR_NAME = 'DocumentNoReadableTextError'
+
 export type ServerDocumentExtractionMode = 'server-pdf' | 'server-docx' | 'server-doc'
 
 export type ServerDocumentExtractionResult = {
@@ -132,7 +140,9 @@ export async function extractServerDocumentText(input: ServerDocumentInput): Pro
   const normalizedText = normalizeBrowserDocumentText(text)
 
   if (!normalizedText.trim()) {
-    throw new Error('Document extraction did not find readable text.')
+    const error = new Error('Document extraction did not find readable text.')
+    error.name = NO_READABLE_TEXT_ERROR_NAME
+    throw error
   }
 
   if (normalizedText.length > MAX_EXTRACTED_DOCUMENT_TEXT_CHARS) {

@@ -1,11 +1,14 @@
 'use client'
 
-import { User, Mail, Calendar, Shield, LogOut } from 'lucide-react'
+import { useState } from 'react'
+import { User, Mail, Calendar, Shield, LogOut, CloudOff } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/store/auth-store'
 import { useRouter } from 'next/navigation'
 import { PlanLimitsPanel } from '@/components/profile/plan-limits-panel'
+import { deleteAllCloudComplianceReports } from '@/lib/store/compliance-server-sync'
+import { showToast } from '@/components/ui/toast'
 
 interface ProfileDialogProps {
   open: boolean
@@ -15,11 +18,26 @@ interface ProfileDialogProps {
 export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
   const { user, signOut } = useAuthStore()
   const router = useRouter()
+  const [confirmingCloudDelete, setConfirmingCloudDelete] = useState(false)
+  const [deletingCloudData, setDeletingCloudData] = useState(false)
 
   const handleSignOut = async () => {
     await signOut()
     onOpenChange(false)
     router.push('/auth/login')
+  }
+
+  const handleDeleteCloudData = async () => {
+    setDeletingCloudData(true)
+    const deleted = await deleteAllCloudComplianceReports()
+    setDeletingCloudData(false)
+    setConfirmingCloudDelete(false)
+
+    if (deleted) {
+      showToast('Cloud report data deleted. Copies in this browser are kept.', 'success')
+    } else {
+      showToast('Could not delete cloud report data right now. Try again later.', 'error')
+    }
   }
 
   if (!user) return null
@@ -99,6 +117,43 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
 
           {/* Plan & request limits */}
           <PlanLimitsPanel />
+
+          {/* Cloud data (PRD §11: retention is user-controlled deletion) */}
+          <div className="space-y-2 border-t border-slate-200 pt-4 dark:border-iris-300/15">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Cloud-synced compliance reports are kept until you delete them. Deleting removes them
+              from the server only; copies in this browser stay.
+            </p>
+            {confirmingCloudDelete ? (
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleDeleteCloudData}
+                  disabled={deletingCloudData}
+                  variant="outline"
+                  className="flex-1 justify-center border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-400/30 dark:text-red-300 dark:hover:bg-red-400/10 dark:hover:text-red-200"
+                >
+                  {deletingCloudData ? 'Deleting…' : 'Yes, delete cloud data'}
+                </Button>
+                <Button
+                  onClick={() => setConfirmingCloudDelete(false)}
+                  disabled={deletingCloudData}
+                  variant="outline"
+                  className="flex-1 justify-center"
+                >
+                  Cancel
+                </Button>
+              </div>
+            ) : (
+              <Button
+                onClick={() => setConfirmingCloudDelete(true)}
+                variant="outline"
+                className="w-full justify-start"
+              >
+                <CloudOff className="h-4 w-4 mr-2" />
+                Delete cloud report data
+              </Button>
+            )}
+          </div>
 
           {/* Actions */}
           <div className="space-y-2 border-t border-slate-200 pt-4 dark:border-iris-300/15">
