@@ -30,6 +30,7 @@ For the public GitHub project overview, use the repository root [README](../READ
 
 ### Operations
 
+- [Handoff](./operations/HANDOFF.md) - start here if you are new to the project: live service state, what is still unverified, and the traps that cost real debugging time.
 - [Testing](./operations/TESTING.md) - local and CI quality gates, including the Vitest unit-test layer (`npm run test`).
 - [Manual QA Checklist](./operations/MANUAL-QA-CHECKLIST.md) - authenticated click-through for the UI surfaces added in the 2026-07-08 build cycle.
 - [Deployment](./operations/DEPLOYMENT.md) - Vercel deployment and production checks.
