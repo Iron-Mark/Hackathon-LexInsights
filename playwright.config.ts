@@ -6,6 +6,10 @@ export default defineConfig({
   testDir: './tests/e2e',
   outputDir: '.tmp/test-results',
   timeout: 30_000,
+  // Retry in CI only. Without this Playwright defaults to 0 retries, so a single
+  // transient timeout (typically the first test paying the cold-start cost of the
+  // freshly booted webServer) fails the whole run while every other test passes.
+  retries: process.env.CI ? 2 : 0,
   expect: {
     timeout: 10_000,
   },
