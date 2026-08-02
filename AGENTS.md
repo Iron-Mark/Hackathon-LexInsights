@@ -1,5 +1,9 @@
 # AGENTS.md
 
+Canonical agent instructions for this repository, in the cross-vendor
+`AGENTS.md` convention. `CLAUDE.md` is a pointer to this file, not a second
+source — keep all guidance here so the two cannot drift.
+
 ## Scope
 
 LexInsights v0.5.2 — Philippine legal research and compliance assistant (chat,
