@@ -16,6 +16,8 @@ on:
     - cron: '0 6 */3 * *'
   workflow_dispatch: {}
 
+permissions: {}
+
 jobs:
   ping:
     runs-on: ubuntu-latest

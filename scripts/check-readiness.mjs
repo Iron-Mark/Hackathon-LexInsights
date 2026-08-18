@@ -254,6 +254,20 @@ export function inspectSupabaseKey(value) {
   }
 }
 
+export function publicReadinessResult(result) {
+  return {
+    ready: result.ready,
+    checkedAt: result.checkedAt,
+    checks: result.checks.map((check) => ({
+      name: check.name,
+      status: check.status,
+      critical: check.critical,
+      message: check.message,
+      ...(Number.isFinite(check.durationMs) ? { durationMs: check.durationMs } : {}),
+    })),
+  }
+}
+
 export function checkSupabaseProjectRef(projectRef, host) {
   return {
     name: 'supabase.project_ref',
@@ -630,17 +644,17 @@ async function run() {
     baseUrl: args.baseUrl,
     checks,
   }
+  const publicResult = publicReadinessResult(result)
 
   if (args.json) {
-    console.log(JSON.stringify(result, null, 2))
+    console.log(JSON.stringify(publicResult, null, 2))
   } else {
     console.log(`LexInsights readiness: ${ready ? 'ready' : 'blocked'}`)
-    console.log(`Checked at: ${result.checkedAt}`)
+    console.log(`Checked at: ${publicResult.checkedAt}`)
 
-    for (const check of checks) {
-      const target = check.target ? ` (${check.target})` : ''
+    for (const check of publicResult.checks) {
       const duration = Number.isFinite(check.durationMs) ? ` ${check.durationMs}ms` : ''
-      console.log(`[${check.status.toUpperCase()}] ${check.name}${target} - ${check.message}${duration}`)
+      console.log(`[${check.status.toUpperCase()}] ${check.name} - ${check.message}${duration}`)
     }
   }
 

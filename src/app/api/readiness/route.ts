@@ -1,6 +1,8 @@
 import { lookup } from 'node:dns/promises'
 import { NextRequest, NextResponse } from 'next/server'
 
+import { resolveReadinessOrigin } from '@/lib/server/readiness-targets'
+
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
@@ -446,7 +448,7 @@ function publicCheck(check: ReadinessCheck): ReadinessCheck {
 
 export async function GET(request: NextRequest) {
   const checkedAt = new Date().toISOString()
-  const origin = request.nextUrl.origin
+  const origin = resolveReadinessOrigin()
   const timeoutMs = getTimeoutMs(request)
   const skipExternalChecks = shouldSkipExternalChecks(request)
   const supabaseUrl = getEnvValue('NEXT_PUBLIC_SUPABASE_URL')

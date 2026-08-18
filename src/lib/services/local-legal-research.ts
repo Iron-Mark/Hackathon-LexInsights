@@ -1134,7 +1134,6 @@ function expandLegalShorthand(value: string) {
     .replace(/\bPIC\/PIP\b/g, 'PIC/PIP (controller/processor)')
     .replace(/\bDPO\b/g, 'DPO (data protection officer)')
     .replace(/\bDBNMS\b/g, 'DBNMS (NPC breach-notification portal)')
-    .replace(/\bNPC\b/g, 'NPC')
 }
 
 function ensureSentence(value: string) {

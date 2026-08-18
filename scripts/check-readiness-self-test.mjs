@@ -13,6 +13,7 @@ import {
   parseArgs,
   getStandardSupabaseProjectRef,
   inspectSupabaseKey,
+  publicReadinessResult,
   readinessEndpointPath,
   safeUrl,
 } from './check-readiness.mjs'
@@ -111,6 +112,37 @@ const unknownChecks = checkSupabaseAnonKey('not-a-valid-key', projectRef)
 assert.equal(getCheck(unknownChecks, 'supabase.anon_key_format').status, 'fail')
 assert.equal(getCheck(unknownChecks, 'supabase.anon_key_format').critical, true)
 assertNoRawKeyLeak(unknownChecks, 'not-a-valid-key')
+
+const publicResult = publicReadinessResult({
+  ready: true,
+  checkedAt: '2026-08-19T00:00:00.000Z',
+  baseUrl: 'https://internal.example',
+  checks: [
+    {
+      name: 'supabase.anon_key_project_ref',
+      status: 'pass',
+      critical: true,
+      message: 'Configured',
+      target: `${projectRef}.supabase.co`,
+      details: {
+        rawKey: matchingAnonKey,
+      },
+    },
+  ],
+})
+assert.deepEqual(publicResult, {
+  ready: true,
+  checkedAt: '2026-08-19T00:00:00.000Z',
+  checks: [
+    {
+      name: 'supabase.anon_key_project_ref',
+      status: 'pass',
+      critical: true,
+      message: 'Configured',
+    },
+  ],
+})
+assertNoRawKeyLeak(publicResult.checks, matchingAnonKey)
 
 const simulatedDnsFailure = async () => {
   throw new Error('simulated DNS failure')
