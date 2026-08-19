@@ -36,7 +36,7 @@ assert.equal('authorization' in requests[0].options.headers, false)
 assert.equal(messages.some((message) => message.includes(env.SUPABASE_ANON_KEY)), false)
 
 const legacyRequests = []
-const legacyKey = 'eyJlegacy-anon-jwt'
+const legacyKey = 'eyJlegacy.anon.jwt'
 await runSupabaseKeepalive({
   env: { ...env, SUPABASE_ANON_KEY: legacyKey },
   fetchImpl: async (url, options) => {
@@ -54,6 +54,14 @@ await assert.rejects(
     attempts: 1,
   }),
   /must be a public publishable or legacy anon key/,
+)
+
+await assert.rejects(
+  runSupabaseKeepalive({
+    env: { ...env, SUPABASE_ANON_KEY: 'not-a-supported-key' },
+    attempts: 1,
+  }),
+  /unsupported public key format/,
 )
 
 await assert.rejects(
