@@ -102,6 +102,9 @@ jobs:
       - name: Document extraction self-test
         run: npm run check:document-extraction:self-test
 
+      - name: Supabase keep-alive self-test
+        run: npm run check:supabase-keepalive:self-test
+
       - name: Release integrity self-test
         run: npm run check:release:self-test
 
