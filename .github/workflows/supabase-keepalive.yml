@@ -8,36 +8,33 @@ name: Supabase keep-alive
 # Setup: add two repository secrets (Settings > Secrets and variables > Actions):
 #   SUPABASE_URL       e.g. https://<project-ref>.supabase.co
 #   SUPABASE_ANON_KEY  the public anon/publishable key (already shipped client-side)
-# Until the secrets exist, the job no-ops instead of failing.
+# Missing secrets, DNS failures, and non-2xx responses fail the workflow so an
+# outage cannot be reported as a successful keep-alive.
 
 on:
   schedule:
-    # Every 3 days at 06:00 UTC, comfortably under the ~7-day pause window.
-    - cron: '0 6 */3 * *'
+    # Daily at 06:17 UTC. A PostgREST request exercises the database API.
+    - cron: '17 6 * * *'
   workflow_dispatch: {}
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   ping:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
-      - name: Ping Supabase
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Reach Supabase database API
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: |
-          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "SUPABASE_URL / SUPABASE_ANON_KEY secrets not set; skipping keep-alive."
-            exit 0
-          fi
-          # GoTrue health returns 200 with the apikey header and counts as
-          # project activity, resetting the free-tier inactivity timer.
-          code=$(curl -sS -o /dev/null -w "%{http_code}" \
-            "$SUPABASE_URL/auth/v1/health" \
-            -H "apikey: $SUPABASE_ANON_KEY" || echo "000")
-          echo "Supabase keep-alive ping status: $code"
-          if [ "$code" != "200" ]; then
-            echo "Warning: expected 200 from /auth/v1/health; the request still reached the project."
-          fi
-          echo "Keep-alive ping complete."
+        run: node scripts/run-supabase-keepalive.mjs
