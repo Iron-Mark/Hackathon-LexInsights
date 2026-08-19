@@ -25,6 +25,38 @@ function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds))
 }
 
+function apiKeyType(apiKey) {
+  if (apiKey.startsWith('sb_secret_')) {
+    throw new Error('SUPABASE_ANON_KEY must be a public publishable or legacy anon key.')
+  }
+
+  if (apiKey.startsWith('sb_publishable_')) {
+    return 'publishable'
+  }
+
+  if (apiKey.split('.').length === 3) {
+    return 'legacy anon JWT'
+  }
+
+  throw new Error('SUPABASE_ANON_KEY has an unsupported public key format.')
+}
+
+function requestHeaders(apiKey, keyType) {
+
+  const headers = {
+    accept: 'application/openapi+json',
+    apikey: apiKey,
+  }
+
+  // Legacy anon keys are JWTs. Modern sb_publishable_ keys are not and are
+  // rejected if they are sent as Bearer tokens.
+  if (keyType === 'legacy anon JWT') {
+    headers.authorization = `Bearer ${apiKey}`
+  }
+
+  return headers
+}
+
 function errorDetails(error) {
   const normalized = error instanceof Error ? error : new Error(String(error))
   const causeCode = normalized.cause && typeof normalized.cause === 'object'
@@ -45,17 +77,16 @@ export async function runSupabaseKeepalive({
   timeoutMs = DEFAULT_TIMEOUT_MS,
 } = {}) {
   const anonKey = requiredEnv(env, 'SUPABASE_ANON_KEY')
+  const keyType = apiKeyType(anonKey)
   const url = keepaliveUrl(env)
   let lastError
+
+  logger.info(`Using a Supabase ${keyType} key.`)
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
       const response = await fetchImpl(url, {
-        headers: {
-          accept: 'application/openapi+json',
-          apikey: anonKey,
-          authorization: `Bearer ${anonKey}`,
-        },
+        headers: requestHeaders(anonKey, keyType),
         method: 'GET',
         signal: AbortSignal.timeout(timeoutMs),
       })

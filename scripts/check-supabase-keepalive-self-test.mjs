@@ -32,8 +32,37 @@ assert.equal(
 assert.equal(requests[0].options.method, 'GET')
 assert.equal(requests[0].options.headers.accept, 'application/openapi+json')
 assert.equal(requests[0].options.headers.apikey, env.SUPABASE_ANON_KEY)
-assert.equal(requests[0].options.headers.authorization, `Bearer ${env.SUPABASE_ANON_KEY}`)
+assert.equal('authorization' in requests[0].options.headers, false)
 assert.equal(messages.some((message) => message.includes(env.SUPABASE_ANON_KEY)), false)
+
+const legacyRequests = []
+const legacyKey = 'eyJlegacy.anon.jwt'
+await runSupabaseKeepalive({
+  env: { ...env, SUPABASE_ANON_KEY: legacyKey },
+  fetchImpl: async (url, options) => {
+    legacyRequests.push({ options, url: String(url) })
+    return { body: null, ok: true, status: 200 }
+  },
+  logger,
+})
+assert.equal(legacyRequests[0].options.headers.apikey, legacyKey)
+assert.equal(legacyRequests[0].options.headers.authorization, `Bearer ${legacyKey}`)
+
+await assert.rejects(
+  runSupabaseKeepalive({
+    env: { ...env, SUPABASE_ANON_KEY: 'sb_secret_test_key' },
+    attempts: 1,
+  }),
+  /must be a public publishable or legacy anon key/,
+)
+
+await assert.rejects(
+  runSupabaseKeepalive({
+    env: { ...env, SUPABASE_ANON_KEY: 'not-a-supported-key' },
+    attempts: 1,
+  }),
+  /unsupported public key format/,
+)
 
 await assert.rejects(
   runSupabaseKeepalive({ env: {}, attempts: 1 }),
