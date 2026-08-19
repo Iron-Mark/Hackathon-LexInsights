@@ -25,6 +25,17 @@ function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds))
 }
 
+function errorDetails(error) {
+  const normalized = error instanceof Error ? error : new Error(String(error))
+  const causeCode = normalized.cause && typeof normalized.cause === 'object'
+    ? normalized.cause.code
+    : undefined
+
+  return typeof causeCode === 'string'
+    ? `${normalized.message} (${causeCode})`
+    : normalized.message
+}
+
 export async function runSupabaseKeepalive({
   env = process.env,
   fetchImpl = fetch,
@@ -57,7 +68,7 @@ export async function runSupabaseKeepalive({
       logger.info(`Supabase database keep-alive succeeded with HTTP ${response.status}.`)
       return { status: response.status, url: url.origin }
     } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error))
+      lastError = errorDetails(error)
       if (attempt < attempts) {
         logger.warn(`Supabase keep-alive attempt ${attempt}/${attempts} failed; retrying.`)
         await sleep(attempt * 1_000)
@@ -66,7 +77,7 @@ export async function runSupabaseKeepalive({
   }
 
   throw new Error(
-    `Supabase database keep-alive failed after ${attempts} attempts: ${lastError?.message || 'unknown error'}`,
+    `Supabase database keep-alive failed after ${attempts} attempts: ${lastError || 'unknown error'}`,
   )
 }
 
