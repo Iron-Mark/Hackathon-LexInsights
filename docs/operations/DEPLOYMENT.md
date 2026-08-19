@@ -47,7 +47,7 @@ Leave `NEXT_PUBLIC_RAG_PROVIDER_MODE` unset or set to `local-providerless` for t
 
 - Apply [database/schema.sql](../../database/schema.sql), [database/migrations/0001_compliance_report_persistence.sql](../../database/migrations/0001_compliance_report_persistence.sql), and [database/storage.sql](../../database/storage.sql) to the production Supabase project. Without the migration, server-side compliance-report persistence for signed-in users silently no-ops.
 - Configure Clerk as a Supabase third-party auth provider in both dashboards. The client authenticates Supabase requests with a Clerk token ([src/lib/supabase/client.ts](../../src/lib/supabase/client.ts)), and all RLS and storage policies key on `auth.jwt()->>'sub'` resolving to the Clerk user id. Signed-in Supabase requests fail without this wiring.
-- [supabase-keepalive.yml](../../.github/workflows/supabase-keepalive.yml) pings Supabase on a schedule so the free-tier production project does not pause. Keep it enabled.
+- [supabase-keepalive.yml](../../.github/workflows/supabase-keepalive.yml) makes a daily authenticated request to the PostgREST database API so the free-tier production project does not pause. It uses only the public publishable key and does not bypass row-level security. The workflow fails on missing secrets, DNS errors, or non-2xx responses; treat a failed run as an authenticated-persistence outage until the project is restored and the workflow succeeds again.
 
 ## Pre-Deployment
 

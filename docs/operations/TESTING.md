@@ -59,6 +59,7 @@ npm run check:local-rag:governance
 npm run check:document-text:self-test
 npm run check:document-extraction:self-test
 npm run check:compliance-persistence:self-test
+npm run check:supabase-keepalive:self-test
 npm run check:release:self-test
 npm run check:release
 ```

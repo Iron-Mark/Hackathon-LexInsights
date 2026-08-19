@@ -1,6 +1,6 @@
 # Maintainer Handoff
 
-Last updated: 2026-07-31. Written to survive a change of maintainer, so it records
+Last updated: 2026-08-19. Written to survive a change of maintainer, so it records
 operational state and non-obvious traps that are not visible from the code alone.
 Feature status lives in [PRD.md](../PRD.md); change history lives in
 [CHANGELOG.md](../../CHANGELOG.md). This file covers what neither of those says.
@@ -10,11 +10,12 @@ Feature status lives in [PRD.md](../PRD.md); change history lives in
 `main` is deployed to `lexiph.vercel.app`. `dev` and `main` are in sync as of the
 2026-07-30 promotion. Every quality gate passes in CI.
 
-Production services are fully configured and live:
+Production services are configured, but Supabase-backed signed-in persistence is
+degraded until the corrected keep-alive passes after a project resume or relink:
 
 - **Supabase** — `database/schema.sql`, `database/migrations/0001_compliance_report_persistence.sql`, and `database/storage.sql` are all applied. Three report tables exist with row-level security, plus four storage policies on the private `documents` bucket.
 - **Clerk** — configured as a Supabase third-party auth provider on both sides. Row-level security compares `(SELECT auth.jwt()->>'sub')` to app-owned `TEXT` user columns.
-- **Keepalive** — `.github/workflows/supabase-keepalive.yml` runs on schedule and was verified returning HTTP 200. Without it, a free-tier Supabase project pauses after inactivity and every signed-in feature breaks at once.
+- **Keepalive** — `.github/workflows/supabase-keepalive.yml` makes a daily PostgREST database-API request and fails visibly when secrets, DNS, or PostgREST are unavailable. The August 10–16 scheduled runs encountered DNS failures but were incorrectly reported as successful by the former warning-only workflow; resume or relink the project, update both secrets if its reference changed, and dispatch the corrected workflow before treating signed-in persistence as available. Without a successful run, a free-tier Supabase project can pause after inactivity and every signed-in feature breaks at once.
 
 ## Verified vs. unverified
 
