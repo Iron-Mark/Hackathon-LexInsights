@@ -25,6 +25,25 @@ function delay(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds))
 }
 
+function requestHeaders(apiKey) {
+  if (apiKey.startsWith('sb_secret_')) {
+    throw new Error('SUPABASE_ANON_KEY must be a public publishable or legacy anon key.')
+  }
+
+  const headers = {
+    accept: 'application/openapi+json',
+    apikey: apiKey,
+  }
+
+  // Legacy anon keys are JWTs. Modern sb_publishable_ keys are not and are
+  // rejected if they are sent as Bearer tokens.
+  if (!apiKey.startsWith('sb_publishable_')) {
+    headers.authorization = `Bearer ${apiKey}`
+  }
+
+  return headers
+}
+
 function errorDetails(error) {
   const normalized = error instanceof Error ? error : new Error(String(error))
   const causeCode = normalized.cause && typeof normalized.cause === 'object'
@@ -51,11 +70,7 @@ export async function runSupabaseKeepalive({
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
       const response = await fetchImpl(url, {
-        headers: {
-          accept: 'application/openapi+json',
-          apikey: anonKey,
-          authorization: `Bearer ${anonKey}`,
-        },
+        headers: requestHeaders(anonKey),
         method: 'GET',
         signal: AbortSignal.timeout(timeoutMs),
       })
