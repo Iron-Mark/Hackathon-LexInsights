@@ -27,13 +27,42 @@ assert.equal(result.status, 200)
 assert.equal(requests.length, 1)
 assert.equal(
   requests[0].url,
-  'https://project-ref.supabase.co/rest/v1/',
+  'https://project-ref.supabase.co/rest/v1/compliance_reports?select=id&limit=0',
 )
 assert.equal(requests[0].options.method, 'GET')
-assert.equal(requests[0].options.headers.accept, 'application/openapi+json')
+assert.equal(requests[0].options.headers.accept, 'application/json')
 assert.equal(requests[0].options.headers.apikey, env.SUPABASE_ANON_KEY)
 assert.equal('authorization' in requests[0].options.headers, false)
 assert.equal(messages.some((message) => message.includes(env.SUPABASE_ANON_KEY)), false)
+
+const denied = await runSupabaseKeepalive({
+  env,
+  fetchImpl: async () => ({
+    ok: false,
+    status: 401,
+    text: async () => JSON.stringify({
+      code: '42501',
+      message: 'permission denied for table compliance_reports',
+    }),
+  }),
+  logger,
+})
+assert.equal(denied.permissionDenied, true)
+assert.equal(denied.status, 401)
+
+await assert.rejects(
+  runSupabaseKeepalive({
+    env,
+    attempts: 1,
+    fetchImpl: async () => ({
+      ok: false,
+      status: 401,
+      text: async () => JSON.stringify({ message: 'Invalid API key' }),
+    }),
+    logger,
+  }),
+  /failed after 1 attempt.*HTTP 401/,
+)
 
 const legacyRequests = []
 const legacyKey = 'eyJlegacy.anon.jwt'

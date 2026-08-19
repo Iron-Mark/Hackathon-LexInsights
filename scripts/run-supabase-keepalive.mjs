@@ -17,8 +17,11 @@ function keepaliveUrl(env) {
     throw new Error('SUPABASE_URL must use HTTPS.')
   }
 
-  // Exercise the database API without granting the public key access to protected app tables.
-  return new URL('/rest/v1/', baseUrl)
+  // A zero-row table request exercises Postgres without returning protected data.
+  const url = new URL('/rest/v1/compliance_reports', baseUrl)
+  url.searchParams.set('select', 'id')
+  url.searchParams.set('limit', '0')
+  return url
 }
 
 function delay(milliseconds) {
@@ -44,7 +47,7 @@ function apiKeyType(apiKey) {
 function requestHeaders(apiKey, keyType) {
 
   const headers = {
-    accept: 'application/openapi+json',
+    accept: 'application/json',
     apikey: apiKey,
   }
 
@@ -66,6 +69,19 @@ function errorDetails(error) {
   return typeof causeCode === 'string'
     ? `${normalized.message} (${causeCode})`
     : normalized.message
+}
+
+async function isExpectedPermissionDenial(response) {
+  if (response.status !== 401 && response.status !== 403) {
+    return false
+  }
+
+  try {
+    const payload = JSON.parse(await response.text())
+    return payload?.code === '42501' && /permission denied/i.test(String(payload?.message || ''))
+  } catch {
+    return false
+  }
 }
 
 export async function runSupabaseKeepalive({
@@ -90,6 +106,13 @@ export async function runSupabaseKeepalive({
         method: 'GET',
         signal: AbortSignal.timeout(timeoutMs),
       })
+
+      if (await isExpectedPermissionDenial(response)) {
+        logger.info(
+          `Supabase database keep-alive reached Postgres; anonymous table access was denied as expected with HTTP ${response.status}.`,
+        )
+        return { permissionDenied: true, status: response.status, url: url.origin }
+      }
 
       if (!response.ok) {
         throw new Error(`Supabase database keep-alive returned HTTP ${response.status}.`)
