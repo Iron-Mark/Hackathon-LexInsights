@@ -30,7 +30,7 @@ assert.equal(
   'https://project-ref.supabase.co/rest/v1/compliance_reports?select=id&limit=0',
 )
 assert.equal(requests[0].options.method, 'GET')
-assert.equal(requests[0].options.headers.accept, 'application/openapi+json')
+assert.equal(requests[0].options.headers.accept, 'application/json')
 assert.equal(requests[0].options.headers.apikey, env.SUPABASE_ANON_KEY)
 assert.equal('authorization' in requests[0].options.headers, false)
 assert.equal(messages.some((message) => message.includes(env.SUPABASE_ANON_KEY)), false)

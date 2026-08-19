@@ -47,7 +47,7 @@ function apiKeyType(apiKey) {
 function requestHeaders(apiKey, keyType) {
 
   const headers = {
-    accept: 'application/openapi+json',
+    accept: 'application/json',
     apikey: apiKey,
   }
 
