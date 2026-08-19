@@ -63,7 +63,11 @@ await assert.rejects(
     attempts: 3,
     fetchImpl: async () => {
       dnsAttempts += 1
-      throw new Error('getaddrinfo ENOTFOUND project-ref.supabase.co')
+      throw Object.assign(new TypeError('fetch failed'), {
+        cause: Object.assign(new Error('getaddrinfo ENOTFOUND project-ref.supabase.co'), {
+          code: 'ENOTFOUND',
+        }),
+      })
     },
     logger,
     sleep: async () => {},
