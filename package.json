@@ -50,7 +50,7 @@
     "check:pwa": "node scripts/check-pwa-readiness.mjs",
     "check:screenshots": "node scripts/check-readme-screenshots.mjs",
     "check:bundle": "node scripts/check-production-bundle.mjs",
-    "check:local": "npm run lint -- --max-warnings=0 && npx tsc --noEmit && npm run test && npm audit --omit=dev && npm run check:docs:self-test && npm run check:docs && npm run check:readiness:self-test && npm run check:deployment:self-test && npm run check:live:self-test && npm run check:rag-proxy:self-test && npm run check:providerless:self-test && npm run check:local-rag:golden && npm run check:local-rag:answers && npm run check:local-rag:sources && npm run check:local-rag:performance && npm run check:local-rag:governance && npm run check:document-text:self-test && npm run check:document-extraction:self-test && npm run check:compliance-persistence:self-test && npm run check:supabase-keepalive:self-test && npm run check:release:self-test && npm run check:release && npm run check:pwa && npm run check:screenshots && npm run build && npm run check:bundle && npm run smoke:browser",
+    "check:local": "npm run lint -- --max-warnings=0 && npx tsc --noEmit && npm run test && npm audit --omit=dev --audit-level=high && npm run check:docs:self-test && npm run check:docs && npm run check:readiness:self-test && npm run check:deployment:self-test && npm run check:live:self-test && npm run check:rag-proxy:self-test && npm run check:providerless:self-test && npm run check:local-rag:golden && npm run check:local-rag:answers && npm run check:local-rag:sources && npm run check:local-rag:performance && npm run check:local-rag:governance && npm run check:document-text:self-test && npm run check:document-extraction:self-test && npm run check:compliance-persistence:self-test && npm run check:supabase-keepalive:self-test && npm run check:release:self-test && npm run check:release && npm run check:pwa && npm run check:screenshots && npm run build && npm run check:bundle && npm run smoke:browser",
     "deploy:prod": "node scripts/deploy-vercel.mjs",
     "smoke:browser": "playwright test"
   },
@@ -102,7 +102,6 @@
     "nanoid@^3.0.0": "3.3.18",
     "postcss": "^8.5.10",
     "sharp": "0.35.5",
-    "source-map-js": "^1.2.2",
-    "sprintf-js": "^1.1.3"
+    "source-map-js": "^1.2.2"
   }
 }
