@@ -77,7 +77,7 @@ RAG provider values.
 - Last tagged release: 0.5.2
   (`docs/operations/RELEASE-2026-07-01-569983a.md`).
 
-Last verified: 2026-07-30.
+Last verified: 2026-11-20 (Next.js 16.4.6, `npm audit` clean with `0` vulnerabilities, `CLAUDE.md` compatibility pointer aligned in PR #85).
 
 <!-- BEGIN:nextjs-agent-rules -->
 
