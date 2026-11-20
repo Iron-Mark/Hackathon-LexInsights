@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This project keeps its agent instructions in [AGENTS.md](./AGENTS.md), the
+This project keeps its canonical agent instructions in [AGENTS.md](./AGENTS.md), the
 cross-vendor convention, so every tool reads the same file and none of them
 drift apart. **Read [AGENTS.md](./AGENTS.md) now** — it holds the stack, key
 commands, environment variables, database layout, and subsystem map.
